@@ -73,10 +73,11 @@
   var LANG_KEY = 'ttb.lang';
   var DEFAULT_LANG = 'en';
 
-  /* Every device, then each alone — DEVICE_IDS in assets/visitors.js, and
-     BY DEVICE in functions/api/stats.js. '' is every device. */
-  var DEVICE_IDS = ['', 'phone', 'tablet', 'desktop'];
-  var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
+  /* Every device, the phones, and everything else — DEVICE_IDS in
+     assets/visitors.js, and BY DEVICE in functions/api/stats.js. '' is every
+     device. */
+  var DEVICE_IDS = ['', 'phone', 'other'];
+  var DEVICES = { phone: 'visitorsPhone', other: 'devicesOther' };
 
   var state = {
     lang: DEFAULT_LANG,
@@ -484,9 +485,9 @@
     main.appendChild(stack);
   }
 
-  /* Every device or one — devices() in assets/visitors.js. Over the
-     ranking rather than in a card of its own lower down, because it changes
-     every table under it. */
+  /* Every device, the phones or the rest — devices() in
+     assets/visitors.js. Over the ranking rather than in a card of its own
+     lower down, because it changes every table under it. */
   function devices() {
     var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('devicesLabel') });
     DEVICE_IDS.forEach(function (id) {

@@ -60,24 +60,6 @@
  * One word, per tab, gone when the tab closes, and nothing that says who
  * anybody is.
  *
- * And how the tab arrived, so a diagram can be drawn for the people one
- * link brought: the first page a tab opens keeps its `?from=` tag and the
- * origin of the site that sent it under `ttb.via`, and every report after
- * that, on any page of the same tab, carries them. The server makes a
- * source of them the way it does for a visitor — Facebook, Instagram, a
- * search engine — and files the diagram's steps under it as well as under
- * everybody: ARRIVED VIA in functions/api/_flows.js. Two short strings, per
- * tab, gone with it, and never a person. A tab opened from a link on this
- * site arrives from here and is filed under nothing.
- *
- * Beside each name rides the second it happened at — on-screen seconds into
- * the stretch the report covers, the same clock `secs` is — so the diagrams
- * can say how long people spent at a step before the next one, or before
- * the page was put away. A clock that starts again with every stretch, so a
- * tab hidden and brought back starts its time afresh rather than counting
- * the hour it sat behind another app. TIME AT A STEP in
- * functions/api/_flows.js is what is made of it.
- *
  * And how the page was found: the first report carries the address the
  * page was opened at and its `?from=` tag if the link had one — the owner's
  * own, or `share` from a Share button — and a report when the page is put
@@ -92,38 +74,14 @@
  * it. A page tells about() once per thing per load, and the next report
  * carries it. WHAT IT WAS ABOUT in functions/api/_visitors.js is the rest.
  *
- * The language rides in the same reports. Every page writes the language it
- * is read in on to <html lang>, so the seconds on screen are split by what
- * that said while they passed, and a press of a language switch — the
- * `language_select` event the switches already send — is kept as the pair it
- * was, from and to. The first report of a browser's first page today also
- * says which language it arrived in.
- *
- * AND THE COLOUR SOMEBODY NEW IS GIVEN
- *
- * The four styles are a test as well as a choice. A browser whose first day
- * here is today, opening a page with no ?style= in the address and no
- * colour stored, is dealt one of the four at random before the page's own
- * script paints anything — it is written into `ttb.style`, the key every
- * page already reads its colour from, so the page has nothing to learn. The
- * deal is counted, and three things after it, once each: the first place,
- * post or deck opened on the day it was dealt (`-opened`), the first visit
- * on a later day (`-back`), and the first press of the swatch, which is
- * somebody choosing a different colour than the one they were given
- * (`-changed`). `ttb.styledeal` keeps what was dealt and what has been told.
- * Nobody else is dealt anything: a colour already chosen is kept, and so is
- * one a link carried. On a phone the deal is between Red and Blue alone
- * since 2026-11-13: six weeks of phone newcomers had those two level at the
- * top and too few people arriving to tell four apart, so the two that led
- * share them all — STYLE_PHONE_DEALS below. A tablet and a desktop are
- * still dealt all four. And the colour rides on both of the site's own
- * reports, as `style`, so THE FOUR
- * COLOURS in functions/api/_visitors.js can count every visit's seconds,
- * pages and places under the colour it was spent in. The first report on
- * the map, the flashcards or anywhere else today also says, for somebody
- * new, that it is the first there — firstStay() below — so the time on
- * each can be read per newcomer by colour. dealStyle() below;
- * "The four styles, dealt" in docs/handbook.md.
+ * The first report of a browser's first page today also says which
+ * language it arrived in — the one on screen before any switch, which is
+ * the one the site chose. Until 2026-11-19 the reports also split the
+ * seconds on screen by language, kept every switch as a pair, carried the
+ * second each name happened at and how the tab arrived, and the colour a
+ * newcomer had been dealt; the count stopped filing all of them, and the
+ * colour test is over — newcomers open in Red, the default every page
+ * already draws, and the swatch is a choice again.
  *
  * TO REMOVE TRACKING
  *
@@ -156,7 +114,6 @@ window.TTBTrack = (function () {
      words searched — for the site's own count. */
   function event(name, params) {
     params = params || {};
-    if (name === 'style_select') styleTold('changed');
     tallied[name] = (tallied[name] || 0) + 1;
     step(name);
     if (name === 'language_select') switched(params.language);
@@ -210,7 +167,6 @@ window.TTBTrack = (function () {
     if (here() === seenPath) return;
     seenPath = here();
     opened += 1;
-    styleTold('opened');
   }
 
   /* The address on screen has been counted already — by the landing, or by
@@ -225,7 +181,7 @@ window.TTBTrack = (function () {
      here, once, for every page. Deferred scripts run before DOMContentLoaded,
      so the whole page is there to walk. */
   document.addEventListener('DOMContentLoaded', function () {
-    /* The tests a recording can be filtered by, as Clarity tags. Deferred
+    /* The test a recording can be filtered by, as a Clarity tag. Deferred
        scripts have all run by now, so a look dealt on this very page is in
        storage. Clarity's queue takes the call before its script lands, the
        same as an event. */
@@ -234,11 +190,6 @@ window.TTBTrack = (function () {
          of /lists is dealt one before this runs — pickLook() is called as
          the page's own deferred script boots — so that visit is tagged. */
       if (look()) window.clarity('set', 'look', look());
-      /* And the colour, where one was dealt — dealStyle() ran as this file
-         loaded, before every page's own script, so even the first visit is
-         tagged. */
-      var given = styleDeal();
-      if (given) window.clarity('set', 'style', given.style);
     }
     var marked = document.querySelectorAll('[data-track]');
     for (var i = 0; i < marked.length; i++) {
@@ -256,7 +207,6 @@ window.TTBTrack = (function () {
   var SEEN_KEY = 'ttb.seen';
   var SINCE_KEY = 'ttb.since';
   var STEP_KEY = 'ttb.step';
-  var VIA_KEY = 'ttb.via';
   var OWNER = /(?:^|;\s*)ttb_owner=1(?:;|$)/.test(document.cookie);
   /* A browser a program is driving — Playwright, Puppeteer, Selenium, and
      so every Claude Code session that opens the site to look at it — says so
@@ -283,7 +233,6 @@ window.TTBTrack = (function () {
   var abouts = [];     // 'what:id' the page was about, since the last report
   var told = {};       // 'what:id' -> true, once it is in abouts: once a page
   var trail = [];      // names first seen this page, in order, since the last report
-  var at = [];         // the second on screen, into the stretch, each of `trail` happened at
   var walked = {};     // name -> true, once it is in a trail — THE ORDER THEY CAME IN
   var earlier = '';    // the last name reported, this page or the one before it in this tab
   var fresh = true;    // no report has left this page yet, so the first says the page opened
@@ -291,13 +240,10 @@ window.TTBTrack = (function () {
   var who = '';        // 'new' or 'back', once arrive() has read the dates
   var shown = 0;       // milliseconds on screen, since the last report
   var since = null;    // when the page last came on screen, null while hidden
-  var spoken = {};     // language -> milliseconds of `shown` read in it
-  var moved = {};      // 'from>to' -> times the switch was pressed
   var lang = langNow();  // the language on screen, as <html lang> last said
   var first = false;   // this page is the browser's first today, not yet told
   var arrivedIn = '';  // the language on screen before the first switch
   var searched = [];   // { scope, term, results } typed into a search field, since the last report
-  var via = null;      // { tag, from } — how this tab arrived, sent on every report; see the top
 
   /* The query as the page was opened, read now, before the page's own
      script has had a chance to rewrite it — the map puts a place's ?spot= in
@@ -338,8 +284,6 @@ window.TTBTrack = (function () {
     if (!COUNTED || walked[name]) return;
     walked[name] = true;
     trail.push(name);
-    charge();
-    at.push(Math.round(shown / 1000));
   }
 
   /* The name a trail ends on, as the next report or the next page will send
@@ -383,8 +327,6 @@ window.TTBTrack = (function () {
       kept = true;
     } catch (e) { kept = false; }
     first = kept && last !== day;
-    if (first) pinPhone();
-    var stay = firstStay();
     send({
       kind: 'arrive',
       id: PAGE,
@@ -398,36 +340,14 @@ window.TTBTrack = (function () {
       back: who === 'back',
       who: who,
       from: document.referrer,
-      style: styleDealt(),
       /* The language the browser asks for, as two letters — the site's
          count of which languages people arrive wanting, spoken here or not.
          Read straight off the browser, never off the page, which has
          already picked one out of it. */
       asks: String(window.navigator.language || '').slice(0, 2).toLowerCase(),
-      phone: phoneArm(),
-      stay: stay,
       tag: TAGGED
     });
     untag();
-  }
-
-  /* How this tab arrived — see the top: what the tab's first page kept, or,
-     on that first page, its tag and the origin of the page before it, kept
-     now for the rest of the tab. Only the origin, which is all a browser
-     sends another site anyway. Null where storage cannot be read, and then
-     the tab's steps are filed under everybody alone. */
-  function arrivedVia() {
-    try {
-      var kept = window.sessionStorage.getItem(VIA_KEY);
-      if (kept) return JSON.parse(kept);
-      var from = '';
-      try { from = document.referrer ? new URL(document.referrer).origin : ''; } catch (e) { from = ''; }
-      var now = { tag: TAGGED.slice(0, 40), from: from.slice(0, 120) };
-      window.sessionStorage.setItem(VIA_KEY, JSON.stringify(now));
-      return now;
-    } catch (e) {
-      return null;
-    }
   }
 
   /* The `?from=` tag off the address once it has been counted, so a reload
@@ -499,60 +419,6 @@ window.TTBTrack = (function () {
     try { return firstDay(today()) === today(); } catch (e) { return false; }
   }
 
-  /* Somebody new on a phone, filed for the rest of the day under the rail and
-     the colour they arrived with — TIME ON PHONES in
-     functions/api/_visitors.js. Pinned on the day's first page rather than
-     read off each report, which mattered while the rail was dealt on the
-     map: somebody who landed on the flashcards had none until they got
-     there. Every newcomer draws the short rail now, so the rail half is
-     always `b`, the cell the short rail's phones were counted under while
-     there were two, and the colour is what still tells the cells apart.
-     Written once, with today, and every report until midnight UTC carries
-     it. Only a colour that was dealt counts, the colours' own rule, and
-     nothing at all for a returning browser, a tablet or a desktop. */
-  var PHONE_KEY = 'ttb.phoneday';
-
-  function pinPhone() {
-    var colour = styleDealt();
-    if (who !== 'new' || device() !== 'phone' || !colour) return;
-    try {
-      window.localStorage.setItem(PHONE_KEY, JSON.stringify({ day: today(), arm: 'b:' + colour }));
-    } catch (e) { /* not pinned, not counted */ }
-  }
-
-  /* The pinned `b:<colour>`, or '' on any day but the one it was
-     pinned. */
-  function phoneArm() {
-    var p = null;
-    try { p = JSON.parse(window.localStorage.getItem(PHONE_KEY) || 'null'); } catch (e) { p = null; }
-    return p && p.day === today() && typeof p.arm === 'string' ? p.arm : '';
-  }
-
-  /* Somebody new, under a dealt colour, on the map, the flashcards or
-     anywhere else for the first time today — ON THE MAP AND ON THE
-     FLASHCARDS in functions/api/_visitors.js, which counts them once a day
-     per place and the seconds of every report after. The three are worked
-     out here as well as there because the once-a-day has to be kept where
-     the day is: `ttb.stayday` holds today and the ones already told, and
-     a new day starts it afresh. The flashcards on their own host keep their
-     own storage, and every page there is the flashcards. Read once, as the
-     page arrives; false where storage cannot keep it, so nobody is counted
-     twice. */
-  var STAY_KEY = 'ttb.stayday';
-
-  function firstStay() {
-    if (who !== 'new' || !styleDealt()) return false;
-    var where = window.location.hostname.indexOf('flashcard.') === 0 || /^\/flashcard(\.html)?$/.test(PAGE)
-      ? 'flashcard' : PAGE === '/' || PAGE === '/index.html' ? 'map' : 'other';
-    try {
-      var kept = JSON.parse(window.localStorage.getItem(STAY_KEY) || 'null');
-      var told = kept && kept.day === today() && kept.told instanceof Array ? kept.told : [];
-      if (told.indexOf(where) !== -1) return false;
-      window.localStorage.setItem(STAY_KEY, JSON.stringify({ day: today(), told: told.concat([where]) }));
-      return true;
-    } catch (e) { return false; }
-  }
-
   /* Phone, tablet or desktop, by what the browser says it is driven with: a
      coarse primary pointer is a finger, and a finger on something narrower
      than 768px is a phone. A laptop with a touchscreen keeps its mouse as
@@ -575,38 +441,35 @@ window.TTBTrack = (function () {
     return String(document.documentElement.lang || '').toLowerCase();
   }
 
-  /* The time on screen since `since`, added to the stretch and to the
-     language it was read in, with the clock left running. */
+  /* The time on screen since `since`, added to the stretch, with the clock
+     left running. */
   function charge() {
     if (since === null) return;
     var now = Date.now();
     shown += now - since;
-    if (lang) spoken[lang] = (spoken[lang] || 0) + now - since;
     since = now;
   }
 
-  /* <html lang> changed, so what went before is the old language's. Every
-     page sets it once as it boots, over the English the markup ships with,
-     and the moment before that is charged to English and rounds away. */
+  /* <html lang> changed. Every page sets it once as it boots, over the
+     English the markup ships with. */
   function relang() {
-    charge();
     lang = langNow();
   }
 
   /* The switch was pressed. Whether the page has written the new language on
      to <html lang> yet or is about to, the observer below has not run — it
      runs once this press is over — so `lang` is still the one it was
-     switched from. */
+     switched from, which is the one the browser arrived in if it is the
+     first switch. */
   function switched(to) {
     to = String(to || '').toLowerCase();
     if (!lang || !to || to === lang) return;
     if (!arrivedIn) arrivedIn = lang;
-    moved[lang + '>' + to] = (moved[lang + '>' + to] || 0) + 1;
   }
 
-  /* The page hidden or put away: the stretch it was on screen and the same
-     seconds by language, the presses, the places opened, the languages
-     switched and the trail since the last report, sent once and forgotten.
+  /* The page hidden or put away: the stretch it was on screen, the presses,
+     the places opened and the trail since the last report, sent once and
+     forgotten.
      The first report of a browser's first page today also says which
      language it arrived in — the one before any switch, which is the one the
      site chose — and the first report of any page says the page opened, so
@@ -618,17 +481,10 @@ window.TTBTrack = (function () {
     charge();
     since = null;
     var secs = Math.round(shown / 1000);
-    var langs = {};
-    Object.keys(spoken).forEach(function (code) {
-      var s = Math.round(spoken[code] / 1000);
-      if (s) langs[code] = s;
-    });
-    if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length && !Object.keys(moved).length &&
+    if (!secs && !opened && !first && !fresh && !Object.keys(tallied).length &&
         !trail.length && !searched.length && !abouts.length) return;
-    var body = { kind: 'leave', id: PAGE, secs: secs, presses: tallied,
-      places: opened, langs: langs, moved: moved, who: who, style: styleDealt(), phone: phoneArm(),
-      trail: trail, at: at, earlier: earlier, opened: fresh, searches: searched, about: abouts };
-    if (via) body.via = via;
+    var body = { kind: 'leave', id: PAGE, secs: secs, presses: tallied, places: opened, who: who,
+      trail: trail, earlier: earlier, opened: fresh, searches: searched, about: abouts };
     /* Whether this view pressed nothing is decided on its first report, and
        a first report is sent the first time the page is hidden — a glance at
        a message, a phone locked between two cards — so a visitor who came
@@ -660,80 +516,10 @@ window.TTBTrack = (function () {
     shown = 0;
     tallied = {};
     opened = 0;
-    spoken = {};
-    moved = {};
     trail = [];
-    at = [];
     searched = [];
     abouts = [];
   }
-
-  /* ------------------------------------------------- the colour dealt
-   * See AND THE COLOUR SOMEBODY NEW IS GIVEN at the top. STYLE_DEALS is the
-   * four ids every page's STYLES knows, and STYLE_IDS in
-   * functions/api/stats.js is these with the three facts after them. */
-  var STYLE_KEY = 'ttb.style';
-  var STYLE_DEAL_KEY = 'ttb.styledeal';
-  var STYLE_DEALS = ['red', 'green', 'blue', 'plum'];
-  /* What a phone is dealt from. Green and Plum stay in STYLE_DEALS, which
-     is also what a stored deal is read against, so a phone dealt one of
-     them before 2026-11-13 keeps it and is still counted under it. */
-  var STYLE_PHONE_DEALS = ['red', 'blue'];
-
-  /* What this browser was dealt and what has been told about it, or null —
-     nothing dealt, or a record this file did not write. */
-  function styleDeal() {
-    var d = null;
-    try { d = JSON.parse(window.localStorage.getItem(STYLE_DEAL_KEY) || 'null'); } catch (e) { d = null; }
-    if (!d || STYLE_DEALS.indexOf(d.style) === -1 || !DAY.test(d.day || '') || !(d.told instanceof Array)) return null;
-    return d;
-  }
-
-  /* The colour as it was dealt, or '' where none was — what both reports
-     carry, so the count files a visit under its colour or under no arm. */
-  function styleDealt() {
-    var d = styleDeal();
-    return d ? d.style : '';
-  }
-
-  /* Somebody new, a page with no colour in its address and none stored:
-     one of the four, at random, or one of the phone's two on a phone, kept
-     and counted. A deal storage cannot keep
-     is not made — a colour rolled afresh on every load would be worse than
-     any of the four. */
-  function dealStyle() {
-    if (!COUNTED || !newcomer() || styleDeal()) return;
-    var deals = device() === 'phone' ? STYLE_PHONE_DEALS : STYLE_DEALS;
-    var dealt = deals[Math.floor(Math.random() * deals.length)];
-    try {
-      if (new URLSearchParams(LANDED).get('style')) return;
-      if (STYLE_DEALS.indexOf(window.localStorage.getItem(STYLE_KEY)) !== -1) return;
-      window.localStorage.setItem(STYLE_KEY, dealt);
-      window.localStorage.setItem(STYLE_DEAL_KEY, JSON.stringify({ style: dealt, day: today(), told: [] }));
-      if (window.localStorage.getItem(STYLE_KEY) !== dealt) return;
-    } catch (e) { return; }
-    send({ kind: 'style', id: dealt });
-  }
-
-  /* One of the three facts after a deal, once each: `opened` only on the
-     day it was dealt, `back` only on a later one, `changed` whenever it
-     comes. Written down before it is sent, so a page that is put away
-     mid-send does not tell it twice. */
-  function styleTold(what) {
-    if (!COUNTED) return;
-    var d = styleDeal();
-    if (!d || d.told.indexOf(what) !== -1) return;
-    if (what === 'opened' && d.day !== today()) return;
-    if (what === 'back' && d.day >= today()) return;
-    d.told.push(what);
-    try { window.localStorage.setItem(STYLE_DEAL_KEY, JSON.stringify(d)); } catch (e) { return; }
-    send({ kind: 'style', id: d.style + '-' + what });
-  }
-
-  /* As the file loads — every page loads it before its own script, so the
-     page reads the dealt colour the way it reads a chosen one. */
-  dealStyle();
-  styleTold('back');
 
   if (COUNTED) {
     if (window.MutationObserver) {
@@ -741,7 +527,6 @@ window.TTBTrack = (function () {
     }
     /* Where this tab's last page left off — THE ORDER THEY CAME IN. */
     try { earlier = window.sessionStorage.getItem(STEP_KEY) || ''; } catch (e) { earlier = ''; }
-    via = arrivedVia();
     onScreen();
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') putAway();

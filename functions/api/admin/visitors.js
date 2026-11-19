@@ -4,10 +4,11 @@
  *   GET ?days=&lang=&device=
  *                      one range of visitor_counts, the page's words beside
  *                      it, and five minutes of edge cache on the three. What
- *                      /admin/visitors draws. `device` is phone, tablet or
- *                      desktop for that device's half of the counts — BY
- *                      DEVICE in ../_visitors.js — and every device without;
- *                      the answer says which in `device`.
+ *                      /admin/visitors draws. `device` is `phone` for the
+ *                      phones' half of the counts and `other` for every
+ *                      device less the phones — BY DEVICE in ../_visitors.js
+ *                      — and every device without; the answer says which in
+ *                      `device`.
  *
  * And `looks`, the directory's two looks — the six `look` rows of
  * press_counts ./stats.js counts: for each of `a` and `b`, `given`, how many
@@ -17,17 +18,11 @@
  * because they are one row each and have no day; the page says so. "The
  * lists' two looks" in docs/handbook.md.
  *
- * And `styles`, the four colours somebody new to the site is dealt as their
- * first page opens — the sixteen `style` rows: for each of red, green, blue
- * and plum, `given`, and `opened`, `back` and `changed`, how many of them
- * opened something that day, came back on a later one, and chose another
- * colour. "The four styles, dealt" in docs/handbook.md. And `colours` out of
- * readVisitors(): everyone dealt each colour over the range, with the
- * per-visitor facts.
- *
- * The map's two rails were the third test here, under the `layout` kind,
- * until every visitor was given the short rail; their rows are still in
- * press_counts and nothing reads them. "The short rail" in docs/handbook.md.
+ * Two more tests were here and are over: the map's two rails, under the
+ * `layout` kind, until every visitor was given the short rail — "The short
+ * rail" in docs/handbook.md — and the four colours a newcomer was dealt,
+ * under `style`, until 2026-11-19 — "The four styles, dealt". Their rows are
+ * still in press_counts and nothing reads them.
  *
  * The visits themselves are counted by POST /api/stats, which hands them to
  * ../_visitors.js; that file says what is counted, what is not, and why.
@@ -48,8 +43,8 @@
  */
 
 import { json, wrongDatabase, wordsFor, privately } from '../_lib.js';
-import { SPANS, readVisitors, askedDevice } from '../_visitors.js';
-import { LOOK, STYLE, STYLE_ARMS } from '../stats.js';
+import { SPANS, readVisitors, askedDevice, lessPhone } from '../_visitors.js';
+import { LOOK } from '../stats.js';
 
 /* Five minutes in the colo, for the reason ./stats.js holds its ranking that
    long: it is what the page may be stale by, and the only thing between the
@@ -84,32 +79,31 @@ export async function onRequestGet(context) {
   return privately(res);
 }
 
-/* The two tests' rows — `looks` the directory's, `styles` the colours' —
-   see the header. An id is the arm, then the fact
-   after a dash where there is one: `b` is how many were given B, `b-opened`
-   how many of them opened something. Nought all round where press_counts is
-   not there. With a device, that device's rows — ../stats.js files each
-   press a second time under `<device>.<kind>`. */
+/* The directory's two looks — see the header. An id is the arm, then the
+   fact after a dash where there is one: `b` is how many were given B,
+   `b-opened` how many of them opened something. Nought all round where
+   press_counts is not there. ../stats.js files a phone's press a second
+   time under `phone.look`, so the phones read those and the others every
+   device's less them — BY DEVICE in ../_visitors.js. Twelve rows. */
 async function readDeals(env, device) {
-  const at = device ? device + '.' : '';
   const looks = { a: { given: 0, opened: 0, kept: 0 }, b: { given: 0, opened: 0, kept: 0 } };
-  const colours = Object.fromEntries(STYLE_ARMS.map((id) => [id, { given: 0, opened: 0, back: 0, changed: 0 }]));
-  const deals = { looks: looks, styles: colours };
-  const tests = { [LOOK]: deals.looks, [STYLE]: deals.styles };
   try {
     const got = await env.DB
       .prepare('SELECT kind, id, n FROM press_counts WHERE kind IN (?, ?)')
-      .bind(at + LOOK, at + STYLE)
+      .bind(LOOK, 'phone.' + LOOK)
       .all();
-    for (const r of got.results || []) {
+    const rows = got.results || [];
+    const all = rows.filter((r) => r.kind === LOOK);
+    const phone = rows.filter((r) => r.kind !== LOOK);
+    const read = device === 'phone' ? phone : device ? lessPhone(all, phone, (r) => r.id) : all;
+    for (const r of read) {
       const [arm, fact] = r.id.split('-');
-      const test = tests[r.kind.slice(at.length)];
-      if (test && test[arm]) test[arm][fact || 'given'] = r.n;
+      if (looks[arm]) looks[arm][fact || 'given'] = r.n;
     }
   } catch (e) {
     /* No table yet. */
   }
-  return deals;
+  return { looks: looks };
 }
 
 /* The route, the language, the range and the device, and never the rest of
@@ -118,7 +112,7 @@ async function readDeals(env, device) {
    the answer's own version: moved on when the answer gains a field the page
    cannot draw without, so a colo's copy from before the deploy is not handed
    to the page that came with it. */
-const SHAPE = '10';
+const SHAPE = '11';
 
 function visitorsKey(request, lang, span, device) {
   const url = new URL('/api/admin/visitors', request.url);

@@ -42,9 +42,10 @@
   var SPANS = [1, 7, 28, 90];
   var DEFAULT_SPAN = 7;
 
-  /* Every device, then each alone — DEVICE_IDS in assets/visitors.js. */
-  var DEVICE_IDS = ['', 'phone', 'tablet', 'desktop'];
-  var DEVICES = { phone: 'visitorsPhone', tablet: 'visitorsTablet', desktop: 'visitorsDesktop' };
+  /* Every device, the phones, and everything else — DEVICE_IDS in
+     assets/visitors.js. */
+  var DEVICE_IDS = ['', 'phone', 'other'];
+  var DEVICES = { phone: 'visitorsPhone', other: 'devicesOther' };
 
   /* How many rows a list names before the rest are one line of Other. More
      than /admin/visitors' eight, because the words and the addresses are the
@@ -184,7 +185,7 @@
     return row;
   }
 
-  /* Every device or one, beside the range — devices() in
+  /* Every device, the phones or the rest, beside the range — devices() in
      assets/visitors.js. */
   function devices() {
     var row = el('div', { className: 'ins-range', role: 'group', 'aria-label': t('devicesLabel') });

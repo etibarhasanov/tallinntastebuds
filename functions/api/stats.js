@@ -25,7 +25,7 @@
  *
  * WHAT IS COUNTED, AND WHAT IS NOT
  *
- * Seven kinds, which is the whole of `kind` in db/schema.sql:
+ * Six kinds, which is the whole of `kind` in db/schema.sql:
  *
  *   place    a place opened on the map — selectPlace() in assets/app.js,
  *            which is the same moment TTBTrack.view() reports one — whether one of the map's own, by its slug, or one of
@@ -82,13 +82,11 @@
  *            opened from it and `a-kept` / `b-kept` for the first they kept.
  *            Six ids and no more, LOOK_IDS below. A test apart from the
  *            rails, with its own deal; "The lists' two looks" in docs/handbook.md.
- *   style    the colour somebody new to the site was dealt as their first
- *            page opened — red, green, blue or plum, from dealStyle() in
- *            assets/track.js — and after it, once each, `-opened` for the
- *            first place, post or deck opened that day, `-back` for the
- *            first visit on a later day, and `-changed` for the first press
- *            of the swatch. Sixteen ids, STYLE_IDS below. "The four styles,
- *            dealt" in docs/handbook.md.
+ *
+ * Until 2026-11-19 there was a seventh, `style`: the colour somebody new
+ * was dealt and what they did after it. The test ended — "The four styles,
+ * dealt" in docs/handbook.md says what it found — and its rows stay in the
+ * table, read by nothing.
  *
  * And four kinds that are counted somewhere else, which this route only
  * carries: `profile`, a public profile at /u/<name> opened, and
@@ -133,14 +131,14 @@
  *
  * BY DEVICE
  *
- * Every press counted into press_counts is counted a second time under the
- * device the page says it was pressed on, the kind written
- * `<device>.<kind>` — `desktop.rail`, `phone.look` — so /admin/stats and
- * the tests on /admin/visitors can be read for phones, tablets or
- * computers alone. BY DEVICE in ./_visitors.js is the reasoning, and the
- * visits are split the same way there. A list's countries are not: they
- * are the list owner's numbers on /insights. Since 2026-10-06; a page
- * holding an older script sends no device and is counted once, as before.
+ * Every press made on a phone and counted into press_counts is counted a
+ * second time under `phone.<kind>` — `phone.rail`, `phone.look` — so
+ * /admin/stats and the test on /admin/visitors can be read for phones, and
+ * for everything else as every device less the phones. BY DEVICE in
+ * ./_visitors.js is the reasoning, and the visits are split the same way
+ * there. A list's countries are not: they are the list owner's numbers on
+ * /insights. Since 2026-10-06; tablets and desktops were filed under their
+ * own names as well until 2026-11-19, and those rows are not read.
  *
  * NOT A PROGRAM
  *
@@ -178,7 +176,7 @@ import { LIST_ID } from './_lists.js';
 /* And of a post's, for the same reason. */
 import { POST_ID } from './_posts.js';
 import { countView, countPress, countListOpen, firstToday } from './_visits.js';
-import { countArrive, countLeave, countRail, DEVICES } from './_visitors.js';
+import { countArrive, countLeave, countRail } from './_visitors.js';
 import { countFlows } from './_flows.js';
 /* Whose reports are not counted at all — THE OWNER IS NOT ONE OF THEM in
    ./_visitors.js. */
@@ -187,7 +185,7 @@ import { adminUser } from './_admin.js';
    and any page opened in the afternoon is the clock the day's fill runs by. */
 import { refreshOnOpen, fillOnVisit } from './_refresh.js';
 
-/* The seven kinds of thing a press can be about. In one place because the POST
+/* The six kinds of thing a press can be about. In one place because the POST
    checks what it was given against it and the ranking in ./admin/stats.js
    splits the rows on it. */
 export const PLACE = 'place';
@@ -196,7 +194,6 @@ export const LIST = 'list';
 export const POST = 'post';
 export const RAIL = 'rail';
 export const LOOK = 'look';
-export const STYLE = 'style';
 /* And four that are not counted here at all but handed on — see the POST —
    and one counted nowhere, which only asks Google — see the header. */
 const PROFILE = 'profile';
@@ -240,12 +237,6 @@ export const RAIL_PILLS = [
 
 /* The six things the directory's two looks can say — see the header. */
 export const LOOK_IDS = ['a', 'b', 'a-opened', 'b-opened', 'a-kept', 'b-kept'];
-
-/* And the sixteen the four colours can: each colour dealt, and each with the
-   three facts after it — STYLE_DEALS in assets/track.js is the four. */
-export const STYLE_ARMS = ['red', 'green', 'blue', 'plum'];
-export const STYLE_IDS = STYLE_ARMS.reduce((ids, arm) =>
-  ids.concat([arm, arm + '-opened', arm + '-back', arm + '-changed']), []);
 
 /* The one chip on the map that is not a type out of data/taxonomy.json.
    DEAL_FILTER in assets/app.js is the same string, and it is written out twice
@@ -291,7 +282,7 @@ export async function onRequestPost(context) {
     return json({ error: 'body' }, 400);
   }
 
-  const kind = [PLACE, FILTER, LIST, POST, RAIL, LOOK, STYLE, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE, VENUE].indexOf(body.kind) !== -1 ? body.kind : '';
+  const kind = [PLACE, FILTER, LIST, POST, RAIL, LOOK, PROFILE, PROFILE_PRESS, ARRIVE, LEAVE, VENUE].indexOf(body.kind) !== -1 ? body.kind : '';
   const id = typeof body.id === 'string' ? body.id.trim() : '';
   if (!kind || !id || id.length > 128) return json({ error: 'press' }, 400);
 
@@ -363,7 +354,6 @@ export async function onRequestPost(context) {
              : kind === POST ? await realPost(context, id)
              : kind === RAIL ? realPill(id)
              : kind === LOOK ? LOOK_IDS.indexOf(id) !== -1
-             : kind === STYLE ? STYLE_IDS.indexOf(id) !== -1
              : await realFilter(context, id);
   if (!real) return json({ ok: false }, 200);
 
@@ -379,7 +369,7 @@ export async function onRequestPost(context) {
      one place on this site where a number is nudged rather than rebuilt, and
      it is safe here for the reason save_counts is not: there is no second
      table that could disagree with it. */
-  const device = DEVICES.includes(body.device) ? body.device : null;
+  const device = body.device === 'phone' ? 'phone' : null;
   const bump = (k) => env.DB
     .prepare(
       'INSERT INTO press_counts (kind, id, n) VALUES (?, ?, 1) ' +
@@ -397,7 +387,7 @@ export async function onRequestPost(context) {
       .bind(LIST, id, id));
   }
   try {
-    /* And again under the device — BY DEVICE. One batch, so the two never
+    /* And again for a phone — BY DEVICE. One batch, so the two never
        disagree about whether the press landed. */
     await env.DB.batch(bumps);
   } catch (e) {

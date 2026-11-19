@@ -54,10 +54,11 @@ must keep, and where this area has gone wrong.
     2026-11-05.
   - **The lists' two looks** — the directory's own A/B test, apart from
     the rails, and what `look` counts about it.
-  - **The four styles, dealt** — the colour each newcomer is given, and
-    what `style` counts about it.
-  - **By device** (a `###` under **Visitors**) — every fact filed a second
-    time under phone, tablet or desktop, and the chips that read it on all
+  - **The four styles, dealt** — the colour test that ended on 2026-11-19,
+    what it found, and the rows it left.
+  - **By device** (a `###` under **Visitors**) — every fact a phone reports
+    filed a second time under `phone.`, everything else read as all less
+    phones, and the chips that read it on all
     four pages. A new kind or flow must not have a dot in it, or it reads
     as one device's.
 - The header of the file you are standing in. The four behind the count
@@ -94,7 +95,7 @@ trail with the on-screen second each name happened at, the languages, the
 searches and the abouts. Two reports a page and
 no more — a visit of twelve presses is not twelve requests.
 
-`stats.js` is the door for all of it. Twelve kinds, and each is handed on or
+`stats.js` is the door for all of it. Eleven kinds, and each is handed on or
 counted in one place:
 
 | `kind` | checked against | counted by | into |
@@ -103,7 +104,6 @@ counted in one place:
 | `filter` | `data/taxonomy.json` plus `DEAL_FILTER` | `stats.js` | `press_counts` |
 | `rail` | `RAIL_PILLS` | `stats.js`, every press, then `countRail()` | `press_counts`, and `visitor_counts` by the day |
 | `look` | `LOOK_IDS` | `stats.js` | `press_counts` |
-| `style` | `STYLE_IDS` | `stats.js` | `press_counts` |
 | `list` | a public list not the caller's own, then `firstToday()` | `stats.js`, then `countListOpen()` | `press_counts`, `list_counts` |
 | `post` | a published member's post not the caller's own, then `firstToday()` | `stats.js` | `press_counts`, read back by `postViews()` in `_visits.js` on `/insights` and by `read()` in `api/admin/stats.js` on `/admin/stats` |
 | `profile`, `profile-press` | the owner's own page | `countView()`, `countPress()` in `_visits.js` | `profile_counts` |
@@ -145,14 +145,14 @@ validator passes and the page draws.
 3. **A row per fact per day, never a log.** `press_counts` has no day;
    `profile_counts`, `list_counts`, `visitor_counts` and `flow_counts`
    have one and are keyed on it. The size is bounded by the day and the
-   kinds, not the traffic — the time at a step on `/admin/flows` is a
+   kinds, not the traffic — the time at a step on `/admin/flows` was a
    count per bucket, `t:<step>:<i>`, for that reason and not a list of
-   durations. Do not add a timestamp column, a session id or
+   durations, while it was kept. Do not add a timestamp column, a session id or
    a "raw events" table: **A count and not a log** under **Statistics** is
    the argument, and the day it stops holding the answer is a monthly
    roll-up, not a log.
 4. **A kind is a closed list or it is capped.** Pages are `PAGES`; the
-   rails `RAILS`; the facts `FACTS`; the sign-up steps `SIGNUP`; the
+   rails `RAILS`; the sign-up steps `SIGNUP`; the
    endings `ENDINGS`; the products `PRODUCTS`; the abouts held to the file
    `ABOUT` names; the languages to `data/ui.json`. The kinds whose ids the
    request chooses — `OPEN` — take at most `MAX_IDS` new ids a day, the
@@ -235,13 +235,11 @@ Each of these exists twice, and `grep -n` finds both:
 | `ABOUT` in `functions/api/_visitors.js` | `TTBTrack.about()` calls in `assets/app.js`, `blog.js`, `flashcard.js`, `deal.js`, `verify.js` | what a page may say it was about |
 | `SIGNUP` in `functions/api/_visitors.js` | the `account_*` names the sheet and forms report; the error words `account.js` answers | the funnel |
 | `LOOK_IDS` in `functions/api/stats.js` | `pickLook()` and `lookTold()` in `assets/lists.js`; `LOOKS` in `assets/visitors.js` | the directory's two looks, their opens and their keeps |
-| `STYLE_ARMS` / `STYLE_IDS` in `functions/api/stats.js` | `STYLE_DEALS` in `assets/track.js`; `COLOURS` in `assets/visitors.js`; the `STYLES` every page keeps | the four colours dealt, and what came after |
 | every press name | the table under **Analytics** in `docs/handbook.md`; `when` in `data/flows.json` | the list |
-| the kinds list | the comment above `visitor_counts` in `db/schema.sql` — thirty today, `layout` among them and no longer written, `shown` the newest | what the table holds |
+| the kinds list | the comment above `visitor_counts` in `db/schema.sql` — thirty today, five of them no longer written (`layout`, `cohort`, `style`, `phone`, `stay`), `shown` the newest | what the table holds |
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |
 | `SHAPE` in `functions/api/counter.js` | `COUNTER_SHAPE` in `assets/app.js`, which puts it on the address the flag counter is asked at | the counter's answer, so no cache hands the card an older one |
-| `STAY_PAGES` in `functions/api/_visitors.js` | `firstStay()` in `assets/track.js`, which tells the map, the flashcards and `other` apart by the same addresses `PAGES` gives them; the three columns of `stays()` in `assets/visitors.js` | where a newcomer's time is told apart by colour — the `stay` kind |
-| `DEVICES` in `functions/api/_visitors.js` | `device()` in `assets/track.js`; `DEVICE_IDS` and `DEVICES` in `assets/visitors.js`, `found.js`, `stats.js` and `flows.js` | the three devices every count is filed under a second time, as `<device>.<kind>` |
+| `DEVICES` and `FILED` in `functions/api/_visitors.js` | `device()` in `assets/track.js`; `body.device === 'phone'` in `functions/api/stats.js` and `_flows.js`; `DEVICE_IDS` and `DEVICES` in `assets/visitors.js`, `found.js`, `stats.js` and `flows.js` | the three devices a report names, the one filed a second time as `phone.<kind>`, and the two views the chips ask for, `phone` and `other` |
 
 ## Adding a press
 
@@ -261,7 +259,7 @@ file adds:
    name.
 6. Nothing in the database. A press is a row in `visitor_counts` under
    `press` by its name the first time it arrives, and under
-   `<device>.press` beside it.
+   `phone.press` beside it when it was pressed on a phone.
 
 ## Adding a page
 
@@ -453,6 +451,16 @@ particulars apply, and this area adds:
   Read the row before reading the code.
 - **Driving the count under `http.server`.** There is no Function there;
   every beacon 404s silently and nothing is wrong. `wrangler pages dev`.
+- **Every write a fact, filed four ways.** By 2026-11-19 one page view
+  wrote about eighty rows: each fact again by device, again under new or
+  returning, again under the colour dealt, the time again per language, and
+  the diagrams' steps again under how the tab arrived and again per time
+  bucket. Each copy had been cheap on its own day, and together they had the
+  free hundred thousand writes a day running out at twelve hundred visitors.
+  The owner kept what they read and the rest stopped — **Rows by the day,
+  not by the visit** in `docs/handbook.md`. A new kind, copy or split says
+  its writes per page view in the description, against that hundred
+  thousand, the way a read says its rows against the five million.
 - **A count added before it was described.** A card the owner had not
   asked for, in eleven languages, with a kind in the schema comment and a
   README section, and then not the card they wanted. The gate in

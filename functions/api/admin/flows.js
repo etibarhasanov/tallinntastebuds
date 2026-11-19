@@ -5,8 +5,9 @@
  *                      one diagram out of data/flows.json over a range of
  *                      flow_counts, walked, and five minutes of edge cache
  *                      on the three. What /admin/flows lays on the drawing.
- *                      `device` is phone, tablet or desktop for that
- *                      device's half — BY DEVICE in ../_flows.js.
+ *                      `device` is `phone` for the phones' half and `other`
+ *                      for every device's less it — BY DEVICE in
+ *                      ../_flows.js.
  *
  * The counting, the table and the walk are ../_flows.js's; its header says
  * what a step is counted by, what an arrow's number means, and where the
@@ -78,7 +79,7 @@ export async function onRequestGet(context) {
    is the answer's own version: moved on when the answer gains a field the
    page cannot draw without, so a colo's copy from before a deploy is not
    handed to the page that came with it. */
-const SHAPE = '4';
+const SHAPE = '5';
 
 function flowsKey(request, flow, span, device) {
   const url = new URL('/api/admin/flows', request.url);

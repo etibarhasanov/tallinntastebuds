@@ -146,12 +146,11 @@ CREATE TABLE IF NOT EXISTS save_counts (
 --              /lists, and `-opened` and `-kept` after either, the first list
 --              they opened and kept from it that day. LOOK_IDS in
 --              functions/api/stats.js; **The lists' two looks** in docs/handbook.md.
---   'style'    the four colours, a test of its own: `red`, `green`, `blue`
---              and `plum`, somebody new to the site dealt each as their
---              first page opened, and after each `-opened` (something opened
---              that day), `-back` (a later day's visit) and `-changed` (the
---              swatch pressed), once each. STYLE_IDS in functions/api/
---              stats.js; **The four styles, dealt** in docs/handbook.md.
+--   'style'    no longer written: the four colours a newcomer was dealt,
+--              `red`, `green`, `blue` and `plum`, and after each
+--              `-opened`, `-back` and `-changed`, until the test ended on
+--              2026-11-19. The rows are kept and read by nothing. **The
+--              four styles, dealt** in docs/handbook.md.
 --
 -- ONE TABLE AND NOT FOUR
 --
@@ -310,7 +309,7 @@ CREATE TABLE IF NOT EXISTS list_counts (
 -- half.
 --
 -- profile_counts again, for the whole site rather than one page: the day in
--- the key, one row per fact per day, and a number. Thirty kinds, one
+-- the key, one row per fact per day, and a number. Thirty kinds, five
 -- of them no longer written:
 --
 --   kind 'visitor'  id 'new' or 'back' — a browser's first page of the day,
@@ -321,9 +320,9 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --   kind 'view'     id is which page, out of PAGES in _visitors.js
 --   kind 'time'     id is which page; n is seconds it was on screen
 --   kind 'press'    id is the name of a press TTBTrack reported
---   kind 'cohort'   id is '<who>:<fact>' — pages, seconds, presses, places
---                   opened, sign-ins and accounts made, split by new ('new')
---                   and returning ('back') visitors
+--   kind 'cohort'   no longer written: '<who>:<fact>' — pages, seconds,
+--                   presses, places opened, sign-ins and accounts made, split
+--                   by new and returning visitors, until 2026-11-19
 --   kind 'layout'   no longer written: '<rail>:<who>' for the visitors on
 --                   each of the map's two rails, and '<rail>:<who>:<fact>'
 --                   for the same facts as 'cohort', split by rail as well,
@@ -332,22 +331,18 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --                   door on the map's rail pressed — the same press
 --                   press_counts holds with no day. THE RAIL, BY THE DAY in
 --                   _visitors.js
---   kind 'style'    the same again by the colour a newcomer was dealt —
---                   '<colour>:<who>' and '<colour>:<who>:<fact>' — THE FOUR
---                   COLOURS in _visitors.js
---   kind 'phone'    a newcomer on a phone, by the rail and colour pinned on
---                   their first page: '<rail>:<colour>:visitors' and
---                   '<rail>:<colour>:secs', the rail a, b or none, and b
---                   for everybody since 2026-11-05 — TIME ON PHONES in
---                   _visitors.js
---   kind 'stay'     a newcomer under a dealt colour, by where the time
---                   was spent: '<page>:<colour>:visitors' once a day per
---                   page and '<page>:<colour>:secs', the page map,
---                   flashcard or other — ON THE MAP AND ON THE FLASHCARDS
---                   in _visitors.js, since 2026-11-06
+--   kind 'style'    no longer written: 'cohort' again by the colour a
+--                   newcomer was dealt, until the colour test ended on
+--                   2026-11-19 — THE TESTS THAT ENDED in _visitors.js
+--   kind 'phone'    no longer written: a newcomer on a phone by the rail and
+--                   colour, '<rail>:<colour>:visitors' and ':secs', until
+--                   2026-11-19
+--   kind 'stay'     no longer written: a newcomer's time on the map, the
+--                   flashcards and the rest by colour, 2026-11-06 to
+--                   2026-11-19
 --   kind 'lang'     id is '<who>:<code>' for the language a visitor arrived
---                   in, '<who>:secs:<code>' for seconds read in it, and
---                   '<from>><to>' for a switch pressed
+--                   in; until 2026-11-19 also '<who>:secs:<code>' for seconds
+--                   read in it and '<from>><to>' for a switch pressed
 --   kind 'asks'     id is the two letters the browser asks for, spoken here
 --                   or not, once per visitor per day
 --   kind 'entry'    id is which page a visitor's day began on
@@ -384,21 +379,23 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --                   FLAG COUNTER, AND THE DESKTOPS IN AMERICA in
 --                   _visitors.js; GET /api/counter reads it
 --
--- And every kind but 'device', 'phone', 'shown' and the ones a route counts ('ask',
--- 'use', a 'signup' of the Google round trip) a second time under the device
--- the report was made on, the kind written '<device>.<kind>' — 'phone.view',
--- 'desktop.press', 'tablet.rail' — with the same ids. No kind above has a
--- dot in it, so a row without one is every device and a row with one is one
--- device. BY DEVICE in _visitors.js, since 2026-10-06; press_counts and
--- flow_counts are split the same way, by '<device>.<kind>' and
--- '<device>.<flow>'.
+-- And every kind but 'device', 'shown' and the ones a route counts ('ask',
+-- 'use', a 'signup' of the Google round trip) a second time where the report
+-- was made on a phone, the kind written 'phone.<kind>' — 'phone.view',
+-- 'phone.rail' — with the same ids; everything that is not a phone is every
+-- device less those, worked out when it is read. No kind above has a dot in
+-- it, so a row without one is every device and a row with one is the
+-- phones. BY DEVICE in _visitors.js, since 2026-10-06; tablets and desktops
+-- had 'tablet.' and 'desktop.' rows of their own until 2026-11-19, kept and
+-- read by nothing. press_counts and flow_counts are split the same way, by
+-- 'phone.<kind>' and 'phone.<flow>'.
 --
 -- Nothing is filed under a person and there is no row per visit: the browser
 -- says whether this is its first page today, and the table only ever hears
 -- the answer. The size is bounded by the day, not by the traffic — the
 -- kinds with ids nobody chose from a list (country, from, press, asks,
 -- found, ref, tag, search, nothing, shown) are capped at a hundred ids a day each
--- in the code, the presses at three hundred, and each again per device — so a
+-- in the code, the presses at three hundred, and each again for phones — so a
 -- year is a hundred thousand short rows at the very most, and a busy day
 -- costs no more rows than a quiet one with the same pages in it.
 --
@@ -501,6 +498,10 @@ CREATE TABLE IF NOT EXISTS visitor_live (
 --                                         once per page opened
 --   'from>to'         'open-place>share'  it took these two steps one after
 --                                         the other, once per page opened
+--
+-- Until 2026-11-19 `who` could also be how the tab arrived — 'src:facebook',
+-- 'tag:fb-kartul' — and `id` a time spent at a step, 't:<step>:<bucket>';
+-- those rows are kept and read by nothing.
 --
 -- A pair is stored whether or not an arrow joins the two, because which
 -- arrows a diagram has is a fact about today's file: the read walks each
