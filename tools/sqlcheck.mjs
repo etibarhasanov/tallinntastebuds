@@ -71,7 +71,6 @@ const KNOWN = [
   { file: 'api/_refresh.js', has: 'FROM google_venues', why: 'the refresh of Google places: a scheduled job and the owner, ~1,200 rows' },
   { file: 'api/_rank.js', has: 'google_venues', why: 'the weekly re-rank, once a week' },
   { file: 'api/_rank.js', has: 'FROM google_reranks', why: 'one row a week, 52 a year' },
-  { file: 'api/saves.js', has: 'FROM save_counts', why: 'every saved place is the answer, one row per place saved (at most the roll); cached per colo' },
   { file: 'api/_visitors.js', has: 'FROM visitor_live', why: 'a ring of LIVE_SPAN slots, 60 rows for ever' },
   { file: 'api/_account.js', has: 'DELETE FROM login_fails', why: 'old failed sign-ins only; the table holds a day of them' },
   { file: 'api/account.js', has: 'DELETE FROM username_holds', why: 'released names past their hold; one row per renamed account' },

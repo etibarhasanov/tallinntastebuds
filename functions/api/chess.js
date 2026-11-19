@@ -140,7 +140,7 @@
 
 import {
   json, sessionUser, wrongDatabase, randomHex, wordsFor, fingerprint, clientIp,
-  forgetFingerprints
+  forgetFingerprints, inPages, PAGE
 } from './_lib.js';
 import { adminIds } from './_admin.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
@@ -471,16 +471,20 @@ async function asksOf(env, row, who, moves) {
   };
 }
 
+/* A game's moves, a page of PAGE plies at a time on the key (game, ply) —
+   inPages() in ./_lib.js — since a long game outgrows any page, and
+   pagination is the limit. The longest on 2026-11-19 was 42, one page. */
 async function movesOf(env, id) {
-  const { results } = await env.DB
-    .prepare(
-      'SELECT m.ply, m.san, m.uci, m.by_kind, m.at, u.username FROM chess_moves m ' +
-      "LEFT JOIN users u ON m.by_kind = 'user' AND u.id = m.by_id " +
-      'WHERE m.game = ? ORDER BY m.ply'
-    )
-    .bind(id)
-    .all();
-  return results || [];
+  return inPages(
+    (after) => env.DB
+      .prepare(
+        'SELECT m.ply, m.san, m.uci, m.by_kind, m.at, u.username FROM chess_moves m ' +
+        "LEFT JOIN users u ON m.by_kind = 'user' AND u.id = m.by_id " +
+        'WHERE m.game = ? AND m.ply > ? ORDER BY m.ply LIMIT ' + PAGE
+      )
+      .bind(id, after === null ? 0 : after),
+    (row) => row.ply
+  );
 }
 
 /* One game as the page reads it: the row, its moves, and the reader's legal
@@ -847,12 +851,14 @@ function actorOf(who, row) {
    moves filed, kept for the repetition count. The stored FEN is a cache of
    this and is not trusted over it. */
 async function replay(env, id) {
-  const history = await env.DB
-    .prepare('SELECT uci FROM chess_moves WHERE game = ? ORDER BY ply')
-    .bind(id)
-    .all();
+  const history = await inPages(
+    (after) => env.DB
+      .prepare('SELECT ply, uci FROM chess_moves WHERE game = ? AND ply > ? ORDER BY ply LIMIT ' + PAGE)
+      .bind(id, after === null ? 0 : after),
+    (row) => row.ply
+  );
   const fens = [START];
-  for (const m of history.results || []) {
+  for (const m of history) {
     const step = play(fens[fens.length - 1], m.uci);
     if (!step) throw new Error('chess: game ' + id + ' does not replay at ' + m.uci);
     fens.push(step.fen);

@@ -63,7 +63,7 @@
  * exactly the same reason.
  */
 
-import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase, nearTallinn } from './_lib.js';
+import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase, nearTallinn, inPages, PAGE } from './_lib.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
 import { countUse } from './_visitors.js';
 /* Reading one list is shared with functions/list/[id].js, which serves the
@@ -209,17 +209,27 @@ export async function onRequestGet(context) {
 
   /* The picker asking for the places this account added by hand, so they can
      go on a second list without being typed again. Only ever your own: a name
-     a stranger typed does not turn up in anybody else's search results. */
+     a stranger typed does not turn up in anybody else's search results.
+     Newest first, a page of PAGE at a time on idx_added_places_owner —
+     (owner, created_at DESC), rowid behind it — through inPages() in
+     ./_lib.js, the cursor both columns so two places added in the same
+     millisecond are neither skipped nor read twice. MAX_ADDED keeps an
+     account to two pages; on 2026-11-19 the most was four, one page. */
   if (params.get('added')) {
     if (!user) return json({ ready: true, user: null, added: [] }, 200);
-    const mine = await env.DB
-      .prepare(
-        'SELECT id, name, address, lat, lng FROM added_places ' +
-        'WHERE owner = ? ORDER BY created_at DESC'
-      )
-      .bind(user.id)
-      .all();
-    return json({ ready: true, user: user.username, added: mine.results }, 200);
+    const end = Number.MAX_SAFE_INTEGER;
+    const mine = await inPages(
+      (after) => env.DB
+        .prepare(
+          'SELECT rowid AS at, id, name, address, lat, lng, created_at FROM added_places ' +
+          'WHERE owner = ? AND (created_at, rowid) < (?, ?) ' +
+          'ORDER BY created_at DESC, rowid DESC LIMIT ' + PAGE
+        )
+        .bind(user.id, after ? after[0] : end, after ? after[1] : end),
+      (row) => [row.created_at, row.at]
+    );
+    const added = mine.map(({ id, name, address, lat, lng }) => ({ id, name, address, lat, lng }));
+    return json({ ready: true, user: user.username, added: added }, 200);
   }
 
   if (id) {

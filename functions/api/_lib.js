@@ -1243,6 +1243,53 @@ export const RECOUNT_SQL =
   'VALUES (?, (SELECT COUNT(*) FROM saves WHERE place_id = ?)) ' +
   'ON CONFLICT(place_id) DO UPDATE SET n = excluded.n';
 
+/* ------------------------------------------------------------ a page at most
+ * No statement brings back more than a hundred rows, and most far fewer —
+ * the owner's rule, set on 2026-11-19, with pagination as the way to keep
+ * it. A table a person can fill without limit (their saves, the places they
+ * added) or that grows with use (a game's moves, the places anybody saved)
+ * is read here a page of PAGE at a time, each page starting where the last
+ * one's key stopped, so every statement is a search of the key that reads
+ * PAGE rows at most. The
+ * answer a page or an app gets is still the whole list: the apps decode
+ * `saved` whole and cannot be updated in a day, and an answer cut at the
+ * first page would quietly lose what came after it.
+ *
+ * `page(after)` is the prepared statement for the rows after the cursor —
+ * `after` is null for the first page — and must end in LIMIT PAGE, ordered by
+ * the key `cursor(row)` reads off the last row. */
+export const PAGE = 50;
+
+export async function inPages(page, cursor) {
+  const rows = [];
+  let after = null;
+  for (;;) {
+    const { results } = await page(after).all();
+    const got = results || [];
+    rows.push(...got);
+    if (got.length < PAGE) return rows;
+    after = cursor(got[got.length - 1]);
+  }
+}
+
+/* The places one owner has saved — an account's users.id, or a browser's own
+   id — newest first. Paged on idx_saves_owner, which is (owner) and so
+   (owner, rowid) underneath: rowid is the order the rows went in, and so the
+   order of created_at, since a save is written once with the time it was
+   made and a claim moves a row's owner without making a new one. Read by
+   GET /api/account and every sign-in's answer, by /api/apple, by deleting
+   an account and by claimDeviceSaves() below. PAGE rows read a page; the
+   most anybody had saved on 2026-11-19 was eight, one page. */
+export async function savedBy(env, owner) {
+  const rows = await inPages(
+    (after) => env.DB
+      .prepare('SELECT rowid AS at, place_id FROM saves WHERE owner = ? AND rowid < ? ORDER BY rowid DESC LIMIT ' + PAGE)
+      .bind(owner, after === null ? Number.MAX_SAFE_INTEGER : after),
+    (row) => row.at
+  );
+  return rows.map((r) => r.place_id);
+}
+
 /* ------------------------------------------------------- claiming the saves
  * Move a device's saves onto an account.
  *
@@ -1266,13 +1313,11 @@ export async function claimDeviceSaves(env, userId, clientId) {
     return [];
   }
 
-  const { results } = await env.DB
-    .prepare("SELECT place_id FROM saves WHERE owner = ? AND owner_kind = 'device'")
-    .bind(clientId)
-    .all();
-  if (!results.length) return [];
-
-  const touched = results.map((r) => r.place_id);
+  /* Every row filed under a browser's own random UUID is that browser's, so
+     savedBy() needs no owner_kind beside it to find them; the two writes
+     below keep theirs, so that nothing but a device's row is ever moved. */
+  const touched = await savedBy(env, clientId);
+  if (!touched.length) return [];
 
   const statements = [
     env.DB
