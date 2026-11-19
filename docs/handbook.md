@@ -11828,7 +11828,7 @@ That is the owner's call, made on 2026-10-04 after *Hello and goodbye* read
 having been answered right: twenty of them had been learnt in one sitting a
 week earlier and their week was up together. The spacing below did exactly
 what it said, and what it said was not wanted — a word you knew is a word you
-know. `knownOf()` in `functions/api/flashcard.js` is the one line that
+know. `stateOfRow()` in `functions/api/flashcard.js` is the one line that
 decides: a card is due while it is in box nought, and at no other time.
 
 **The boxes are still kept**, so turning it back on is that one line and
@@ -12138,7 +12138,7 @@ outright, under the same condition `deckRow()` draws its count under: with
 nobody to have progress, every row says how many cards it holds rather than
 what is waiting, and a list reordered by a number the rows are not printing is
 a list somebody would read as shuffled. It would be a no-op in any case —
-`knownOf()` answers an empty map for a visitor, so every card comes back due
+`standingOf()` answers an empty map for a visitor, so every card comes back due
 and every deck is *not started* — which is exactly what the first visit of a
 new account looks like too. Nothing has rearranged itself before anybody has
 answered a card.
@@ -13504,10 +13504,19 @@ Two things, and neither is automatic:
    ```
 
    Every row already in it becomes a card in box one, which is exactly
-   right: it was known. The route survives their absence — `readingBoxes()`
-   asks once per isolate and falls back to reading every row as box one — so
-   the gap between a deploy and the `ALTER` is a page without the deck of what
-   you got wrong rather than a page that does not work.
+   right: it was known. Production has had them since October 2026, and the
+   route stopped answering without them in November, when the fallback that
+   read every row as box one was taken out along with the read it fell back
+   for.
+
+   **Re-running the file is also what makes and fills `flashcard_progress`**,
+   the tallies every answer reads instead of a person's every row: how many
+   of each deck somebody knows and how many they got wrong, kept by the
+   writes in the same batch — `tallied()` in the route. The statement that
+   fills it from `flashcard_known` follows the one that makes it, so the file
+   never leaves an empty table to be read as nobody knowing anything, and it
+   recounts every time it is run. Until it is run the route answers the old
+   way, from every row, and its writes go without the tally.
 
 2. **Add the subdomain to the Pages project.** Cloudflare dashboard → the
    `tallinntastebuds` project → **Custom domains** → add
@@ -13527,8 +13536,8 @@ true until there was something here to count.
 **A database that already had the other three tables needs the fourth
 added.** `IF NOT EXISTS` means re-running the file above is the whole of it,
 and until it is run the button is there and every press answers *That did not
-work* — the route catches the missing table rather than throwing a 500, which
-is the same bargain `readingBoxes()` takes above.
+work* — the route catches the missing table rather than throwing a 500, the
+same bargain `flashcard_progress` takes above.
 
 ### Read by an assistant, the flashcards
 

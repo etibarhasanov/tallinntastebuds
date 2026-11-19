@@ -34,9 +34,9 @@
  * with its body, and a lesson somebody has read is one row in flashcard_known
  * under GRAMMAR_DECK below, written by the same `knew` action a card is.
  * Nothing else about a lesson is in the database, and nothing that counts or
- * gathers known cards can see that row: wordsKnown() sums over the decks on
- * the shelf and gathered() reads only the decks the rows name, so a deck id
- * that is in neither is dropped rather than counted. See **Grammar, which is
+ * gathers known cards can see that row: it is read on its own, under FILED,
+ * flashcard_progress keeps no total for it, and wordsKnown() sums only over
+ * the decks on the shelf. See **Grammar, which is
  * read rather than turned over** under **Flashcards** in docs/handbook.md.
  *
  * AND THE SONGS, WHICH ARE LISTENED TO
@@ -226,14 +226,14 @@ const PER_READ = 99;
 
 /* ------------------------------------------------------------- the boxes
  * A card known once stays known. Nothing below brings it back on its own:
- * knownOf() calls a card due only while it is in box nought, so a deck that
+ * stateOfRow() calls a card due only while it is in box nought, so a deck that
  * has been got right all the way through stays at "27 / 27" rather than
  * reading "20 due" a week later. That was the spacing, and it was switched
  * off on 2026-10-04 at the owner's word — a word known is a word known.
  *
  * The boxes are still climbed and due_at still written, because the rows
  * are worth keeping exactly as they were: the day somebody wants the
- * spacing back, it is the one line in knownOf() and nothing to backfill.
+ * spacing back, it is the one line in stateOfRow() and nothing to backfill.
  * What follows is the scheme as it was, and as it would be again.
  *
  * How long a card waits before it is asked again, by the box it is in: one
@@ -353,8 +353,8 @@ function shutAt(level, words, ready, gates) {
 
 /* The stage this person was placed at, or null: the highest of their rows
    under LEVEL_DECK, since a test taken again on a worse day does not shut
-   what an earlier one opened. Read out of the Map knownOf() already built,
-   so it costs no query. */
+   what an earlier one opened. Out of the rows standingOf() reads for every
+   answer, so it costs no query of its own. */
 function levelOf(known) {
   let at = null;
   for (const stage of STAGES) if (known.has(LEVEL_DECK + '/' + stage)) at = stage;
@@ -388,14 +388,16 @@ const SONG_DECK = 'songs';
 /* And a conversation read: card_id is the conversation's id. */
 const TALK_DECK = 'talks';
 
-/* Whether a known row is a lesson's, a song's or a conversation's rather than
-   a card's, by the key knownOf() files it under. The two gathered decks are
-   built out of every known row there is, and a lesson read, a song heard or
-   a conversation read must not be a card in either — not counted on the
-   shelf, not a slot in the run. */
-const readRow = (key) =>
-  key.startsWith(GRAMMAR_DECK + '/') || key.startsWith(SONG_DECK + '/') || key.startsWith(TALK_DECK + '/') ||
-  key.startsWith(LEVEL_DECK + '/');
+/* The deck ids a row is filed under when it is not a card: a lesson read, a
+   song heard, a conversation read, where the test placed somebody. A lesson
+   read must not be a card in either gathered deck, nor in any count on the
+   shelf — so these rows are read on their own, by standingOf() below, and
+   flashcard_progress keeps no total for them. */
+const FILED = [GRAMMAR_DECK, SONG_DECK, TALK_DECK, LEVEL_DECK];
+
+/* Whether a known row is one of those, by the key standingOf() files it
+   under. */
+const readRow = (key) => FILED.includes(key.slice(0, key.indexOf('/')));
 
 /* Sixteen hex characters: a deck's id, and a card's. Minted rather than
    slugged, because neither ever appears in a link anybody sends — see
@@ -546,86 +548,144 @@ async function cardsOf(env, deckId) {
   return results || [];
 }
 
-/* The decks this person wrote, for the shelf, and the id of every card in
-   them. A deck of your own needs its cards counted for the shelf's two
-   numbers, and they are not in the first read — the count there is a
-   subquery. The second is one read of this person's own cards, capped at
-   MAX_DECKS × MAX_CARDS, and the only query on this page that grows with what
-   somebody has written. Sent as one batch: one round trip to D1 rather than
-   two. */
+/* The decks this person wrote, for the shelf, each with how many cards it
+   holds — a count by idx_flashcard_cards_deck, which the shelf's two numbers
+   for the deck are drawn against. It used to come with a second read of the
+   id of every card in them, for the count of what was due; that is the size
+   less what is known now, out of flashcard_progress. */
 async function ownDecks(env, user) {
-  const [decks, cards] = await env.DB.batch([
-    env.DB
-      .prepare(
-        'SELECT d.id AS id, d.name AS name, ' +
-        '(SELECT COUNT(*) FROM flashcard_cards WHERE deck_id = d.id) AS cards ' +
-        'FROM flashcard_decks d WHERE d.owner = ? ORDER BY d.updated_at DESC LIMIT ?'
-      )
-      .bind(user.id, MAX_DECKS),
-    env.DB
-      .prepare('SELECT c.id AS id, c.deck_id AS deck_id FROM flashcard_cards c ' +
-               'JOIN flashcard_decks d ON d.id = c.deck_id WHERE d.owner = ?')
-      .bind(user.id)
-  ]);
-  return { decks: decks.results || [], cards: cards.results || [] };
+  const { results } = await env.DB
+    .prepare(
+      'SELECT d.id AS id, d.name AS name, ' +
+      '(SELECT COUNT(*) FROM flashcard_cards WHERE deck_id = d.id) AS cards ' +
+      'FROM flashcard_decks d WHERE d.owner = ? ORDER BY d.updated_at DESC LIMIT ?'
+    )
+    .bind(user.id, MAX_DECKS)
+    .all();
+  return results || [];
 }
 
-/* --------------------------------------------- the two columns, or without
- * `box` and `due_at` were added to flashcard_known after it had been deployed
- * and filled, and nothing in CI applies a schema — so there is always an
- * afternoon where the code knows about them and the database does not.
+/* ---------------------------------------------------- what somebody knows
+ * Every answer here says how far this person has got, and until November
+ * 2026 every answer worked it out by reading every row they had in
+ * flashcard_known — one for every card they had ever answered — to get a
+ * handful of numbers per deck: on the shelf, on every deck opened, and after
+ * every card added to a deck of their own. On 2026-11-19 the heaviest learner
+ * had 785 rows, and that read grew with every word they learnt. That is the
+ * read rule 3 of **Every read has a price** in CLAUDE.md forbids.
  *
- * This is readingPins() in ./_pins.js, which solves the same problem for the
- * column a list's marker lives in: try the query that wants them, and on the
- * one error that means they are missing, remember that for the life of the
- * isolate and run the other one instead. Without them every row reads as box
- * one — known, and resting, which is all a row meant before box nought.
+ * So the numbers are kept now, in flashcard_progress: a row per person and
+ * deck, saying how many of its cards are known and how many missed, changed
+ * in the same batch as every write that moves a card between the two — see
+ * tallied() below. Each answer reads only the rows of flashcard_known it is
+ * about:
+ *
+ *   - the rows filed under FILED, always: the lessons read, songs heard,
+ *     conversations read and the test's placement, a few rows, through the
+ *     key's (user_id, deck_id);
+ *   - the deck the address names, through the same, never more than the
+ *     deck's own size;
+ *   - for the missed deck, box nought, through idx_flashcard_known_box, at
+ *     most MAX_CARDS rows;
+ *   - for the review deck, the first MAX_CARDS known cards in
+ *     idx_flashcard_known_due's order — the order the old read of everything
+ *     came back in, so the order that deck has always had. `+box` keeps the
+ *     planner off the box index, which would read every known row and sort
+ *     them to get that order.
+ *
+ * Measured on production on 2026-11-19 for the heaviest learner, by
+ * rows_read: every answer read 786 rows of flashcard_known. Now the filed
+ * rows read 7, the tallies a row a deck answered in — 25 for them — and the
+ * deck they know most of, food, 105; the review deck, the first 200 known
+ * cards, 498. None of those grows with what somebody has learnt past a
+ * deck's size and MAX_CARDS. The writes add two lookups on the key and an
+ * upsert on flashcard_progress's to each answer.
+ *
+ * **Until db/schema.sql has been run again, the table is not there** —
+ * the file makes it and fills it from flashcard_known in one go —
+ * and the batch fails on that one error: the answer is then worked out the
+ * way it always was, from one read of every row, in the same order. Not
+ * remembered per isolate the way readingPins() remembers a missing column:
+ * the table can arrive at any minute, and the writes below must start
+ * keeping it the moment it does.
  */
-let spaced = null;
+const untallied = (e) => /no such table: flashcard_progress/i.test(String((e && e.message) || e));
 
-async function readingBoxes(env, make) {
-  if (spaced === false) return make(false);
-  try {
-    const out = await make(true);
-    spaced = true;
-    return out;
-  } catch (e) {
-    if (!/no such column/i.test(String((e && e.message) || e))) throw e;
-    spaced = false;
-    return make(false);
-  }
+/* What one row of flashcard_known says about its card. Known is a rung, not a
+   row: a card in box nought is one somebody has seen and got wrong, which is
+   the opposite of knowing it. Due is box nought and nothing else. A card got
+   right stays known and is never brought back on its own — the owner's call,
+   after a deck of twenty-seven read "20 due" a week after every one of them
+   had been answered. due_at is still written and still climbs; it is just not
+   read here, so the spacing is one line from coming back. */
+function stateOfRow(row) {
+  return { known: row.box > MISSED, missed: row.box === MISSED, due: row.box === MISSED };
 }
 
-/* Every card this person has answered, and what that answer left it as: a
-   Map of "<deck>/<card>" to whether it is known, missed and due.
-   One indexed read over their own rows, rather than a query per deck — an
-   account that has been through everything this site ships holds eight hundred
-   rows, which is smaller than the answer the page is about to draw anyway. */
-async function knownOf(env, user) {
-  if (!user) return new Map();
-  const { results } = await readingBoxes(env, (boxes) =>
+/* `known`, a Map of "<deck>/<card>" to the state of each row this answer
+   reads, and `tally`, a Map of deck id to { known, missed } for every deck
+   this person has answered a card in. `asked` is the deck the address names,
+   or nothing for the shelf. */
+async function standingOf(env, user, asked) {
+  const known = new Map();
+  const tally = new Map();
+  if (!user) return { known, tally };
+
+  /* Written out whole rather than put together, so that tools/sqlcheck.mjs
+     can ask the planner about each; the four placeholders are FILED's. */
+  const reads = [
     env.DB
-      .prepare(boxes
-        ? 'SELECT deck_id, card_id, box FROM flashcard_known WHERE user_id = ?'
-        : 'SELECT deck_id, card_id, 1 AS box FROM flashcard_known WHERE user_id = ?')
-      .bind(user.id)
-      .all());
-  const out = new Map();
-  for (const row of results || []) {
-    out.set(row.deck_id + '/' + row.card_id, {
-      /* Known is a rung, not a row: a card in box nought is one somebody has
-         seen and got wrong, which is the opposite of knowing it. */
-      known: row.box > MISSED,
-      missed: row.box === MISSED,
-      /* Due is box nought and nothing else. A card got right stays known
-         and is never brought back on its own — the owner's call, after a
-         deck of twenty-seven read "20 due" a week after every one of them
-         had been answered. due_at is still written and still climbs; it is
-         just not read here, so the spacing is one line from coming back. */
-      due: row.box === MISSED
-    });
+      .prepare('SELECT deck_id, card_id, box FROM flashcard_known WHERE user_id = ? AND deck_id IN (?, ?, ?, ?)')
+      .bind(user.id, ...FILED)
+  ];
+  if (asked === MISSED_DECK) {
+    reads.push(env.DB
+      .prepare('SELECT deck_id, card_id, box FROM flashcard_known WHERE user_id = ? AND box = ? ' +
+               'AND deck_id NOT IN (?, ?, ?, ?) ORDER BY deck_id, due_at LIMIT ?')
+      .bind(user.id, MISSED, ...FILED, MAX_CARDS));
+  } else if (asked === REVIEW_DECK) {
+    reads.push(env.DB
+      .prepare('SELECT deck_id, card_id, box FROM flashcard_known WHERE user_id = ? AND +box > ? ' +
+               'AND deck_id NOT IN (?, ?, ?, ?) ORDER BY deck_id, due_at LIMIT ?')
+      .bind(user.id, MISSED, ...FILED, MAX_CARDS));
+  } else if (asked && !FILED.includes(asked)) {
+    reads.push(env.DB
+      .prepare('SELECT deck_id, card_id, box FROM flashcard_known WHERE user_id = ? AND deck_id = ?')
+      .bind(user.id, asked));
   }
-  return out;
+
+  let rows;
+  try {
+    const [totals, ...got] = await env.DB.batch([
+      env.DB.prepare('SELECT deck_id, known, missed FROM flashcard_progress WHERE user_id = ?').bind(user.id),
+      ...reads
+    ]);
+    for (const row of totals.results || []) tally.set(row.deck_id, { known: row.known, missed: row.missed });
+    rows = got.flatMap((one) => one.results || []);
+  } catch (e) {
+    if (!untallied(e)) throw e;
+    rows = (await env.DB
+      .prepare('SELECT deck_id, card_id, box FROM flashcard_known WHERE user_id = ? ORDER BY deck_id, due_at')
+      .bind(user.id)
+      .all()).results || [];
+    for (const row of rows) {
+      if (FILED.includes(row.deck_id)) continue;
+      const was = stateOfRow(row);
+      const deck = tally.get(row.deck_id) || { known: 0, missed: 0 };
+      if (was.known) deck.known += 1;
+      if (was.missed) deck.missed += 1;
+      tally.set(row.deck_id, deck);
+    }
+  }
+  for (const row of rows) known.set(row.deck_id + '/' + row.card_id, stateOfRow(row));
+  return { known, tally };
+}
+
+/* How many of a deck's cards this person knows, out of a tally. Capped at
+   the deck's size, since a card taken out of data/decks.json leaves its row
+   — and its count — behind. */
+function knownIn(tally, deckId, size) {
+  return Math.min((tally.get(deckId) || { known: 0 }).known, size);
 }
 
 /* ------------------------------------------------------------ days in a row
@@ -687,16 +747,11 @@ async function daysOf(env, user) {
 }
 
 /* How many of the shipped cards this person knows, across every deck: the
-   number the stages open on. Summed over the decks on the shelf — each with
-   the ids of its cards, which is all the index carries of them — rather than
-   over the Map, so that a card in a deck somebody wrote — which has its own
-   minted id and is in the same table — is never in it. */
-function wordsKnown(decks, known) {
-  let words = 0;
-  for (const deck of decks) {
-    for (const id of deck.cards) if (stateOf(known, deck.id, id).known) words += 1;
-  }
-  return words;
+   number the stages open on. Summed over the decks on the shelf rather than
+   over every total this person has, so that a card in a deck somebody wrote —
+   which is in the same tables under its own minted deck id — is never in it. */
+function wordsKnown(decks, tally) {
+  return decks.reduce((words, deck) => words + knownIn(tally, deck.id, deck.cards.length), 0);
 }
 
 /* What one card's row says, for callers that do not want to think about a
@@ -714,7 +769,7 @@ function stateOf(known, deckId, cardId) {
    begun to differ over `why`, which only a shipped deck has — so it is built
    in one place and the differences are the arguments.
 
-   `known` is the Map out of knownOf(), keyed "<deck>/<card>", which is the
+   `known` is the Map out of standingOf(), keyed "<deck>/<card>", which is the
    same key the table is keyed on, and answering whether that card is due.
 
    Two booleans per card and they are not the same question. `known` is
@@ -823,7 +878,7 @@ async function gathered(context, user, index, id, want) {
   return { id: id, name: null, why: null, cards: cards };
 }
 
-/* The rows of a person's, as the "<deck>/<card>" keys knownOf() files them
+/* The rows of a person's, as the "<deck>/<card>" keys standingOf() files them
    under, split back into the two ids. */
 function keyed(key) {
   const cut = key.indexOf('/');
@@ -832,7 +887,7 @@ function keyed(key) {
 
 function missedDeck(context, user, index, known) {
   const want = [];
-  known.forEach((was, key) => { if (was.missed) want.push(keyed(key)); });
+  known.forEach((was, key) => { if (was.missed && !readRow(key)) want.push(keyed(key)); });
   return gathered(context, user, index, MISSED_DECK, want);
 }
 
@@ -914,12 +969,12 @@ export async function onRequestGet(context) {
   const asked = params.get('deck') || '';
 
   /* Everything this answer reads about the person, side by side rather than
-     one after another: what they know, and either the deck of their own the
-     address names or — on the shelf — the decks they wrote and the cards in
-     them. Each is a round trip to D1, and in a row they were most of the time
+     one after another: what they know — standingOf() above — and either the
+     deck of their own the address names or, on the shelf, the decks they
+     wrote. Each is a round trip to D1, and in a row they were most of the time
      a signed-in page spent waiting before it could draw a card. */
-  const [known, mine, own, days] = await Promise.all([
-    knownOf(env, user),
+  const [{ known, tally }, mine, own, days] = await Promise.all([
+    standingOf(env, user, asked),
     asked ? deckOf(env, asked, user) : null,
     !asked && user ? ownDecks(env, user) : null,
     /* Only where the page says them: the front door, which asks with
@@ -937,7 +992,7 @@ export async function onRequestGet(context) {
      because a link to a deck in a stage that has not opened yet lands on
      that deck and the page has to be able to say so there. `level` is the
      stage the test placed them at, for the line on Start that says so. */
-  const words = wordsKnown(decks, known);
+  const words = wordsKnown(decks, tally);
   const level = levelOf(known);
   const gates = gatesFor(level);
   const base = {
@@ -993,15 +1048,11 @@ export async function onRequestGet(context) {
 
      It is waiting in the missed deck as well, and those are the same cards
      counted in two places on purpose. One place is the deck they came from
-     and the other is every deck at once. */
-  const counts = {};
-  known.forEach((was, key) => {
-    if (!was.known) return;
-    const deck = key.slice(0, key.indexOf('/'));
-    counts[deck] = (counts[deck] || 0) + 1;
-  });
-  const dueIn = (deck, ids) =>
-    ids.filter((id) => stateOf(known, deck, id).due).length;
+     and the other is every deck at once.
+
+     Both numbers come out of the deck's tally: a card is known, or it is
+     waiting — never answered, or got wrong — so what is due is the size less
+     what is known. */
 
   /* And only the decks on the shelf this person has. A stage that has not
      opened sends none of its rows — shutAt() above says why, and the page
@@ -1021,8 +1072,8 @@ export async function onRequestGet(context) {
     added: d.added || null,
     level: d.level || null,
     cards: d.cards.length,
-    known: Math.min(counts[d.id] || 0, d.cards.length),
-    due: dueIn(d.id, d.cards),
+    known: knownIn(tally, d.id, d.cards.length),
+    due: d.cards.length - knownIn(tally, d.id, d.cards.length),
     own: false
   }));
 
@@ -1034,23 +1085,25 @@ export async function onRequestGet(context) {
 
      The review row counts every known card as its size and nothing as due,
      since a known card never is, so it reads "40 / 40" — the sentence every
-     row says once there is nothing left to do in it. */
-  const rows = [...known.entries()].filter(([key]) => !readRow(key)).map(([, was]) => was);
-  const learnt = rows.filter((was) => was.known);
-  if (learnt.length > 0) {
+     row says once there is nothing left to do in it. Summed over every
+     tally this person has — a deck of their own, and one taken off the
+     shelf since, included — as the two decks themselves are gathered. */
+  let learnt = 0;
+  let missed = 0;
+  tally.forEach((deck) => { learnt += deck.known; missed += deck.missed; });
+  if (learnt > 0) {
     list.unshift({
       id: REVIEW_DECK,
       name: null,
       why: null,
       level: null,
-      cards: learnt.length,
-      known: learnt.length,
+      cards: learnt,
+      known: learnt,
       due: 0,
       own: false,
       review: true
     });
   }
-  const missed = rows.filter((was) => was.missed).length;
   if (missed > 0) {
     list.unshift({
       id: MISSED_DECK,
@@ -1066,20 +1119,15 @@ export async function onRequestGet(context) {
   }
 
   if (own) {
-    const byDeck = {};
-    for (const row of own.cards) {
-      (byDeck[row.deck_id] = byDeck[row.deck_id] || []).push(row.id);
-    }
-
-    own.decks.forEach((row) => {
+    own.forEach((row) => {
       list.push({
         id: row.id,
         name: row.name,
         why: null,
         cards: row.cards,
         level: null,
-        known: Math.min(counts[row.id] || 0, row.cards),
-        due: dueIn(row.id, byDeck[row.id] || []),
+        known: knownIn(tally, row.id, row.cards),
+        due: row.cards - knownIn(tally, row.id, row.cards),
         own: true
       });
     });
@@ -1161,12 +1209,52 @@ export async function onRequestPost(context) {
    comes back with — the page redraws from it rather than patching the row it
    just changed. */
 async function ownDeckAnswer(env, deck, user) {
-  const cards = await cardsOf(env, deck.id);
-  /* The same read the page's own load does, rather than a second query shaped
-     almost like it: one place in this file knows how that table is read, and
-     it is knownOf(). */
-  return deckAnswer(deck, cards, true, await knownOf(env, user));
+  /* The same reads the page's own load of this deck does, rather than a
+     second query shaped almost like them: one place in this file knows how
+     that table is read, and it is standingOf(). */
+  const [cards, { known }] = await Promise.all([cardsOf(env, deck.id), standingOf(env, user, deck.id)]);
+  return deckAnswer(deck, cards, true, known);
 }
+
+/* ------------------------------------------------------------ the tallies
+ * flashcard_progress is only worth reading while it agrees with
+ * flashcard_known, so a write that moves a card between known, missed and
+ * nothing is sent in one batch with the statement that moves its deck's
+ * totals the same way — D1 runs a batch as one transaction, so the two
+ * cannot come apart. The total goes first, because it is worked out from the
+ * row as it stands before the write: a card answered twice in a row, or got
+ * wrong again, changes nothing.
+ *
+ * Until db/schema.sql has been run again the table is not there, and
+ * the batch is sent again without it — every time rather than remembered,
+ * so that the first write after the table arrives keeps it. Nothing is lost
+ * by the writes before then: the file counts every row there is when it
+ * fills the table. The rows filed under FILED are never tallied; standingOf()
+ * reads them for what they are.
+ */
+async function tallied(env, total, writes) {
+  try {
+    return await env.DB.batch([total, ...writes]);
+  } catch (e) {
+    if (!untallied(e)) throw e;
+    return env.DB.batch(writes);
+  }
+}
+
+/* How a card's row standing as it does now, and the box it goes to,
+   change its deck's totals: ?4 is 1 for a card now known and 0 for one now
+   missed, and what the row was is taken off. One lookup a side on
+   flashcard_known's key, and an upsert on flashcard_progress's. The WHERE
+   true is SQLite's: without it the parser cannot tell an upsert's ON
+   CONFLICT from a join's ON. */
+const MOVE_TALLY =
+  'INSERT INTO flashcard_progress (user_id, deck_id, known, missed) ' +
+  'SELECT ?1, ?2, ' +
+  '?4 - COALESCE((SELECT box > 0 FROM flashcard_known WHERE user_id = ?1 AND deck_id = ?2 AND card_id = ?3), 0), ' +
+  '1 - ?4 - COALESCE((SELECT box = 0 FROM flashcard_known WHERE user_id = ?1 AND deck_id = ?2 AND card_id = ?3), 0) ' +
+  'WHERE true ' +
+  'ON CONFLICT (user_id, deck_id) DO UPDATE SET ' +
+  'known = flashcard_progress.known + excluded.known, missed = flashcard_progress.missed + excluded.missed';
 
 async function heldDecks(env, user) {
   const row = await env.DB
@@ -1220,11 +1308,11 @@ async function rename(context, body, user, deck) {
    else — so every progress row on it is theirs, and naming them makes the
    delete a lookup on flashcard_known's key (user_id, deck_id, card_id)
    rather than a walk of every learner's rows: 2,737 of them in November
-   2026. The same in dropCard() below. */
+   2026. The same in dropCard() below. The deck's tally goes with them. */
 async function dropDeck(context, user, deck) {
   const { env } = context;
 
-  await env.DB.batch([
+  await tallied(env, env.DB.prepare('DELETE FROM flashcard_progress WHERE user_id = ? AND deck_id = ?').bind(user.id, deck.id), [
     env.DB.prepare('DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ?').bind(user.id, deck.id),
     env.DB.prepare('DELETE FROM flashcard_cards WHERE deck_id = ?').bind(deck.id),
     env.DB.prepare('DELETE FROM flashcard_decks WHERE id = ? AND owner = ?').bind(deck.id, user.id)
@@ -1261,7 +1349,8 @@ async function addCard(context, body, user, deck) {
 /* The card goes and what its owner knew about it goes with it. Leaving the
    progress row would put a card somebody deleted back into their count the
    next time a card was minted with the same id, which is never — but the row
-   would still be a fact about nothing. */
+   would still be a fact about nothing. And the deck's tally gives up what
+   the row was worth, worked out from the row before it goes. */
 async function dropCard(context, body, user, deck) {
   const { env } = context;
 
@@ -1269,7 +1358,13 @@ async function dropCard(context, body, user, deck) {
   if (!MINTED.test(id)) return json({ error: 'not-found' }, 404);
 
   const now = Date.now();
-  await env.DB.batch([
+  const total = env.DB
+    .prepare('UPDATE flashcard_progress SET ' +
+             'known = known - COALESCE((SELECT box > 0 FROM flashcard_known WHERE user_id = ?1 AND deck_id = ?2 AND card_id = ?3), 0), ' +
+             'missed = missed - COALESCE((SELECT box = 0 FROM flashcard_known WHERE user_id = ?1 AND deck_id = ?2 AND card_id = ?3), 0) ' +
+             'WHERE user_id = ?1 AND deck_id = ?2')
+    .bind(user.id, deck.id, id);
+  await tallied(env, total, [
     env.DB.prepare('DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ? AND card_id = ?').bind(user.id, deck.id, id),
     env.DB.prepare('DELETE FROM flashcard_cards WHERE id = ? AND deck_id = ?').bind(id, deck.id),
     env.DB.prepare('UPDATE flashcard_decks SET updated_at = ? WHERE id = ?').bind(now, deck.id)
@@ -1309,10 +1404,10 @@ async function editCard(context, body, user, deck) {
 
 /* ----------------------------------------------------------- knew it, or not
  * The whole of what an account buys here, and the only write most people will
- * ever make. It is two actions rather than one flag because a row existing IS
- * the fact — see flashcard_known in db/schema.sql — so knowing a card is an
- * insert and forgetting it is a delete, and neither needs to read the other
- * first.
+ * ever make. Two actions, each writing the card's row whatever was there:
+ * knowing it puts it up a box, and getting it wrong puts it in box nought —
+ * see flashcard_known in db/schema.sql. Each goes with its deck's tally,
+ * tallied() above, unless the row is filed under FILED rather than a card.
  *
  * The card is checked against the deck it claims to be in, whichever kind of
  * deck that is. Without that, this route would write any pair of strings a
@@ -1354,49 +1449,33 @@ async function mark(context, body, user, knew) {
   }
   if (!real) return json({ error: 'not-found' }, 404);
 
+  /* Knew it: up a box, with the date that box would bring it back on —
+     written and not read, see the boxes above: known is known. The box it
+     goes to is read first rather than nudged in SQL, because "the next one
+     after whatever it is now, and not past the last" is an arithmetic nobody
+     should have to read out of an UPDATE — and the row usually does not
+     exist yet, which is a card arriving in box one.
+
+     Show me again: into box nought, where the missed deck finds it — rather
+     than deleted, which is what this did before there was a missed deck and
+     which threw away the one thing somebody wanted to look at afterwards.
+     Due now, so it is in the next run of its own deck as well: getting a
+     card wrong should not take it out of the deck it belongs to. */
+  const now = Date.now();
+  let box = MISSED;
   if (knew) {
-    /* Up a box, with the date that box would bring it back on — written and
-       not read, see the boxes above: known is known. The box it goes to
-       is read first rather than nudged in SQL, because "the next one after
-       whatever it is now, and not past the last" is an arithmetic nobody
-       should have to read out of an UPDATE — and the row usually does not
-       exist yet, which is a card arriving in box one. */
-    const now = Date.now();
-    await readingBoxes(env, async (boxes) => {
-      if (!boxes) {
-        return env.DB
-          .prepare('INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at) VALUES (?, ?, ?, ?)')
-          .bind(user.id, deckId, cardId, now)
-          .run();
-      }
-      const had = await env.DB
-        .prepare('SELECT box FROM flashcard_known WHERE user_id = ? AND deck_id = ? AND card_id = ?')
-        .bind(user.id, deckId, cardId)
-        .first();
-      const box = Math.min((had && had.box ? had.box : 0) + 1, MAX_BOX);
-      return env.DB
-        .prepare('INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at, box, due_at) ' +
-                 'VALUES (?, ?, ?, ?, ?, ?)')
-        .bind(user.id, deckId, cardId, now, box, now + BOXES[box - 1])
-        .run();
-    });
-  } else {
-    /* Into box nought, where the missed deck finds it — rather than deleted,
-       which is what this did before there was a missed deck and which threw
-       away the one thing somebody wanted to look at afterwards. Due now, so
-       it is in the next run of its own deck as well: getting a card wrong
-       should not take it out of the deck it belongs to. */
-    await readingBoxes(env, (boxes) =>
-      env.DB
-        .prepare(boxes
-          ? 'INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at, box, due_at) ' +
-            'VALUES (?, ?, ?, ?, ?, ?)'
-          : 'DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ? AND card_id = ?')
-        .bind(...(boxes
-          ? [user.id, deckId, cardId, Date.now(), MISSED, Date.now()]
-          : [user.id, deckId, cardId]))
-        .run());
+    const had = await env.DB
+      .prepare('SELECT box FROM flashcard_known WHERE user_id = ? AND deck_id = ? AND card_id = ?')
+      .bind(user.id, deckId, cardId)
+      .first();
+    box = Math.min((had ? had.box : 0) + 1, MAX_BOX);
   }
+  const write = env.DB
+    .prepare('INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at, box, due_at) ' +
+             'VALUES (?, ?, ?, ?, ?, ?)')
+    .bind(user.id, deckId, cardId, now, box, knew ? now + BOXES[box - 1] : now);
+  if (FILED.includes(deckId)) await write.run();
+  else await tallied(env, env.DB.prepare(MOVE_TALLY).bind(user.id, deckId, cardId, knew ? 1 : 0), [write]);
 
   /* Either answer is a day practised: a word got wrong was still a word
      looked at. See daysOf() above. */
@@ -1428,13 +1507,10 @@ async function place(context, body, user) {
   if (!marks.length) return json({ error: 'malformed' }, 400);
 
   const at = placed(marks);
-  await readingBoxes(env, (boxes) =>
-    env.DB
-      .prepare(boxes
-        ? 'INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at, box, due_at) VALUES (?, ?, ?, ?, 1, 0)'
-        : 'INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at) VALUES (?, ?, ?, ?)')
-      .bind(user.id, LEVEL_DECK, at, Date.now())
-      .run());
+  await env.DB
+    .prepare('INSERT OR REPLACE INTO flashcard_known (user_id, deck_id, card_id, seen_at, box, due_at) VALUES (?, ?, ?, ?, 1, 0)')
+    .bind(user.id, LEVEL_DECK, at, Date.now())
+    .run();
 
   return json({ placed: at }, 200);
 }
@@ -1459,22 +1535,19 @@ async function reset(context, user, deckId) {
 
   /* Emptying the missed deck is not deleting a deck's rows — it is taking the
      nought off every card that is in it, wherever it came from. Those cards go
-     back to being unseen, which is what "forget what I know" means there. */
+     back to being unseen, which is what "forget what I know" means there —
+     and every deck's tally has nothing missed in it. Both through the
+     person's own rows: idx_flashcard_known_box, and the tallies' key. */
   if (id === MISSED_DECK) {
-    await readingBoxes(env, (boxes) =>
-      env.DB
-        .prepare(boxes
-          ? 'DELETE FROM flashcard_known WHERE user_id = ? AND box = ?'
-          : 'DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ?')
-        .bind(...(boxes ? [user.id, MISSED] : [user.id, id]))
-        .run());
+    await tallied(env, env.DB.prepare('UPDATE flashcard_progress SET missed = 0 WHERE user_id = ? AND missed > 0').bind(user.id), [
+      env.DB.prepare('DELETE FROM flashcard_known WHERE user_id = ? AND box = ?').bind(user.id, MISSED)
+    ]);
     return json({ reset: id }, 200);
   }
 
-  await env.DB
-    .prepare('DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ?')
-    .bind(user.id, id)
-    .run();
+  await tallied(env, env.DB.prepare('DELETE FROM flashcard_progress WHERE user_id = ? AND deck_id = ?').bind(user.id, id), [
+    env.DB.prepare('DELETE FROM flashcard_known WHERE user_id = ? AND deck_id = ?').bind(user.id, id)
+  ]);
 
   return json({ reset: id }, 200);
 }

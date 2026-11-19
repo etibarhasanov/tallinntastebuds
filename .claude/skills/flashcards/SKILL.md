@@ -293,7 +293,12 @@ needs stamping for a content change.
   words known, which the gates and the line on the shelf both read — never a
   second. `deckOf()` is every read of somebody's own deck; `report` is the one
   write with no session, and the one that wants `SAVE_SALT`; spacing is off,
-  in one line of `knownOf()`. Its tables are applied by hand, to production.
+  in one line of `stateOfRow()`. `standingOf()` is every read of what
+  somebody knows — their tallies out of `flashcard_progress` and only the
+  rows of `flashcard_known` the answer is about — and `tallied()` sends every
+  write that moves a card with the line that keeps its deck's tally, so a
+  new write that changes a box goes through it too. Its tables are applied
+  by hand, to production.
 - **`functions/flashcard.js`** writes the head in the language the link
   carried, out of `DECK_LANGS`, and the deck's words into `<main>` — each
   word with its meaning in all three, the rest in English — with a

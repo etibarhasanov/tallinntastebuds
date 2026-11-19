@@ -2160,7 +2160,7 @@
    *
    * What goes in it is what is **due**: everything never got right — never
    * answered, or sitting in box nought. A card known once stays known and is
-   * not asked again unless asked for; knownOf() in functions/api/flashcard.js
+   * not asked again unless asked for; stateOfRow() in functions/api/flashcard.js
    * decides, and this page is told per card and puts the due ones in.
    *
    * `all` is the way past it: Go through it again at the end of a run, and Go
