@@ -4453,6 +4453,9 @@
   var counted = {};
 
   function postPress(kind, id) {
+    /* Nothing at all from a browser a program is driving, not even the
+       refresh below: it is nobody, and Google's calls are a budget. */
+    if (window.TTBTrack && window.TTBTrack.driven) return;
     /* Nothing counted from the owner's browser — THE OWNER'S BROWSER in
        functions/api/_admin.js. Signed in, the server would drop it anyway.
        Except that a place opened is also the moment its Google numbers get

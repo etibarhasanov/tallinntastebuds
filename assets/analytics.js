@@ -63,11 +63,25 @@
  * and window.clarity is never defined, which assets/track.js already reads
  * as "no Clarity here". THE OWNER'S BROWSER in functions/api/_admin.js is
  * the rest.
+ *
+ * NOR WHERE A PROGRAM IS DRIVING, NOR OFF THE SITE
+ *
+ * A browser Playwright, Puppeteer or Selenium drives sets
+ * navigator.webdriver, and a person's never does; every Claude Code session
+ * that opens a page to look at it is one. And a page served from anywhere
+ * but tallinntastebuds.ee and its subdomains — a localhost under `pages dev`
+ * or `http.server` — is somebody working on the site. Both used to record
+ * into the same project as the real visits, and an afternoon spent driving
+ * a change was the owner's heatmaps. The owner asked for them out on
+ * 2026-11-19. assets/track.js leaves the same browsers out of the site's
+ * own count.
  */
 (function () {
   'use strict';
 
   if (/(?:^|;\s*)ttb_owner=1(?:;|$)/.test(document.cookie)) return;
+  if (navigator.webdriver === true) return;
+  if (!/(^|\.)tallinntastebuds\.ee$/.test(window.location.hostname)) return;
 
   var CLARITY = 'yay3pxtg4w';
 

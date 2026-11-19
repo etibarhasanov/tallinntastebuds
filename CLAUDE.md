@@ -72,15 +72,17 @@ does not have to:
   pot as the live site, since that one binding runs remotely even there.
   Driving the chat for an afternoon puts the live site out of model until
   midnight UTC. Ask it a few questions, not fifty.
-- **Driving a page anywhere reports into the live analytics.** Microsoft
-  Clarity's tag is written into the pages rather than set per environment, so
-  a page opened in any browser, a localhost under `pages dev` or `http.server`
-  included, records into the same Clarity project as
-  tallinntastebuds.ee. Nothing stands in front of it: the banner that did for
-  a day was taken out on purpose, so an afternoon spent driving a change lands
-  in the owner's real heatmaps and there is no button to press to stay out.
-  Not a reason to avoid driving one — it is the whole point — just a reason
-  to say so in the PR if you leant on it.
+- **Driving a page reaches none of the owner's statistics.** Microsoft
+  Clarity loads only on tallinntastebuds.ee and its subdomains, and never in
+  a browser that sets `navigator.webdriver`, which Playwright does — so a
+  localhost under `pages dev` or `http.server` records nothing. On the live
+  hosts the site's own count leaves the same browsers out, and `/api/stats`
+  refuses a `HeadlessChrome` user agent besides; under `pages dev` it counts
+  them, into the local copy of the database, so a change to the count can
+  still be driven. The owner asked for sessions out of every statistic on
+  2026-11-19, after two in three desktop visits from the United States
+  turned out to be three-second programs. Do not switch the flag off or
+  change the user agent to look like a visitor on the live site.
 - **`pages dev` keeps the database on your machine and the chat on
   Cloudflare's.** `npx wrangler pages dev .` is where every visible change is
   driven, and two things about it have each cost a session an hour. Its D1

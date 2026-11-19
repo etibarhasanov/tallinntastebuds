@@ -33,9 +33,10 @@
  * returning one. No id is made or sent. The owner's pages under /admin/ send
  * nothing, and neither does any page in a browser carrying the `ttb_owner`
  * cookie — the owner's, signed in or not; THE OWNER'S BROWSER in
- * functions/api/_admin.js. `owner` on the object below says so, for the
- * three pages that post a press of their own — the map, the lists and the
- * blog.
+ * functions/api/_admin.js — nor does a browser a program is driving, which
+ * navigator.webdriver says. `owner` and `driven` on the object below say so,
+ * for the three pages that post a press of their own — the map, the lists
+ * and the blog.
  *
  * Every report says what it was made on — phone, tablet or desktop, device()
  * below — and those three pages put the same word on the presses they post
@@ -257,7 +258,17 @@ window.TTBTrack = (function () {
   var STEP_KEY = 'ttb.step';
   var VIA_KEY = 'ttb.via';
   var OWNER = /(?:^|;\s*)ttb_owner=1(?:;|$)/.test(document.cookie);
-  var COUNTED = window.location.pathname.indexOf('/admin') !== 0 && !OWNER;
+  /* A browser a program is driving — Playwright, Puppeteer, Selenium, and
+     so every Claude Code session that opens the site to look at it — says so
+     in navigator.webdriver, which a person's browser never sets. Such a page
+     is nobody visiting: before this, two in three desktop visits from the
+     United States were three seconds long, pressed nothing and were closed
+     rather than hidden. It counts nothing, like the owner's — NOT A PROGRAM
+     in functions/api/stats.js is the server's half. On the site's own
+     hosts only: under `pages dev` the count is a copy on the machine, and a
+     session driving a change to the count has to be able to make one. */
+  var DRIVEN = navigator.webdriver === true && /(^|\.)tallinntastebuds\.ee$/.test(window.location.hostname);
+  var COUNTED = window.location.pathname.indexOf('/admin') !== 0 && !OWNER && !DRIVEN;
   /* Which page this is, for the count: its own address, except where its tag
      says otherwise. 404.html is the one that does — Pages serves it at
      whatever address was mistyped, and that address names no page, so it
@@ -740,5 +751,5 @@ window.TTBTrack = (function () {
     window.addEventListener('pageshow', onScreen);
   }
 
-  return { event: event, click: click, view: view, seen: seen, refused: refused, about: about, newcomer: newcomer, device: device, owner: OWNER };
+  return { event: event, click: click, view: view, seen: seen, refused: refused, about: about, newcomer: newcomer, device: device, owner: OWNER, driven: DRIVEN };
 })();

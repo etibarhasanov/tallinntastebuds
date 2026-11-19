@@ -129,7 +129,12 @@ validator passes and the page draws.
    refuse the owner of a list or a profile. A new counter leaves the owner
    out the same way, by the session and never by a header the browser
    could send. The first days of the count were most of the returning
-   visitors' minutes, the owner's among them, which is why.
+   visitors' minutes, the owner's among them, which is why. **Nor is a
+   program**: on the live hosts a browser with `navigator.webdriver` set
+   sends nothing (`driven` on `TTBTrack`, beside `owner`, for any page that
+   posts a press of its own), `/api/stats` refuses `HeadlessChrome`, and
+   Clarity loads for neither — **Not a program** in `docs/handbook.md`. A
+   new page that posts to `/api/stats` itself checks `driven` as well.
 2. **Nothing is filed under a person.** No id is made, no address stored,
    no row per visit. Where telling two visits apart is unavoidable —
    `view_seen`, `usage_people`, the feedback cap — it is an HMAC under
