@@ -370,10 +370,18 @@ gate, with the case that needed it in `CASES`.
   table. A table climbing there that nothing new should have made dearer is
   the first sign. `braking()` is the brake a nice-to-have reader checks before
   it reads — the flag counter does — and it is true past `BRAKE` of the day.
+- **A hundred rows an answer, at most.** A SELECT carries a `LIMIT` of a
+  hundred or less — a number, or a constant bound to its `?` — or names its
+  rows by a unique key, or is one aggregate row, or is asked for `.first()`.
+  More than that is a page and a cursor, the way `inPages()` in `_lib.js`,
+  `readPage()` in `_posts.js` and `mostKept()` do it. Rule 7 in `CLAUDE.md`.
 - **Then `node tools/sqlcheck.mjs`.** A walk it reports is fixed, or added to
   `KNOWN` in the tool with what bounds it in numbers — the size of the table
   and why it stays that size, or how rarely it runs. "It is small" is not a
-  bound; "a ring of sixty slots" is.
+  bound; "a ring of sixty slots" is. A read it reports past a hundred rows is
+  paged, or added to `ROWS` the same way — "one list's places, `MAX_ITEMS`,
+  fifty" — and a statement it cannot read is made readable, or priced by hand
+  in `UNREAD`.
 
 ## The rules of a write
 
