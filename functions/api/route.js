@@ -580,9 +580,10 @@ function bend(before, after) {
  * somebody rode it; the others follow in the order they had.
  *
  * What that gives up is the way no router knows: a ride across a yard is
- * offered only once it is a door. What it costs is one read of
- * `ride_sections` by its key, SCORE_ROWS rows at the most however many
- * rides there are — WHAT A READ COSTS in ./_sections.js. Nothing waits on
+ * offered only once it is a door. What it costs is a lookup in
+ * `ride_sections` by its key for each square under the ways, billed only
+ * for the squares somebody rode and SCORE_ROWS rows at the most however
+ * many rides there are — WHAT A READ COSTS in ./_sections.js. Nothing waits on
  * it: no database, no table, no square ridden — each is the ways exactly
  * as they were.
  */

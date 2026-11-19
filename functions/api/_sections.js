@@ -411,20 +411,51 @@ export async function countSections(env, rows, id) {
  *
  * WHAT A READ COSTS
  *
- * One statement, a lookup on the key for every square and direction asked
- * about, and never more than SCORE_ROWS of them: a longer trip is walked
- * in longer strides until its squares fit, so a way across the city is
- * sampled where a way round the corner is read whole. A lookup that finds
- * nothing reads nothing, so SCORE_ROWS rows is the worst there is, on the
- * day the whole city has been ridden both ways, and on any other day
- * fewer. Asked once for a bike route nobody asked for between those two
- * rounded points that hour — ./route.js keeps its answer that long — so
- * 5,000,000 rows a day is 8,300 such routes at the very worst.
+ * A lookup on the key for every square and direction asked about, and
+ * never more than SCORE_ROWS of them: a longer trip is walked in longer
+ * strides until its squares fit, so a way across the city is sampled where
+ * a way round the corner is read whole. D1 bills the rows a statement
+ * walks, and how the squares are handed to it decides what that is.
+ *
+ * Until 2026-11-19 they went in as one JSON parameter, `cell IN (SELECT
+ * value FROM json_each(?))`, and this comment said a lookup that finds
+ * nothing reads nothing. It was billed two rows a square asked, found or
+ * not — one for json_each's row and one for the list SQLite makes of an
+ * IN — and a third for each found: measured on production that day, 860
+ * rows for a ride from Herne to Narva maantee that asked 412 squares and
+ * found 36, and 1,800 at the worst where 600 was written.
+ *
+ * So the squares go in as LOOKUP's VALUES, bound one by one, and the table
+ * is joined to them. Rows written out in a statement are not rows read, and
+ * a seek that finds nothing is not one either: the same twelve squares, one
+ * of them there, read 25 rows the old way and 1 this way, and that ride
+ * reads 36. D1 binds a hundred values a statement at the most, so a
+ * statement asks ASKED squares, the last one filled up with NULLs, which
+ * match nothing and read nothing, and the statements go as one batch. None
+ * answers more than ASKED rows.
+ *
+ * SCORE_ROWS rows is then the worst there is, on the day every square
+ * asked about has been ridden that way, and on any other day what has been:
+ * 5,000,000 rows a day is 8,300 routes at the very worst. It is asked for
+ * every bike route the site works out — ./route.js lets the phone that
+ * asked keep the answer an hour, and nobody else.
  */
 const STRIDE = 14;
 const MIN_RIDES = 1;
 const UNTIMED = 0.5;
 const SCORE_ROWS = 600;
+
+/* Fifty squares a statement, and how many that is read off the statement
+   itself, so the two cannot disagree. */
+const LOOKUP =
+  'SELECT s.cell, s.rides, s.timed, s.steady FROM (VALUES ' +
+  '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?), ' +
+  '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?), ' +
+  '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?), ' +
+  '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?), ' +
+  '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?)' +
+  ') v CROSS JOIN ride_sections s ON s.cell = v.column1';
+const ASKED = LOOKUP.split('(?)').length - 1;
 
 /* A line as strides: [cell, lower point, metres], the upper point being
    the next one round. Every `every`th stride is kept and stands for the
@@ -461,13 +492,16 @@ export async function riddenShare(env, lines) {
     }
     if (keys.size <= SCORE_ROWS) break;
   }
-  /* A lookup on the key, `cell`, for each of at most SCORE_ROWS values —
-     WHAT A READ COSTS above. */
-  const { results } = await env.DB
-    .prepare('SELECT cell, rides, timed, steady FROM ride_sections WHERE cell IN (SELECT value FROM json_each(?1))')
-    .bind(JSON.stringify([...keys]))
-    .all();
-  const rows = new Map((results || []).map((row) => [row.cell, row]));
+  /* A lookup on the key, `cell`, for each of at most SCORE_ROWS values,
+     ASKED a statement — WHAT A READ COSTS above. */
+  const all = [...keys];
+  const asks = [];
+  for (let i = 0; i < all.length; i += ASKED) {
+    const some = all.slice(i, i + ASKED);
+    asks.push(env.DB.prepare(LOOKUP).bind(...some, ...Array(ASKED - some.length).fill(null)));
+  }
+  const answers = asks.length ? await env.DB.batch(asks) : [];
+  const rows = new Map(answers.flatMap((answer) => answer.results || []).map((row) => [row.cell, row]));
   return ways.map((strides) => {
     let all = 0;
     let ridden = 0;
