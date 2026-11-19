@@ -109,6 +109,9 @@
  * router says how long and how far and never why one is nicer, so neither
  * does this.
  *
+ * And by bike, where that leaves fewer than three, the router is asked for
+ * a way round on either side of the straight line — EITHER SIDE below.
+ *
  * THE TURNS
  *
  * The router knows where a way turns as well as where it runs, and until
@@ -331,6 +334,7 @@ async function street(context, mode, from, to, withTrains, heading) {
   if (mode === 'bike' || mode === 'foot') {
     ways = ways.map(unspur).filter((way, i, all) => !all.slice(0, i).some((before) => alike(way, before)));
   }
+  if (mode === 'bike' && heading === null && ways.length <= OTHERS) ways = await eitherSide(ways, from, to);
   ways = ways.slice(0, 1 + OTHERS);
   const best = ways[0];
   const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
@@ -964,7 +968,10 @@ function ridden(way) {
   return { meters: on.reduce((sum, street) => sum + street.meters, 0), start: most.start, end: most.end };
 }
 
-async function keepOff(ways, from, to, shortest, heading = null) {
+/* `past` is a point the ways were asked through already — EITHER SIDE — and
+   the ways round are asked through it too, in the order the two points come
+   between the ends. */
+async function keepOff(ways, from, to, shortest, heading = null, past = null) {
   const rides = ways.map(ridden);
   const worst = rides.reduce((a, b) => (b.meters > a.meters ? b : a));
   if (worst.meters <= KEEP_OFF_MIN) return ways;
@@ -982,7 +989,12 @@ async function keepOff(ways, from, to, shortest, heading = null) {
       ]);
     }
   }
-  const round = (await Promise.all(vias.map((via) => oneWay([[from.lat, from.lng], via, [to.lat, to.lng]], heading))))
+  const [fx, fy] = flat([from.lat, from.lng]);
+  const [tx, ty] = flat([to.lat, to.lng]);
+  const along = (p) => (flat(p)[0] - fx) * (tx - fx) + (flat(p)[1] - fy) * (ty - fy);
+  const through = (via) => (past ? [past, via].sort((a, b) => along(a) - along(b)) : [via]);
+  const round = (await Promise.all(vias.map((via) =>
+    oneWay([[from.lat, from.lng]].concat(through(via), [[to.lat, to.lng]]), heading))))
     .filter((way) => way && way.meters <= shortest * KEEP_OFF_LONGER)
     .sort((a, b) => a.seconds - b.seconds);
 
@@ -997,6 +1009,77 @@ async function keepOff(ways, from, to, shortest, heading = null) {
     if (on[i] <= room && !kept.some((k) => Math.abs(k.meters - way.meters) < 20 && Math.abs(k.seconds - way.seconds) < 20)) kept.push(way);
   });
   return kept;
+}
+
+/* ------------------------------------------------------------ either side
+ * The router offers other ways only where it finds some it thinks worth a
+ * look, and those are streets beside its first; and a way that rides a
+ * street in KEEP_OFF is taken out. So a ride can come back with one way
+ * where a rider knows three: from Juhkentali to Kalamaja on 2026-11-19 the
+ * one offered ran through the Old Town, the router's way west of Toompea
+ * rode Liivalaia and Pärnu maantee and was dropped, and nothing went round
+ * to the east. The owner asked for a way on the other side.
+ *
+ * So where a bike ride has fewer ways than it has buttons for, the router
+ * is asked twice more, through a point either side of the straight line
+ * between the two ends: square to its middle, SIDE_SHARE of its length
+ * out, no nearer than SIDE_LEAST and no further than SIDE_MOST. Each is a
+ * way that goes round on that side, where there is a street to. One is
+ * offered where it is no more than SIDE_LONGER times the shortest way
+ * offered, keeps off the streets every way keeps off, and is not a way
+ * already there — in either direction, since a way round that only leaves
+ * the first for a block is that way. The quicker first, after the ways
+ * that were there. A trip under SIDE_FROM has no sides to speak of.
+ *
+ * It costs two router requests, and up to eight more a side where that
+ * side has to be taken off a street SIDE_TURNS times, for a ride with fewer
+ * than three ways that nobody asked for between those two points that day,
+ * and no row. Nothing
+ * waits on it: a side the router will not answer is one way fewer, as it
+ * was. Not with a heading, where a way round is a way back.
+ */
+const SIDE_FROM = 1000;
+const SIDE_SHARE = 0.3;
+const SIDE_LEAST = 300;
+const SIDE_MOST = 1200;
+const SIDE_LONGER = 1.5;
+const SIDE_TURNS = 2;
+
+async function eitherSide(ways, from, to) {
+  const ends = [[from.lat, from.lng], [to.lat, to.lng]];
+  const [sx, sy] = flat(ends[0]);
+  const [ex, ey] = flat(ends[1]);
+  const length = Math.hypot(ex - sx, ey - sy);
+  if (length < SIDE_FROM) return ways;
+  const away = Math.min(SIDE_MOST, Math.max(SIDE_LEAST, length * SIDE_SHARE));
+  const vias = [1, -1].map((side) => [
+    Number(((from.lat + to.lat) / 2 + (ex - sx) / length * away * side / NORTH).toFixed(5)),
+    Number(((from.lng + to.lng) / 2 - (ey - sy) / length * away * side / EAST).toFixed(5))
+  ]);
+  const shortest = Math.min(...ways.map((way) => way.meters));
+  /* A way round that rides a street to keep off is asked for again round
+     that, still through its side's point, SIDE_TURNS times at the most:
+     west of Toompea the router's way is Liivalaia and Pärnu maantee, the
+     first turn leaves a block of Liivalaia in it, and the second is
+     Kentmanni and Tatari. Four router requests a turn. */
+  const round = (await Promise.all(vias.map(async (via) => {
+    let found = [await oneWay([ends[0], via, ends[1]])].filter(Boolean);
+    for (let turn = 0; turn < SIDE_TURNS && found.length; turn++) {
+      const least = found.reduce((a, b) => (ridden(b).meters < ridden(a).meters ? b : a));
+      if (ridden(least).meters <= KEEP_OFF_MIN) break;
+      found = await keepOff([least], from, to, shortest, null, via);
+    }
+    return found;
+  })))
+    .flat()
+    .map(unspur)
+    .filter((way) => way.meters <= shortest * SIDE_LONGER && ridden(way).meters <= KEEP_OFF_MIN)
+    .sort((a, b) => a.seconds - b.seconds);
+  const all = ways.slice();
+  for (const way of round) {
+    if (!all.some((before) => alike(way, before) || alike(before, way))) all.push(way);
+  }
+  return all;
 }
 
 function ask(url, mode) {

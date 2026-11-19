@@ -3147,7 +3147,8 @@ which is nicer, because the router does not say. One way is no buttons, which
 is what a short way mostly is. A way asked for again because the dot moved
 comes back on the first: the ways from the new place are not the ones the
 button was pressed among. Rattatee reads the same field for the same choice
-on its card before a ride.
+on its card before a ride. By bike a ride with fewer than three ways is
+asked for one round each side as well: **A way on either side** below.
 
 **And each way says where it turns.** The router is asked for its steps as
 well as its line, and each way carries them as `steps`: the corner (`at`), how
@@ -3779,6 +3780,40 @@ calls a turn round, is not a spur and stays.
 in the route itself rather than a data file: it is a decision the owner
 makes by name, not something a tool finds. The next one is a few lines
 there and a sentence here.
+
+## A way on either side
+
+The router offers other ways only where it finds some it thinks worth a
+look, and they are mostly streets beside its first; and a way that rides a
+street a bike route keeps off is taken out. So a ride could come back with
+one way where its rider knew three. On 2026-11-19 the owner asked for a way
+from Juhkentali to Kalamaja and was offered one, through the Old Town: the
+router's way west of Toompea rode Liivalaia and Pärnu maantee and had been
+dropped, and nothing went round to the east. His words: one is above the
+Old Town, one below, another through it.
+
+So where a bike ride has fewer than three ways, `eitherSide()` in
+`functions/api/route.js` asks the router twice more, through a point either
+side of the straight line between the two ends — square to its middle, three
+tenths of its length out, between 300 and 1,200 metres. A way round that
+rides a street to keep off is asked for again round that street, still
+through its side's point, and once more if it still does: west of Toompea
+that turns Liivalaia and Pärnu maantee into Kentmanni, Tatari and Kaarli
+puiestee. A way round is offered where it then keeps off, is no more than
+half as long again as the shortest way offered, and is not a way already
+there. On that ride the answer became three: the one that was there, one
+east by Rävala puiestee, and one west by Toompuiestee.
+
+The ways that were offered before are offered still, in the same order and
+first; a way round only fills a button that was empty. A ride under a
+kilometre as the crow flies has no sides to speak of and is not asked, and
+neither is a way with a `heading`, where a way round is a way back.
+
+**What it costs.** No row of the database. Two router requests, and up to
+sixteen more where both sides have to be taken off a street twice, for a ride
+with fewer than three ways that nobody asked for between those two rounded
+points that day; each is kept a day at the edge. That first answer is slower
+for it, by a second or two on the rides tried.
 
 ## A new way sets off the way the rider is going
 
