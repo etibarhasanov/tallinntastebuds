@@ -2292,30 +2292,40 @@ CREATE TABLE IF NOT EXISTS ride_cells (
 ) WITHOUT ROWID;
 CREATE INDEX IF NOT EXISTS idx_ride_cells_ride ON ride_cells (ride);
 
--- One row is one square of the city, about twenty-eight metres a side, and
--- what the rides that crossed it say about it: how many there were, how far
--- and how long they spent in it, how many crossed it at walking pace and
--- how many stood still in it. The first half of valuing a street — the half
--- no rider has to say anything for. Filled by a save in
--- functions/api/rides.js through functions/api/_sections.js, which says how
--- each number is counted; read by nothing yet, and answered to nobody.
+-- One row is one square of the city, about twenty-eight metres a side,
+-- crossed one way, and what the rides that crossed it that way say about
+-- it: how many there were, how far and how long they spent in it, how many
+-- held their own pace through it, how many crossed it at walking pace and
+-- how many stood still in it. Filled by a save in functions/api/rides.js
+-- through functions/api/_sections.js, which says how each number is
+-- counted and which recordings are not a bike's and count nowhere; read by
+-- a bike route in functions/api/route.js, which weighs its ways by it, and
+-- answered to nobody.
 --
 -- It holds nothing `rides` does not: tools/ridesections.mjs rebuilds it
 -- whole from that table, which is how the rides saved before it existed get
--- into it, and how it is put right when the size of a square changes.
--- **What the rides say about a street** in docs/handbook.md.
+-- into it, and how it is put right when the size of a square, or what is
+-- counted in one, changes. **What the rides say about a street** in
+-- docs/handbook.md.
+--
+-- The one question it is asked, and the key that answers it:
+--   these squares, crossed these ways          cell IN (…) — the key
 CREATE TABLE IF NOT EXISTS ride_sections (
-  -- The square, by its row and column: round(lat / 0.00025) and
-  -- round(lng / 0.0005), as `237748:49478`.
+  -- The square, by its row and column — round(lat / 0.00025) and
+  -- round(lng / 0.0005) — and the way across it, one of eight compass
+  -- points from north round by east: `237748:49478:3`. A row keyed by its
+  -- square alone, `237748:49478`, is from before 2026-11-19 and is read by
+  -- nothing; the rebuild empties the table of them.
   cell       TEXT    PRIMARY KEY,
-  -- How many rides crossed it, each counted once, and the metres of them
-  -- that lie in it.
+  -- How many rides crossed it that way, each counted once, and the metres
+  -- of them that lie in it.
   rides      INTEGER NOT NULL DEFAULT 0,
   meters     INTEGER NOT NULL DEFAULT 0,
   -- How many of those rides carried their times — rides.track — the
-  -- metres of theirs that have a time, and the seconds those took, a pause
-  -- of two minutes or more left out of both. The square's pace is `paced`
-  -- over `seconds`, and `slow` is out of `timed`, not out of `rides`.
+  -- metres of theirs that were ridden by the clock, and the seconds those
+  -- took: a stop and a pause of two minutes or more are in neither. The
+  -- square's pace is `paced` over `seconds`, and `steady` and `slow` are
+  -- out of `timed`, not out of `rides`.
   timed      INTEGER NOT NULL DEFAULT 0,
   paced      INTEGER NOT NULL DEFAULT 0,
   seconds    INTEGER NOT NULL DEFAULT 0,
@@ -2324,5 +2334,11 @@ CREATE TABLE IF NOT EXISTS ride_sections (
   -- crossing.
   slow       INTEGER NOT NULL DEFAULT 0,
   stops      INTEGER NOT NULL DEFAULT 0,
-  updated_at INTEGER NOT NULL
+  updated_at INTEGER NOT NULL,
+  -- Timed rides that crossed it at four fifths or more of their own pace
+  -- over the whole ride: an electric bike and a city bike count the same,
+  -- and a hill counts going up. Added by hand with
+  --   ALTER TABLE ride_sections ADD COLUMN steady INTEGER NOT NULL DEFAULT 0;
+  -- and last in the table for that reason.
+  steady     INTEGER NOT NULL DEFAULT 0
 );

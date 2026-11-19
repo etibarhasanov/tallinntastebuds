@@ -1,11 +1,12 @@
 /**
  * Tallinn Tastebuds — which rides pass through a stretch of the city.
  *
- * Two routes ask `rides` the same question: ?bbox= in ./rides.js, which the
- * iPhone app draws, and the ridden way in ./route.js, asked on every bike
- * route. "The newest rides whose box meets this one" cannot be answered by
- * any key `rides` has — a box is four ranges at once — so each asking read
- * every ride there was, with its line: fourteen on 18 November 2026, and one
+ * ?bbox= in ./rides.js, which the iPhone app draws, asks `rides` for the
+ * newest rides whose box meets another — and until 2026-11-19 so did the
+ * ridden way in ./route.js, on every bike route, which reads
+ * `ride_sections` now. That question cannot be answered by any key `rides`
+ * has — a box is four ranges at once — so each asking read every ride
+ * there was, with its line: fourteen on 18 November 2026, and one
  * more for every ride Rattatee saves, for ever. **Every read has a price, set
  * before it is written** in CLAUDE.md is why that had to go before the rides
  * did.

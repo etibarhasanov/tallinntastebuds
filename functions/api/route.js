@@ -61,9 +61,9 @@
  * many as three, is the first one and the router's own is the first of
  * `others`. Same fields, same words; DOORS below.
  *
- * And where people have ridden between the two points, the way they rode
- * is the first one, with `ridden: true` beside it — at the top level for
- * the first way, in the way itself among `others` — RIDDEN below.
+ * And where people have ridden one of the ways between the two points,
+ * that way and held their pace on it, it is the first one, with `ridden:
+ * true` beside it — RIDDEN below.
  *
  * And by bike some streets are not offered at all. A way that rides Tartu
  * maantee, Liivalaia, or Pärnu maantee from Vabaduse väljak to Liivalaia,
@@ -92,10 +92,11 @@
  * rather than a refusal, as is one the router has no street for.
  *
  * With a heading the answer is the router's own ways, kept off the streets
- * every bike way keeps off, and nothing put together from doors or saved
- * rides: those are stitched from the spot outward in whichever direction
- * they run, and one that started backwards would be the same "turn around"
- * under another name. Nothing else about the answer changes, and a page or
+ * every bike way keeps off, and nothing put together from doors, which are
+ * stitched from the spot outward in whichever direction they run: one that
+ * started backwards would be the same "turn around" under another name.
+ * Nor is any way put first as ridden, which costs a read of the database
+ * that a new way every few hundred metres should not. Nothing else about the answer changes, and a page or
  * an app that sends none is answered exactly as before.
  *
  * MORE THAN ONE WAY
@@ -175,9 +176,7 @@
  */
 
 import { json, nearTallinn, km, dataFile, wrongDatabase } from './_lib.js';
-import { pieces } from './_sections.js';
-import { arrayOf } from './_rides.js';
-import { ridesIn } from './_ridecells.js';
+import { riddenShare } from './_sections.js';
 
 const OSRM = {
   foot: 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/',
@@ -313,28 +312,28 @@ async function street(context, mode, from, to, withTrains, heading) {
     Number.isFinite(other.meters) && Number.isFinite(other.seconds) &&
     !(mode === 'foot' && other.meters > MAX_WALK));
 
-  /* By bike a ridden way goes first, then a way through a door, and the
-     router's own best becomes the next of the others — still offered, a
-     button down. Not where it is the door's line pushed, though: that is
-     one way twice, the slower time under a button of its own. And neither
-     with a heading, which only the router's ways set off by. */
+  /* By bike a way through a door goes first, and the router's own best
+     becomes the next of the others — still offered, a button down. Not
+     where it is the door's line pushed, though: that is one way twice, the
+     slower time under a button of its own. And not with a heading, which
+     only the router's ways set off by. */
   const shortest = Math.min(first.meters, ...others.map((other) => other.meters));
   let ways = [first].concat(others);
-  const [through, rode] = mode === 'bike' && heading === null
-    ? await Promise.all([
-      viaDoor(await doors(context), [from.lat, from.lng], [to.lat, to.lng], Math.min(...ways.map(reach)), DOORS_DEEP),
-      viaRides(context, from, to, shortest, ways)])
-    : [null, null];
+  const through = mode === 'bike' && heading === null
+    ? await viaDoor(await doors(context), [from.lat, from.lng], [to.lat, to.lng], Math.min(...ways.map(reach)), DOORS_DEEP)
+    : null;
   if (through) {
     ways = [through].concat(ways.filter((other) =>
       Math.abs(other.meters - through.meters) > SAME_WAY || other.seconds < through.seconds));
   }
-  if (rode) ways.unshift(rode);
   if (mode === 'bike') ways = await keepOff(ways, from, to, shortest, heading);
   if (mode === 'bike' || mode === 'foot') {
     ways = ways.map(unspur).filter((way, i, all) => !all.slice(0, i).some((before) => alike(way, before)));
   }
   if (mode === 'bike' && heading === null && ways.length <= OTHERS) ways = await eitherSide(ways, from, to);
+  /* And of all of those, the one riders made the most of goes in front —
+     RIDDEN below. */
+  if (mode === 'bike' && heading === null) ways = await riddenFirst(context, ways, shortest);
   ways = ways.slice(0, 1 + OTHERS);
   const best = ways[0];
   const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
@@ -473,9 +472,9 @@ async function oneWay(points, heading = null) {
    and the turn out of it are steps like any other — the router knows
    neither, and a rider told nothing would ride past — worked out from how
    the line bends there, CORNER metres either side, in the router's own
-   words and with no street to name. So are the corners inside it, which a door of a few dozen metres
-   seldom has and a ridden way of a kilometre always does. The leg in loses
-   its `arrive`, since it has not. */
+   words and with no street to name. So are the corners inside it, which a
+   door of a few dozen metres seldom has and a longer one does. The leg in
+   loses its `arrive`, since it has not. */
 function stitch(head, door, tail) {
   const into = head.meters;
   const out = head.meters + door.meters;
@@ -559,214 +558,63 @@ function bend(before, after) {
 }
 
 /* ----------------------------------------------------------------- ridden
- * A way made of the stretches people have ridden. A door is the one stretch
- * the router cannot find; this is every stretch it could find, and would
- * not have chosen. The saved rides near the two points — anybody's, no name
- * with them and their first and last 200 m already off — are read out of
- * `rides`, cut where they were not ridden, and joined into one network:
- * each ride along its own line, and from one ride to another where they
- * meet or cross, within RIDDEN_HOP. The start and the door join it at any
- * point within RIDDEN_REACH as the crow flies. A metre nobody rode — a hop,
- * the way on and the way off — costs RIDDEN_OFF ridden ones, and the
- * router's shortest way is in the network at the same price, so the
- * cheapest way across is ridden only where riding it is worth that. It is
- * pieces of several rides where no one ride went the whole way.
+ * The way riders made the most of. Until 2026-11-19 a ridden way was put
+ * together from the saved rides themselves, the newest forty lines near the
+ * trip joined into a network and the cheapest way across it stitched to
+ * the router's. It followed whoever had ridden last, in whichever direction
+ * they had — a ride home downhill was offered as the way back up — and it
+ * read lines where the city's rides had already been counted.
  *
- * What is answered is the ridden line as it was ridden, between the
- * router's way on to it and its way off, stitched the way a door is, with
- * its corners as `steps` and no street to name. Offered where at least
- * RIDDEN_MIN metres and RIDDEN_SHARE of it were ridden, where it is no more
- * than RIDDEN_LONGER times the shortest way, and where the router did not
- * offer that way itself. It goes first, the answer says `ridden: true`
- * beside it, and the bar says somebody rode it; the router's own follow.
- * It is then kept off the streets in KEEP_OFF like every other way, so a
- * ride down Tartu maantee opens nothing.
+ * So no way is made here now. The ways are the ones the router and the
+ * doors offer and the ways round either side, kept off the streets in
+ * KEEP_OFF and with their spurs off like any other, and each is weighed by
+ * the squares under it: riddenShare() in ./_sections.js, which says how
+ * much of a way people have ridden in the direction it runs, and how much
+ * of that they rode at their own pace. The best of them by that score is
+ * the ridden way, where at least RIDDEN_MIN metres and RIDDEN_SHARE of it
+ * were ridden and it is no more than RIDDEN_LONGER times the shortest. It
+ * goes first, the answer says `ridden: true` beside it, and the bar says
+ * somebody rode it; the others follow in the order they had.
  *
- * It costs a read of `rides` by the squares the ellipse's box covers —
- * ./_ridecells.js, a fixed number of rows however many rides there are —
- * at most two router requests and a few
- * milliseconds: only points that could lie on a way short enough are
- * joined — the ellipse with the two ends as its foci — and a longer trip
- * is joined more coarsely, RIDDEN_NODES points across it at most, and the
- * newest RIDDEN_READ rides are read and no more than RIDDEN_POINTS points
- * of them.
- * Nothing waits on it — no database, no ride near, a leg the router will
- * not answer — each is the ways exactly as they were.
+ * What that gives up is the way no router knows: a ride across a yard is
+ * offered only once it is a door. What it costs is one read of
+ * `ride_sections` by its key, SCORE_ROWS rows at the most however many
+ * rides there are — WHAT A READ COSTS in ./_sections.js. Nothing waits on
+ * it: no database, no table, no square ridden — each is the ways exactly
+ * as they were.
  */
-const RIDDEN_READ = 40;
-const RIDDEN_POINTS = 8000;
-const RIDDEN_REACH = 450;
-const RIDDEN_HOP = 40;
-const RIDDEN_OFF = 3;
-const RIDDEN_SPACE = 12;
-const RIDDEN_NODES = 300;
 const RIDDEN_MIN = 200;
 const RIDDEN_SHARE = 0.5;
 const RIDDEN_LONGER = 1.4;
 
+async function riddenFirst(context, ways, shortest) {
+  const env = context.env || {};
+  if (!env.DB) return ways;
+  let weighed;
+  try {
+    if (await wrongDatabase(env)) return ways;
+    weighed = await riddenShare(env, ways.map((way) => way.line));
+  } catch (e) {
+    return ways;
+  }
+  let best = -1;
+  ways.forEach((way, i) => {
+    const { share, score } = weighed[i];
+    if (share < RIDDEN_SHARE || share * way.meters < RIDDEN_MIN || way.meters > shortest * RIDDEN_LONGER) return;
+    if (best < 0 || score > weighed[best].score) best = i;
+  });
+  if (best < 0) return ways;
+  return [Object.assign({}, ways[best], { ridden: true })].concat(ways.filter((way, i) => i !== best));
+}
+
 /* A way with this share of its points within ALIKE_NEAR metres of another
-   is that way: a ridden way the router already offered, or two ways that
-   were one once their spurs came off. */
+   is that way: two ways that were one once their spurs came off, or a
+   way round that turned out to be a way already offered. */
 const ALIKE_NEAR = 25;
 const ALIKE_SHARE = 0.8;
 
 function alike(a, b) {
   return a.line.filter((p) => apart(p, b.line) <= ALIKE_NEAR).length >= a.line.length * ALIKE_SHARE;
-}
-
-async function viaRides(context, from, to, shortest, offered) {
-  const env = context.env || {};
-  if (!env.DB) return null;
-  const start = [from.lat, from.lng];
-  const end = [to.lat, to.lng];
-  const most = shortest * RIDDEN_LONGER;
-  const pad = (most - metres(start, end)) / 2 + RIDDEN_REACH;
-  let rows;
-  try {
-    if (await wrongDatabase(env)) return null;
-    rows = await ridesIn(env, {
-      south: Math.min(start[0], end[0]) - pad / NORTH, north: Math.max(start[0], end[0]) + pad / NORTH,
-      west: Math.min(start[1], end[1]) - pad / EAST, east: Math.max(start[1], end[1]) + pad / EAST
-    }, 'line', RIDDEN_READ);
-  } catch (e) {
-    return null;
-  }
-
-  /* The network. Node 0 is the start and 1 the end; every other is a point
-     of a ride inside the ellipse, `space` metres from the last one kept,
-     remembered as [piece, index] so the way can be drawn from the points
-     between. An edge is [to, cost, ridden]. */
-  const space = Math.max(RIDDEN_SPACE, Math.min(RIDDEN_HOP * 0.7, most / RIDDEN_NODES));
-  const xy = [flat(start), flat(end)];
-  const gap = (a, b) => Math.hypot(xy[a][0] - xy[b][0], xy[a][1] - xy[b][1]);
-  const where = [null, null];
-  const edges = [[], []];
-  const link = (a, b, cost, ridden) => {
-    edges[a].push([b, cost, ridden]);
-    edges[b].push([a, cost, ridden]);
-  };
-  let read = 0;
-  for (const row of rows || []) {
-    const whole = arrayOf(row.line).filter((p) => Array.isArray(p) && Number.isFinite(p[0]) && Number.isFinite(p[1]));
-    read += whole.length;
-    if (read > RIDDEN_POINTS) break;
-    for (const piece of pieces(whole)) {
-      let last = -1;
-      let rode = 0;
-      for (let i = 0; i < piece.length; i++) {
-        const at = flat(piece[i]);
-        if (i) rode += metres(piece[i - 1], piece[i]);
-        if (Math.hypot(at[0] - xy[0][0], at[1] - xy[0][1]) + Math.hypot(at[0] - xy[1][0], at[1] - xy[1][1]) > most) {
-          last = -1;
-          continue;
-        }
-        if (last !== -1 && Math.hypot(at[0] - xy[last][0], at[1] - xy[last][1]) < space) continue;
-        const n = xy.push(at) - 1;
-        where.push([piece, i]);
-        edges.push([]);
-        if (last !== -1) link(last, n, rode, true);
-        last = n;
-        rode = 0;
-      }
-    }
-  }
-  if (xy.length < 4) return null;
-  link(0, 1, shortest * RIDDEN_OFF, false);
-
-  /* The hops, through a grid of squares RIDDEN_HOP a side: from each point
-     to the nearest point of each other piece in reach. Its own piece is
-     joined along its line already. */
-  const cells = new Map();
-  for (let n = 2; n < xy.length; n++) {
-    const cx = Math.floor(xy[n][0] / RIDDEN_HOP);
-    const cy = Math.floor(xy[n][1] / RIDDEN_HOP);
-    const nearest = new Map();
-    for (let dx = -1; dx <= 1; dx++) {
-      for (let dy = -1; dy <= 1; dy++) {
-        for (const m of cells.get((cx + dx) + ':' + (cy + dy)) || []) {
-          if (where[m][0] === where[n][0]) continue;
-          const d = gap(m, n);
-          const best = nearest.get(where[m][0]);
-          if (d <= RIDDEN_HOP && (!best || d < best[1])) nearest.set(where[m][0], [m, d]);
-        }
-      }
-    }
-    for (const [m, d] of nearest.values()) link(m, n, d * RIDDEN_OFF, false);
-    const key = cx + ':' + cy;
-    if (!cells.has(key)) cells.set(key, []);
-    cells.get(key).push(n);
-    for (const at of [0, 1]) {
-      const d = gap(at, n);
-      if (d <= RIDDEN_REACH) link(at, n, d * RIDDEN_OFF, false);
-    }
-  }
-
-  /* The cheapest way from 0 to 1: Dijkstra over a binary heap of
-     [cost, node]. */
-  const cost = new Float64Array(xy.length).fill(Infinity);
-  const back = new Int32Array(xy.length).fill(-1);
-  cost[0] = 0;
-  const heap = [[0, 0]];
-  while (heap.length) {
-    const top = heap[0];
-    const last = heap.pop();
-    if (heap.length) {
-      let i = 0;
-      for (;;) {
-        let k = 2 * i + 1;
-        if (k >= heap.length) break;
-        if (k + 1 < heap.length && heap[k + 1][0] < heap[k][0]) k++;
-        if (heap[k][0] >= last[0]) break;
-        heap[i] = heap[k];
-        i = k;
-      }
-      heap[i] = last;
-    }
-    const [c, n] = top;
-    if (c > cost[n]) continue;
-    if (n === 1) break;
-    for (const [m, step] of edges[n]) {
-      if (c + step >= cost[m]) continue;
-      cost[m] = c + step;
-      back[m] = n;
-      let i = heap.push(null) - 1;
-      while (i && heap[(i - 1) >> 1][0] > cost[m]) {
-        heap[i] = heap[(i - 1) >> 1];
-        i = (i - 1) >> 1;
-      }
-      heap[i] = [cost[m], m];
-    }
-  }
-  if (back[1] < 2) return null;
-
-  /* The way as a line: every point of a ride between two of its nodes, in
-     the order ridden or against it, and a hop straight across. */
-  const path = [];
-  for (let n = back[1]; n > 0; n = back[n]) path.unshift(n);
-  const line = [where[path[0]][0][where[path[0]][1]]];
-  let rode = 0;
-  for (let k = 1; k < path.length; k++) {
-    const [piece, i] = where[path[k - 1]];
-    const [next, j] = where[path[k]];
-    if (piece === next && edges[path[k - 1]].some((e) => e[0] === path[k] && e[2])) {
-      for (let t = i; t !== j; t += j > i ? 1 : -1) {
-        const on = piece[t + (j > i ? 1 : -1)];
-        rode += metres(piece[t], on);
-        line.push(on);
-      }
-    } else {
-      line.push(next[j]);
-    }
-  }
-  if (rode < RIDDEN_MIN) return null;
-
-  const stretch = { line: line, meters: Math.round(line.reduce((sum, p, i) => sum + (i ? metres(line[i - 1], p) : 0), 0)) };
-  const [head, tail] = await Promise.all([leg(start, line[0]), leg(line[line.length - 1], end)]);
-  if (!head || !tail) return null;
-  const found = stitch(head, stretch, tail);
-  if (found.meters > most || rode < found.meters * RIDDEN_SHARE) return null;
-  if (offered.some((way) => alike(found, way))) return null;
-  return Object.assign(found, { ridden: true });
 }
 
 /* ------------------------------------------------------------------ spurs
@@ -816,9 +664,9 @@ function unspur(found) {
 
 /* The first spur on a line, from its root at `i` to its return at `j`, `at`
    metres along and `gone` long, or null. Measured flat, and each point is
-   held only against the points in the squares SPUR_NEAR a side around it,
-   as viaRides() joins its rides: every pair of a line of MAX_POINTS by
-   metres() was seven milliseconds of a Function's ten. */
+   held only against the points in the squares SPUR_NEAR a side around it:
+   every pair of a line of MAX_POINTS by metres() was seven milliseconds of
+   a Function's ten. */
 function spur(line) {
   const xy = line.map(flat);
   const gap = (a, b) => Math.hypot(xy[a][0] - xy[b][0], xy[a][1] - xy[b][1]);
@@ -1031,11 +879,12 @@ async function keepOff(ways, from, to, shortest, heading = null, past = null) {
  * the first for a block is that way. The quicker first, after the ways
  * that were there. A trip under SIDE_FROM has no sides to speak of.
  *
- * SIDE_LONGER is as much as it is because the shortest way is often one
- * somebody rode straight through the Old Town, and a way round it, before
- * its spurs come off, is over half as far again: held to half, which a way
- * round a street to keep off is, that ride was offered no way west on the
- * day this shipped.
+ * SIDE_LONGER is as much as it is because the shortest way was then often
+ * one put together from a ride straight through the Old Town — RIDDEN
+ * above says what became of those — and a way round it, before its spurs
+ * come off, is over half as far again: held to half, which a way round a
+ * street to keep off is, that ride was offered no way west on the day this
+ * shipped. The router's own way through is as short, so it stays.
  *
  * It costs two router requests, and up to eight more a side where that
  * side has to be taken off a street SIDE_TURNS times, for a ride with fewer

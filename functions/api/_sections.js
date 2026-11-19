@@ -3,18 +3,17 @@
  *
  * A ride is a line somebody cycled. This turns the lines into a value for
  * the ground under them: the city cut into squares a street wide, and for
- * each square how many rides crossed it, how far and how long they spent in
- * it, how many crossed it at walking pace and how many stood still in it.
- * It is the first half of valuing a street, the half that needs nobody to
- * say anything — a stretch people ride at twenty and a stretch they push
- * through at five are told apart by the clock alone. What people say about
- * a stretch, when there is somewhere to say it, is counted beside these
- * and not instead of them. **What the rides say about a street** in
- * docs/handbook.md.
+ * each square, and each way across it, how many rides crossed it, how far
+ * and how long they spent in it, how many held their own pace through it,
+ * how many crossed it at walking pace and how many stood still in it. It
+ * needs nobody to say anything — a stretch people ride at their pace and a
+ * stretch they push through are told apart by the clock alone. **What the
+ * rides say about a street** in docs/handbook.md.
  *
- * Nothing reads `ride_sections` yet, and nothing answers it to anybody. It
- * fills as rides are saved, so that the day a way is chosen by what riders
- * made of it there is something to choose by.
+ * One thing reads it: /api/route, which by bike weighs the ways its routers
+ * offer by the squares under them and puts the one riders made the most of
+ * first — riddenShare() at the foot of this file, RIDDEN in ./route.js.
+ * Nothing answers a square to anybody.
  *
  * A SQUARE, AND WHY NOT A STREET
  *
@@ -28,27 +27,83 @@
  * tools/ridesections.mjs — starting with them gives nothing away: the day
  * streets are worth matching, the rides are all still there to be matched.
  *
- * WHAT IS COUNTED, FOR ONE RIDE THROUGH ONE SQUARE
+ * AND WHICH WAY ACROSS IT
+ *
+ * Up a street is not down it. On 2026-11-19 the owner rode home downhill,
+ * asked the way back the next day and was offered the way they had come:
+ * ridden, and not that way. So a row is a square and a direction, one of
+ * DIRS compass points, written after the square: `237748:49478:3` is that
+ * square crossed heading south-east. Each step of a ride is filed under the
+ * point its own heading is nearest, and a way being weighed reads the two
+ * points its heading lies between, so a ride counts for a way that sets off
+ * within about a quarter turn of it and never for the way back.
+ *
+ * WHAT IS COUNTED, FOR ONE RIDE THROUGH ONE SQUARE ONE WAY
  *
  * Each step of the line, from one point to the next, belongs to the square
- * its far end is in.
+ * its far end is in and the direction it went.
  *
- *   rides    one, however many times the ride crossed the square
+ *   rides    one, however many times the ride crossed the square that way
  *   meters   the steps' lengths
  *   timed    one where the ride carried its times — `rides.track` — and
- *   paced    the metres of the steps that had a time, and
- *   seconds  what those steps took, by the clock
- *   slow     one where the ride's pace through the square, metres over
- *            seconds, was under WALKING: pushed, or ridden as if it were
+ *   paced    the metres of the steps that were ridden by the clock, and
+ *   seconds  what those steps took
+ *   steady   one where the ride's pace here, `paced` over `seconds`, was
+ *            at least STEADY of its own pace over that stretch of it
+ *   slow     one where that pace was under WALKING: pushed, or ridden as
+ *            if it were
  *   stops    the steps that took STOP seconds or more and went nowhere — a
  *            light, a crossing
  *
- * A step that took PAUSE seconds or more is somebody pausing the ride — the
- * clock in `track` runs through a pause — and is counted as distance and
- * not as time, a stop or a pace: a coffee is not a red light. A ride with
- * no track counts in `rides` and `meters` alone, which is why `timed` is
- * and `paced` are kept: the pace of a square is `paced` over `seconds`, and
- * `slow` is out of `timed`, not out of `rides`.
+ * HELD AGAINST THE RIDER, NOT AGAINST A NUMBER
+ *
+ * A fast stretch is not a good one: an electric bike does thirty down a
+ * road nobody would choose, and a city bike fifteen along the path beside
+ * it. What says a stretch rides well is that people keep the pace they
+ * keep everywhere else, so `steady` holds each ride against its own
+ * average — its ridden metres over its ridden seconds, a stretch at a
+ * time, as below — and the two bikes
+ * above count the same. A hill shows by itself: riders fall under their
+ * pace going up and hold it coming down, in two different rows.
+ *
+ * A WAIT IS NOT A PACE
+ *
+ * A step that took STOP seconds or more and covered under STILL metres is
+ * a stop, and is counted in `stops` and in nothing else: its seconds are
+ * not in the square's pace. Until 2026-11-19 they were, so thirty seconds
+ * at a red light made a square somebody rode at twenty look pushed. A step
+ * that took PAUSE seconds or more is somebody pausing the ride — the clock
+ * in `track` runs through a pause — and is counted as distance alone: a
+ * coffee is not a red light. A ride with no track counts in `rides` and
+ * `meters` alone, which is why `timed` is kept: `steady` and `slow` are out
+ * of `timed`, not out of `rides`.
+ *
+ * NOT EVERY RECORDING IS A RIDE, NOR ALL OF ONE
+ *
+ * The recorder is in a pocket, and it has been taken for a run and for a
+ * walk: of the first twenty recordings one was named "running" and two
+ * went at five kilometres an hour. And one recording can be both — twenty
+ * minutes walked and then twenty ridden — where an average over the whole
+ * describes neither half: the walk would count as a bike pushed and the
+ * ride as held far above its pace. A street somebody jogged along says
+ * nothing about cycling it, and a walker holds their own pace everywhere,
+ * so counted they would make every pavement look steady.
+ *
+ * So a timed recording is cut into stretches before anything is counted.
+ * Its pace is read a WINDOW of ridden seconds at a time, and wherever that
+ * stays under AFOOT km/h for ON_FOOT seconds or more it was on foot there:
+ * that part counts in no square, and what lies either side of it is a
+ * stretch of its own. Less than ON_FOOT of it stays in — a bike pushed up
+ * a bank or through a crowd is part of the ride, and is what `slow` is
+ * for. Each stretch is then held to looking like a bike by itself: its
+ * pace is BIKE km/h or more, and at least CRUISED of it went at CRUISE
+ * km/h or more, which a runner at twelve never does and a slow cyclist
+ * with one clear street does. And each is held against its own pace, not
+ * the recording's. Speed is all there is to tell by, so a jogger and a
+ * very slow cyclist are not always told apart, and the doubt is settled
+ * against counting: a ride missed is one fewer, a run counted is wrong.
+ * A recording with no times cannot be told either way, and counts as it
+ * always did, in `rides` and `meters`.
  *
  * NUDGED, AND REBUILT
  *
@@ -60,11 +115,14 @@
  * lost nudge costs one ride's weight in a few hundred squares, in a table
  * nothing reads to the metre.
  *
- * WHEN THE TABLE IS NOT THERE
+ * WHEN THE TABLE IS NOT THERE, OR IS THE OLD ONE
  *
- * `ride_sections` is in db/schema.sql and loaded by hand. The save that
- * calls countSections() catches what it throws: the ride is kept either
- * way, and the rebuild counts it later.
+ * `ride_sections` is in db/schema.sql and loaded by hand, and `steady` was
+ * added to it by hand after it. The save that calls countSections() catches
+ * what it throws: the ride is kept either way, and the rebuild counts it
+ * later. A read throws the same way and its caller offers no ridden way. A
+ * row from before the directions is keyed by its square alone, which no
+ * read asks for, so until the rebuild it is simply not found.
  */
 
 /* A square's height and width in degrees: 0.00025 of latitude is 27.8 m
@@ -87,12 +145,35 @@ export const GAP = 250;
 /* Under this, in km/h, a bike is being pushed. */
 const WALKING = 7;
 
+/* What makes a stretch of a timed recording a bike ride — NOT EVERY
+   RECORDING IS A RIDE, NOR ALL OF ONE: the pace, in km/h, under which a
+   WINDOW of ridden seconds was on foot, and how many seconds of that it
+   takes to be a walk rather than a bike pushed; then the stretch's own
+   pace in km/h, and the share of its metres that went at CRUISE km/h or
+   more. */
+const WINDOW = 60;
+const AFOOT = 11;
+const ON_FOOT = 300;
+const BIKE = 10;
+const CRUISE = 15;
+const CRUISED = 0.1;
+
+/* The share of its own pace a ride has to keep through a square to have
+   held it there — HELD AGAINST THE RIDER. Four fifths: a rider's pace
+   wanders a tenth either way on a flat street with nothing in it. */
+const STEADY = 0.8;
+
 /* A step this many seconds long that covered less than STILL metres is a
    stop; one PAUSE seconds long is the rider pausing the ride, not the
    street holding them up. */
 const STOP = 20;
 const STILL = 40;
 const PAUSE = 120;
+
+/* How many compass points a way across a square is one of — AND WHICH WAY
+   ACROSS IT. Eight, forty-five degrees each: a street's two directions are
+   four apart, and a bend has to be a real one to change the point. */
+const DIRS = 8;
 
 /* Metres between two [lat, lng] points. Flat-earth arithmetic, which over
    a step of a dozen metres is right to the centimetre. */
@@ -106,6 +187,13 @@ export function metresBetween(a, b) {
 /* The square a point is in. */
 export function cellOf(point) {
   return Math.round(point[0] / CELL_LAT) + ':' + Math.round(point[1] / CELL_LNG);
+}
+
+/* Where a step from `a` to `b` is heading, in compass points from north
+   round by east: 0 to DIRS, not yet whole. */
+function headingOf(a, b) {
+  const east = (b[1] - a[1]) * Math.cos((a[0] + b[0]) / 2 * Math.PI / 180);
+  return ((Math.atan2(east, b[0] - a[0]) / (2 * Math.PI) * DIRS) + DIRS) % DIRS;
 }
 
 /* A line cut wherever two points are more than GAP apart: the runs that
@@ -124,28 +212,96 @@ export function pieces(points) {
   return out;
 }
 
+/* What a step of `d` metres in `dt` seconds was: 'ridden', a 'stop', or
+   nothing the clock can say anything about — no time, or a pause. */
+function stepKind(d, dt) {
+  if (dt < 0 || dt >= PAUSE) return '';
+  return dt >= STOP && d < STILL ? 'stop' : 'ridden';
+}
+
+/* A timed recording's steps as the stretches that were not walked: the
+   steps either side of every run of ON_FOOT ridden seconds or more whose
+   pace, a WINDOW at a time, stayed under AFOOT. A stop is neither ridden
+   nor walked and stays with whatever it stands in. */
+function stretchesOf(steps) {
+  const moving = steps.map((step, i) => i).filter((i) => steps[i].kind === 'ridden');
+  /* When each ridden step was half done, by a clock that only runs while
+     riding, and whether the WINDOW round it was on foot. */
+  let clock = 0;
+  const at = moving.map((i) => (clock += steps[i].dt) - steps[i].dt / 2);
+  const afoot = moving.map((i, k) => {
+    let d = 0;
+    let dt = 0;
+    for (let j = k; j >= 0 && at[k] - at[j] <= WINDOW / 2; j--) { d += steps[moving[j]].d; dt += steps[moving[j]].dt; }
+    for (let j = k + 1; j < moving.length && at[j] - at[k] <= WINDOW / 2; j++) { d += steps[moving[j]].d; dt += steps[moving[j]].dt; }
+    return dt > 0 && d / dt * 3.6 < AFOOT;
+  });
+  const out = [];
+  let from = 0;
+  for (let k = 0; k < moving.length; k++) {
+    if (!afoot[k]) continue;
+    let end = k;
+    let walked = 0;
+    while (end < moving.length && afoot[end]) walked += steps[moving[end++]].dt;
+    if (walked >= ON_FOOT) {
+      out.push(steps.slice(from, moving[k]));
+      from = moving[end - 1] + 1;
+    }
+    k = end - 1;
+  }
+  out.push(steps.slice(from));
+  return out;
+}
+
 /* One ride's rows for `ride_sections`: [cell, meters, timed, paced,
-   seconds, slow, stops] for every square its line crosses. `line` is [lat, lng]
+   seconds, steady, slow, stops] for every square its line crosses, each way
+   it crosses it, less whatever of it was not a bike's. `line` is [lat, lng]
    pairs and `track` the [t, acc] pairs beside it — or [t, acc, alt], which
-   reads the same here — or nothing. A step over
-   GAP is skipped rather than counted, so a ride stored before lines were
-   cut at one cannot put its straight line into the table. */
+   reads the same here — or nothing. A step over GAP is skipped rather than
+   counted, so a ride stored before lines were cut at one cannot put its
+   straight line into the table. */
 export function sectionsOf(line, track) {
   const timed = Array.isArray(track) && track.length === line.length;
-  const cells = new Map();
+  const steps = [];
   for (let i = 1; i < line.length; i++) {
     const d = metresBetween(line[i - 1], line[i]);
     if (d > GAP) continue;
-    const key = cellOf(line[i]);
-    const cell = cells.get(key) || { meters: 0, seconds: 0, paced: 0, stops: 0 };
-    cell.meters += d;
     const dt = timed ? track[i][0] - track[i - 1][0] : -1;
-    if (dt >= 0 && dt < PAUSE) {
-      cell.seconds += dt;
-      cell.paced += d;
-      if (dt >= STOP && d < STILL) cell.stops += 1;
+    steps.push({
+      key: cellOf(line[i]) + ':' + Math.round(headingOf(line[i - 1], line[i])) % DIRS,
+      d: d,
+      dt: dt,
+      kind: stepKind(d, dt)
+    });
+  }
+  const cells = new Map();
+  for (const stretch of timed ? stretchesOf(steps) : [steps]) {
+    /* The stretch's own pace, metres a second over everything it rode by
+       the clock, which each square's is then held against. */
+    let rode = 0;
+    let took = 0;
+    let cruised = 0;
+    for (const step of stretch) {
+      if (step.kind !== 'ridden') continue;
+      rode += step.d;
+      took += step.dt;
+      if (step.dt > 0 && step.d / step.dt * 3.6 >= CRUISE) cruised += step.d;
     }
-    cells.set(key, cell);
+    const own = took > 0 ? rode / took : 0;
+    if (timed && (own * 3.6 < BIKE || cruised < rode * CRUISED)) continue;
+    for (const step of stretch) {
+      const cell = cells.get(step.key) || { meters: 0, seconds: 0, paced: 0, par: 0, stops: 0 };
+      cell.meters += step.d;
+      if (step.kind === 'stop') cell.stops += 1;
+      if (step.kind === 'ridden') {
+        cell.seconds += step.dt;
+        cell.paced += step.d;
+        /* What these metres would have taken at the stretch's own pace, so
+           a square two stretches crossed is held against each of them. */
+        cell.par += step.d / own;
+      }
+      cells.set(step.key, cell);
+    }
   }
   return [...cells].map(([key, cell]) => [
     key,
@@ -153,6 +309,7 @@ export function sectionsOf(line, track) {
     timed ? 1 : 0,
     Math.round(cell.paced),
     cell.seconds,
+    cell.seconds > 0 && cell.seconds * STEADY <= cell.par ? 1 : 0,
     cell.seconds > 0 && cell.paced / cell.seconds * 3.6 < WALKING ? 1 : 0,
     cell.stops
   ]);
@@ -161,20 +318,110 @@ export function sectionsOf(line, track) {
 /* Add rows to the table — NUDGED, AND REBUILT. One statement whatever the
    ride's length: the rows go in as one JSON parameter and json_each() deals
    them out. `WHERE true` is what SQLite needs to tell an upsert's ON from a
-   join's. Throws where the table is not applied; the caller decides what
-   that costs. */
+   join's. Throws where the table is not applied, or has no `steady` yet;
+   the caller decides what that costs. */
 export async function countSections(env, rows) {
   if (!rows.length) return;
   await env.DB
     .prepare(
-      'INSERT INTO ride_sections (cell, rides, meters, timed, paced, seconds, slow, stops, updated_at) ' +
-      'SELECT value ->> 0, 1, value ->> 1, value ->> 2, value ->> 3, value ->> 4, value ->> 5, value ->> 6, ?2 ' +
-      'FROM json_each(?1) WHERE true ' +
+      'INSERT INTO ride_sections (cell, rides, meters, timed, paced, seconds, steady, slow, stops, updated_at) ' +
+      'SELECT value ->> 0, 1, value ->> 1, value ->> 2, value ->> 3, value ->> 4, value ->> 5, value ->> 6, ' +
+      'value ->> 7, ?2 FROM json_each(?1) WHERE true ' +
       'ON CONFLICT (cell) DO UPDATE SET ' +
       'rides = rides + 1, meters = meters + excluded.meters, timed = timed + excluded.timed, ' +
-      'paced = paced + excluded.paced, seconds = seconds + excluded.seconds, slow = slow + excluded.slow, ' +
-      'stops = stops + excluded.stops, updated_at = excluded.updated_at'
+      'paced = paced + excluded.paced, seconds = seconds + excluded.seconds, steady = steady + excluded.steady, ' +
+      'slow = slow + excluded.slow, stops = stops + excluded.stops, updated_at = excluded.updated_at'
     )
     .bind(JSON.stringify(rows), Date.now())
     .run();
+}
+
+/* ------------------------------------------------------------ a way, weighed
+ * How much of each of some ways people have ridden, that way, and how well
+ * it rode: for every line handed in, { share, score }, both from 0 to 1.
+ *
+ * A way is walked STRIDE metres at a time and each stride asks its square
+ * for the two compass points its heading lies between. A square counts as
+ * ridden once MIN_RIDES rides crossed it that way, and that is all the
+ * number of rides decides: that everybody goes one way does not make it
+ * the better one, only the surer one. `share` is the part of the way's
+ * length on ridden squares. `score` is that length again with each square
+ * weighed by how many of its timed rides held their own pace there —
+ * `steady` over `timed`, or UNTIMED where no ride through it had a clock —
+ * so a way half of which is ridden steadily scores a half, and one ridden
+ * all the way at a crawl scores nothing.
+ *
+ * WHAT A READ COSTS
+ *
+ * One statement, a lookup on the key for every square and direction asked
+ * about, and never more than SCORE_ROWS of them: a longer trip is walked
+ * in longer strides until its squares fit, so a way across the city is
+ * sampled where a way round the corner is read whole. A lookup that finds
+ * nothing reads nothing, so SCORE_ROWS rows is the worst there is, on the
+ * day the whole city has been ridden both ways, and on any other day
+ * fewer. Asked once for a bike route nobody asked for between those two
+ * rounded points that hour — ./route.js keeps its answer that long — so
+ * 5,000,000 rows a day is 8,300 such routes at the very worst.
+ */
+const STRIDE = 14;
+const MIN_RIDES = 1;
+const UNTIMED = 0.5;
+const SCORE_ROWS = 600;
+
+/* A line as strides: [cell, lower point, metres], the upper point being
+   the next one round. Every `every`th stride is kept and stands for the
+   ones between. */
+function stridesOf(line, every) {
+  const out = [];
+  let n = 0;
+  for (let i = 1; i < line.length; i++) {
+    const d = metresBetween(line[i - 1], line[i]);
+    if (!(d > 0)) continue;
+    const lower = Math.floor(headingOf(line[i - 1], line[i])) % DIRS;
+    const parts = Math.ceil(d / STRIDE);
+    for (let k = 1; k <= parts; k++) {
+      if (n++ % every) continue;
+      const f = k / parts;
+      out.push([
+        cellOf([line[i - 1][0] + (line[i][0] - line[i - 1][0]) * f, line[i - 1][1] + (line[i][1] - line[i - 1][1]) * f]),
+        lower,
+        d / parts
+      ]);
+    }
+  }
+  return out;
+}
+
+export async function riddenShare(env, lines) {
+  let ways;
+  let keys;
+  for (let every = 1; ; every++) {
+    ways = lines.map((line) => stridesOf(line, every));
+    keys = new Set();
+    for (const strides of ways) {
+      for (const [cell, lower] of strides) keys.add(cell + ':' + lower).add(cell + ':' + (lower + 1) % DIRS);
+    }
+    if (keys.size <= SCORE_ROWS) break;
+  }
+  /* A lookup on the key, `cell`, for each of at most SCORE_ROWS values —
+     WHAT A READ COSTS above. */
+  const { results } = await env.DB
+    .prepare('SELECT cell, rides, timed, steady FROM ride_sections WHERE cell IN (SELECT value FROM json_each(?1))')
+    .bind(JSON.stringify([...keys]))
+    .all();
+  const rows = new Map((results || []).map((row) => [row.cell, row]));
+  return ways.map((strides) => {
+    let all = 0;
+    let ridden = 0;
+    let score = 0;
+    for (const [cell, lower, d] of strides) {
+      all += d;
+      const found = [rows.get(cell + ':' + lower), rows.get(cell + ':' + (lower + 1) % DIRS)].filter(Boolean);
+      const sum = (name) => found.reduce((n, row) => n + row[name], 0);
+      if (sum('rides') < MIN_RIDES) continue;
+      ridden += d;
+      score += d * (sum('timed') ? sum('steady') / sum('timed') : UNTIMED);
+    }
+    return all ? { share: ridden / all, score: score / all } : { share: 0, score: 0 };
+  });
 }
