@@ -607,15 +607,16 @@ export function rowToStore(row) {
 }
 
 /* Somebody's public lists, newest edit first — the order the ones they never
-   dragged stand in at the bottom of their page. `extra` is whatever else the
-   reader wants of each list: the profile asks for its keeps. */
-export async function publicLists(env, ownerId, extra) {
+   dragged stand in at the bottom of their page — each with how many places
+   it holds and how many people kept it. Both are on the list's own row,
+   kept by the writes in ./lists.js, so this reads the owner's lists on
+   idx_lists_owner and nothing else, at most the twenty-four they can make. */
+export async function publicLists(env, ownerId) {
   const { results } = await readingPins(env, (pins) => env.DB
     .prepare(
       'SELECT l.id AS id, l.title AS title, ' + pinSelect(pins) +
-      'COUNT(i.place_id) AS n' + (extra ? ', ' + extra : '') + ' ' +
-      'FROM lists l LEFT JOIN list_items i ON i.list_id = l.id ' +
-      'WHERE l.owner = ? AND l.public = 1 GROUP BY l.id ORDER BY l.updated_at DESC'
+      'l.items AS n, l.keeps AS keeps ' +
+      'FROM lists l WHERE l.owner = ? AND l.public = 1 ORDER BY l.updated_at DESC'
     )
     .bind(ownerId)
     .all());
@@ -760,12 +761,8 @@ export async function readProfile(context, name) {
   const lines = readLines(row.links);
 
   /* Their public lists — the same row the index draws for your own, minus
-     the ones nobody else may read. The keeps are a scalar subquery rather
-     than a second join for the reason the index gives: two aggregates over
-     two tables in one GROUP BY multiply each other, and a list of ten places
-     kept by three people would report thirty of each. */
-  const results = await publicLists(env, row.id,
-    '(SELECT COUNT(*) FROM list_keeps k WHERE k.list_id = l.id) AS keeps');
+     the ones nobody else may read. */
+  const results = await publicLists(env, row.id);
 
   let kept = 0;
   for (const r of results) kept += r.keeps;

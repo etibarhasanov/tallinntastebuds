@@ -36,8 +36,8 @@
  *     on somebody else's list is the whole point of the gesture, so it is
  *     routed above the ownership check and does its own narrower one — the
  *     list must exist and be public, the row it writes is keyed by the
- *     session's own user id, and it touches no column of the list itself.
- *     See keep().
+ *     session's own user id, and the one column of the list it touches is
+ *     `keeps`, set to a recount of those rows. See keep().
  *   - A place id that is on none of the three rolls — data/places.json,
  *     google_venues, or the added_places somebody typed in — is refused, so
  *     nobody can fill the table with rows for places that do not exist. That
@@ -108,6 +108,21 @@ const MAX_KEPT = 200;
 const MAX_ADDED = 100;
 const MAX_NAME = 80;
 const MAX_ADDRESS = 120;
+
+/* The two counts a list carries on its own row, so /lists can sort and
+   filter by them without counting anything — mostKept() in _mostkept.js.
+   Each sets the column to a recount of one list's rows on that table's key,
+   never a +1, in the same batch as the write it follows, so neither can
+   drift from what it counts. KEEPS_SQL binds the list id twice; ITEMS_SQL
+   the edit time, which every add and drop stamps anyway, then the id twice.
+
+   Deleting an account takes its keeps away without recounting the lists it
+   kept, on purpose: those people did keep them, and the number being one
+   high until somebody next keeps or drops is not worth the code. */
+const KEEPS_SQL =
+  'UPDATE lists SET keeps = (SELECT COUNT(*) FROM list_keeps WHERE list_id = ?) WHERE id = ?';
+const ITEMS_SQL =
+  'UPDATE lists SET updated_at = ?, items = (SELECT COUNT(*) FROM list_items WHERE list_id = ?) WHERE id = ?';
 /* The three lengths a list has to fit, mirrored by assets/lists.js. */
 const MAX_TITLE = 60;
 const MAX_INTRO = 200;
@@ -242,22 +257,17 @@ export async function onRequestGet(context) {
   if (!user) return json({ ready: true, user: null, lists: [] }, 200);
 
   /* The index: every list this account holds, newest edit first, each with
-     how many places are on it. One row per list however long the lists are —
-     the count comes out of the join rather than out of a second round of
-     queries, one per list.
-
-     The keeps are a scalar subquery rather than a second join: two aggregates
-     over two different tables in one GROUP BY multiply each other, and a list
-     of ten places kept by three people would report thirty of each. At
-     twenty-four lists it is twenty-four counts on an indexed prefix. */
+     how many places are on it and how many people kept it — the two counts
+     the list's own row carries, KEEPS_SQL and ITEMS_SQL above.
+     So this reads the account's lists on idx_lists_owner and nothing else,
+     at most the twenty-four an account can make. */
   const { results } = await readingPins(env, (pins) => env.DB
     .prepare(
       'SELECT l.id AS id, l.title AS title, l.intro AS intro, l.public AS public, ' +
-      'l.updated_at AS updated_at, COUNT(i.place_id) AS n, ' +
+      'l.updated_at AS updated_at, l.items AS n, ' +
       pinSelect(pins) +
-      '(SELECT COUNT(*) FROM list_keeps k WHERE k.list_id = l.id) AS keeps ' +
-      'FROM lists l LEFT JOIN list_items i ON i.list_id = l.id ' +
-      'WHERE l.owner = ? GROUP BY l.id ORDER BY l.updated_at DESC'
+      'l.keeps AS keeps ' +
+      'FROM lists l WHERE l.owner = ? ORDER BY l.updated_at DESC'
     )
     .bind(user.id)
     .all());
@@ -278,15 +288,14 @@ export async function onRequestGet(context) {
     .prepare(
       'SELECT l.id AS id, l.title AS title, l.intro AS intro, ' +
       'l.updated_at AS updated_at, u.username AS by, k.created_at AS kept_at, ' +
-      'COUNT(i.place_id) AS n, ' +
+      'l.items AS n, ' +
       pinSelect(pins) +
-      '(SELECT COUNT(*) FROM list_keeps k2 WHERE k2.list_id = l.id) AS keeps ' +
+      'l.keeps AS keeps ' +
       'FROM list_keeps k ' +
       'JOIN lists l ON l.id = k.list_id ' +
       'LEFT JOIN users u ON u.id = l.owner ' +
-      'LEFT JOIN list_items i ON i.list_id = l.id ' +
       'WHERE k.owner = ? AND l.public = 1 ' +
-      'GROUP BY l.id ORDER BY k.created_at DESC'
+      'ORDER BY k.created_at DESC'
     )
     .bind(user.id)
     .all());
@@ -574,38 +583,36 @@ async function keep(context, id, row, user, on) {
         .first();
       if (!already) return json({ error: 'too-many' }, 429);
     }
-
-    /* DO NOTHING rather than an update: a keep carries nothing but the fact
-       and the moment, and a second press is not a new moment. Keeping the
-       first created_at is what holds a collection in the order it was
-       actually built. */
-    await env.DB
-      .prepare(
-        'INSERT INTO list_keeps (list_id, owner, created_at) VALUES (?, ?, ?) ' +
-        'ON CONFLICT (list_id, owner) DO NOTHING'
-      )
-      .bind(id, user.id, now)
-      .run();
-  } else {
-    await env.DB
-      .prepare('DELETE FROM list_keeps WHERE list_id = ? AND owner = ?')
-      .bind(id, user.id)
-      .run();
   }
 
-  /* Read back rather than worked out from what was sent. A press that hit the
-     conflict clause changed nothing, and a page told "+1" for it would drift
-     from the database and never be corrected — the same reasoning that makes
-     save_counts a recount and not an increment.
+  /* DO NOTHING rather than an update: a keep carries nothing but the fact
+     and the moment, and a second press is not a new moment. Keeping the
+     first created_at is what holds a collection in the order it was
+     actually built.
 
-     Counted off the rows themselves, here and everywhere else this number is
-     asked for, so there is nothing that can be a version behind them. */
-  const keeps = await env.DB
-    .prepare('SELECT COUNT(*) AS n FROM list_keeps WHERE list_id = ?')
-    .bind(id)
-    .first();
+     Then `lists.keeps` set to a recount of the list's keeps, in the same
+     batch, and handed back by the same statement. A recount rather than +1,
+     because a press that hit the conflict clause changed nothing, and a +1
+     for it would drift from the rows and never be corrected — the reasoning
+     that makes save_counts a recount. It reads one list's keeps on
+     list_keeps' key, and it is what lets /lists sort by keeps without
+     counting them — the read in mostKept() in _mostkept.js. */
+  const [, kept] = await env.DB.batch([
+    on
+      ? env.DB
+        .prepare(
+          'INSERT INTO list_keeps (list_id, owner, created_at) VALUES (?, ?, ?) ' +
+          'ON CONFLICT (list_id, owner) DO NOTHING'
+        )
+        .bind(id, user.id, now)
+      : env.DB
+        .prepare('DELETE FROM list_keeps WHERE list_id = ? AND owner = ?')
+        .bind(id, user.id),
+    env.DB.prepare(KEEPS_SQL + ' RETURNING keeps').bind(id, id)
+  ]);
+  const row0 = kept.results && kept.results[0];
 
-  return json({ id: id, kept: on, keeps: keeps ? keeps.n : 0 }, 200);
+  return json({ id: id, kept: on, keeps: row0 ? row0.keeps : 0 }, 200);
 }
 
 /* The title, the line under it, whether the link works for anybody but its
@@ -788,7 +795,7 @@ async function add(context, body, id) {
         "WHERE excluded.say <> ''"
       )
       .bind(id, place, known.name, words(body.say, MAX_SAY), id, now),
-    env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id)
+    env.DB.prepare(ITEMS_SQL).bind(now, id, id)
   ]);
 
   return json({ place: place, name: known.name }, 200);
@@ -850,7 +857,7 @@ async function drop(context, body, id) {
     env.DB
       .prepare('DELETE FROM list_items WHERE list_id = ? AND place_id = ?')
       .bind(id, place),
-    env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id)
+    env.DB.prepare(ITEMS_SQL).bind(now, id, id)
   ]);
   return json({ dropped: place }, 200);
 }

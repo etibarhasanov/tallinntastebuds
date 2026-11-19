@@ -377,8 +377,8 @@ export function build() {
   );
 
   out.push(
-    'INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at, pin)\nVALUES\n' +
-    ranked.map((list) => `  (${q(list.id)}, ${q(USER.id)}, ${q(list.title)}, ${q(list.overall ? INTRO_OVERALL : INTRO)}, 1, ${NOW}, ${NOW}, ${q(list.pin)})`).join(',\n') + '\n' +
+    'INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at, pin, items)\nVALUES\n' +
+    ranked.map((list) => `  (${q(list.id)}, ${q(USER.id)}, ${q(list.title)}, ${q(list.overall ? INTRO_OVERALL : INTRO)}, 1, ${NOW}, ${NOW}, ${q(list.pin)}, ${list.places.length})`).join(',\n') + '\n' +
     'ON CONFLICT(id) DO UPDATE SET\n' +
     /* owner among them, so renaming the account in this file actually moves
        its lists on a database that already holds them. Without it a rename
@@ -396,6 +396,12 @@ export function build() {
        have survived a refresh either — this statement is what every refresh
        runs, and a column it does not name is a column that drifts. */
     '    pin = excluded.pin,\n' +
+    /* And how many places it holds, which the list's own row carries so
+       /lists can hold a list to its four-place floor without counting —
+       ITEMS_SQL in functions/api/lists.js keeps it for every other list.
+       The places replaced below are exactly these, so the number is known
+       here rather than counted after. */
+    '    items = excluded.items,\n' +
     '    updated_at = excluded.updated_at;'
   );
 

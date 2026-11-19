@@ -914,15 +914,47 @@ CREATE TABLE IF NOT EXISTS lists (
   -- functions/api/_pins.js asks for it once per isolate and remembers the
   -- answer, so a deploy that lands before the ALTER draws plain pins instead
   -- of a 500.
-  pin        TEXT    NOT NULL DEFAULT ''
+  pin        TEXT    NOT NULL DEFAULT '',
+  -- THREE COUNTS, ON THE LIST'S OWN ROW
+  --
+  -- How many places it holds, how many people kept it, and how many times it
+  -- was opened — what /lists filters and sorts by, read here so that page
+  -- reads this table and nothing else (mostKept() in
+  -- functions/api/_mostkept.js). Before 2026-11-19 it worked all three out
+  -- on every load: a GROUP BY over list_keeps, a seek into press_counts per
+  -- list and a look into list_items per list, 50 to 100 rows a page at 26
+  -- lists, growing with lists times keeps times items.
+  --
+  -- Each is set to a recount of its own source on that source's key, in the
+  -- batch that changes it, never nudged:
+  --
+  --   items  ITEMS_SQL in functions/api/lists.js, on add() and drop(); the
+  --          Google lists' load writes it with their places
+  --   keeps  KEEPS_SQL in functions/api/lists.js, on keep(). Deleting an
+  --          account leaves the lists it kept one high, on purpose: they
+  --          were kept, and nobody needs that number exact
+  --   opens  POST /api/stats, copied off press_counts' running total in the
+  --          batch that bumps it
+  --
+  -- Added by hand, so SQLite appends them after pin:
+  --
+  --   ALTER TABLE lists ADD COLUMN keeps INTEGER NOT NULL DEFAULT 0;
+  --   ALTER TABLE lists ADD COLUMN opens INTEGER NOT NULL DEFAULT 0;
+  --   ALTER TABLE lists ADD COLUMN items INTEGER NOT NULL DEFAULT 0;
+  --
+  -- and then filled once from what is there, a list at a time by id. Unlike
+  -- pin, no reader survives their absence: the ALTERs go in before the code
+  -- that reads them is deployed.
+  keeps      INTEGER NOT NULL DEFAULT 0,
+  opens      INTEGER NOT NULL DEFAULT 0,
+  items      INTEGER NOT NULL DEFAULT 0
 );
 -- "My lists, newest first", which is the whole of the index page.
 CREATE INDEX IF NOT EXISTS idx_lists_owner ON lists (owner, updated_at DESC);
--- /lists, which reads every public list and puts the most kept first.
--- This index is what narrows that to the public ones. The order itself is a
--- count over list_keeps, which no index on this table can reach, so the
--- tie-break between two lists kept by the same number of people is the only
--- part of the sort this half serves.
+-- The public ones by their last edit. /lists sorts by the three counts above
+-- and reads every row of this table to do it — no index on any of them, the
+-- owner's call on 2026-11-19, since a table of a few dozen rows is cheaper
+-- walked than indexed three ways.
 CREATE INDEX IF NOT EXISTS idx_lists_public ON lists (public, updated_at DESC);
 
 -- One row is one place on one list, with what its owner said about it.
@@ -1590,8 +1622,7 @@ CREATE INDEX IF NOT EXISTS idx_feedback_ip ON feedback (ip_hash, created_at);
 -- One row is one person putting a heart on one piece of feedback: agreement,
 -- and the only number this page keeps.
 --
--- Deliberately no counts table of the kind save_counts is, and the note over
--- `list_keeps` above is the argument in full: a counts table is a migration
+-- Deliberately no counts table of the kind save_counts is: a counts table is a migration
 -- and a backfill run by hand on a live database with no backup in this
 -- repository, plus a second place for the same number to live and a way for
 -- the two to disagree. Counting is one row read per heart and one page asks.

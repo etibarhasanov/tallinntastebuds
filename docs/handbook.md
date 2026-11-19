@@ -8217,9 +8217,11 @@ reader got there — the directory, a link somebody sent, a byline, a search
 result. Not when the owner opens their own, which is checked in `boot()`: a
 list its author reloads while editing it would otherwise climb a page ranked
 on strangers. The row is one upsert bounded by the number of lists there are
-rather than by the traffic, and the directory reads it as one indexed seek per
-candidate row. `db/schema.sql` over `press_counts` is the whole of the table's
-reasoning, and it needed no change to the schema to grow this third kind.
+rather than by the traffic. The same batch copies the new total onto the
+list's own row, `lists.opens`, which is what the directory sorts by — so it
+reads no `press_counts` at all. `db/schema.sql` over `press_counts` is the
+whole of that table's reasoning, and over `lists` the reasoning for its three
+counts.
 
 **One column, and nothing above it.** The five lists Google's numbers wrote
 were a strip of their own at the top — **Start here**, a compact card each,
@@ -8443,26 +8445,30 @@ crawler is allowed to stop following, and there is no reason to spend it.
 `assets/lists.js` still recognises all three paths, for the deployment with
 no Functions in it where there is nothing to answer the redirect.
 
-**Where the number comes from.** `list_keeps`, counted, every time it is
-asked. There is no counts table, and there was one for about an hour.
+**Where the number comes from.** `lists.keeps`, a column on the list's own
+row, and the page's other two numbers beside it — `opens`, how many times the
+list was opened, and `items`, how many places it holds, which the four-place
+floor is held to. So `/lists` reads the `lists` table and nothing else.
 
-The note over `list_keeps` in `db/schema.sql` had been standing for a while
-saying that the day something asked for these counts in bulk was the day to
-give them the `save_counts` treatment. This page is that day, so the table
-was written — and then taken out again, because the comparison the note was
-making does not hold. `save_counts` exists because the map asks for
-eighty numbers on every load, over a table that grows with every
-anonymous save from every visitor. A keep needs an account, one account can
-hold two hundred of them, and one page asks. It is one row read per keep in
-the database, to draw twenty rows.
+It counted all three on every load until 2026-11-19: a `GROUP BY` over every
+row of `list_keeps`, a seek into `press_counts` per list, and a look into each
+list's `list_items` for the floor — 50 to 100 rows a page at 26 lists, and
+growing with lists times keeps times items. The meter files a statement under
+the first table it names, so it showed as a thousand rows of `lists` a day on
+a site with 26 of them, which is how it was noticed.
 
-What the table cost, against that, was a migration and a backfill to be run
-by hand on a live database that has no backup in this repository — plus a
-second home for a number that already had one, and a way for the two to
-disagree. That is a real cost today bought against a hypothetical one later,
-which is the wrong way round. The note is still in `db/schema.sql`, now
-naming the day more precisely: when the `GROUP BY` in
-`functions/api/_mostkept.js` shows up in a query time.
+There was a counts table for about an hour once, and it went: a keep needs an
+account, one page asked, and a migration run by hand was a real cost bought
+against a hypothetical one. The hypothetical came, so each count is now kept
+the way `save_counts` is — recomputed from its own source, on that source's
+key, in the batch that changes it, never nudged by one. `KEEPS_SQL` in
+`functions/api/lists.js` on a keep or an un-keep — deleting an account leaves
+the lists it kept one high, on purpose, since they were kept and nobody needs
+that number exact; `ITEMS_SQL` beside it on an add or a drop; and the
+opens copied off `press_counts`' running total by `POST /api/stats` in the
+batch that bumps it. There is no index for the three sorts, on purpose: at a
+few dozen lists, reading all of them is cheaper than keeping three indexes,
+and the comment above the read in `mostKept()` carries the number.
 
 **Nothing about a list itself changed.** No new button on it, no new state,
 no third option under **Who can open it**. A keep already existed and was a
@@ -9341,14 +9347,11 @@ count of people rather than a count of presses. And `lists` carries `pin` and
 survives the absence of — see **The two columns, and the afternoon they do
 not exist** under **The pins**.
 
-There is deliberately no counts table behind the keeps, the way `save_counts`
-sits behind the saves. That one exists because the map asks for eighty
-numbers at once and a `GROUP BY` over every save would cost one row read per
-save to answer. Nothing asks that question of lists: a keep count is wanted one
-list at a time, and the primary key answers it on an indexed prefix. The day
-something does ask it in bulk — a directory ordered by how many people kept
-each list — is the day this wants the same treatment, written the same way:
-recomputed inside the batch that changes it, never nudged by one.
+The keeps are counted onto the list's own row, `lists.keeps`, the way
+`save_counts` sits behind the saves: recomputed inside the batch that changes
+them, never nudged by one — the second **Where the number comes from** under
+**Public lists**. `lists.items` and `lists.opens` beside it are the same idea for the
+places on a list and the times it was opened.
 
 Deleting a list deletes the keeps on it, in the same batch. Left behind they
 would be invisible — the index joins them to a list that is gone — and still
