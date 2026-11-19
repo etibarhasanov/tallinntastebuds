@@ -56,9 +56,10 @@ must keep, and where this area has gone wrong.
     the rails, and what `look` counts about it.
   - **The four styles, dealt** — the colour each newcomer is given, and
     what `style` counts about it.
-  - **By device** (a `###` under **Visitors**) — every fact filed a second
-    time under phone, tablet or desktop, and the chips that read it on all
-    four pages. A new kind or flow must not have a dot in it, or it reads
+  - **By device** (a `###` under **Visitors**) — every fact filed under phone, tablet or
+    desktop — in `visitor_counts` under that alone since 2026-11-19, every
+    device being added up by `everyDevice()` when it is read — and the chips
+    that read it on all four pages. A new kind or flow must not have a dot in it, or it reads
     as one device's.
 - The header of the file you are standing in. The four behind the count
   are written as essays, section by section, and each section is the
@@ -236,7 +237,7 @@ Each of these exists twice, and `grep -n` finds both:
 | `admin/*.html` | `PAGES` in `tools/stamp.mjs` | the five stamped pages |
 | `SHAPE` in `functions/api/counter.js` | `COUNTER_SHAPE` in `assets/app.js`, which puts it on the address the flag counter is asked at | the counter's answer, so no cache hands the card an older one |
 | `STAY_PAGES` in `functions/api/_visitors.js` | `firstStay()` in `assets/track.js`, which tells the map, the flashcards and `other` apart by the same addresses `PAGES` gives them; the three columns of `stays()` in `assets/visitors.js` | where a newcomer's time is told apart by colour — the `stay` kind |
-| `DEVICES` in `functions/api/_visitors.js` | `device()` in `assets/track.js`; `DEVICE_IDS` and `DEVICES` in `assets/visitors.js`, `found.js`, `stats.js` and `flows.js` | the three devices every count is filed under a second time, as `<device>.<kind>` |
+| `DEVICES` in `functions/api/_visitors.js` | `device()` in `assets/track.js`; `DEVICE_IDS` and `DEVICES` in `assets/visitors.js`, `found.js`, `stats.js` and `flows.js` | the three devices every count is filed under, as `<device>.<kind>` |
 
 ## Adding a press
 

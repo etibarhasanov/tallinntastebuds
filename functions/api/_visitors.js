@@ -275,21 +275,37 @@
  *
  * BY DEVICE
  *
- * Every fact a page reports is counted twice: once as it always was, and
- * once more under its device, the kind written `<device>.<kind>` — so
- * `phone.view`, `desktop.press`, `tablet.rail` — with the id and the
- * number the same. The device is the one assets/track.js reads off the
- * primary pointer and the width, and both reports carry it. No kind had a
- * dot in it before, so a row without one is every device together and a
- * row with one is one device, in the same table and under the same key,
+ * Every fact a page reports is filed under its device, the kind written
+ * `<device>.<kind>` — so `phone.view`, `desktop.press`, `tablet.rail`. The
+ * device is the one assets/track.js reads off the primary pointer and the
+ * width, and both reports carry it. No kind had a dot in it before, so a
+ * row with one is one device's, in the same table and under the same key,
  * and no schema moved. /admin/visitors, /admin/found, /admin/stats and
- * /admin/flows each read either half, by `?device=`, through forDevice()
- * below and its likes in ./_flows.js and ./stats.js.
+ * /admin/flows each read one device or all of them, by `?device=`, through
+ * forDevice() below and its likes in ./_flows.js and ./stats.js.
  *
- * It doubles the rows a report writes and the size of a day, which is
- * still bounded by the kinds rather than the traffic: an OPEN kind is
- * capped per device as it is overall, by its own kind. Three kinds are not
- * filed again — `device`, which would only say a phone is a phone,
+ * ONCE, AND ADDED UP WHEN IT IS READ
+ *
+ * Until 2026-11-19 each fact was filed twice, once with no device and once
+ * under it, and the row with no dot was every device together. That made
+ * one page opened twenty-four rows written, against the hundred thousand a
+ * day D1 writes for nothing — about three thousand page views — when the
+ * second row said nothing the three devices' rows do not add up to. So a
+ * report that names its device is filed under it alone, and every device
+ * together is worked out by the reader: everyDevice() below, for the
+ * owner's pages, and counterSecs() for the flag counter. A row with no dot
+ * is still what a day from before holds, and what a report with no device
+ * files, so for each day, kind and id the reader takes the larger of the
+ * row with no dot and the devices' rows added together: the first on a day
+ * from before, where it holds them all, and the second since. The day the
+ * change shipped has both, each short of the other's part of the day, and
+ * reads a little low. Only visitor_counts changed: press_counts keeps no
+ * day, so nothing could say which of its rows were from before, and it and
+ * flow_counts are still filed twice.
+ *
+ * The size of a day is still bounded by the kinds rather than the traffic:
+ * an OPEN kind is capped per device, by its own kind. Three kinds are
+ * filed with no device — `device`, which would only say a phone is a phone,
  * `phone`, which is phones already, and `shown`, which nothing reads by
  * device — and nor is anything counted by a
  * route rather than a page, since no route knows the device: the chat
@@ -623,7 +639,7 @@ const PHONE_ARMS = ['a', 'b', 'none'].flatMap((rail) => COLOURS.map((colour) => 
    COME, AND ON WHAT. */
 export const DEVICES = ['phone', 'tablet', 'desktop'];
 
-/* The kinds not filed a second time by device, and the ones a device's view
+/* The kinds never filed under a device, and the ones a device's view
    reads for every device because only a route counts them — BY DEVICE. */
 const ANY_DEVICE = new Set(['device', 'phone', 'shown']);
 const SHARED = new Set(['ask', 'use']);
@@ -644,7 +660,7 @@ export function askedDevice(params) {
    phones, which is phones already — or, with no device, the rows of every
    device together. BY DEVICE. */
 export function forDevice(rows, device) {
-  if (!device) return rows.filter((r) => !r.kind.includes('.'));
+  if (!device) return everyDevice(rows);
   const at = device + '.';
   const out = [];
   for (const r of rows) {
@@ -652,6 +668,24 @@ export function forDevice(rows, device) {
     else if (SHARED.has(r.kind) || (r.kind === 'phone' && device === 'phone')) out.push(r);
   }
   return out;
+}
+
+/* Every device together, a row for each day, kind and id: the larger of the
+   row filed with no device and the devices' rows added up — ONCE, AND ADDED
+   UP WHEN IT IS READ. */
+function everyDevice(rows) {
+  const found = new Map();
+  for (const r of rows) {
+    const dot = r.kind.indexOf('.');
+    const own = dot !== -1 && DEVICES.includes(r.kind.slice(0, dot));
+    if (dot !== -1 && !own) continue;
+    const kind = own ? r.kind.slice(dot + 1) : r.kind;
+    const key = r.day + '\u0000' + kind + '\u0000' + r.id;
+    const row = found.get(key) || { day: r.day, kind, id: r.id, whole: 0, parts: 0 };
+    row[own ? 'parts' : 'whole'] += r.n;
+    found.set(key, row);
+  }
+  return [...found.values()].map((r) => ({ day: r.day, kind: r.kind, id: r.id, n: Math.max(r.whole, r.parts) }));
 }
 
 /* How a question to the chat ended, as `source` in ./ask.js's answer says
@@ -816,12 +850,13 @@ function split(facts, colour, who, fact, n) {
   if (colour) facts.push(['style', colour + ':' + who + ':' + fact, n]);
 }
 
-/* One batch of [kind, id, n] facts, today, and the same again under the
-   device where the report named one — BY DEVICE. True when it was counted. */
+/* One batch of [kind, id, n] facts, today, each under the device where the
+   report named one and the kind is filed by device — BY DEVICE, and ONCE,
+   AND ADDED UP WHEN IT IS READ. True when it was counted. */
 async function file(env, facts, device) {
   const day = today();
   const all = device
-    ? facts.concat(facts.filter(([kind]) => !ANY_DEVICE.has(kind)).map(([kind, id, n]) => [device + '.' + kind, id, n]))
+    ? facts.map(([kind, id, n]) => [ANY_DEVICE.has(kind) ? kind : device + '.' + kind, id, n])
     : facts;
   try {
     await env.DB.batch(all.map(([kind, id, n]) => add(env, day, kind, id, n)));
@@ -1667,8 +1702,7 @@ export async function readFound(env, span, device, origin) {
   const first = dayBack(2 * span - 1);
   const cut = dayBack(span - 1);
   const at = device ? device + '.' : '';
-  const kinds = FOUND.map((k) => at + k);
-  const wanted = new Set(kinds);
+  const wanted = new Set(FOUND);
   const began = ['found', 'ref', 'tag', 'search'].map((k) => at + k);
   let rows;
   let since;
@@ -1684,7 +1718,7 @@ export async function readFound(env, span, device, origin) {
   } catch (e) {
     return null;
   }
-  rows = { results: forDevice(rows.filter((r) => wanted.has(r.kind)), device) };
+  rows = { results: forDevice(rows, device).filter((r) => wanted.has(r.kind)) };
 
   const now = foundBlank();
   const was = foundBlank();
@@ -1788,10 +1822,8 @@ export async function readCounter(env) {
     const [rows, secs] = await Promise.all([
       past.exact
         ? env.DB.prepare("SELECT day, kind, id, n FROM visitor_counts WHERE day = ?1 AND kind = 'shown'").bind(now).all()
-        : env.DB.prepare(estimateSql('= ?1')).bind(now, JUDGED_COUNTRY).all(),
-      env.DB.prepare(
-        "SELECT SUM(n) AS n FROM visitor_counts WHERE day = ?1 AND kind = 'cohort' AND id IN ('new:secs', 'back:secs')"
-      ).bind(now).first()
+        : env.DB.prepare(ESTIMATE_SQL).bind(now).all(),
+      counterSecs(env, now)
     ]);
     addCounterRows(days, countries, rows.results || []);
 
@@ -1806,7 +1838,7 @@ export async function readCounter(env) {
       if (day >= weekFrom) week += days[day].fresh;
       if (day >= past.secsFrom) lately += days[day].visits;
     }
-    const spent = past.secs + ((secs && secs.n) || 0);
+    const spent = past.secs + secs;
     const ranked = Object.keys(countries)
       .filter((id) => !NOWHERE.has(id))
       .map((id) => ({ id: id, n: Math.round(countries[id]) }))
@@ -1908,16 +1940,14 @@ async function fold(env, total, last) {
     const [got, secs] = await Promise.all([
       exactFrom && day >= exactFrom
         ? env.DB.prepare("SELECT day, kind, id, n FROM visitor_counts WHERE day = ?1 AND kind = 'shown'").bind(day).all()
-        : env.DB.prepare(estimateSql('= ?1')).bind(day, JUDGED_COUNTRY).all(),
-      env.DB.prepare(
-        "SELECT SUM(n) AS n FROM visitor_counts WHERE day = ?1 AND kind = 'cohort' AND id IN ('new:secs', 'back:secs')"
-      ).bind(day).first()
+        : env.DB.prepare(ESTIMATE_SQL).bind(day).all(),
+      counterSecs(env, day)
     ]);
     const days = {};
     addCounterRows(days, countries, got.results || []);
     const d = days[day] || { fresh: 0, visits: 0 };
     fresh += d.fresh;
-    rows.push([day, d.fresh, d.visits, (secs && secs.n) || 0]);
+    rows.push([day, d.fresh, d.visits, secs]);
   }
   if (!rows.length) return;
   await env.DB.batch(rows.map((r) => env.DB
@@ -1925,6 +1955,22 @@ async function fold(env, total, last) {
     .bind(...r)).concat(env.DB
     .prepare('UPDATE counter_total SET through = ?, exact_from = ?, fresh = ?, countries = ? WHERE id = 1 AND through IS ?')
     .bind(last, exactFrom, fresh, JSON.stringify(countries), was)));
+}
+
+/* The seconds everybody spent on one day: the `cohort` kind's two `secs`
+   rows, with no device and under each — eight lookups on the key at the
+   most, 16 rows read for 2026-11-18, measured the day after — and added up
+   as everyDevice() adds them. */
+const SECS_KINDS = ['cohort'].concat(DEVICES.map((d) => d + '.cohort'));
+async function counterSecs(env, day) {
+  const { results } = await env.DB
+    .prepare(
+      'SELECT day, kind, id, n FROM visitor_counts WHERE day = ?1 AND kind IN (' +
+      SECS_KINDS.map(() => '?').join(',') + ") AND id IN ('new:secs', 'back:secs')"
+    )
+    .bind(day, ...SECS_KINDS)
+    .all();
+  return everyDevice(results || []).reduce((sum, r) => sum + r.n, 0);
 }
 
 function parsed(text) {
@@ -1936,17 +1982,15 @@ function parsed(text) {
   }
 }
 
-/* The rows a day is estimated from, for the days `match` names: the
-   visitors and the countries, and the desktops in the United States among
-   them. ?2 is the judged country; ?1 is today's date where `match` uses it. */
-function estimateSql(match) {
-  return (
-    'SELECT day, kind, id, n FROM visitor_counts WHERE day ' + match +
-    " AND kind IN ('visitor', 'desktop.visitor', 'country') " +
-    'UNION ALL SELECT day, kind, id, n FROM visitor_counts WHERE day ' + match +
-    " AND kind = 'desktop.country' AND id = ?2"
-  );
-}
+/* The rows one day, ?1, is estimated from: the visitors and the countries,
+   with no device and under each, since a day may hold either — ONCE, AND
+   ADDED UP WHEN IT IS READ — and the desktops in the United States are among
+   them. Eight kinds by the key beside the day. Only a day from before
+   `shown`, or a database that has no `shown` row yet, is read this way. */
+const ESTIMATE_SQL =
+  'SELECT day, kind, id, n FROM visitor_counts WHERE day = ?1 AND kind IN (' +
+  "'visitor', 'phone.visitor', 'tablet.visitor', 'desktop.visitor', " +
+  "'country', 'phone.country', 'tablet.country', 'desktop.country')";
 
 /* Rows of either kind of day into day -> { fresh, visits } and
    country -> visits: `shown` rows as they are, the rest estimated a day at a
@@ -1954,20 +1998,25 @@ function estimateSql(match) {
 function addCounterRows(days, countries, rows) {
   const into = (day) => days[day] || (days[day] = { fresh: 0, visits: 0 });
   const byDay = {};
+  const of = (day) => byDay[day] || (byDay[day] = { fresh: 0, back: 0, dFresh: 0, dBack: 0, us: 0, countries: {} });
+  const estimated = [];
   for (const r of rows) {
-    if (r.kind === 'shown') {
-      const [who, id] = String(r.id).split(':');
-      const day0 = into(r.day);
-      if (who === 'new') day0.fresh += r.n;
-      day0.visits += r.n;
-      if (id) countries[id] = (countries[id] || 0) + r.n;
-      continue;
-    }
-    const d = byDay[r.day] || (byDay[r.day] = { fresh: 0, back: 0, dFresh: 0, dBack: 0, us: 0, countries: {} });
+    if (r.kind !== 'shown') { estimated.push(r); continue; }
+    const [who, id] = String(r.id).split(':');
+    const day0 = into(r.day);
+    if (who === 'new') day0.fresh += r.n;
+    day0.visits += r.n;
+    if (id) countries[id] = (countries[id] || 0) + r.n;
+  }
+  /* Everybody, whichever way the day was filed, and then the desktops. */
+  for (const r of everyDevice(estimated)) {
+    const d = of(r.day);
     if (r.kind === 'visitor') d[r.id === 'back' ? 'back' : 'fresh'] += r.n;
-    else if (r.kind === 'desktop.visitor') d[r.id === 'back' ? 'dBack' : 'dFresh'] += r.n;
-    else if (r.kind === 'desktop.country') d.us += r.n;
     else d.countries[r.id] = (d.countries[r.id] || 0) + r.n;
+  }
+  for (const r of estimated) {
+    if (r.kind === 'desktop.visitor') of(r.day)[r.id === 'back' ? 'dBack' : 'dFresh'] += r.n;
+    else if (r.kind === 'desktop.country' && r.id === JUDGED_COUNTRY) of(r.day).us += r.n;
   }
   for (const day of Object.keys(byDay)) {
     const d = byDay[day];

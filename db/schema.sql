@@ -385,13 +385,16 @@ CREATE TABLE IF NOT EXISTS list_counts (
 --                   _visitors.js; GET /api/counter reads it
 --
 -- And every kind but 'device', 'phone', 'shown' and the ones a route counts ('ask',
--- 'use', a 'signup' of the Google round trip) a second time under the device
--- the report was made on, the kind written '<device>.<kind>' — 'phone.view',
+-- 'use', a 'signup' of the Google round trip) under the device the report
+-- was made on, the kind written '<device>.<kind>' — 'phone.view',
 -- 'desktop.press', 'tablet.rail' — with the same ids. No kind above has a
--- dot in it, so a row without one is every device and a row with one is one
--- device. BY DEVICE in _visitors.js, since 2026-10-06; press_counts and
--- flow_counts are split the same way, by '<device>.<kind>' and
--- '<device>.<flow>'.
+-- dot in it, so a row with one is one device's. From 2026-10-06 to
+-- 2026-11-19 each was filed twice, with the dot and without, and the row
+-- without was every device; since then it is filed under its device alone
+-- and every device is the devices' rows added up by the reader — BY DEVICE
+-- and ONCE, AND ADDED UP WHEN IT IS READ in _visitors.js. press_counts and
+-- flow_counts are split by '<device>.<kind>' and '<device>.<flow>' and are
+-- still filed twice.
 --
 -- Nothing is filed under a person and there is no row per visit: the browser
 -- says whether this is its first page today, and the table only ever hears

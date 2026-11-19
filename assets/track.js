@@ -303,8 +303,8 @@ window.TTBTrack = (function () {
   /* A beacon survives the page being put away, which is when half of these
      are sent; fetch with keepalive is the same promise where there is no
      beacon. Nothing waits on either. Every report carries the device it
-     was made on, so the count can file it a second time under it — BY
-     DEVICE in functions/api/_visitors.js. */
+     was made on, which is what the count files it under — BY DEVICE in
+     functions/api/_visitors.js. */
   function send(body) {
     body.device = device();
     var data = JSON.stringify(body);
