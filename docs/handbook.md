@@ -3762,12 +3762,18 @@ round, there are few to choose between: more ways to weigh is the next
 thing this wants, and the day the five kinds were tried and taken back is
 why it is not here yet.
 
-**What it costs.** One read of `ride_sections` on a bike route, a lookup
-on the key for each square and direction under the ways, and it is the one
-thing in `/api/route` that opens the database. Six hundred rows at the
-very worst however many rides there are — a longer trip is sampled more
-coarsely to stay under it — so five million a day is 8,300 routes nobody
-had asked for that hour. No router is asked anything more. No database, no
+**What it costs.** A lookup in `ride_sections` on a bike route, on the key
+for each square and direction under the ways, and it is the one thing in
+`/api/route` that opens the database. It is billed a row for each square
+somebody has ridden that way and nothing for one nobody has: six hundred
+rows at the very worst however many rides there are — a longer trip is
+sampled more coarsely to stay under it — so five million a day is 8,300
+routes at the worst, and on 2026-11-19 a ride from Herne to Narva maantee
+read 36. Until that day it read 860: the squares went in as one JSON
+parameter under an `IN`, which D1 bills two rows a square asked, found or
+not, where the comment said a square not found cost nothing. They go in as
+`VALUES` now, fifty a statement in one batch — WHAT A READ COSTS in
+`_sections.js`. No router is asked anything more. No database, no
 table, or a table still waiting for its rebuild, is the answer exactly as
 the routers gave it. With a `heading` nothing is weighed: a new way every
 few hundred metres should not be a read each.
