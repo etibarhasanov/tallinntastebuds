@@ -241,6 +241,19 @@ export async function mostKept(context, opts) {
   const { from = '', q = '', user = null } = opts || {};
   const order = SORTS[sortOf(opts && opts.sort)];
 
+  /* A shelf rather than a page: Discover's two rows of lists, which print
+     SHELF of them each, a title and three names, and never draw a dot. Asked
+     for as a page they read twenty lists' first ten items and looked up
+     every dot's place, and threw away all but eight rows and every dot — a
+     refresh of /api/discover ran the item read thirty times for sixteen
+     cards. A shelf reads `shelf` lists and the first TASTE items of each,
+     and skips pins() altogether. A whole number between one and PAGE, or it
+     is a page as before. */
+  const shelf = Number.isInteger(opts && opts.shelf) && opts.shelf > 0
+    ? Math.min(opts.shelf, PAGE)
+    : 0;
+  const size = shelf || PAGE;
+
   /* A cursor that is not one is the first page rather than an error. It can
      only have come from a hand-edited URL, and the top of the page is the
      honest answer to that. */
@@ -328,11 +341,11 @@ export async function mostKept(context, opts) {
       select(pins) + search + after + ' ' +
       'ORDER BY ' + order.a + ' DESC, ' + order.b + ' DESC, l.id ASC LIMIT ?'
     )
-    .bind(...mineBind, MIN_ITEMS, ...searchBind, ...afterBind, PAGE + 1)
+    .bind(...mineBind, MIN_ITEMS, ...searchBind, ...afterBind, size + 1)
     .all());
 
-  const more = results.length > PAGE;
-  const rows = more ? results.slice(0, PAGE) : results;
+  const more = results.length > size;
+  const rows = more ? results.slice(0, size) : results;
 
   /* The first ten places off each list on the page, in the list's own order:
      one small indexed read per list, sent as a single batch. The first three
@@ -350,16 +363,19 @@ export async function mostKept(context, opts) {
      drop() takes a row out and leaves the numbering alone — only order()
      renumbers — so a list of three can sit at 0, 5 and 9. "The first ten"
      is the first ten of the list's own order, never the rows numbered under
-     ten. */
+     ten.
+
+     A shelf draws no dots, so it stops at the TASTE names it prints. */
   const items = {};
   if (rows.length) {
     const read = env.DB.prepare(
-      'SELECT place_id, name FROM list_items WHERE list_id = ? ORDER BY pos LIMIT ' + DOTS
+      'SELECT place_id, name FROM list_items WHERE list_id = ? ORDER BY pos LIMIT ' +
+      (shelf ? TASTE : DOTS)
     );
     const pages = await env.DB.batch(rows.map((r) => read.bind(r.id)));
     rows.forEach((r, i) => { items[r.id] = pages[i].results || []; });
   }
-  const dots = await pins(context, items);
+  const dots = shelf ? {} : await pins(context, items);
 
   const shape = (r) => ({
     id: r.id,
