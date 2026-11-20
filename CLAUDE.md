@@ -611,11 +611,12 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   ride is counted and not kept**: the answer is `{ "counted": true }` and
   has no `ride`, which is the one place here a field an app was promised is
   not sent — there is no ride to name, and the app marks a ride saved on
-  any 2xx and asks for the kept ride only where it was given an id. From
-  the same day it sends `request`, the UUID it gave the ride itself, and a
-  save that carries one is done once however often it arrives; and it sends
-  a ride saved while signed out without the session, so that ride is
-  counted and not kept even if the rider signed in before it went. A
+  any 2xx and asks for the kept ride only where it was given an id. Nothing
+  is remembered of such a save and nothing caps it: a ride whose answer was
+  lost is counted again when it is sent again, and `often` is an account's
+  word alone now. From the same day the app sends a ride saved while signed
+  out without the session, so that ride is counted and not kept even if
+  the rider signed in before it went. A
   ride waits on the phone until that answer comes, so the error words decide
   what becomes of it: `short`, `fast` and `malformed` are final and the ride
   is listed as not kept; `often` waits for

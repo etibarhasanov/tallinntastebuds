@@ -170,8 +170,8 @@
  * count on the site is recomputed rather than nudged, and this one cannot
  * be: recomputing it is reading every ride there is, and the rides that
  * were counted without being kept are not there to read. tally() hands the
- * statement back rather than running it, so a save can put it in one batch
- * with what has to happen, or not happen, together with it.
+ * statement back rather than running it, so a save can put a ride's runs
+ * in one batch and have the ride counted whole or not at all.
  *
  * WHEN THE TABLE IS NOT THERE, OR IS THE OLD ONE
  *

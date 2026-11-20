@@ -3439,20 +3439,40 @@ when its session ran out mid-ride it should be told `signed-out` and offer
 the sheet rather than have the ride counted and gone. A session, where
 there is one, wins, and that ride is kept exactly as it always was.
 
-What stands where the account's cap stands is the network: the fingerprint
-the saves use, an HMAC of the address and the user agent under `SAVE_SALT`,
-with how many rides it has sent that UTC day beside it in `ride_nets`,
-forty at the most — twice an account's, since every copy of the app on one
-iOS version says the same user agent and a carrier's address is shared. A
-rider who hits it loses nothing: the ride waits on the phone and goes
-tomorrow, or today from an account. The row is needed for the day it caps
-and no longer, so every such save erases the days before today's. Without
-`SAVE_SALT` the save is refused, `no-salt`. While the fingerprint was on
-the ride itself, each save emptied it from the rides of earlier days with
-an `UPDATE` that read every anonymous ride of that day to find them — a
-thousand rows read with a thousand saved, three million a day at a hundred
-rides an hour. No ride in production ever carried one, so there was nothing
-to move.
+**Nothing is remembered about it, and nothing caps it.** For an hour on
+2026-11-20 two small tables stood behind such a save, and neither was ever
+loaded into production. `ride_nets` kept a fingerprint of the network a
+ride came from with how many it had sent that day, and refused the
+forty-first: what stood where an account's cap stands. `ride_seen` kept the
+id the phone gave the ride for a week, so a ride sent twice — the answer
+lost on the way back, and the phone trying again — was counted once. The
+owner took both out the same day. Somebody who rides a great deal with no
+account takes nothing from anybody: no ride of theirs is kept and nothing
+is known of them, and forty a day was never a number a person reaches. A
+ride sent twice is a small chance and a small harm, since a square forgets
+a little with every ride it counts. And a site that says it keeps nothing
+of a ride should not be keeping a fingerprint and an id to make sure of it.
+So the save reads nothing of the request but its body, needs no
+`SAVE_SALT`, and writes nowhere but `ride_sections`.
+
+What that leaves open: a program can send made-up rides with no account
+for as long as it likes, each checked — inside the box, no faster than a
+bike, long enough, moving like one — and each counted, and enough of them
+down a street would make it look well ridden until real rides outweighed
+them. Nothing in the code stops that. What would, with no table and no
+code, is Cloudflare's own rate limiting: the free plan has one rule, by
+address, over ten seconds, and it is the owner's to switch on in the
+dashboard the day it is wanted. An account's cap of twenty a day is
+unchanged, since an account's rides are kept. And a ride whose answer was
+lost is done again when it is sent again: counted twice with no account,
+kept as a second row with one, which is the gap Rattatee's README has
+named since its first build.
+
+Before any of this the fingerprint was on the ride itself, `net:<hmac>` in
+`rides.user_id`, and each save emptied it from the rides of earlier days
+with an `UPDATE` that read every anonymous ride of that day to find them —
+a thousand rows read with a thousand saved, three million a day at a
+hundred rides an hour. No ride in production ever carried one.
 
 Rattatee says the same on the phone. Signed out, its save card says the
 ride stays on this phone, that the website only counts the streets and
@@ -3461,22 +3481,6 @@ without the session even if the rider signs in before it has gone, so what
 the card said is what happens. Nothing on the phone tells a counted ride
 from a kept one beyond that, and nothing offers to move a ride to an
 account afterwards: the owner's line was that neither is needed.
-
-**A ride sent twice is done once.** A phone that never hears the answer
-cannot tell a save lost on the way there from one whose answer was lost on
-the way back, and sends the ride again. For a kept ride that was a second
-row — Rattatee's README called it a known gap — and for a counted one it
-would be the same streets counted twice with no row to find it by. So a
-save may carry `request`: the id the phone itself gave the ride, a UUID,
-which Rattatee has had on every ride since its first build. The site
-remembers it in `ride_seen` for seven days, with the id of the row it
-became where the ride was kept, and a save whose `request` is there does
-nothing again and is not counted as a use again: a kept ride is answered
-with the row it already is, a counted one with `counted: true`. It is a
-random number that names one ride on one phone and nothing else. A counted
-ride's id is written down in the same batch that counts it, so the two
-happen together or not at all. A `request` that is not a UUID is no
-`request` rather than a refusal, and the map app sends none.
 
 **Your rides, on the account page.** The one place a ride is under a name is
 its rider's own `/account.html`: a **Your rides** card between your lists
