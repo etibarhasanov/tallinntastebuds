@@ -4,7 +4,7 @@
  * Azerbaijani or English and linked from nowhere on the site. It has one
  * shelf so far, the country's films: the 2,615 of the Azerbaijani
  * Wikipedia's list, which tools/azfilms.mjs collects and /api/azeri hands
- * out fifty at a time. **Azerbaijan, for members** in docs/handbook.md.
+ * out twenty at a time. **Azerbaijan, for members** in docs/handbook.md.
  *
  * TWO LANGUAGES, NOT ELEVEN. The page's words are in data/ui.json in all
  * eleven, like every other page's, because the validator holds every key to
@@ -14,11 +14,13 @@
  * Russian.
  *
  * A PAGE AT A TIME. The shelf is never fetched whole. It opens on the
- * feature films, newest first, and Show more asks for the next fifty after
- * the last one shown; a chip, the switch or the search starts again from the
- * top. Each ask costs the route one read of the database, the session, and
- * nothing more — the header of functions/api/azeri.js has the sums — so the
- * button is a button rather than a scroll that asks on its own.
+ * feature films that can be watched, newest first, twenty to a page, and
+ * Previous and Next under the list turn the pages; a chip, the switch or the
+ * search starts again from the first. The switch is on to begin with, since
+ * a film somebody can play is the reason to be here, and off is a press
+ * away. Each page costs the route one read of the database, the session,
+ * and nothing more — the header of functions/api/azeri.js has the sums — so
+ * the pages are buttons rather than a scroll that asks on its own.
  *
  * WHAT IS SHOWN, AND IN WHICH LANGUAGE. A title is the film's own, in
  * Azerbaijani, with the English one beside it where the studio gave one. The
@@ -60,14 +62,14 @@
     names: {},
     kind: 'feature',
     q: '',
-    watch: false,
+    watch: true,
     films: [],
-    next: null,
+    page: 1,
+    pages: 1,
     counts: null,
     open: null,      // the id of the film opened, if one is
     asking: 0,       // which ask is the latest, so an older answer is dropped
     loading: false,  // the first page of a new ask is on its way
-    more: false,     // the next page is on its way
     failed: false,   // the last ask did not come back
     door: false      // nobody is signed in
   };
@@ -191,46 +193,70 @@
 
   /* ------------------------------------------------------------- asking */
 
-  function query(after) {
+  function query(page) {
     var p = new URLSearchParams();
     p.set('kind', state.kind);
     if (state.q) p.set('q', state.q);
     if (state.watch) p.set('watch', '1');
-    if (after) p.set('after', after);
+    if (page > 1) p.set('page', String(page));
     return API + '?' + p.toString();
   }
 
-  /* From the top: a chip, the switch, the search. An answer to an older ask
-     that arrives after a newer one is dropped, so typing fast never leaves
-     the shelf showing what the last-but-one word found. */
-  function ask(after) {
+  /* A page of the shelf: the first, from a chip, the switch or the search,
+     or another, from the pager. An answer to an older ask that arrives after
+     a newer one is dropped, so typing fast never leaves the shelf showing
+     what the last-but-one word found. */
+  function ask(page) {
     var mine = ++state.asking;
-    if (!after) { state.films = []; state.next = null; state.open = null; state.loading = true; draw(); }
-    else { state.more = true; draw(); }
-    fetch(query(after), { headers: { accept: 'application/json' }, credentials: 'same-origin' })
+    state.films = [];
+    state.open = null;
+    state.loading = true;
+    draw();
+    fetch(query(page), { headers: { accept: 'application/json' }, credentials: 'same-origin' })
       .then(function (res) {
         return res.json().then(function (out) { return { status: res.status, out: out }; });
       })
       .then(function (answer) {
         if (mine !== state.asking) return;
         state.loading = false;
-        state.more = false;
         if (answer.status === 401) { state.door = true; draw(); return; }
         if (answer.status !== 200) throw new Error(String(answer.status));
         state.door = false;
         state.failed = false;
-        state.films = after ? state.films.concat(answer.out.films) : answer.out.films;
-        state.next = answer.out.next;
+        state.films = answer.out.films;
+        state.page = answer.out.page;
+        state.pages = answer.out.pages;
         state.counts = answer.out.counts;
         draw();
       })
       .catch(function () {
         if (mine !== state.asking) return;
         state.loading = false;
-        state.more = false;
         state.failed = true;
         draw();
       });
+  }
+
+  /* Previous, where the page is, and Next. A turn takes the reader back to
+     the top of the list, where the new page starts. */
+  function pager() {
+    var bar = el('nav', { className: 'azeri-pager', 'aria-label': t('azeriPageOf', { n: state.page, total: state.pages }) });
+    var turn = function (to) {
+      track('azeri_page', { page: to });
+      ask(to);
+      var head = document.querySelector('.azeri-tools');
+      if (head) head.scrollIntoView({ block: 'start' });
+    };
+    var prev = el('button', { type: 'button', className: 'link-btn', text: '‹ ' + t('azeriPrev') });
+    prev.disabled = state.page <= 1;
+    prev.addEventListener('click', function () { turn(state.page - 1); });
+    var next = el('button', { type: 'button', className: 'link-btn', text: t('azeriNext') + ' ›' });
+    next.disabled = state.page >= state.pages;
+    next.addEventListener('click', function () { turn(state.page + 1); });
+    bar.appendChild(prev);
+    bar.appendChild(el('span', { className: 'azeri-where', text: t('azeriPageOf', { n: state.page, total: state.pages }) }));
+    bar.appendChild(next);
+    return bar;
   }
 
   /* ------------------------------------------------------------- drawing */
@@ -251,15 +277,7 @@
       rows(list);
     }
     host.appendChild(list);
-    if (state.next) {
-      var more = el('button', { type: 'button', className: 'link-btn azeri-more', text: t('azeriMore') });
-      if (state.more) more.disabled = true;
-      more.addEventListener('click', function () {
-        track('azeri_more', { shelf: state.kind });
-        ask(state.next);
-      });
-      host.appendChild(more);
-    }
+    if (state.pages > 1 && !state.loading) host.appendChild(pager());
     host.appendChild(el('p', { className: 'azeri-credit' }, [
       el('a', { href: WIKI + encodeURIComponent('Azərbaycan_filmlərinin_siyahısı'), rel: 'noopener', target: '_blank', text: t('azeriCredit') })
     ]));
@@ -299,7 +317,7 @@
         var q = search.value.trim();
         if (q === state.q) return;
         state.q = q;
-        ask(null);
+        ask(1);
         /* draw() replaced the box; the caret goes back where it was. */
         var again = document.querySelector('.azeri-search');
         if (again) { again.focus(); again.setSelectionRange(again.value.length, again.value.length); }
@@ -319,7 +337,7 @@
         if (kind === state.kind) return;
         state.kind = kind;
         track('azeri_shelf', { shelf: kind });
-        ask(null);
+        ask(1);
       });
       chips.appendChild(chip);
     });
@@ -331,7 +349,7 @@
     check.addEventListener('change', function () {
       state.watch = check.checked;
       track('azeri_watchable', { on: state.watch ? 1 : 0 });
-      ask(null);
+      ask(1);
     });
     toggle.appendChild(el('span', { text: t('azeriWatchable') }));
     toggle.appendChild(check);
@@ -486,6 +504,6 @@
   ]).then(function () {
     applyStaticStrings();
     drawSwitch();
-    ask(null);
+    ask(1);
   });
 })();

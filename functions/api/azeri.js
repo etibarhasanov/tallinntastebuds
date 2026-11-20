@@ -22,9 +22,10 @@
  * sessions' primary key, token_hash, joined to users by theirs — one row of
  * each, two at most when a browser carries two cookies (sessionTokens() in
  * _lib.js). Nothing else touches the database, because the films are not in
- * it. A member reading all 523 feature films is eleven pages and eleven
- * reads, and a hundred members doing that every day is 1,100 against the
- * five million; the number does not grow with the films.
+ * it. A member reading every one of the 523 feature films is twenty-seven
+ * pages and twenty-seven reads, and a hundred members doing that every day
+ * is 2,700 against the five million; the number does not grow with the
+ * films.
  *
  * And the CPU, which on the free plan is ten milliseconds a request. The
  * whole shelf as one file was 1.7 MB, and a cold isolate spent four to ten
@@ -38,7 +39,7 @@
 
  * WHAT IT ANSWERS
  *
- *   GET /api/azeri?kind=feature&q=&watch=1&after=<id>
+ *   GET /api/azeri?kind=feature&q=&watch=1&page=2
  *
  *   kind    feature (the default), animation, documentary, series, or all.
  *           "documentary" takes in the docudramas, the newsreel sketches and
@@ -46,10 +47,11 @@
  *           too, so every film is on exactly one shelf besides All.
  *   q       words to find in the title, its English title, the director,
  *           the writer and the cast, folded so "e" finds "ə" and "i" "ı".
- *   watch   1 for only the films with a link to watch them.
- *   after   the id of the last film of the page before, for the next.
+ *   watch   1 for only the films with a link to watch them; the page asks
+ *           for that first, and a person switches it off.
+ *   page    which page of PAGE (twenty), from 1; past the last is the last.
  *
- *   { films: [ … PAGE of them ], next: <id or null>, total, counts, source }
+ *   { films: [ … PAGE of them ], page, pages, total, counts, source }
  *
  * `total` is how many match, `counts` how many each shelf holds with the
  * search and the switch applied, so the chips can say. A film carries every
@@ -64,7 +66,7 @@ import { json, sessionUser, dataFile, foldWords, wrongDatabase } from './_lib.js
 
 const INDEX = '/azeri/data/index.json';
 const CHUNKS = '/azeri/data/films/';
-const PAGE = 50;
+const PAGE = 20;
 const MAX_Q = 80;
 const SHELVES = ['feature', 'animation', 'documentary', 'series'];
 
@@ -86,7 +88,7 @@ export async function onRequestGet(context) {
   const kind = SHELVES.includes(asked) || asked === 'all' ? asked : 'feature';
   const words = fold(String(url.searchParams.get('q') || '').slice(0, MAX_Q)).split(' ').filter(Boolean);
   const watch = url.searchParams.get('watch') === '1';
-  const after = url.searchParams.get('after') || '';
+  const askedPage = Number.parseInt(url.searchParams.get('page'), 10);
 
   try {
     const index = await dataFile(context, INDEX);
@@ -103,18 +105,21 @@ export async function onRequestGet(context) {
       if (kind === 'all' || shelf === kind) found.push({ id, at });
     });
 
-    const start = after ? found.findIndex((f) => f.id === after) + 1 : 0;
-    const page = found.slice(start, start + PAGE);
-    const next = start + PAGE < found.length ? page[page.length - 1].id : null;
+    /* A page by its number, since a person goes to page 3 and back to 2.
+       The index is in memory, so skipping to a page walks nothing that is
+       billed — it is OFFSET over an array, not over a table. */
+    const pages = Math.max(1, Math.ceil(found.length / PAGE));
+    const number = Math.min(Math.max(askedPage || 1, 1), pages);
+    const page = found.slice((number - 1) * PAGE, number * PAGE);
 
-    /* The films themselves, out of the one or two chunks this page is in —
+    /* The films themselves, out of the one chunk this page is in, or two —
        or a few more, when a search has picked its films from all over. */
     const wanted = [...new Set(page.map((f) => Math.floor(f.at / index.chunk)))];
     const chunks = new Map();
     for (const n of wanted) chunks.set(n, await dataFile(context, CHUNKS + n + '.json'));
     const films = page.map((f) => chunks.get(Math.floor(f.at / index.chunk))[f.at % index.chunk]);
 
-    return json({ films, next, total: found.length, counts, source: index.source });
+    return json({ films, page: number, pages, total: found.length, counts, source: index.source });
   } catch (e) {
     return json({ error: 'unavailable' }, 503);
   }
