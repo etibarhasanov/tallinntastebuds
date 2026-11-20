@@ -1521,10 +1521,11 @@
   "azeriError": "Die Filme antworten gerade nicht.",
   "azeriDoorText": "Diese Ecke der Seite öffnet sich für alle mit einem Konto. Melde dich an oder lege eines an: ein Nutzername und ein Passwort genügen.",
   "azeriSignIn": "Anmelden",
-  "azeriNoYear": "Jahr unbekannt",
   "azeriPrev": "Zurück",
   "azeriNext": "Weiter",
-  "azeriPageOf": "Seite {n} von {total}"
+  "azeriPageOf": "Seite {n} von {total}",
+  "azeriOnYoutube": "Auf YouTube öffnen",
+  "azeriEnglish": "englische Fassung"
  },
  "blurbs": {
   "180-degrees": "Das einzige Zwei-Sterne-Restaurant im Baltikum. Ein richtig schönes, experimentelles Lokal am Wasser in Noblessner, wo das Degustationsmenü dich Gang für Gang überraschen soll.",

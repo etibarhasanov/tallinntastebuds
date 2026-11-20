@@ -16798,19 +16798,51 @@ A link the list gives is a **Watch** button. A YouTube link the article only
 mentions is a **Maybe** button, because an article links an interview, a
 premiere or a dubbing as readily as the film.
 
-The studio's own playlists — Azərbaycanfilm's three — are where most of the
-films can actually be watched, and reading them takes a YouTube key. The key
-is `YOUTUBE_API_KEY` in the Pages dashboard, Production only, beside the
-Places key, because that is where the site's keys live and no session can
-read one back out of it. So the site does the reading: `/api/admin/youtube`,
-the owner's, answers every video of the three playlists, and with `?check=1`
-which of the films' YouTube links YouTube no longer plays. The owner opens
-both signed in and saves the answers as `azeri/data/youtube.json` and
-`azeri/data/youtube-dead.json`, and every run of the tool reads them: each
-video matched to its film by title and year, with the English title the
-studio gives where it gives one, and every dead link taken off. The Russian
-playlist's titles are in Russian and match nothing on an Azerbaijani list;
-they come out in the index's `unmatched` for matching by hand.
+The studio's own playlists are where most of the films can actually be
+watched. Azərbaycanfilm's channel keeps nine that matter here — the feature
+films, the classics, the shorts, the documentaries, the cartoons, the
+anthologies, the ones titled in English too, the Russian versions and the
+trailers — and `azeri/data/youtube.json` is their videos, each with its
+title and how often it has been watched. The tool matches every video to its
+film by title and year, either side of the bar where the studio writes two
+titles, takes the English title where there is one, and files a trailer as
+a trailer. 268 films have a video of the studio's that way, 190 of the 523
+feature films and 64 of the 127 cartoons. What matches nothing — the Russian
+titles, and the films the wiki's list does not have — is in the index's
+`unmatched`, for matching by hand.
+
+That file was read off the playlists' own pages on 2026-11-20, which show a
+playlist's first hundred videos and no more; four of the nine are longer.
+The rest takes a YouTube key, and the key is `YOUTUBE_API_KEY` in the Pages
+dashboard, Production only, because that is where the site's keys live and
+no session can read one back out of it. So the site does that reading:
+`/api/admin/youtube`, the owner's, answers every video of the nine, and with
+`?check=1` which of the films' YouTube links no longer play and the exact
+views of the ones that do. The owner opens both signed in and saves the
+answers as `azeri/data/youtube.json` and `azeri/data/youtube-check.json`,
+and every run of the tool reads them: a dead link is taken off Watch and
+Maybe alike.
+
+### The most watched first, and played in the page
+
+The shelf is in the order people watch: a film's views are those of its most
+watched video on the studio's channel — the same film is often up twice,
+restored and not, and adding the two would count one audience twice — and
+the films go most watched first, then the newest, then by title. It is the
+only measure there is of which of 2,615 films somebody opening the page is
+likely to want, and it puts *Axırıncı aşırım* and *Qayınana* at the top
+rather than whatever was released last. The tool writes the order into the
+index, so the route sorts nothing. There are no decades over the rows, as
+there were while the order was by year: each row says its year.
+
+**Watch** plays the film in the page: the row opens and YouTube's own player
+is drawn in it, from `youtube-nocookie.com`, started by the press. One film
+plays at a time, and closing its row stops it, because the player is in the
+row. Under the player is **Open on YouTube**, for the video a studio does not
+let other sites play, where the player says so itself. A film's other links
+— a trailer, the Russian or the English version, a Maybe — are buttons in
+the row that put that video in the same player, and a link that is not
+YouTube's opens where it lives.
 
 ### The door, and what a page costs
 
@@ -16823,7 +16855,7 @@ the map's own sign-in sheet, `/?account=in&then=/azeri`, which brings
 somebody back when they are in.
 
 The shelf is never sent whole. It opens on the feature films that can be
-watched, newest first, twenty to a page, with **Previous** and **Next** under
+watched, the most watched first, twenty to a page, with **Previous** and **Next** under
 the list; **Only ones I can watch** is on to begin with and a press turns it
 off, and a chip, the switch or the search starts again from page one. Each
 page costs the database one read — the session, by its key — and nothing else, because the
@@ -21015,7 +21047,8 @@ Azerbaijan, `assets/azeri.js`:
 | `azeri_watchable` | `on` (`1`/`0`) — the Only ones I can watch switch |
 | `azeri_page` | `page` — Previous or Next, the page turned to |
 | `azeri_film` | `film` — a film opened |
-| `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) |
+| `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) — a film played in the page, or a link out where it is not YouTube's |
+| `azeri_youtube` | `film` — Open on YouTube, under the player |
 | `language_select`, `language_open`, `home`, `account_open` | as on the map |
 
 The privacy policy is read rather than pressed, so what is reported is the way

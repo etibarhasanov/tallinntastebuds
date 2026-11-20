@@ -59,7 +59,9 @@
  *
  * Signed out it is 401 `signed-out` and nothing else, so the page draws its
  * door; without a database, 503 `no-database`, the same as every route that
- * needs a session. Newest first, the films with no year last, then by title.
+ * needs a session. The order is the index's, which tools/azfilms.mjs
+ * writes: the most watched on the studio's YouTube channel first, then the
+ * newest, the films with no year last, then by title.
  */
 
 import { json, sessionUser, dataFile, foldWords, wrongDatabase } from './_lib.js';

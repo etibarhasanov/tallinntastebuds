@@ -8,29 +8,34 @@
  * functions/_middleware.js answers 403 to anybody else before this runs.
  *
  * WHY IT IS HERE. tools/azfilms.mjs collects the films for /azeri and runs
- * where a session runs it, which has no way to hold a YouTube key that the
- * owner could put there. The site already holds its keys in the Pages
- * dashboard, so the key goes there as YOUTUBE_API_KEY, Production only,
- * beside GOOGLE_MAPS_API_KEY, and this route spends it: the owner opens the
- * address signed in, saves what it answers, and the tool reads the saved
- * file with --from. Nothing on the site calls YouTube on its own, and no
- * visitor's page ever waits on this.
+ * where a session runs it. A session can read a playlist's own page, which
+ * shows its first hundred videos and a rounded count of views beside each,
+ * and that is where azeri/data/youtube.json first came from; past the
+ * hundredth it would have to call YouTube's own endpoints, which are not
+ * ours to call, or hold a key, which it has nowhere to keep. The site keeps
+ * its keys in the Pages dashboard, so the key is YOUTUBE_API_KEY there,
+ * Production only, beside GOOGLE_MAPS_API_KEY, and this route spends it: the
+ * owner opens the address signed in and saves what it answers beside the
+ * films, and the tool reads the files on its next run. Nothing on the site
+ * calls YouTube on its own, and no visitor's page ever waits on this.
  *
- * WHAT IT ANSWERS. Without `check`:
+ * WHAT IT ANSWERS. Without `check`, the file azeri/data/youtube.json:
  *
- *   { at, playlists: [ { id, lang, videos: [ { id, title } ] } ] }
+ *   { at, playlists: [ { id, lang, kind, videos: [ { id, title } ] } ] }
  *
- * every video of the studio's three playlists, fifty to a call — about five
- * calls a playlist, a unit each of the ten thousand a day YouTube gives a
- * key. With `check=1`:
+ * every video of nine of the studio's playlists, fifty to a call — about
+ * thirty calls, a unit each of the ten thousand a day YouTube gives a key.
+ * With `check=1`, the file azeri/data/youtube-check.json:
  *
- *   { at, asked, dead: [ id, … ] }
+ *   { at, asked, dead: [ id, … ], views: { id: n, … } }
  *
- * the YouTube ids of every watch link and every "Maybe" link the films
- * carry, asked about fifty to a call, and the ones YouTube no longer has, or
- * has made private. About fourteen calls for some seven hundred links. The
- * two are separate addresses because a Function on the free plan may make
- * fifty requests, and the films' twenty-seven files are requests too.
+ * every YouTube id the films link to, out of `linked` in the films' index,
+ * asked about fifty to a call: the ones YouTube no longer has or has made
+ * private, and how often each of the rest has been watched, which is what
+ * the shelf is ordered by. About twenty-two calls for eleven hundred links.
+ * Two addresses because a Function on the free plan may make fifty requests
+ * and the two together would pass it; and the check reads the index alone,
+ * not the films' twenty-seven files, for the same reason.
  *
  * WHAT IT COSTS. No row of the database beyond the owner's own session, which
  * the middleware reads to let them in. `no-store`, since it is somebody's
@@ -39,14 +44,22 @@
 
 import { json, dataFile } from '../_lib.js';
 
+/* The playlists a film can be watched from, and what each is: the language
+   its videos are in and whether they are films or trailers. The rest of the
+   channel — talks, music, behind the camera — is not the films. */
 const PLAYLISTS = [
-  { id: 'PLAtI5OWgNzB3iuvjwhQzW60A1jQ8LdxBp', lang: 'az' }, // Tammetrajlı bədii filmlər
-  { id: 'PLAtI5OWgNzB1wzuPM18PZ2eKSagWgFMAv', lang: 'az' }, // Klassik filmlər
-  { id: 'PLAtI5OWgNzB2qF-wUqAn0spyq2C6HLVq0', lang: 'ru' }, // Фильмы на русском языке
+  { id: 'PLAtI5OWgNzB3iuvjwhQzW60A1jQ8LdxBp', lang: 'az', kind: 'film' },    // Tammetrajlı bədii filmlər
+  { id: 'PLAtI5OWgNzB1wzuPM18PZ2eKSagWgFMAv', lang: 'az', kind: 'film' },    // Klassik filmlər
+  { id: 'PLAtI5OWgNzB2yNSbw37qGVVI8imrRaVlI', lang: 'az', kind: 'film' },    // Qısametrajlı filmlər
+  { id: 'PLAtI5OWgNzB1VocO-jqiHsBtsFSoHTCwU', lang: 'az', kind: 'film' },    // Sənədli filmlər
+  { id: 'PLAtI5OWgNzB36qwjeBfvf7i-sDvj1fs63', lang: 'az', kind: 'film' },    // Animasiya filmləri
+  { id: 'PLAtI5OWgNzB1VNsoEVz-rdfbPydVbB-Qg', lang: 'az', kind: 'film' },    // Kinoalmanaxlar
+  { id: 'PLAtI5OWgNzB16Bgp3_v4WSSmMyyRnG474', lang: 'en', kind: 'film' },    // Films in English
+  { id: 'PLAtI5OWgNzB2qF-wUqAn0spyq2C6HLVq0', lang: 'ru', kind: 'film' },    // Фильмы на русском языке
+  { id: 'PLAtI5OWgNzB2SGFZKcNcAJYeX7WXYjwXn', lang: 'az', kind: 'trailer' }, // Treylerlər
 ];
 const API = 'https://www.googleapis.com/youtube/v3/';
 const INDEX = '/azeri/data/index.json';
-const CHUNKS = '/azeri/data/films/';
 
 /* The key as the Pages dashboard holds it, trimmed and held to the shape of
    a Google key, so a stray word in the box reads as absent — the same test
@@ -76,37 +89,24 @@ async function playlist(id, key) {
   return videos;
 }
 
-const YOUTUBE_ID = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/;
-
-/* Every YouTube id a film links to, out of the files /api/azeri reads. */
-async function linkedIds(context) {
-  const index = await dataFile(context, INDEX);
-  const ids = new Set();
-  const files = Math.ceil(index.rows.length / index.chunk);
-  for (let n = 0; n < files; n++) {
-    for (const film of await dataFile(context, CHUNKS + n + '.json')) {
-      for (const link of film.watch.concat(film.video)) {
-        const m = YOUTUBE_ID.exec(link.url);
-        if (m) ids.add(m[1]);
-      }
-    }
-  }
-  return [...ids];
-}
-
-/* An id YouTube answers nothing for is gone; one it answers as private is as
+/* Which of the ids YouTube no longer plays, and the views of the ones it
+   does. An id it answers nothing for is gone; one it answers as private is as
    good as gone to anybody pressing Watch. */
-async function deadOf(ids, key) {
+async function checked(ids, key) {
   const dead = [];
+  const views = {};
   for (let at = 0; at < ids.length; at += 50) {
     const batch = ids.slice(at, at + 50);
-    const out = await ask(`videos?part=status&maxResults=50&id=${batch.join(',')}`, key);
-    const alive = new Set((out.items || [])
-      .filter((v) => v.status && v.status.privacyStatus !== 'private')
-      .map((v) => v.id));
+    const out = await ask(`videos?part=status,statistics&maxResults=50&id=${batch.join(',')}`, key);
+    const alive = new Set();
+    for (const v of out.items || []) {
+      if (!v.status || v.status.privacyStatus === 'private') continue;
+      alive.add(v.id);
+      views[v.id] = Number((v.statistics && v.statistics.viewCount) || 0);
+    }
     for (const id of batch) if (!alive.has(id)) dead.push(id);
   }
-  return dead;
+  return { dead, views };
 }
 
 export async function onRequestGet(context) {
@@ -115,8 +115,8 @@ export async function onRequestGet(context) {
   const at = new Date().toISOString();
   try {
     if (new URL(context.request.url).searchParams.get('check') === '1') {
-      const ids = await linkedIds(context);
-      return json({ at, asked: ids.length, dead: await deadOf(ids, key) });
+      const ids = (await dataFile(context, INDEX)).linked || [];
+      return json({ at, asked: ids.length, ...(await checked(ids, key)) });
     }
     const playlists = [];
     for (const list of PLAYLISTS) playlists.push({ ...list, videos: await playlist(list.id, key) });

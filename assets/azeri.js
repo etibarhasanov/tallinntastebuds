@@ -14,7 +14,7 @@
  * Russian.
  *
  * A PAGE AT A TIME. The shelf is never fetched whole. It opens on the
- * feature films that can be watched, newest first, twenty to a page, and
+ * feature films that can be watched, the most watched first, twenty to a page, and
  * Previous and Next under the list turn the pages; a chip, the switch or the
  * search starts again from the first. The switch is on to begin with, since
  * a film somebody can play is the reason to be here, and off is a press
@@ -30,6 +30,18 @@
  * line saying so. A link to watch is the list's or the studio's; a link the
  * article merely mentions is offered as "Maybe", because an article links an
  * interview or a premiere as readily as the film.
+ *
+ * THE ORDER. The most watched on the studio's YouTube channel first — the
+ * tool that writes the films orders them, tools/azfilms.mjs — and after the
+ * ones with a count, the newest. So there are no decades over the rows any
+ * more: each row says its year, and a heading would repeat down the page.
+ *
+ * IT PLAYS HERE. Watch opens the film and plays it in the page, in YouTube's
+ * own player from its no-cookie address, with a link under it to the same
+ * video on YouTube for the film a studio does not let other sites play. One
+ * film plays at a time, and closing its row stops it — the player is in the
+ * row, so taking the row away is taking the sound away. A link that is not
+ * YouTube's opens where it lives.
  */
 (function () {
   'use strict';
@@ -68,6 +80,7 @@
     pages: 1,
     counts: null,
     open: null,      // the id of the film opened, if one is
+    playing: null,   // the address of the video playing in the open film
     asking: 0,       // which ask is the latest, so an older answer is dropped
     loading: false,  // the first page of a new ask is on its way
     failed: false,   // the last ask did not come back
@@ -210,6 +223,7 @@
     var mine = ++state.asking;
     state.films = [];
     state.open = null;
+    state.playing = null;
     state.loading = true;
     draw();
     fetch(query(page), { headers: { accept: 'application/json' }, credentials: 'same-origin' })
@@ -366,22 +380,8 @@
     return box;
   }
 
-  function decadeOf(year) {
-    if (!year) return t('azeriNoYear');
-    var from = Math.floor(year / 10) * 10;
-    return from + ' – ' + (from + 9);
-  }
-
   function rows(list) {
-    var decade = null;
-    state.films.forEach(function (film) {
-      var d = decadeOf(film.year);
-      if (d !== decade) {
-        decade = d;
-        list.appendChild(el('h3', { className: 'azeri-decade', text: d }));
-      }
-      list.appendChild(row(film));
-    });
+    state.films.forEach(function (film) { list.appendChild(row(film)); });
   }
 
   function years(film) {
@@ -403,6 +403,23 @@
     return null;
   }
 
+  /* The eleven characters YouTube knows a video by, or nothing for a link
+     that lives somewhere else. */
+  function youtubeId(url) {
+    var m = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/.exec(url);
+    return m ? m[1] : '';
+  }
+
+  /* Open the film and play this link in it. */
+  function play(film, link, lead) {
+    track('azeri_watch', { film: film.id, lead: lead ? 1 : 0 });
+    state.open = film.id;
+    state.playing = link.url;
+    draw();
+    var again = document.getElementById('film-' + film.id);
+    if (again) again.scrollIntoView({ block: 'nearest' });
+  }
+
   function row(film) {
     var isOpen = state.open === film.id;
     var meta = [years(film), film.director.length ? film.director[0] : kindLine(film)]
@@ -420,6 +437,7 @@
     ]);
     head.addEventListener('click', function () {
       state.open = isOpen ? null : film.id;
+      state.playing = null;
       if (!isOpen) track('azeri_film', { film: film.id });
       draw();
       var again = document.getElementById('film-' + film.id);
@@ -434,27 +452,71 @@
     return wrap;
   }
 
+  /* Watch, or Maybe: a button that plays the film here where the link is
+     YouTube's, and a link out where it is anybody else's. */
   function watchButton(film, link, key, lead) {
-    var a = el('a', {
-      className: 'azeri-play' + (lead ? ' is-lead' : ''),
-      href: link.url,
-      target: '_blank',
-      rel: 'noopener',
-      text: '▶ ' + t(key)
-    });
-    a.addEventListener('click', function () { track('azeri_watch', { film: film.id, lead: lead ? 1 : 0 }); });
-    return a;
+    var cls = 'azeri-play' + (lead ? ' is-lead' : '');
+    if (!youtubeId(link.url)) {
+      var a = el('a', { className: cls, href: link.url, target: '_blank', rel: 'noopener', text: '▶ ' + t(key) });
+      a.addEventListener('click', function () { track('azeri_watch', { film: film.id, lead: lead ? 1 : 0 }); });
+      return a;
+    }
+    var b = el('button', { type: 'button', className: cls, text: '▶ ' + t(key) });
+    b.addEventListener('click', function () { play(film, link, lead); });
+    return b;
   }
 
   function linkLabel(w) {
     var label = w.kind === 'trailer' ? t('azeriTrailer') : w.kind === 'fragment' ? t('azeriFragment') : t('azeriWatch');
     if (w.part) label += ' — ' + w.part;
     if (w.lang === 'ru') label += ' (' + t('azeriRussian') + ')';
+    if (w.lang === 'en') label += ' (' + t('azeriEnglish') + ')';
     return label;
+  }
+
+  /* YouTube's player on the video that is playing, and under it the way to
+     the same video on YouTube. Autoplay, because the press that drew this
+     was a press on Watch. */
+  function player(film) {
+    var id = youtubeId(state.playing);
+    var frame = el('iframe', {
+      className: 'azeri-frame',
+      src: 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0',
+      title: film.title,
+      allow: 'autoplay; encrypted-media; picture-in-picture; fullscreen',
+      allowfullscreen: '',
+      referrerpolicy: 'strict-origin-when-cross-origin'
+    });
+    var out = el('a', {
+      className: 'azeri-out',
+      href: 'https://www.youtube.com/watch?v=' + id,
+      target: '_blank',
+      rel: 'noopener',
+      text: t('azeriOnYoutube')
+    });
+    out.addEventListener('click', function () { track('azeri_youtube', { film: film.id }); });
+    return el('div', { className: 'azeri-player' }, [el('div', { className: 'azeri-screen' }, [frame]), out]);
+  }
+
+  /* One of a film's links, in the row of them: a button that plays it here
+     where it is YouTube's, lit while it is the one playing. */
+  function linkButton(film, link, label, lead) {
+    if (!youtubeId(link.url)) {
+      return el('a', { href: link.url, target: '_blank', rel: 'noopener', text: '▶ ' + label });
+    }
+    var b = el('button', {
+      type: 'button',
+      className: 'azeri-link' + (state.playing === link.url ? ' is-on' : ''),
+      text: '▶ ' + label
+    });
+    b.addEventListener('click', function () { play(film, link, lead); });
+    return b;
   }
 
   function detail(film) {
     var box = el('div', { className: 'azeri-detail' });
+    if (state.playing && youtubeId(state.playing)) box.appendChild(player(film));
+
     /* The row says the year and the director where there is one, and the kind
        where there is not; open, the kind is said if the row did not. */
     if (film.director.length) box.appendChild(el('p', { className: 'azeri-kind', text: kindLine(film) }));
@@ -480,13 +542,9 @@
     }
 
     var links = el('p', { className: 'azeri-links' });
-    film.watch.forEach(function (w) {
-      links.appendChild(el('a', { href: w.url, target: '_blank', rel: 'noopener', text: '▶ ' + linkLabel(w) }));
-    });
+    film.watch.forEach(function (w) { links.appendChild(linkButton(film, w, linkLabel(w), false)); });
     if (!film.watch.length) {
-      film.video.forEach(function (v) {
-        links.appendChild(el('a', { href: v.url, target: '_blank', rel: 'noopener', text: '▶ ' + t('azeriMaybe') }));
-      });
+      film.video.forEach(function (v) { links.appendChild(linkButton(film, v, t('azeriMaybe'), true)); });
     }
     if (film.wiki) links.appendChild(el('a', { href: WIKI + encodeURIComponent(film.wiki.replace(/ /g, '_')), target: '_blank', rel: 'noopener', text: 'Wikipedia' }));
     if (film.imdb) links.appendChild(el('a', { href: 'https://www.imdb.com/title/' + film.imdb + '/', target: '_blank', rel: 'noopener', text: 'IMDb' }));

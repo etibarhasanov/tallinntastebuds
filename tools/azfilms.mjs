@@ -330,52 +330,82 @@ function details(text) {
 /* ---------- the studio's playlists ---------- */
 
 /* Azərbaycanfilm's own channel keeps its films in playlists, which is where
-   most of them can actually be watched — the list links a hundred and sixty.
-   Reading them takes a YouTube key, and the one the owner has is a secret in
-   the Pages dashboard, where no session can read it. So the site reads them:
-   /api/admin/youtube answers every video of the three playlists, and with
-   ?check=1 which of the films' YouTube links are dead. The owner opens both
-   signed in, and the two answers are saved here as they came:
+   most of them can actually be watched — the list links a hundred and sixty —
+   and how often each has been watched there is the only measure there is of
+   which films people want, so it is what the shelf is ordered by.
 
-     azeri/data/youtube.json        the playlists, { playlists: [ … ] }
-     azeri/data/youtube-dead.json   the dead links, { dead: [ id, … ] }
+     azeri/data/youtube.json         { playlists: [ { id, lang, kind, videos:
+                                     [ { id, title, views } ] } ] } — nine of
+                                     the studio's playlists: the feature
+                                     films, the classics, the shorts, the
+                                     documentaries, the cartoons, the
+                                     anthologies, the ones with English
+                                     titles, the Russian versions and the
+                                     trailers.
+     azeri/data/youtube-check.json   { dead: [ id ], views: { id: n } } — which
+                                     of the films' YouTube links no longer
+                                     play, and each one's exact views.
 
-   Both are read on every run when they are there, the way films-en.json is,
-   so a refresh of the list keeps them. The playlists themselves are named in
-   functions/api/admin/youtube.js and nowhere else. */
+   The first was read off the playlists' own pages on 2026-11-20, which show
+   a playlist's first hundred videos and a rounded count beside each; a
+   session can read those and nothing past them. The whole of each playlist,
+   and the second file, are what /api/admin/youtube answers with the key the
+   site holds, when the owner opens it and saves what it says: its playlists
+   answer replaces youtube.json, and the check's views stand in for the
+   rounded ones that file then lacks. Both are read on every run when they
+   are there, the way films-en.json is. */
 const PLAYLIST_FILE = join(OUT, 'youtube.json');
-const DEAD_FILE = join(OUT, 'youtube-dead.json');
+const CHECK_FILE = join(OUT, 'youtube-check.json');
+const YOUTUBE_ID = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/;
 
-/* "Bizim Cəbiş müəllim (1969) | Our Teacher Jabish" → the Azerbaijani title,
-   the year and the English one; a Russian title stands alone. The studio
-   writes the second title after " | " or " I ", and sometimes a note after
-   the year — "- rəngləndirilmiş versiya", the colourised one — or the word
-   "filmi" after the title; neither is part of the name. */
+/* "Bizim Cəbiş müəllim (1969) | Our Teacher Jabish", "Так надо | Belə
+   lazımdır (1982) - короткометражный фильм", "Qaynana (1978) filmi": a
+   studio title is one name or two, either side of " | " or " I ", with the
+   year after either and sometimes a note after that — the colourised
+   version, "filmi", "- treyler". Every side is a name the film may be listed
+   under, the year is the title's wherever it stands, and the side written
+   in plain Latin letters beside an Azerbaijani one is the English title. */
 function videoTitle(t) {
-  const [main, en] = t.split(/\s+[|I]\s+/);
-  const m = main.match(/^(.*?)\s*\((\d{4})\)/);
-  const name = (m ? m[1] : main).replace(/\s+filmi$/i, '');
+  const year = (t.match(/\((\d{4})\)/) || [])[1];
+  const names = t.split(/\s+[|I]\s+/).map((side) => side
+    .replace(/\s*\(\d{4}\).*$/, '')
+    .replace(/\s+filmi$/i, '')
+    .replace(/\s*[-–]\s*(?:official\s+)?(?:treyler|trailer).*$/i, '')
+    .replace(/["«»“”]/g, '')
+    .trim()).filter(Boolean);
   return {
-    name: name.replace(/["«»“”]/g, '').trim(),
-    year: m ? Number(m[2]) : null,
-    en: en && /^[\x20-\x7e]+$/.test(en) ? en.trim() : null,
+    names,
+    year: year ? Number(year) : null,
+    en: names.length > 1 && /^[\x20-\x7e]+$/.test(names[1]) ? names[1] : null,
   };
 }
 
-const key = (s) => slug(s.replace(/\(.*?\)/g, ''));
+/* Where the studio spells a title its own way. Folded, the way key() folds. */
+const ALIASES = {
+  qaynana: 'qayinana',
+  'yay-gunlerinde-xezan-yarpaqlari': 'yay-gununun-xezan-yarpaqlari',
+};
 
-/* A video belongs to a film when their titles agree once the letters are
-   folded and the punctuation is gone, and their years are within one — a
-   release a year after shooting is common enough to allow, and the same
-   title in another decade is common enough to refuse. */
+const key = (s) => {
+  const k = slug(s.replace(/\(.*?\)/g, ''));
+  return ALIASES[k] || k;
+};
+
+/* A video belongs to a film when one of its names agrees with the film's
+   title once the letters are folded and the punctuation is gone, and their
+   years are within one — a release a year after shooting is common enough to
+   allow, and the same title in another decade is common enough to refuse. A
+   film the list gives no year for is taken on its title when it is the only
+   one of that title. */
 function match(films, video) {
   const t = videoTitle(video.title);
-  const k = key(t.name);
-  const near = films.filter((f) => key(f.title) === k);
+  const keys = t.names.map(key);
+  const near = films.filter((f) => keys.includes(key(f.title)));
   if (!near.length) return { t, film: null };
   if (t.year) {
     const by = near.filter((f) => f.year && Math.abs(f.year - t.year) <= 1);
-    return { t, film: by.length === 1 ? by[0] : null };
+    if (by.length === 1) return { t, film: by[0] };
+    return { t, film: !by.length && near.length === 1 && !near[0].year ? near[0] : null };
   }
   return { t, film: near.length === 1 ? near[0] : null };
 }
@@ -412,25 +442,38 @@ if (ARTICLES) {
   }
 }
 
+const check = existsSync(CHECK_FILE) ? JSON.parse(readFileSync(CHECK_FILE, 'utf8')) : {};
+const exact = check.views || {};
 const unmatched = [];
 const studio = existsSync(PLAYLIST_FILE) ? JSON.parse(readFileSync(PLAYLIST_FILE, 'utf8')).playlists : [];
 for (const list of studio) {
-  console.log(`${list.videos.length} videos in playlist ${list.id}`);
+  const trailer = list.kind === 'trailer';
+  let found = 0;
   for (const v of list.videos) {
     const { t, film } = match(films, v);
     const url = `https://www.youtube.com/watch?v=${v.id}`;
-    if (!film) { unmatched.push({ url, title: v.title, lang: list.lang }); continue; }
+    if (!film) {
+      if (!unmatched.some((u) => u.url === url)) unmatched.push({ url, title: v.title, lang: list.lang, kind: list.kind });
+      continue;
+    }
+    found++;
+    /* A film is as watched as its most watched video: the same film is often
+       up twice, restored and not, and adding the two would count one
+       audience twice. A trailer's views say nothing of the film's. */
+    const views = exact[v.id] != null ? exact[v.id] : v.views || 0;
+    if (!trailer) film.views = Math.max(film.views || 0, views);
     if (film.watch.some((w) => w.url === url)) continue;
-    film.watch.push({ url, kind: 'film', part: null, lang: list.lang, studio: true });
-    if (t.en && !film.titleEn) film.titleEn = t.en;
+    film.watch.push({ url, kind: trailer ? 'trailer' : 'film', part: null, lang: list.lang, studio: true });
+    if (!trailer && t.en && !film.titleEn) film.titleEn = t.en;
   }
+  console.log(`${list.videos.length} videos in playlist ${list.id}, ${found} matched`);
 }
 
 /* A link YouTube no longer plays is no link: taken off the watch links and
    the Maybes alike, so a film with nothing left says so by having no button. */
-const dead = new Set(existsSync(DEAD_FILE) ? JSON.parse(readFileSync(DEAD_FILE, 'utf8')).dead : []);
+const dead = new Set(check.dead || []);
 const alive = (link) => {
-  const m = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/.exec(link.url);
+  const m = YOUTUBE_ID.exec(link.url);
   return !m || !dead.has(m[1]);
 };
 let dropped = 0;
@@ -460,6 +503,7 @@ const ordered = films.map((f) => ({
   about: f.about || null,
   aboutEn: english[f.id] || null,
   watch: f.watch.map(({ url, kind, part, lang, studio }) => ({ url, kind, part, lang: lang || null, studio: !!studio })),
+  views: f.views || 0,
   video: f.video || [],
   imdb: f.imdb || null,
   image: f.image || null,
@@ -474,13 +518,16 @@ const ordered = films.map((f) => ({
    folding it for search another twenty-five. So that work is done here,
    once, and the route reads two things:
 
-     index.json       every film in the shelf's order — newest first, no year
+     index.json       every film in the shelf's order — the most watched on
+                      the studio's channel first, then the newest, no year
                       last, then by title — as [id, shelf, year, watchable,
                       words], words being the title, the English title and
                       the people, folded the way functions/api/azeri.js folds
-                      a search; and the source, the licence and the date.
+                      a search; the source, the licence and the date; and
+                      `linked`, every YouTube id a film links to, which is
+                      what /api/admin/youtube?check=1 asks YouTube about.
      films/<n>.json   the films themselves in that same order, CHUNK to a
-                      file, so a page of fifty touches one file or two.
+                      file, so a page of twenty touches one file or two.
 
    The shelves are the page's chips. Every kind is on exactly one. */
 const SHELF_OF = {
@@ -493,7 +540,7 @@ const SHELF_OF = {
 const fold = (v) => String(v == null ? '' : v).toLowerCase().normalize('NFD')
   .replace(/[\u0300-\u036f]/g, '').replace(/ə/g, 'e').replace(/ı/g, 'i').replace(/\s+/g, ' ').trim();
 
-ordered.sort((a, b) => (b.year || 0) - (a.year || 0) || a.title.localeCompare(b.title, 'az'));
+ordered.sort((a, b) => b.views - a.views || (b.year || 0) - (a.year || 0) || a.title.localeCompare(b.title, 'az'));
 
 rmSync(join(OUT, 'films'), { recursive: true, force: true });
 mkdirSync(join(OUT, 'films'), { recursive: true });
@@ -514,6 +561,8 @@ writeFileSync(join(OUT, 'index.json'), JSON.stringify({
     f.watch.length ? 1 : 0,
     fold([f.title, f.titleEn, f.director.join(' '), f.writer.join(' '), f.cast.join(' ')].join(' ')),
   ]),
+  linked: [...new Set(ordered.flatMap((f) => f.watch.concat(f.video))
+    .map((link) => (YOUTUBE_ID.exec(link.url) || [])[1]).filter(Boolean))],
   unmatched,
 }) + '\n');
 

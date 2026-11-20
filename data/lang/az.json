@@ -1521,10 +1521,11 @@
   "azeriError": "Filmlər hazırda cavab vermir.",
   "azeriDoorText": "Saytın bu guşəsi hesabı olanlar üçün açılır. Daxil ol və ya hesab yarat: istifadəçi adı və şifrə kifayətdir.",
   "azeriSignIn": "Daxil ol",
-  "azeriNoYear": "İli bilinmir",
   "azeriPrev": "Əvvəlki",
   "azeriNext": "Növbəti",
-  "azeriPageOf": "{n} / {total} səhifə"
+  "azeriPageOf": "{n} / {total} səhifə",
+  "azeriOnYoutube": "YouTube-da aç",
+  "azeriEnglish": "ingiliscə versiya"
  },
  "blurbs": {
   "180-degrees": "Baltikyanı ölkələrdə yeganə iki Michelin ulduzlu restoran. Noblessner sahilində həqiqətən gözəl eksperimental yer. Dequstasiya menyusu elə qurulub ki, hər yeni yeməklə səni təəccübləndirsin.",

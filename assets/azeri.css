@@ -3,7 +3,7 @@
  * The page is the lists page's shape — its ground, its header, its cards,
  * the tokens of every style — and this file is only what the shelf of films
  * needs on top of that: the tabs, the search and its chips, the switch, the
- * rows with their decades and their play buttons, an opened film, and the
+ * rows with their play buttons, an opened film and the player in it, and the
  * door for somebody signed out. It was drawn as a mockup first and the
  * owner said yes to that; every colour here is a token, so the swatch on
  * the map recolours the shelf with nothing in this file to change.
@@ -104,21 +104,13 @@
 /* ---------------------------------------------------------------- the list */
 
 .azeri-list { padding: 0; overflow: hidden; }
-.azeri-decade {
-  margin: 0;
-  padding: 14px 16px 5px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  color: var(--muted);
-}
 .azeri-film {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   border-top: 1px solid var(--hairline);
 }
-.azeri-decade + .azeri-film { border-top: 0; }
+.azeri-film:first-child { border-top: 0; }
 .azeri-row {
   flex: 1 1 0;
   min-width: 0;
@@ -145,6 +137,8 @@
 }
 .azeri-play {
   flex: none;
+  font-family: inherit;
+  cursor: pointer;
   margin-right: 14px;
   padding: 6px 11px;
   border-radius: 999px;
@@ -181,6 +175,31 @@
 .azeri-links { display: flex; flex-wrap: wrap; gap: 6px 16px; }
 .azeri-links a { color: var(--accent); font-weight: 500; text-decoration: none; }
 .azeri-links a:hover { text-decoration: underline; }
+/* A link that plays here is a button wearing the links' own type. */
+.azeri-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: var(--accent);
+  cursor: pointer;
+}
+.azeri-link:hover { text-decoration: underline; }
+.azeri-link.is-on { color: var(--ink); }
+
+/* The player: YouTube's, sixteen by nine, as wide as the card, with the way
+   out to YouTube under it. */
+.azeri-player { margin: 0 0 12px; }
+.azeri-screen {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--hairline);
+}
+.azeri-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+.azeri-out { display: inline-block; margin-top: 6px; font-size: 12px; color: var(--muted); }
 
 /* ------------------------------------------------------------ the states */
 
