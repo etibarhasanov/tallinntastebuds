@@ -21,7 +21,10 @@
  *                                     into each run so a refresh never loses
  *                                     them.
  *
- *   azeri/data/films.json             GENERATED — by this file. Under
+ *   azeri/data/index.json             GENERATED — by this file: the
+ *   azeri/data/films/<n>.json         shelf's order and what search reads,
+ *                                     and the films in files of a hundred —
+ *                                     WHAT THE ROUTE READS below. Under
  *                                     /azeri rather than /data on purpose:
  *                                     _routes.json sends /data/* straight to
  *                                     the static files, past every Function,
@@ -32,7 +35,9 @@
  *                                     page, and /api/azeri hands the films
  *                                     out, to a session alone.
  *
- *   node tools/azfilms.mjs                 the list alone: one request
+ *   node tools/azfilms.mjs                 the list alone: one request, and
+ *                                          the films with nothing but it, so
+ *                                          a refresh always takes --articles
  *   node tools/azfilms.mjs --articles      and every linked article, one at a
  *                                          time with a second between (about
  *                                          an hour and a half the first time,
@@ -79,15 +84,16 @@
  * and link it.
  */
 
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, existsSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = join(ROOT, 'azeri', 'data', 'films.json');
-const ENGLISH = join(ROOT, 'azeri', 'data', 'films-en.json');
+const OUT = join(ROOT, 'azeri', 'data');
+const CHUNK = 100;
+const ENGLISH = join(OUT, 'films-en.json');
 const WIKI = 'https://az.wikipedia.org';
 const LIST = 'Azərbaycan filmlərinin siyahısı';
 /* Wikimedia asks automated clients to say who they are. The site's address
@@ -466,19 +472,58 @@ const ordered = films.map((f) => ({
   source: f.source,
 }));
 
-mkdirSync(dirname(OUT), { recursive: true });
-writeFileSync(OUT, JSON.stringify({
+/* ---------- what the route reads ---------- */
+
+/* A cold isolate on the free plan has ten milliseconds of CPU, and the whole
+   shelf in one file was 1.7 MB: parsing it took four to ten, and sorting and
+   folding it for search another twenty-five. So that work is done here,
+   once, and the route reads two things:
+
+     index.json       every film in the shelf's order — newest first, no year
+                      last, then by title — as [id, shelf, year, watchable,
+                      words], words being the title, the English title and
+                      the people, folded the way functions/api/azeri.js folds
+                      a search; and the source, the licence and the date.
+     films/<n>.json   the films themselves in that same order, CHUNK to a
+                      file, so a page of fifty touches one file or two.
+
+   The shelves are the page's chips. Every kind is on exactly one. */
+const SHELF_OF = {
+  feature: 'feature', musical: 'feature',
+  animation: 'animation',
+  documentary: 'documentary', docudrama: 'documentary', newsreel: 'documentary', concert: 'documentary',
+  series: 'series', play: 'series', anthology: 'series', other: 'series',
+};
+
+const fold = (v) => String(v == null ? '' : v).toLowerCase().normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '').replace(/ə/g, 'e').replace(/ı/g, 'i').replace(/\s+/g, ' ').trim();
+
+ordered.sort((a, b) => (b.year || 0) - (a.year || 0) || a.title.localeCompare(b.title, 'az'));
+
+rmSync(join(OUT, 'films'), { recursive: true, force: true });
+mkdirSync(join(OUT, 'films'), { recursive: true });
+for (let at = 0; at < ordered.length; at += CHUNK) {
+  writeFileSync(join(OUT, 'films', `${at / CHUNK}.json`), JSON.stringify(ordered.slice(at, at + CHUNK)) + '\n');
+}
+writeFileSync(join(OUT, 'index.json'), JSON.stringify({
   source: `${WIKI}/wiki/${encodeURIComponent(LIST.replace(/ /g, '_'))}`,
   license: 'CC BY-SA 4.0',
   collected: new Date().toISOString().slice(0, 10),
   articles: ARTICLES,
   playlists: YOUTUBE && ytKey ? PLAYLISTS.map((p) => p.id) : [],
-  films: ordered,
+  chunk: CHUNK,
+  rows: ordered.map((f) => [
+    f.id,
+    SHELF_OF[f.kind] || 'series',
+    f.year,
+    f.watch.length ? 1 : 0,
+    fold([f.title, f.titleEn, f.director.join(' '), f.writer.join(' '), f.cast.join(' ')].join(' ')),
+  ]),
   unmatched,
-}, null, 1) + '\n');
+}) + '\n');
 
 const count = (k) => ordered.filter(k).length;
-console.log(`${ordered.length} films → ${OUT.slice(ROOT.length + 1)}`);
+console.log(`${ordered.length} films → ${OUT.slice(ROOT.length + 1)}/index.json and films/`);
 console.log(`  ${count((f) => f.watch.length)} with a link to watch on the list`);
 if (YOUTUBE && ytKey) {
   console.log(`  ${count((f) => f.watch.some((w) => w.studio))} matched to a video of the studio's, ${unmatched.length} videos matched to nothing`);
