@@ -629,8 +629,8 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
 - Its search for somewhere to ride to, Where to?: `GET /api/places?q=` with
   `near` and `limit`, reading `id`, `name`, `address`, `category`, `lat`,
   `lng` and `map`; `GET /api/geocode?q=` — which since 2026-11-20 takes
-  `near=lat,lng` too and searches the city that point is in, Tallinn
-  without it — reading `results` with `label`,
+  `near=lat,lng` too and searches all of Estonia, nearest that point
+  first, and Tallinn without it — reading `results` with `label`,
   `where`, `lat` and `lng`; `GET /api/lookup` and `POST /api/lookup` as the
   map app does, the button offered from five letters, hidden on `why:
   'no-key'` and resting on any other refusal; and `GET /api/route` with

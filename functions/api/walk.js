@@ -150,7 +150,7 @@
  * and `checks` are per person.
  */
 
-import { json, sessionUser, wrongDatabase, nearCity, km } from './_lib.js';
+import { json, sessionUser, wrongDatabase, inEstonia, km } from './_lib.js';
 import { readList, LIST_ID } from './_lists.js';
 import { adminIds } from './_admin.js';
 import { asUsername } from './_account.js';
@@ -461,12 +461,12 @@ async function check(env, list, user, body) {
   const left = doors(list).filter((item) => !done.has(item.place));
   if (!left.length) return json(await answer(env, list, user), 200);
 
-  /* Somewhere that is in none of the four cities is far from all of them, and is said so
+  /* Somewhere that is not in Estonia is far from all of them, and is said so
      without a distance: "you are 1,900 km from Pudel" is a sentence about a
      VPN or a desk in another country, not about a walk. */
   let nearest = null;
   let metres = Infinity;
-  if (nearCity(here.lat, here.lng)) {
+  if (inEstonia(here.lat, here.lng)) {
     for (const item of left) {
       const d = km(here, item) * 1000;
       if (d < metres) { metres = d; nearest = item; }
