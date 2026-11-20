@@ -19,7 +19,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, fifty-four small Functions, no build step and no npm install. Adding a
+Static files, fifty-five small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -16795,15 +16795,21 @@ yet it shows the Azerbaijani with a line saying so.
 
 A link the list gives is a **Watch** button. A YouTube link the article only
 mentions is a **Maybe** button, because an article links an interview, a
-premiere or a dubbing as readily as the film. The studio's own playlists —
-Azərbaycanfilm's — are where most of the films can actually be watched;
-`--youtube` reads them through the YouTube Data API and matches each video to
-its film by title and year, taking the English title the studio gives where
-it gives one. It needs a key of our own in `YOUTUBE_API_KEY` — the playlist
-page and the endpoint it asks for the rest are YouTube's, not ours to call —
-and until there is one the pass is skipped. The Russian playlist's titles are
-in Russian and match nothing on an Azerbaijani list; they come out in the
-file's `unmatched` for matching by hand.
+premiere or a dubbing as readily as the film.
+
+The studio's own playlists — Azərbaycanfilm's three — are where most of the
+films can actually be watched, and reading them takes a YouTube key. The key
+is `YOUTUBE_API_KEY` in the Pages dashboard, Production only, beside the
+Places key, because that is where the site's keys live and no session can
+read one back out of it. So the site does the reading: `/api/admin/youtube`,
+the owner's, answers every video of the three playlists, and with `?check=1`
+which of the films' YouTube links YouTube no longer plays. The owner opens
+both signed in and saves the answers as `azeri/data/youtube.json` and
+`azeri/data/youtube-dead.json`, and every run of the tool reads them: each
+video matched to its film by title and year, with the English title the
+studio gives where it gives one, and every dead link taken off. The Russian
+playlist's titles are in Russian and match nothing on an Azerbaijani list;
+they come out in the index's `unmatched` for matching by hand.
 
 ### The door, and what a page costs
 

@@ -44,8 +44,6 @@
  *                                          the feature films and cartoons
  *                                          first), cached so a second run asks
  *                                          again only for what is missing
- *   node tools/azfilms.mjs --youtube       and the studio's three playlists,
- *                                          with YOUTUBE_API_KEY set
  *   node tools/azfilms.mjs --cache <dir>   where that cache lives; the
  *                                          default is under the system's
  *                                          temporary directory
@@ -103,7 +101,6 @@ const PAUSE = 1000;
 
 const args = process.argv.slice(2);
 const ARTICLES = args.includes('--articles');
-const YOUTUBE = args.includes('--youtube');
 const cacheAt = args.indexOf('--cache');
 const CACHE = cacheAt >= 0 ? args[cacheAt + 1] : join(tmpdir(), 'ttb-azfilms');
 
@@ -334,33 +331,20 @@ function details(text) {
 
 /* Azərbaycanfilm's own channel keeps its films in playlists, which is where
    most of them can actually be watched — the list links a hundred and sixty.
-   They are read through the YouTube Data API, fifty videos a call, with a key
-   in YOUTUBE_API_KEY: one call of a free ten thousand a day for every fifty
-   videos, about a dozen for the three. Not through the playlist page and the
-   endpoint it asks for the rest, which is YouTube's own and not ours to call.
-   Without a key, --youtube says so and the run goes on without it. */
-const PLAYLISTS = [
-  { id: 'PLAtI5OWgNzB3iuvjwhQzW60A1jQ8LdxBp', lang: 'az' }, // Tammetrajlı bədii filmlər
-  { id: 'PLAtI5OWgNzB1wzuPM18PZ2eKSagWgFMAv', lang: 'az' }, // Klassik filmlər
-  { id: 'PLAtI5OWgNzB2qF-wUqAn0spyq2C6HLVq0', lang: 'ru' }, // Фильмы на русском языке
-];
+   Reading them takes a YouTube key, and the one the owner has is a secret in
+   the Pages dashboard, where no session can read it. So the site reads them:
+   /api/admin/youtube answers every video of the three playlists, and with
+   ?check=1 which of the films' YouTube links are dead. The owner opens both
+   signed in, and the two answers are saved here as they came:
 
-async function playlist(id, key) {
-  const videos = [];
-  let page = '';
-  do {
-    const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50' +
-      `&playlistId=${id}${page ? '&pageToken=' + page : ''}`;
-    const res = await fetch(url, { headers: { 'X-Goog-Api-Key': key } });
-    if (!res.ok) throw new Error(`YouTube answered ${res.status} for playlist ${id}`);
-    const out = await res.json();
-    for (const item of out.items || []) {
-      videos.push({ id: item.snippet.resourceId.videoId, title: item.snippet.title });
-    }
-    page = out.nextPageToken || '';
-  } while (page);
-  return videos;
-}
+     azeri/data/youtube.json        the playlists, { playlists: [ … ] }
+     azeri/data/youtube-dead.json   the dead links, { dead: [ id, … ] }
+
+   Both are read on every run when they are there, the way films-en.json is,
+   so a refresh of the list keeps them. The playlists themselves are named in
+   functions/api/admin/youtube.js and nowhere else. */
+const PLAYLIST_FILE = join(OUT, 'youtube.json');
+const DEAD_FILE = join(OUT, 'youtube-dead.json');
 
 /* "Bizim Cəbiş müəllim (1969) | Our Teacher Jabish" → the Azerbaijani title,
    the year and the English one; a Russian title stands alone. The studio
@@ -429,21 +413,32 @@ if (ARTICLES) {
 }
 
 const unmatched = [];
-const ytKey = (process.env.YOUTUBE_API_KEY || '').trim();
-if (YOUTUBE && !ytKey) console.warn('--youtube needs YOUTUBE_API_KEY; the playlists were not read.');
-if (YOUTUBE && ytKey) {
-  for (const list of PLAYLISTS) {
-    const videos = await playlist(list.id, ytKey);
-    console.log(`${videos.length} videos in playlist ${list.id}`);
-    for (const v of videos) {
-      const { t, film } = match(films, v);
-      const url = `https://www.youtube.com/watch?v=${v.id}`;
-      if (!film) { unmatched.push({ url, title: v.title, lang: list.lang }); continue; }
-      if (film.watch.some((w) => w.url === url)) continue;
-      film.watch.push({ url, kind: 'film', part: null, lang: list.lang, studio: true });
-      if (t.en && !film.titleEn) film.titleEn = t.en;
-    }
+const studio = existsSync(PLAYLIST_FILE) ? JSON.parse(readFileSync(PLAYLIST_FILE, 'utf8')).playlists : [];
+for (const list of studio) {
+  console.log(`${list.videos.length} videos in playlist ${list.id}`);
+  for (const v of list.videos) {
+    const { t, film } = match(films, v);
+    const url = `https://www.youtube.com/watch?v=${v.id}`;
+    if (!film) { unmatched.push({ url, title: v.title, lang: list.lang }); continue; }
+    if (film.watch.some((w) => w.url === url)) continue;
+    film.watch.push({ url, kind: 'film', part: null, lang: list.lang, studio: true });
+    if (t.en && !film.titleEn) film.titleEn = t.en;
   }
+}
+
+/* A link YouTube no longer plays is no link: taken off the watch links and
+   the Maybes alike, so a film with nothing left says so by having no button. */
+const dead = new Set(existsSync(DEAD_FILE) ? JSON.parse(readFileSync(DEAD_FILE, 'utf8')).dead : []);
+const alive = (link) => {
+  const m = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/.exec(link.url);
+  return !m || !dead.has(m[1]);
+};
+let dropped = 0;
+for (const f of films) {
+  const before = f.watch.length + (f.video || []).length;
+  f.watch = f.watch.filter(alive);
+  if (f.video) f.video = f.video.filter(alive);
+  dropped += before - f.watch.length - (f.video || []).length;
 }
 
 const english = existsSync(ENGLISH) ? JSON.parse(readFileSync(ENGLISH, 'utf8')) : {};
@@ -510,7 +505,7 @@ writeFileSync(join(OUT, 'index.json'), JSON.stringify({
   license: 'CC BY-SA 4.0',
   collected: new Date().toISOString().slice(0, 10),
   articles: ARTICLES,
-  playlists: YOUTUBE && ytKey ? PLAYLISTS.map((p) => p.id) : [],
+  playlists: studio.map((p) => p.id),
   chunk: CHUNK,
   rows: ordered.map((f) => [
     f.id,
@@ -525,8 +520,11 @@ writeFileSync(join(OUT, 'index.json'), JSON.stringify({
 const count = (k) => ordered.filter(k).length;
 console.log(`${ordered.length} films → ${OUT.slice(ROOT.length + 1)}/index.json and films/`);
 console.log(`  ${count((f) => f.watch.length)} with a link to watch on the list`);
-if (YOUTUBE && ytKey) {
+if (studio.length) {
   console.log(`  ${count((f) => f.watch.some((w) => w.studio))} matched to a video of the studio's, ${unmatched.length} videos matched to nothing`);
+}
+if (dead.size) {
+  console.log(`  ${dropped} dead YouTube links taken off`);
 }
 if (ARTICLES) {
   console.log(`  ${count((f) => f.video.length)} with a YouTube link in the article`);
