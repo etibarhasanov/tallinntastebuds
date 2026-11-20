@@ -4,15 +4,15 @@
  * /azeri is a page about Azerbaijan for members only, in Azerbaijani and
  * English, linked from nowhere. Its first shelf is the country's cinema: the
  * 2,615 films of the Azerbaijani Wikipedia's list, collected by
- * tools/azfilms.mjs into azeri/data/films.json. This route is the only way
- * to read them.
+ * tools/azfilms.mjs into azeri/data/. This route is the only way to read
+ * them.
  *
  * WHY A ROUTE AND NOT THE FILE
  *
- * The file is behind the members' door, and a static file has no door:
- * _routes.json hands /data/* to the asset server past every Function. So the
- * file lives under /azeri/data/, which functions/_middleware.js answers with
- * the not-found page for everybody, and this reads it through env.ASSETS,
+ * The films are behind the members' door, and a static file has no door:
+ * _routes.json hands /data/* to the asset server past every Function. So
+ * they live under /azeri/data/, which functions/_middleware.js answers with
+ * the not-found page for everybody, and this reads them through env.ASSETS,
  * which goes around the middleware — the way every other Function reads a
  * data file.
  *
@@ -21,13 +21,21 @@
  * One read of the database per request, and it is the session: a lookup on
  * sessions' primary key, token_hash, joined to users by theirs — one row of
  * each, two at most when a browser carries two cookies (sessionTokens() in
- * _lib.js). Everything else is the file, kept five minutes per isolate by
- * dataFile(), and filtered, searched and paged in memory. So a member
- * scrolling the whole of the feature films — seven pages — is seven session
- * reads, and a hundred members doing it every day of the month is under
- * 1,500 reads a day against the five million. Nothing here grows with the
- * films, because the films are not in the database.
+ * _lib.js). Nothing else touches the database, because the films are not in
+ * it. A member reading all 523 feature films is eleven pages and eleven
+ * reads, and a hundred members doing that every day is 1,100 against the
+ * five million; the number does not grow with the films.
  *
+ * And the CPU, which on the free plan is ten milliseconds a request. The
+ * whole shelf as one file was 1.7 MB, and a cold isolate spent four to ten
+ * parsing it and twenty-five more sorting and folding it for search, so the
+ * tool does that work and writes it down: index.json, 290 KB, every film in
+ * the shelf's order with its shelf, year, a watchable flag and its words
+ * already folded; and the films themselves in files of a hundred in that
+ * order, films/<n>.json. A request walks the index once and parses the one
+ * or two files its page is in. All of them are kept five minutes per
+ * isolate by dataFile().
+
  * WHAT IT ANSWERS
  *
  *   GET /api/azeri?kind=feature&q=&watch=1&after=<id>
@@ -45,7 +53,7 @@
  *
  * `total` is how many match, `counts` how many each shelf holds with the
  * search and the switch applied, so the chips can say. A film carries every
- * field the file has, since the page opens a row without asking again.
+ * field the tool wrote, since the page opens a row without asking again.
  *
  * Signed out it is 401 `signed-out` and nothing else, so the page draws its
  * door; without a database, 503 `no-database`, the same as every route that
@@ -54,43 +62,18 @@
 
 import { json, sessionUser, dataFile, foldWords, wrongDatabase } from './_lib.js';
 
-const FILE = '/azeri/data/films.json';
+const INDEX = '/azeri/data/index.json';
+const CHUNKS = '/azeri/data/films/';
 const PAGE = 50;
 const MAX_Q = 80;
+const SHELVES = ['feature', 'animation', 'documentary', 'series'];
 
-const SHELVES = {
-  feature: ['feature', 'musical'],
-  animation: ['animation'],
-  documentary: ['documentary', 'docudrama', 'newsreel', 'concert'],
-  series: ['series', 'play', 'anthology', 'other'],
-};
-const SHELF_OF = {};
-for (const [shelf, kinds] of Object.entries(SHELVES)) for (const k of kinds) SHELF_OF[k] = shelf;
-
-/* foldWords() leaves ə and ı as they are, since neither has a base letter
-   NFD can take its mark off; on this shelf they are the two letters a person
-   typing on an English keyboard writes as e and i. */
+/* The same fold tools/azfilms.mjs gave every film's words: foldWords()
+   leaves ə and ı as they are, since neither has a base letter NFD can take
+   its mark off, and on this shelf they are the two letters an English
+   keyboard writes as e and i. Change one, change the other. */
 function fold(value) {
-  return foldWords(value).replace(/ə/g, 'e').replace(/ı/g, 'i');
-}
-
-/* The shelf sorted once per copy of the file, with each film's search text
-   beside it: the file is kept five minutes, and so is this. */
-let sorted = null;
-let sortedFrom = null;
-
-function shelf(file) {
-  if (sorted && sortedFrom === file) return sorted;
-  sorted = file.films
-    .map((f) => ({
-      film: f,
-      shelf: SHELF_OF[f.kind] || 'series',
-      words: fold([f.title, f.titleEn, f.director.join(' '), f.writer.join(' '), f.cast.join(' ')].join(' ')),
-    }))
-    .sort((a, b) =>
-      (b.film.year || 0) - (a.film.year || 0) || a.film.title.localeCompare(b.film.title, 'az'));
-  sortedFrom = file;
-  return sorted;
+  return foldWords(value).replace(/ə/g, 'e').replace(/ı/g, 'i').trim();
 }
 
 export async function onRequestGet(context) {
@@ -98,33 +81,41 @@ export async function onRequestGet(context) {
   if (!env.DB || (await wrongDatabase(env))) return json({ error: 'no-database' }, 503);
   if (!(await sessionUser(request, env))) return json({ error: 'signed-out' }, 401);
 
-  let file;
-  try {
-    file = await dataFile(context, FILE);
-  } catch (e) {
-    return json({ error: 'unavailable' }, 503);
-  }
-
   const url = new URL(request.url);
   const asked = url.searchParams.get('kind');
-  const kind = (SHELVES[asked] || asked === 'all') ? asked : 'feature';
+  const kind = SHELVES.includes(asked) || asked === 'all' ? asked : 'feature';
   const words = fold(String(url.searchParams.get('q') || '').slice(0, MAX_Q)).split(' ').filter(Boolean);
   const watch = url.searchParams.get('watch') === '1';
   const after = url.searchParams.get('after') || '';
 
-  const counts = { all: 0, feature: 0, animation: 0, documentary: 0, series: 0 };
-  const found = [];
-  for (const row of shelf(file)) {
-    if (watch && !row.film.watch.length) continue;
-    if (words.length && !words.every((w) => row.words.includes(w))) continue;
-    counts.all++;
-    counts[row.shelf]++;
-    if (kind === 'all' || row.shelf === kind) found.push(row.film);
+  try {
+    const index = await dataFile(context, INDEX);
+
+    /* One pass over the rows, already in the shelf's order: the counts for
+       the chips, and where in the whole order each film of this shelf is. */
+    const counts = { all: 0, feature: 0, animation: 0, documentary: 0, series: 0 };
+    const found = [];
+    index.rows.forEach(([id, shelf, , watchable, text], at) => {
+      if (watch && !watchable) return;
+      if (words.length && !words.every((w) => text.includes(w))) return;
+      counts.all++;
+      counts[shelf]++;
+      if (kind === 'all' || shelf === kind) found.push({ id, at });
+    });
+
+    const start = after ? found.findIndex((f) => f.id === after) + 1 : 0;
+    const page = found.slice(start, start + PAGE);
+    const next = start + PAGE < found.length ? page[page.length - 1].id : null;
+
+    /* The films themselves, out of the one or two chunks this page is in —
+       or a few more, when a search has picked its films from all over. */
+    const wanted = [...new Set(page.map((f) => Math.floor(f.at / index.chunk)))];
+    const chunks = new Map();
+    for (const n of wanted) chunks.set(n, await dataFile(context, CHUNKS + n + '.json'));
+    const films = page.map((f) => chunks.get(Math.floor(f.at / index.chunk))[f.at % index.chunk]);
+
+    return json({ films, next, total: found.length, counts, source: index.source });
+  } catch (e) {
+    return json({ error: 'unavailable' }, 503);
   }
-
-  const start = after ? found.findIndex((f) => f.id === after) + 1 : 0;
-  const films = found.slice(start, start + PAGE);
-  const next = start + PAGE < found.length ? films[films.length - 1].id : null;
-
-  return json({ films, next, total: found.length, counts, source: file.source });
 }

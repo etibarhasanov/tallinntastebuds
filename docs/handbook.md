@@ -16776,7 +16776,7 @@ since 1898 — 2,615 lines, feature films, documentaries, cartoons, serials and
 filmed plays, each with its year and kind and, on about a hundred and sixty,
 a link to watch it. `tools/azfilms.mjs` reads that list and, with
 `--articles`, the article behind each linked title for its director, writer,
-cast, IMDb id and opening paragraph, and writes `azeri/data/films.json`. It
+cast, IMDb id and opening paragraph, and writes them into `azeri/data/`. It
 is run by hand and committed, like a refresh of the Google export, because
 its source is a website rather than a file here; it is not in
 `tools/generate.mjs` and CI never runs it. The text is CC BY-SA and the page
@@ -16803,10 +16803,10 @@ file's `unmatched` for matching by hand.
 
 ### The door, and what a page costs
 
-The file is behind the members' door, and a static file has no door:
-`/data/*` is handed to the asset server past every Function. So it lives
+The films are behind the members' door, and a static file has no door:
+`/data/*` is handed to the asset server past every Function. So they live
 under `/azeri/data/`, which `functions/_middleware.js` answers with the
-not-found page, and `GET /api/azeri` reads it through `env.ASSETS` for a
+not-found page, and `GET /api/azeri` reads them through `env.ASSETS` for a
 session and nobody else. Signed out, the page draws a card whose button is
 the map's own sign-in sheet, `/?account=in&then=/azeri`, which brings
 somebody back when they are in.
@@ -16815,8 +16815,16 @@ The shelf is never sent whole. It opens on the feature films, newest first,
 and **Show more** asks for the next fifty after the last one shown; a chip,
 the switch or the search starts again from the top. Each ask costs the
 database one read — the session, by its key — and nothing else, because the
-films are not in the database: the route keeps the file five minutes per
-isolate and filters, searches and pages it in memory. A member reading all
+films are not in the database.
+
+They are not one file either. The whole shelf was 1.7 MB, and a cold isolate
+on the free plan's ten milliseconds of CPU spent four to ten of them parsing
+it and twenty-five more sorting and folding it for search. So the tool does
+that once: `index.json`, 290 KB, every film in the shelf's order with its
+shelf, year, whether it can be watched and its words already folded; and the
+films in files of a hundred in that order, `films/<n>.json`. A request walks
+the index and parses the one or two files its page is in, a couple of
+milliseconds cold, and the route keeps them five minutes per isolate. A member reading all
 523 feature films is eleven reads. A hundred members doing that every day is
 1,100 against the five million, and the number does not grow with the films.
 
