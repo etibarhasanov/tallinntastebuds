@@ -81,9 +81,12 @@
   var LANGS = ['az', 'en', 'ru', 'et'];
   var TABS = ['films', 'estonia', 'study', 'estonian'];
   var SAY_KEYS = { estonia: 'azeriEstoniaSay', study: 'azeriStudySay' };
-  /* The flashcards live on a host of their own and speak three languages:
-     DECK_LANGS in functions/api/_lib.js. */
-  var FLASHCARDS = 'https://flashcard.tallinntastebuds.ee/';
+  /* The flashcards, at the address the map's own door to them has: this
+     host's /flashcard, which answers wherever the site does. The button
+     went to their subdomain for a day, the one link on the site that did,
+     and did not open for the owner. They speak three languages: DECK_LANGS
+     in functions/api/_lib.js. */
+  var FLASHCARDS = '/flashcard';
   var FLASH_LANGS = ['az', 'en', 'ru'];
   var WIDE = '(min-width: 900px)';
   var CHEVRON = '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>';
