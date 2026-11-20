@@ -68,17 +68,17 @@ ref: functions/api/account.js GET</bpmn:documentation>
       <bpmn:outgoing>member-e4</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="azeri" name="Opens /azeri and reads the films">
-      <bpmn:documentation>By its address: nothing links to it. In Azerbaijani or English; feature films first, newest first, fifty at a time. Signed out it is a door to the sign-in sheet.
+      <bpmn:documentation>By its address: nothing links to it. In Azerbaijani or English; the feature films that can be watched first, newest first, twenty to a page. Signed out it is a door to the sign-in sheet.
 when: page:azeri
 when: azeri_shelf
-when: azeri_more
+when: azeri_page
 when: azeri_film
 ref: azeri.html
 ref: assets/azeri.js</bpmn:documentation>
       <bpmn:incoming>member-e1</bpmn:incoming>
       <bpmn:outgoing>member-e2</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="azeri-page" name="Answers a page of fifty, for a session only">
+    <bpmn:serviceTask id="azeri-page" name="Answers a page of twenty, for a session only">
       <bpmn:documentation>One read, the session; the films are a file, kept five minutes per isolate and searched in memory.
 ref: functions/api/azeri.js GET
 ref: tools/azfilms.mjs</bpmn:documentation>

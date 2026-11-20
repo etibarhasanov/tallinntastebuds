@@ -16811,11 +16811,14 @@ session and nobody else. Signed out, the page draws a card whose button is
 the map's own sign-in sheet, `/?account=in&then=/azeri`, which brings
 somebody back when they are in.
 
-The shelf is never sent whole. It opens on the feature films, newest first,
-and **Show more** asks for the next fifty after the last one shown; a chip,
-the switch or the search starts again from the top. Each ask costs the
-database one read — the session, by its key — and nothing else, because the
-films are not in the database.
+The shelf is never sent whole. It opens on the feature films that can be
+watched, newest first, twenty to a page, with **Previous** and **Next** under
+the list; **Only ones I can watch** is on to begin with and a press turns it
+off, and a chip, the switch or the search starts again from page one. Each
+page costs the database one read — the session, by its key — and nothing else, because the
+films are not in the database. Reading every one of the 523 feature films is
+twenty-seven pages and twenty-seven reads; a hundred members doing that every
+day is 2,700 against the five million.
 
 They are not one file either. The whole shelf was 1.7 MB, and a cold isolate
 on the free plan's ten milliseconds of CPU spent four to ten of them parsing
@@ -20999,7 +21002,7 @@ Azerbaijan, `assets/azeri.js`:
 | --- | --- |
 | `azeri_shelf` | `shelf` — the chip pressed: `feature`, `animation`, `documentary`, `series` or `all` |
 | `azeri_watchable` | `on` (`1`/`0`) — the Only ones I can watch switch |
-| `azeri_more` | `shelf` — Show more, the next fifty |
+| `azeri_page` | `page` — Previous or Next, the page turned to |
 | `azeri_film` | `film` — a film opened |
 | `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) |
 | `language_select`, `language_open`, `home`, `account_open` | as on the map |

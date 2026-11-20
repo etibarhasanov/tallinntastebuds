@@ -1521,8 +1521,10 @@
   "azeriError": "The films are not answering right now.",
   "azeriDoorText": "This corner of the site opens for people with an account. Sign in, or make one: it takes a username and a password.",
   "azeriSignIn": "Sign in",
-  "azeriMore": "Show more",
-  "azeriNoYear": "Year unknown"
+  "azeriNoYear": "Year unknown",
+  "azeriPrev": "Previous",
+  "azeriNext": "Next",
+  "azeriPageOf": "Page {n} of {total}"
  },
  "blurbs": {
   "180-degrees": "The only two Michelin star restaurant in the Baltics. A really nice experimental place on the Noblessner waterfront, where the tasting menu is built to surprise you course after course.",

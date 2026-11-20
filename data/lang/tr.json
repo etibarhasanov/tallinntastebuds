@@ -1521,8 +1521,10 @@
   "azeriError": "Filmler şu anda yanıt vermiyor.",
   "azeriDoorText": "Sitenin bu köşesi hesabı olanlara açılır. Giriş yap ya da hesap aç: bir kullanıcı adı ve şifre yeter.",
   "azeriSignIn": "Giriş yap",
-  "azeriMore": "Daha fazla",
-  "azeriNoYear": "Yılı bilinmiyor"
+  "azeriNoYear": "Yılı bilinmiyor",
+  "azeriPrev": "Önceki",
+  "azeriNext": "Sonraki",
+  "azeriPageOf": "Sayfa {n} / {total}"
  },
  "blurbs": {
   "180-degrees": "Baltıklardaki tek iki Michelin yıldızlı restoran. Noblessner sahilinde gerçekten güzel, deneysel bir mekân; tadım menüsü sizi tabak tabak şaşırtmak üzere kurulmuş.",

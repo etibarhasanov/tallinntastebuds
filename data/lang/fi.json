@@ -1521,8 +1521,10 @@
   "azeriError": "Elokuvat eivät vastaa juuri nyt.",
   "azeriDoorText": "Tämä sivuston nurkka aukeaa tilin omistajille. Kirjaudu sisään tai luo tili: tarvitset vain käyttäjänimen ja salasanan.",
   "azeriSignIn": "Kirjaudu",
-  "azeriMore": "Näytä lisää",
-  "azeriNoYear": "Vuosi tuntematon"
+  "azeriNoYear": "Vuosi tuntematon",
+  "azeriPrev": "Edellinen",
+  "azeriNext": "Seuraava",
+  "azeriPageOf": "Sivu {n}/{total}"
  },
  "blurbs": {
   "180-degrees": "Baltian ainoa kahden Michelin-tähden ravintola. Todella hieno kokeileva paikka Noblessnerin rannassa, jossa maistelumenu on rakennettu yllättämään ruokalajista toiseen.",

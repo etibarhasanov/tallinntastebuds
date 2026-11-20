@@ -1521,8 +1521,10 @@
   "azeriError": "Os filmes não estão a responder agora.",
   "azeriDoorText": "Este canto do site abre para quem tem conta. Entra, ou cria uma: basta um nome de utilizador e uma palavra-passe.",
   "azeriSignIn": "Entrar",
-  "azeriMore": "Mostrar mais",
-  "azeriNoYear": "Ano desconhecido"
+  "azeriNoYear": "Ano desconhecido",
+  "azeriPrev": "Anterior",
+  "azeriNext": "Seguinte",
+  "azeriPageOf": "Página {n} de {total}"
  },
  "blurbs": {
   "180-degrees": "O único restaurante com duas estrelas Michelin dos países bálticos. Um lugar experimental e muito bonito na frente de água de Noblessner, onde o menu de degustação foi montado para surpreender prato após prato.",

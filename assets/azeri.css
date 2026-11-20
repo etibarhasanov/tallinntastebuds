@@ -190,8 +190,17 @@
 .azeri-bone:nth-child(4n + 1) { width: 48%; }
 .azeri-bone.is-short { width: 32%; margin-bottom: 18px; }
 
-.azeri-more { display: block; margin: 14px auto 0; cursor: pointer; background: var(--paper); }
-.azeri-more:disabled { opacity: .5; cursor: default; }
+/* Previous, where the page is, and Next, under the list. */
+.azeri-pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 0;
+}
+.azeri-pager .link-btn { cursor: pointer; background: var(--paper); }
+.azeri-pager .link-btn:disabled { opacity: .4; cursor: default; }
+.azeri-where { font-size: 13px; color: var(--muted); }
 
 .azeri-credit { margin: 16px 0 24px; font-size: 12px; text-align: center; }
 .azeri-credit a { color: var(--muted); }
