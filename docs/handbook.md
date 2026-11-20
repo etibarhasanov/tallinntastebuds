@@ -16916,7 +16916,11 @@ whose every item starts with the thing in bold, and under them the links to
 the offices that decide. **The guide names no figure that changes.** No fee,
 no deadline, no number of days: a sentence says the thing exists and the link
 says how much it is this year, because a guide that was right in November is
-a guide somebody will be told off at a counter for in March. Each topic says
+a guide somebody will be told off at a counter for in March. One figure is
+in it all the same, at the owner's word: a broker's fee is a month's rent
+with VAT on top, 24% when it was written, because that is the number that
+surprises somebody on the day they sign, and the sentence says when it was
+true. Each topic says
 the month it was last read against its sources, the tab's `checked`, and the
 line under every list says it is not official advice and whose word is final.
 

@@ -139,10 +139,26 @@
       "covers": {"az": "Harada axtarmalı, depozit, kommunal, müqavilə", "en": "Where to look, the deposit, utilities, the contract", "ru": "Где искать, залог, коммунальные платежи, договор", "et": "Kust otsida, tagatisraha, kommunaalkulud, leping"},
       "body": [
         {"p": {
-          "az": "Kirayə mənzillərin çoxu iki saytdadır: KV.ee və City24. Facebook qruplarında da elanlar var, amma fırıldaq da çoxdur.",
-          "en": "Most flats to rent are on two sites, KV.ee and City24. Facebook groups have offers as well, and more fraud.",
-          "ru": "Большинство квартир в аренду есть на двух сайтах: KV.ee и City24. Объявления бывают и в группах Facebook, но там больше мошенников.",
-          "et": "Enamik üürikortereid on kahel lehel: KV.ee ja City24. Pakkumisi leidub ka Facebooki gruppides, kuid seal on rohkem pettusi."}},
+          "az": "Kirayə mənzillərin çoxu iki saytdadır: KV.ee və City24, və oradakı mənzillərin bir çoxu makler vasitəsilə verilir. Sahiblərin özlərinin kirayə verdiyi mənzillər isə iki Facebook qrupundadır, arada makler olmur.",
+          "en": "Most flats to rent are on two sites, KV.ee and City24, and many of the flats there are let through a broker. Flats let by the owners themselves are in two Facebook groups, where no broker stands in between.",
+          "ru": "Большинство квартир в аренду есть на двух сайтах: KV.ee и City24, и многие из них сдаются через маклера. Квартиры, которые сдают сами владельцы, есть в двух группах Facebook, без маклера между вами.",
+          "et": "Enamik üürikortereid on kahel lehel, KV.ee ja City24, ning paljud neist antakse üürile maakleri kaudu. Omanike endi üüritavad korterid on kahes Facebooki grupis, kus maaklerit vahel ei ole."}},
+        {"list": [
+          {"b": {"az": "Maklersiz Facebook qrupu, 1", "en": "Facebook group without brokers, 1", "ru": "Группа в Facebook без маклеров, 1", "et": "Maaklerita Facebooki grupp, 1"},
+           "url": "https://www.facebook.com/groups/579813925435461",
+           "t": {
+            "az": "Mənzilləri sahibləri özləri kirayə verir. Facebook hesabı ilə oxunur.",
+            "en": "Flats let by their owners. It is read with a Facebook account.",
+            "ru": "Квартиры сдают сами владельцы. Читается с аккаунтом Facebook.",
+            "et": "Kortereid üürivad omanikud ise. Lugemiseks on vaja Facebooki kontot."}},
+          {"b": {"az": "Maklersiz Facebook qrupu, 2", "en": "Facebook group without brokers, 2", "ru": "Группа в Facebook без маклеров, 2", "et": "Maaklerita Facebooki grupp, 2"},
+           "url": "https://www.facebook.com/groups/299056793537765",
+           "t": {
+            "az": "Eyni cür qrup; hər ikisini izləməyə dəyər.",
+            "en": "The same kind of group; it is worth watching both.",
+            "ru": "Такая же группа; стоит следить за обеими.",
+            "et": "Samasugune grupp; tasub jälgida mõlemat."}}
+        ]},
         {"list": [
           {"b": {"az": "Depozit.", "en": "The deposit.", "ru": "Залог.", "et": "Tagatisraha."},
            "t": {
@@ -164,16 +180,16 @@
             "et": "Kirjalik; notarit ei ole vaja. Loe läbi, kuidas ja kui pika etteteatamisega saab kumbki pool selle lõpetada."}},
           {"b": {"az": "Makler haqqı.", "en": "A broker's fee.", "ru": "Плата маклеру.", "et": "Maakleritasu."},
            "t": {
-            "az": "Mənzili makler göstərəndə təxminən bir aylıq kirayə qədər haqq adi haldır. Baxışdan əvvəl onu kimin ödədiyini soruş.",
-            "en": "Where a broker shows the flat, a fee of about a month's rent is common. Ask before the viewing who pays it.",
-            "ru": "Если квартиру показывает маклер, обычно берут плату примерно в размере месячной аренды. До просмотра спросите, кто её платит.",
-            "et": "Kui korterit näitab maakler, on tavaline umbes ühe kuu üüri suurune tasu. Küsi enne vaatamist, kes selle maksab."}},
+            "az": "Mənzili makler kirayə verəndə haqqı adətən kirayəçi ödəyir: bir aylıq kirayə və üstəgəl ƏDV, bu yazılanda 24%. Bu, ilk gündən böyük xərcdir, ona görə baxışdan əvvəl makler haqqının olub-olmadığını soruş və əvvəlcə yuxarıdakı qruplara bax.",
+            "en": "Where a broker lets the flat, the tenant usually pays the fee: a month's rent with VAT on top, 24% as this was written. That is a lot of money gone on the first day, so ask before the viewing whether there is one, and look in the groups above first.",
+            "ru": "Если квартиру сдаёт маклер, его услуги обычно оплачивает арендатор: месячная аренда и сверху НДС, 24% на момент написания. Это большая сумма в первый же день, поэтому до просмотра спросите, есть ли такая плата, и сначала посмотрите группы выше.",
+            "et": "Kui korterit üürib välja maakler, maksab tasu tavaliselt üürnik: ühe kuu üür ja sellele lisaks käibemaks, kirjutamise ajal 24%. See on esimesel päeval suur summa, seega küsi enne vaatamist, kas tasu on, ja vaata kõigepealt ülaltoodud gruppe."}},
           {"b": {"az": "Görmədiyin mənzil üçün pul göndərmə.", "en": "Never pay for a flat you have not seen.", "ru": "Не платите за квартиру, которую не видели.", "et": "Ära maksa korteri eest, mida sa pole näinud."},
            "t": {
-            "az": "İlk həftələr üçün qısamüddətli yer tut və mənzillərə yerində bax.",
-            "en": "For the first weeks, a short-term place lets you look at flats in person.",
-            "ru": "На первые недели снимите временное жильё и смотрите квартиры лично.",
-            "et": "Esimesteks nädalateks võta ajutine koht ja vaata kortereid kohapeal."}},
+            "az": "Bu ən çox Facebook qruplarında vacibdir, çünki orada hər kəs elan yaza bilir. İlk həftələr üçün qısamüddətli yer tut və mənzillərə yerində bax.",
+            "en": "It matters most in the Facebook groups, where anyone can post. For the first weeks, a short-term place lets you look at flats in person.",
+            "ru": "Особенно это важно в группах Facebook, где объявление может разместить кто угодно. На первые недели снимите временное жильё и смотрите квартиры лично.",
+            "et": "Eriti oluline on see Facebooki gruppides, kuhu võib kuulutuse panna igaüks. Esimesteks nädalateks võta ajutine koht ja vaata kortereid kohapeal."}},
           {"b": {"az": "Ünvan.", "en": "The address.", "ru": "Адрес.", "et": "Aadress."},
            "t": {
             "az": "Ünvanı qeydiyyata almaq üçün sahibin razılığı lazımdır. İmzalamazdan əvvəl bunu soruş.",
