@@ -84,6 +84,7 @@
     kind: 'feature',
     q: '',
     watch: true,
+    ru: false,       // only the films with a version in Russian, and play that one
     films: [],
     page: 1,
     pages: 1,
@@ -220,6 +221,7 @@
     p.set('kind', state.kind);
     if (state.q) p.set('q', state.q);
     if (state.watch) p.set('watch', '1');
+    if (state.ru) p.set('ru', '1');
     if (page > 1) p.set('page', String(page));
     return API + '?' + p.toString();
   }
@@ -366,17 +368,24 @@
     });
     box.appendChild(chips);
 
-    var toggle = el('label', { className: 'azeri-toggle' });
-    var check = el('input', { type: 'checkbox', className: 'azeri-switch' });
-    check.checked = state.watch;
-    check.addEventListener('change', function () {
-      state.watch = check.checked;
-      track('azeri_watchable', { on: state.watch ? 1 : 0 });
-      ask(1);
+    /* Two switches: the films that can be watched, on to begin with, and
+       the ones with a version in Russian, which is also which version Watch
+       then plays. */
+    var toggles = el('div', { className: 'azeri-toggles' });
+    [['watch', 'azeriWatchable', 'azeri_watchable'], ['ru', 'azeriRussianOnly', 'azeri_russian']].forEach(function (sw) {
+      var toggle = el('label', { className: 'azeri-toggle' });
+      var check = el('input', { type: 'checkbox', className: 'azeri-switch' });
+      check.checked = state[sw[0]];
+      check.addEventListener('change', function () {
+        state[sw[0]] = check.checked;
+        track(sw[2], { on: check.checked ? 1 : 0 });
+        ask(1);
+      });
+      toggle.appendChild(el('span', { text: t(sw[1]) }));
+      toggle.appendChild(check);
+      toggles.appendChild(toggle);
     });
-    toggle.appendChild(el('span', { text: t('azeriWatchable') }));
-    toggle.appendChild(check);
-    box.appendChild(toggle);
+    box.appendChild(toggles);
     return box;
   }
 
@@ -405,11 +414,20 @@
 
   /* What the button on a row plays, and what it is called: the film where
      there is one — the list's link, else the studio's, the Azerbaijani
-     version first, which is the order the tool leaves them in — else its
-     trailer, else a link the article only mentions. */
+     version first, which is the order the tool leaves them in, and the
+     Russian one while the films in Russian are what was asked for — else
+     its trailer, else a link the article only mentions. */
   function mainLink(film) {
     var trailer = null;
-    for (var i = 0; i < film.watch.length; i++) {
+    var i;
+    if (state.ru) {
+      for (i = 0; i < film.watch.length; i++) {
+        if (film.watch[i].kind === 'film' && film.watch[i].lang === 'ru') {
+          return { link: film.watch[i], key: 'azeriWatch', lead: false };
+        }
+      }
+    }
+    for (i = 0; i < film.watch.length; i++) {
       if (film.watch[i].kind === 'film') return { link: film.watch[i], key: 'azeriWatch', lead: false };
       if (film.watch[i].kind === 'trailer' && !trailer) trailer = film.watch[i];
     }
@@ -460,7 +478,8 @@
     }, [
       el('span', { className: 'azeri-name' }, [
         film.title,
-        state.lang === 'en' && film.titleEn ? el('span', { className: 'azeri-en', text: film.titleEn }) : null
+        state.ru && film.titleRu ? el('span', { className: 'azeri-en', lang: 'ru', text: film.titleRu })
+          : state.lang === 'en' && film.titleEn ? el('span', { className: 'azeri-en', text: film.titleEn }) : null
       ]),
       el('span', { className: 'azeri-meta', text: meta })
     ]);

@@ -481,6 +481,11 @@ for (const list of studio) {
     const lang = hand ? hand.lang : /[\u0400-\u04ff]/.test(t.names[0] || '') ? 'ru' : list.lang;
     film.watch.push({ url, kind: trailer ? 'trailer' : 'film', part: (hand && hand.part) || null, lang, studio: true });
     if (!trailer && !hand && t.en && !film.titleEn) film.titleEn = t.en;
+    /* The Russian version's own title, as the studio wrote it: what the
+       page shows beside the film's when it is asked for the films in
+       Russian, and what a search in Russian finds. */
+    const first = t.names[0] || '';
+    if (!trailer && lang === 'ru' && /[\u0400-\u04ff]/.test(first) && !film.titleRu) film.titleRu = first;
   }
   console.log(`${list.videos.length} videos in playlist ${list.id}, ${found} matched`);
 }
@@ -522,6 +527,7 @@ const ordered = films.map((f) => ({
   id: f.id,
   title: f.title,
   titleEn: f.titleEn || null,
+  titleRu: f.titleRu || null,
   year: f.year,
   yearTo: f.yearTo,
   kind: f.kind,
@@ -551,10 +557,11 @@ const ordered = films.map((f) => ({
      index.json       every film in the shelf's order — the most watched on
                       the studio's channel first, then the newest, no year
                       last, then by title — as [id, shelf, year, watchable,
-                      words], watchable meaning the film and not only its
-                      trailer, and words being the title, the English title and
-                      the people, folded the way functions/api/azeri.js folds
-                      a search; the source, the licence and the date; and
+                      words, russian], watchable meaning the film and not
+                      only its trailer, russian that a version in Russian can
+                      be, and words being the title, its English and Russian
+                      ones and the people, folded the way
+                      functions/api/azeri.js folds a search; the source, the licence and the date; and
                       `linked`, every YouTube id a film links to, which is
                       what /api/admin/youtube?check=1 asks YouTube about.
      films/<n>.json   the films themselves in that same order, CHUNK to a
@@ -590,7 +597,8 @@ writeFileSync(join(OUT, 'index.json'), JSON.stringify({
     SHELF_OF[f.kind] || 'series',
     f.year,
     f.watch.some((w) => w.kind === 'film') ? 1 : 0,
-    fold([f.title, f.titleEn, f.director.join(' '), f.writer.join(' '), f.cast.join(' ')].join(' ')),
+    fold([f.title, f.titleEn, f.titleRu, f.director.join(' '), f.writer.join(' '), f.cast.join(' ')].join(' ')),
+    f.watch.some((w) => w.kind === 'film' && w.lang === 'ru') ? 1 : 0,
   ]),
   linked: [...new Set(ordered.flatMap((f) => f.watch.concat(f.video))
     .map((link) => (YOUTUBE_ID.exec(link.url) || [])[1]).filter(Boolean))],
