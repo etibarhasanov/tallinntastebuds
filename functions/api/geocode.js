@@ -5,6 +5,12 @@
  *   → { "results": [ { "lat": 59.4389, "lng": 24.7291,
  *                      "label": "Telliskivi 60a", "where": "Tallinn" }, … ] }
  *
+ * GET /api/geocode?q=Riia&near=58.38,26.72
+ *   the same, in the city that point is in — one of the four in CITIES in
+ *   ./_lib.js. Rattatee sends where its rider is. With no `near`, or one in
+ *   no city, the search is Tallinn's, as it was for everybody before
+ *   2026-11-20.
+ *
  * Three things ask. The "add a place" form on the lists page asks through
  * the route: it has a map with a draggable pin, and dragging is still the
  * thing that decides where a place is — see the note above addForm() in
@@ -72,7 +78,7 @@
  * a change to ask() below and nothing else.
  */
 
-import { json, TALLINN, nearTallinn } from './_lib.js';
+import { json, CITIES, cityOf } from './_lib.js';
 
 const ENDPOINT = 'https://photon.komoot.io/api';
 
@@ -95,22 +101,21 @@ const CACHE_SECONDS = 86400;
 
 /* The upstream call and the shape it comes back in — the only part of this
    file that knows what Photon is. */
-async function ask(q) {
+async function ask(q, city) {
   const url = new URL(ENDPOINT);
   url.searchParams.set('q', q);
   url.searchParams.set('limit', String(LIMIT * 2));
   url.searchParams.set('lang', 'en');
   /* Bias towards the city, then bound to it. The bias is what puts a Tallinn
      Pärnu maantee above the one in Pärnu; the box is what stops a query that
-     matches nothing here from answering with somewhere it does match. */
-  url.searchParams.set('lat', String(TALLINN.lat));
-  url.searchParams.set('lon', String(TALLINN.lng));
-  url.searchParams.set('bbox', [
-    TALLINN.lng - TALLINN.degLng,
-    TALLINN.lat - TALLINN.degLat,
-    TALLINN.lng + TALLINN.degLng,
-    TALLINN.lat + TALLINN.degLat
-  ].map((n) => n.toFixed(6)).join(','));
+     matches nothing here from answering with somewhere it does match. The
+     middle of the city and never the asker's own point, so everybody in
+     one city sends Photon the same address and the day's cache is theirs
+     together. */
+  url.searchParams.set('lat', String(city.lat));
+  url.searchParams.set('lon', String(city.lng));
+  url.searchParams.set('bbox', [city.west, city.south, city.east, city.north]
+    .map((n) => n.toFixed(6)).join(','));
 
   const res = await fetch(url.toString(), {
     headers: { 'user-agent': AGENT, accept: 'application/json' },
@@ -127,7 +132,7 @@ async function ask(q) {
 /* Photon answers GeoJSON with an OSM tag soup attached. This is the whole of
    what the form needs out of it: a line to show, a line of context under it,
    and a point. */
-function shape(feature) {
+function shape(feature, city) {
   const geo = feature && feature.geometry;
   const at = geo && Array.isArray(geo.coordinates) ? geo.coordinates : null;
   if (!at) return null;
@@ -137,7 +142,7 @@ function shape(feature) {
   const lng = Number(at[0]);
   const lat = Number(at[1]);
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-  if (!nearTallinn(lat, lng)) return null;
+  if (cityOf(lat, lng) !== city) return null;
 
   const p = feature.properties || {};
 
@@ -176,12 +181,20 @@ function shape(feature) {
    either sends upstream is the same string for the same words — which is
    also what makes the day-long cache in ask() land for both. Answers one of
    { short }, { busy }, { failed } or { results }, and throws only when the
-   fetch itself does. */
-export async function suggest(raw) {
+   fetch itself does.
+
+   `near` is "lat,lng", where whoever is typing is: the search is held to
+   the city that point is in. Without one, or with one in no city, it is
+   Tallinn's — what every caller asked before 2026-11-20 and what the map,
+   the chat and an installed app still ask. */
+export async function suggest(raw, near) {
   const q = String(raw || '').replace(/\s+/g, ' ').trim().slice(0, MAX_Q);
   if (q.length < MIN_Q) return { short: true };
 
-  const answer = await ask(q);
+  const [lat, lng] = String(near || '').split(',').map(Number);
+  const city = cityOf(lat, lng) || CITIES[0];
+
+  const answer = await ask(q, city);
   if (answer.busy || answer.failed) return answer;
 
   /* Photon will happily return the same street four times over, once per
@@ -191,7 +204,7 @@ export async function suggest(raw) {
   const seen = new Set();
   const results = [];
   for (const feature of answer.features) {
-    const made = shape(feature);
+    const made = shape(feature, city);
     if (!made) continue;
     const key = made.label + '|' + made.where;
     if (seen.has(key)) continue;
@@ -203,11 +216,12 @@ export async function suggest(raw) {
 }
 
 export async function onRequestGet(context) {
-  const q = new URL(context.request.url).searchParams.get('q');
+  const asked = new URL(context.request.url).searchParams;
+  const q = asked.get('q');
 
   let answer;
   try {
-    answer = await suggest(q);
+    answer = await suggest(q, asked.get('near'));
   } catch (e) {
     return json({ error: 'upstream' }, 502);
   }
