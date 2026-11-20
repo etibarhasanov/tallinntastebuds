@@ -336,14 +336,18 @@ async function playlist(id, key) {
 }
 
 /* "Bizim Cəbiş müəllim (1969) | Our Teacher Jabish" → the Azerbaijani title,
-   the year and the English one; a Russian title stands alone. */
+   the year and the English one; a Russian title stands alone. The studio
+   writes the second title after " | " or " I ", and sometimes a note after
+   the year — "- rəngləndirilmiş versiya", the colourised one — or the word
+   "filmi" after the title; neither is part of the name. */
 function videoTitle(t) {
-  const [main, en] = t.split(/\s+\|\s+/);
-  const m = main.match(/^(.*?)\s*\((\d{4})\)\s*(.*)$/);
+  const [main, en] = t.split(/\s+[|I]\s+/);
+  const m = main.match(/^(.*?)\s*\((\d{4})\)/);
+  const name = (m ? m[1] : main).replace(/\s+filmi$/i, '');
   return {
-    name: (m ? m[1] + (m[3] ? ' ' + m[3] : '') : main).replace(/["«»“”]/g, '').trim(),
+    name: name.replace(/["«»“”]/g, '').trim(),
     year: m ? Number(m[2]) : null,
-    en: en ? en.trim() : null,
+    en: en && /^[\x20-\x7e]+$/.test(en) ? en.trim() : null,
   };
 }
 
