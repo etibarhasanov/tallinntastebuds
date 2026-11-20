@@ -323,8 +323,8 @@ async function playlist(id, key) {
   let page = '';
   do {
     const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50' +
-      `&playlistId=${id}&key=${encodeURIComponent(key)}${page ? '&pageToken=' + page : ''}`;
-    const res = await fetch(url);
+      `&playlistId=${id}${page ? '&pageToken=' + page : ''}`;
+    const res = await fetch(url, { headers: { 'X-Goog-Api-Key': key } });
     if (!res.ok) throw new Error(`YouTube answered ${res.status} for playlist ${id}`);
     const out = await res.json();
     for (const item of out.items || []) {
