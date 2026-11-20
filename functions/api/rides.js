@@ -59,9 +59,6 @@
  *   kept: its squares are counted and the answer has no `ride` — A RIDE
  *   WITHOUT AN ACCOUNT IS COUNTED, NOT KEPT.
  *
- *   Either may carry `request`, the id the phone gave the ride, and is then
- *   done once however often it is sent — A RIDE SENT TWICE.
- *
  *   A point of `line` is [lat, lng], or [lat, lng, t, acc] — the seconds
  *   since the ride began and the fix's accuracy in metres — WHEN EACH POINT
  *   WAS PASSED, or [lat, lng, t, acc, alt] with its height above the sea in
@@ -78,10 +75,9 @@
  *
  *   Errors: 401 signed-out (no session and no `anon`), 400 malformed, 400
  *   short (under MIN_METERS once the ends are off), 400 fast (an average no
- *   bike rides at), 429 often (DAY_RIDES today already, or NET_RIDES from
- *   one network with no account), 503 not-ready, 503 no-salt (an `anon` save
- *   where SAVE_SALT is not set). No word is new: an installed app has a
- *   sentence, or a rule, for each.
+ *   bike rides at), 429 often (an account's DAY_RIDES today already), 503
+ *   not-ready. No word is new: an installed app has a sentence, or a rule,
+ *   for each.
  *
  * NOBODY'S NAME IS ON A RIDE
  *
@@ -119,49 +115,41 @@
  * have the ride counted and gone. A session, where there is one, wins over
  * the flag, and that ride is kept exactly as it always was.
  *
- * Something still has to stand where the account's cap stands, or one
- * script could count itself down every street in the city. That is the
- * network: the fingerprint ./saves.js uses, an HMAC of the address and the
- * user agent under SAVE_SALT, with how many rides it has sent today beside
- * it in `ride_nets`, NET_RIDES at the most. It is coarser than an account
- * on purpose — every copy of the app on one iOS version says the same user
- * agent, so riders behind one carrier address share a day's cap, which is
- * why it is twice an account's; a rider who hits it keeps the ride on the
- * phone and it goes tomorrow, or today from an account. The row is needed
- * only for the day it caps, so every such save erases the days before
- * today's. Without SAVE_SALT there is no fingerprint worth storing and the
- * save is refused, `no-salt`, as ./saves.js refuses one.
+ * NOTHING IS REMEMBERED ABOUT IT, AND NOTHING CAPS IT
  *
- * Until that day the fingerprint was on the ride itself, `net:<hmac>` in
- * `user_id`, and each save emptied it from the rides of earlier days with
- * an UPDATE that read every anonymous ride of today to find them: a
- * thousand rows read where a thousand had been saved, measured, and three
- * million a day at a hundred rides an hour. No ride in production ever
- * carried one, so nothing was left to move.
+ * For an hour on 2026-11-20 two small tables stood behind such a save, and
+ * neither was ever loaded into production. `ride_nets` kept a fingerprint
+ * of the network a ride came from with how many it had sent that day, and
+ * refused the forty-first: what stood where an account's cap stands. And
+ * `ride_seen` kept the id the phone gave the ride for a week, so that a
+ * ride sent twice — the answer lost on the way back, and the phone trying
+ * again — was counted once. The owner took both out the same day. Somebody
+ * who rides a great deal with no account takes nothing from anybody: no
+ * ride of theirs is kept and nothing is known of them, so there is nothing
+ * a cap would be protecting them from, and forty a day was never a number
+ * a person reaches. And a ride sent twice is a small chance and a small
+ * harm, since a square forgets a little with every ride it counts — A
+ * SQUARE TAKES FIFTY RIDES, THEN ONE IN TEN, AND FORGETS in ./_sections.js.
+ * A site that says it keeps nothing of a ride should not be keeping a
+ * fingerprint and an id to make sure of it.
  *
- * A RIDE SENT TWICE
+ * What that leaves open, said plainly. A program can send made-up rides
+ * with no account for as long as it likes, each one checked — inside the
+ * box, no faster than a bike, long enough, moving like one — and each one
+ * counted. Enough of them along a street would make it look well ridden
+ * until real rides outweighed them. Nothing here stops that. What would,
+ * with no table and no code, is Cloudflare's own rate limiting: the free
+ * plan has one rule, by address, over ten seconds, and it is the owner's
+ * to switch on in the dashboard the day it is wanted. An account's cap,
+ * DAY_RIDES, is unchanged, since an account's rides are kept and a loop
+ * that kept twenty thousand of them would fill the table.
  *
- * A phone that never hears the answer cannot tell a save that was lost on
- * the way there from one whose answer was lost on the way back, and sends
- * the ride again. For a ride that is kept that was a second row; for one
- * that is only counted it would be the same streets counted twice, with
- * no row to find it by afterwards.
+ * And a ride whose answer was lost is done again: counted twice with no
+ * account, kept as a second row with one. That was the known gap in
+ * Rattatee's README before, and is again.
  *
- * So a save may carry `request`: the id the phone itself gave the ride, a
- * UUID, which Rattatee has had on every ride since its first build. The
- * site remembers it in `ride_seen` for SEEN_DAYS, with the id of the row
- * it became where the ride was kept, and a save whose `request` is there
- * does nothing again: a kept ride is answered with the row it already is,
- * a counted one with `counted: true`. It is a random number that names one
- * ride on one phone and nothing else — no place, no network, no account —
- * and a week covers a phone that waits its longest between tries many
- * times over. A ride sent again after that is done again, which with what
- * a square forgets is one ride's weight for a while. A `request` that is
- * not a UUID is no `request`, not a refusal, and neither is none: the map
- * app sends none.
- *
- * The id is remembered in the same batch that counts the ride, so the two
- * happen together or not at all.
+ * So the save needs no SAVE_SALT now, and nothing of the request but its
+ * body.
  *
  * WHAT IS CHECKED, AND WHAT CANNOT BE
  *
@@ -250,19 +238,15 @@
  * `rides` is in db/schema.sql and loaded by hand. Until it is, GET answers
  * `ready: false` and the Bike tab draws its way exactly as it did; a save
  * answers 503 `not-ready` and the phone keeps the ride to try again.
- * `ride_sections`, `ride_cells`, `ride_seen` and `ride_nets` are loaded the
- * same way. A kept ride's save catches the first three: the ride is kept,
- * uncounted, unfiled or unremembered as may be. A counted ride needs
- * `ride_sections`, `ride_seen` where it carries a `request`, and
- * `ride_nets`, and is `not-ready` without one. Without `ride_cells` ?bbox=
- * answers `ready: false`, the same as without `rides`.
+ * `ride_sections` and `ride_cells` are loaded the same way. A kept ride's
+ * save catches both: the ride is kept, uncounted or unfiled as may be. A
+ * counted ride needs `ride_sections` and is `not-ready` without it.
+ * Without `ride_cells` ?bbox= answers `ready: false`, the same as without
+ * `rides`.
  */
 
-import {
-  json, sessionUser, wrongDatabase, nearTallinn, km, randomHex, clientIp, fingerprint
-} from './_lib.js';
+import { json, sessionUser, wrongDatabase, nearTallinn, km, randomHex } from './_lib.js';
 import { countUse } from './_visitors.js';
-import { today, dayBack } from './_visits.js';
 import { pieces, sectionsOf, tally } from './_sections.js';
 import { arrayOf } from './_rides.js';
 import { ridesIn, fileCells } from './_ridecells.js';
@@ -292,23 +276,6 @@ const FASTEST = 45;
 /* Rides one account may save in a UTC day. Nobody rides twenty times a day;
    a loop that tried is stopped at twenty rows. */
 const DAY_RIDES = 20;
-
-/* Rides one network may have counted in a UTC day with no account — A RIDE
-   WITHOUT AN ACCOUNT IS COUNTED, NOT KEPT. Twice an account's, since a
-   carrier's address is shared. */
-const NET_RIDES = 40;
-
-/* Whether a save's `request` has been here in the last SEEN_DAYS, and what
-   it became — A RIDE SENT TWICE. The days go in as VALUES and the table is
-   joined to them, so the read is the row that is found and nothing for a
-   day it is not in: a list under an IN is billed a row a value — **The
-   rules of a read** in .claude/skills/api/SKILL.md. One row at the most,
-   by the key, (day, id). How many days is read off the statement, so the
-   two cannot disagree. */
-const SEEN =
-  'SELECT s.ride AS ride FROM (VALUES (?), (?), (?), (?), (?), (?), (?)) v ' +
-  'CROSS JOIN ride_seen s ON s.day = v.column1 AND s.id = ? LIMIT 1';
-const SEEN_DAYS = SEEN.split('(?)').length - 1;
 
 /* The longest name, the same sixty a list's title gets. Restated as
    `longestName` in Rattatee/Core/Store.swift, whose field stops there. */
@@ -473,32 +440,12 @@ export async function onRequestPost(context) {
      nothing — A RIDE WITHOUT AN ACCOUNT IS COUNTED, NOT KEPT. Neither is a
      page whose session ran out. */
   if (!user && body.anon !== true) return json({ error: 'signed-out' }, 401);
-  if (!user && !env.SAVE_SALT) return json({ error: 'no-salt' }, 503);
 
   const ride = riddenOf(body);
   if (ride.error) return json({ error: ride.error }, 400);
 
-  /* A RIDE SENT TWICE: the answer it had, again, with nothing done and no
-     use counted a second time — one row read, by the key, and none
-     written. Where `ride_seen` is not applied a kept
-     ride is kept as it was before there was a `request`; a counted one
-     cannot be told from its own repeat afterwards, and waits. */
-  const once = requestOf(body.request);
-  let before = null;
-  if (once) {
-    try {
-      before = await env.DB.prepare(SEEN).bind(...days(), once).first();
-    } catch (e) {
-      if (!user) return json({ error: 'not-ready' }, 503);
-    }
-  }
-  if (before && !user) return json({ counted: true }, 200);
-  if (before && before.ride) {
-    return json({ ride: { id: before.ride, meters: ride.meters, seconds: ride.seconds } }, 200);
-  }
-
   try {
-    const saved = user ? keep(env, user, body, ride, once) : count(context, ride, once);
+    const saved = user ? keep(env, user, body, ride) : count(env, ride);
     return await countUse(context, 'map', 'ride_save', saved, user);
   } catch (e) {
     return json({ error: 'not-ready' }, 503);
@@ -538,57 +485,21 @@ function riddenOf(body) {
   return { runs, seconds, meters: runs.reduce((sum, run) => sum + run.meters, 0) };
 }
 
-/* The id the phone gave the ride, as thirty-two hex digits, or '' where it
-   sent none or something else — A RIDE SENT TWICE. */
-function requestOf(raw) {
-  const id = typeof raw === 'string' ? raw.replace(/-/g, '').toLowerCase() : '';
-  return /^[0-9a-f]{32}$/.test(id) ? id : '';
-}
-
-/* The ids remembered too long ago to be asked about, erased, and the one
-   in hand written down with the row it became, '' where it became none.
-   For a batch: the first reads the row or two it erases and one more, by
-   the front of the key. */
-function remember(env, once, ride) {
-  return [
-    env.DB.prepare('DELETE FROM ride_seen WHERE day < ?').bind(dayBack(SEEN_DAYS - 1)),
-    env.DB.prepare('INSERT OR REPLACE INTO ride_seen (day, id, ride) VALUES (?, ?, ?)').bind(today(), once, ride)
-  ];
-}
-
-/* A ride with no account behind it: counted, and not kept. Under `wrangler
-   dev` on 2026-11-20 a ride of four kilometres read 320 rows and wrote 165
-   down a street ridden a few times, 318 written down one nobody had
-   ridden, and 10 down one whose squares were full, nine saves in ten. */
-async function count(context, ride, once) {
-  const { env, request } = context;
-
-  /* The network's rides today, this one among them: a row by its key, read
-     and written once. A save turned away here has still been added, which
-     past the cap changes nothing. */
-  const net = await fingerprint(env.SAVE_SALT, clientIp(request), request.headers.get('User-Agent') || '');
-  const sent = await env.DB
-    .prepare(
-      'INSERT INTO ride_nets (day, net, n) VALUES (?, ?, 1) ' +
-      'ON CONFLICT (day, net) DO UPDATE SET n = n + 1 RETURNING n'
-    )
-    .bind(today(), net)
-    .first();
-  if (sent && sent.n > NET_RIDES) return json({ error: 'often' }, 429);
-
-  /* Counted and remembered together or not at all, and the fingerprints of
-     the days before today's erased on the way past. Which rides a full
-     square takes is drawn here, not read off anything the phone sent. */
-  await env.DB.batch([
-    env.DB.prepare('DELETE FROM ride_nets WHERE day < ?').bind(today()),
-    ...ride.runs.map((run) => tally(env, sectionsOf(run.line, run.track), randomHex(6))).filter(Boolean),
-    ...(once ? remember(env, once, '') : [])
-  ]);
+/* A ride with no account behind it: counted, and not kept. Its runs go in
+   one batch, so the ride is counted whole or not at all. Which rides a
+   full square takes is drawn here, a ride having no row to read it off.
+   Under `wrangler dev` on 2026-11-20 a ride of four kilometres read 161
+   rows and wrote 323 down a street nobody had ridden, read 320 and wrote
+   162 down one ridden a few times, and down one whose squares were full
+   read 320 and wrote about ten, nine saves in ten, and 162 the tenth. */
+async function count(env, ride) {
+  const counts = ride.runs.map((run) => tally(env, sectionsOf(run.line, run.track), randomHex(6))).filter(Boolean);
+  if (counts.length) await env.DB.batch(counts);
   return json({ counted: true }, 200);
 }
 
 /* A ride with an account behind it: kept, filed and counted. */
-async function keep(env, user, body, ride, once) {
+async function keep(env, user, body, ride) {
   const { runs, meters, seconds } = ride;
   const day = new Date();
   day.setUTCHours(0, 0, 0, 0);
@@ -636,17 +547,7 @@ async function keep(env, user, body, ride, once) {
     const counts = runs.map((run, i) => tally(env, sectionsOf(run.line, run.track), rows[i][0])).filter(Boolean);
     if (counts.length) await env.DB.batch(counts);
   } catch (e) { /* No ride_sections yet, or none with `steady`. */ }
-  if (once) {
-    try {
-      await env.DB.batch(remember(env, once, rows[0][0]));
-    } catch (e) { /* No ride_seen yet. */ }
-  }
   return json({ ride: { id: rows[0][0], meters, seconds } }, 200);
-}
-
-/* Today and the days before it that SEEN asks about, newest first. */
-function days() {
-  return Array.from({ length: SEEN_DAYS }, (_, i) => dayBack(i));
 }
 
 /* The line a page sent, as [lat, lng] pairs at five decimals, or null when
