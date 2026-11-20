@@ -163,8 +163,12 @@ const RETIRED = new Set(['/stats', '/stats.html', '/google', '/google.html']);
    README in each of those is still served; they are notes about the folder
    and nothing more. And a Function reading a file through env.ASSETS goes
    around this block entirely, which is why none of them needed changing.
-   flows/ is not on the list: /admin/flows draws its diagrams from there. */
-const DOCS_ONLY = ['/db/', '/exports/', '/tools/'];
+   flows/ is not on the list: /admin/flows draws its diagrams from there.
+
+   And one directory that is the site's but not everybody's: /azeri/data/,
+   the films of the members' Azerbaijan page, which only /api/azeri hands
+   out, and only to a session — the header of functions/api/azeri.js. */
+const DOCS_ONLY = ['/db/', '/exports/', '/tools/', '/azeri/data/'];
 const CONFIG_ONLY = new Set(['/wrangler.toml']);
 
 function notTheSite(lower) {

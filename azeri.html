@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Azerbaijan | Tallinn Tastebuds</title>
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+<!-- For members, and linked from nowhere: not indexed, not followed, and
+     _headers says the same for anything that does not read the markup. The
+     door is /api/azeri, which answers a session and nobody else; this page
+     is only the room it opens into. -->
+<meta name="robots" content="noindex, nofollow">
+<!-- Analytics: Microsoft Clarity, from one file rather than a snippet
+     pasted into every head. assets/analytics.js holds the id and the
+     consentv2 signal Clarity needs, and its head carries the reasoning of the
+     consent bar that stood in front of it for a day. -->
+<script src="/assets/analytics.js?v=7d35c109" defer></script>
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..700&amp;display=swap">
+<!-- The tokens, the card and the language switch from the map's stylesheet,
+     the page frame and the field from the lists page's, and the shelf itself
+     — the tabs, the chips, the rows — from its own. -->
+<link rel="stylesheet" href="/assets/styles.lean.css?v=4f81ed66">
+<link rel="stylesheet" href="/assets/lists.lean.css?v=e7381579">
+<link rel="stylesheet" href="/assets/azeri.css?v=976202d8">
+</head>
+<body class="lists-body azeri-body">
+
+<a class="skip-link" href="#main" data-i18n="azeriSkip">Skip to the films</a>
+
+<header class="lists-brand">
+  <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
+    <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
+  </a>
+  <!-- Two languages and no more: the page is read in Azerbaijani or in
+       English, whatever the rest of the site is in. Drawn by
+       assets/language.js out of the two names data/lang/index.json has. -->
+  <div class="seg lang-surface" id="lang-switch" role="group"
+       data-i18n-aria-label="language" aria-label="Language"></div>
+</header>
+
+<main class="lists-main" id="main" tabindex="-1">
+  <div class="azeri-head">
+    <p class="eyebrow" data-i18n="azeriEyebrow">For members</p>
+    <h1 class="lists-title" data-i18n="azeriTitle">Azerbaijan</h1>
+    <p class="lists-say" data-i18n="azeriLead">A corner of the site about the country.</p>
+  </div>
+  <!-- The shelves. One today; the next section is a second tab here. -->
+  <nav class="azeri-tabs" data-i18n-aria-label="azeriTitle" aria-label="Azerbaijan">
+    <a class="azeri-tab is-on" href="/azeri" aria-current="page" data-i18n="azeriFilms">Films</a>
+    <span class="azeri-tab is-soon" data-i18n="azeriSoon">More soon</span>
+  </nav>
+  <!-- Everything under the tabs — the door when nobody is signed in, the
+       search, the chips and the films — is built by assets/azeri.js once
+       /api/azeri has answered, so nothing from the state before is left
+       standing. -->
+  <div id="shelf"></div>
+</main>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Tallinn Tastebuds</p>
+    <h2>Azerbaijan</h2>
+    <p>This page is drawn by a script. The map itself works rather better
+      without one — <a href="/">it is over here</a>.</p>
+  </div>
+</noscript>
+
+<!-- What every press reports, to Clarity and to the site's own count,
+     shared by every page.
+     Before the page's own script and deferred like it, so document order puts
+     the global in place first. -->
+<script src="/assets/track.js?v=2cdf82a4" defer></script>
+<!-- A swipe to the right is Back. After track.js, since it reports the press;
+     before the page's own script and deferred like it. -->
+<script src="/assets/back.js?v=9d9a7dd8" defer></script>
+<!-- The language switch, a global for the page's own script to use. -->
+<script src="/assets/language.js?v=fcaf98e0" defer></script>
+<script src="/assets/azeri.js?v=834762f7" defer></script>
+</body>
+</html>

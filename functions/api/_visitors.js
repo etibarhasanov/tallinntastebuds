@@ -516,6 +516,7 @@ export const PAGES = [
   { id: 'write', label: 'writeTitle', paths: ['/write', '/write.html'] },
   { id: 'insights', label: 'insightsTitle', paths: ['/insights', '/insights.html'] },
   { id: 'feedback', label: 'feedbackTitle', paths: ['/feedback', '/feedback.html'] },
+  { id: 'azeri', label: 'azeriTitle', paths: ['/azeri', '/azeri.html'] },
   { id: 'deal', label: 'passTitle', paths: ['/deal', '/deal.html'] },
   { id: 'verify', label: 'verifyTitle', paths: ['/verify', '/verify.html'] },
   { id: 'staff', label: 'visitorsPageStaff', paths: ['/staff', '/staff.html'] },

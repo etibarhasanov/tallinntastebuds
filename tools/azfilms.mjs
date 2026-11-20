@@ -16,21 +16,31 @@
  *                                     shared egress address with "too many
  *                                     requests", and action=raw does not.
  *
+ *   azeri/data/films-en.json          the English summaries, kept by hand:
+ *                                     a film's id and its English, folded
+ *                                     into each run so a refresh never loses
+ *                                     them.
+ *
  *   azeri/data/films.json             GENERATED — by this file. Under
  *                                     /azeri rather than /data on purpose:
  *                                     _routes.json sends /data/* straight to
  *                                     the static files, past every Function,
  *                                     so anything there is public to anyone
  *                                     with its address. /azeri/* goes through
- *                                     the Functions, which is where the
- *                                     members-only check can stand.
+ *                                     the Functions: functions/_middleware.js
+ *                                     answers /azeri/data/ with the not-found
+ *                                     page, and /api/azeri hands the films
+ *                                     out, to a session alone.
  *
  *   node tools/azfilms.mjs                 the list alone: one request
- *   node tools/azfilms.mjs --articles      and every linked article, one a
- *                                          second (about forty minutes the
- *                                          first time), cached so a second
- *                                          run asks again only for what is
- *                                          missing
+ *   node tools/azfilms.mjs --articles      and every linked article, one at a
+ *                                          time with a second between (about
+ *                                          an hour and a half the first time,
+ *                                          the feature films and cartoons
+ *                                          first), cached so a second run asks
+ *                                          again only for what is missing
+ *   node tools/azfilms.mjs --youtube       and the studio's three playlists,
+ *                                          with YOUTUBE_API_KEY set
  *   node tools/azfilms.mjs --cache <dir>   where that cache lives; the
  *                                          default is under the system's
  *                                          temporary directory
@@ -77,6 +87,7 @@ import { createHash } from 'node:crypto';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'azeri', 'data', 'films.json');
+const ENGLISH = join(ROOT, 'azeri', 'data', 'films-en.json');
 const WIKI = 'https://az.wikipedia.org';
 const LIST = 'Azərbaycan filmlərinin siyahısı';
 /* Wikimedia asks automated clients to say who they are. The site's address
@@ -296,49 +307,31 @@ function details(text) {
 
 /* Azərbaycanfilm's own channel keeps its films in playlists, which is where
    most of them can actually be watched — the list links a hundred and sixty.
-   A playlist page carries its first hundred videos in ytInitialData and a
-   token for the next hundred, which YouTube's own page asks its browse
-   endpoint for; this asks it the same way. No key of ours is involved: the
-   key in the request is the one the page itself ships to every browser. */
+   They are read through the YouTube Data API, fifty videos a call, with a key
+   in YOUTUBE_API_KEY: one call of a free ten thousand a day for every fifty
+   videos, about a dozen for the three. Not through the playlist page and the
+   endpoint it asks for the rest, which is YouTube's own and not ours to call.
+   Without a key, --youtube says so and the run goes on without it. */
 const PLAYLISTS = [
   { id: 'PLAtI5OWgNzB3iuvjwhQzW60A1jQ8LdxBp', lang: 'az' }, // Tammetrajlı bədii filmlər
   { id: 'PLAtI5OWgNzB1wzuPM18PZ2eKSagWgFMAv', lang: 'az' }, // Klassik filmlər
   { id: 'PLAtI5OWgNzB2qF-wUqAn0spyq2C6HLVq0', lang: 'ru' }, // Фильмы на русском языке
 ];
-const YT = 'https://www.youtube.com';
-const BROWSER = { 'User-Agent': 'Mozilla/5.0', 'Accept-Language': 'az,en;q=0.8' };
 
-function lockups(node, out = []) {
-  if (!node || typeof node !== 'object') return out;
-  if (node.lockupViewModel && node.lockupViewModel.contentType === 'LOCKUP_CONTENT_TYPE_VIDEO') {
-    const v = node.lockupViewModel;
-    const time = (JSON.stringify(v.contentImage).match(/"text":"(\d+(?::\d\d){1,2})"/) || [])[1] || null;
-    out.push({ id: v.contentId, title: v.metadata.lockupMetadataViewModel.title.content, time });
-    return out;
-  }
-  if (node.continuationCommand && node.continuationCommand.token) out.token = node.continuationCommand.token;
-  for (const v of Object.values(node)) lockups(v, out);
-  return out;
-}
-
-async function playlist(id) {
-  const page = await (await fetch(`${YT}/playlist?list=${id}`, { headers: BROWSER })).text();
-  const data = JSON.parse(page.match(/var ytInitialData = (\{.*?\});<\/script>/s)[1]);
-  const key = page.match(/"INNERTUBE_API_KEY":"([^"]+)"/)[1];
-  const clientVersion = page.match(/"INNERTUBE_CLIENT_VERSION":"([^"]+)"/)[1];
+async function playlist(id, key) {
   const videos = [];
-  let found = lockups(data);
-  for (;;) {
-    videos.push(...found);
-    if (!found.token) break;
-    await sleep(PAUSE);
-    const res = await fetch(`${YT}/youtubei/v1/browse?key=${key}`, {
-      method: 'POST',
-      headers: { ...BROWSER, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ context: { client: { clientName: 'WEB', clientVersion, hl: 'az' } }, continuation: found.token }),
-    });
-    found = lockups(await res.json());
-  }
+  let page = '';
+  do {
+    const url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50' +
+      `&playlistId=${id}&key=${encodeURIComponent(key)}${page ? '&pageToken=' + page : ''}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`YouTube answered ${res.status} for playlist ${id}`);
+    const out = await res.json();
+    for (const item of out.items || []) {
+      videos.push({ id: item.snippet.resourceId.videoId, title: item.snippet.title });
+    }
+    page = out.nextPageToken || '';
+  } while (page);
   return videos;
 }
 
@@ -389,7 +382,10 @@ for (const f of films) {
 }
 
 if (ARTICLES) {
-  const linked = films.filter((f) => f.wiki);
+  /* The feature films and the cartoons first: theirs are the summaries the
+     page translates, and a run cut short should have them. */
+  const first = (f) => (f.kind === 'feature' || f.kind === 'animation' ? 0 : 1);
+  const linked = films.filter((f) => f.wiki).sort((a, b) => first(a) - first(b));
   console.log(`${linked.length} articles to read, cached in ${CACHE}`);
   let i = 0;
   for (const f of linked) {
@@ -402,20 +398,26 @@ if (ARTICLES) {
 }
 
 const unmatched = [];
-if (YOUTUBE) {
+const ytKey = (process.env.YOUTUBE_API_KEY || '').trim();
+if (YOUTUBE && !ytKey) console.warn('--youtube needs YOUTUBE_API_KEY; the playlists were not read.');
+if (YOUTUBE && ytKey) {
   for (const list of PLAYLISTS) {
-    const videos = await playlist(list.id);
+    const videos = await playlist(list.id, ytKey);
     console.log(`${videos.length} videos in playlist ${list.id}`);
     for (const v of videos) {
       const { t, film } = match(films, v);
       const url = `https://www.youtube.com/watch?v=${v.id}`;
-      if (!film) { unmatched.push({ url, title: v.title, lang: list.lang, time: v.time }); continue; }
+      if (!film) { unmatched.push({ url, title: v.title, lang: list.lang }); continue; }
       if (film.watch.some((w) => w.url === url)) continue;
-      film.watch.push({ url, kind: 'film', part: null, lang: list.lang, time: v.time, studio: true });
+      film.watch.push({ url, kind: 'film', part: null, lang: list.lang, studio: true });
       if (t.en && !film.titleEn) film.titleEn = t.en;
     }
   }
 }
+
+const english = existsSync(ENGLISH) ? JSON.parse(readFileSync(ENGLISH, 'utf8')) : {};
+const unknown = Object.keys(english).filter((id) => !films.some((f) => f.id === id));
+if (unknown.length) console.warn(`  English for ${unknown.length} id(s) not on the list: ${unknown.slice(0, 5).join(', ')}`);
 
 const ordered = films.map((f) => ({
   id: f.id,
@@ -430,7 +432,8 @@ const ordered = films.map((f) => ({
   writer: f.writer || [],
   cast: f.cast || [],
   about: f.about || null,
-  watch: f.watch.map(({ url, kind, part, lang, time, studio }) => ({ url, kind, part, lang: lang || null, time: time || null, studio: !!studio })),
+  aboutEn: english[f.id] || null,
+  watch: f.watch.map(({ url, kind, part, lang, studio }) => ({ url, kind, part, lang: lang || null, studio: !!studio })),
   video: f.video || [],
   imdb: f.imdb || null,
   image: f.image || null,
@@ -444,7 +447,7 @@ writeFileSync(OUT, JSON.stringify({
   license: 'CC BY-SA 4.0',
   collected: new Date().toISOString().slice(0, 10),
   articles: ARTICLES,
-  playlists: YOUTUBE ? PLAYLISTS.map((p) => p.id) : [],
+  playlists: YOUTUBE && ytKey ? PLAYLISTS.map((p) => p.id) : [],
   films: ordered,
   unmatched,
 }, null, 1) + '\n');
@@ -452,7 +455,7 @@ writeFileSync(OUT, JSON.stringify({
 const count = (k) => ordered.filter(k).length;
 console.log(`${ordered.length} films → ${OUT.slice(ROOT.length + 1)}`);
 console.log(`  ${count((f) => f.watch.length)} with a link to watch on the list`);
-if (YOUTUBE) {
+if (YOUTUBE && ytKey) {
   console.log(`  ${count((f) => f.watch.some((w) => w.studio))} matched to a video of the studio's, ${unmatched.length} videos matched to nothing`);
 }
 if (ARTICLES) {
