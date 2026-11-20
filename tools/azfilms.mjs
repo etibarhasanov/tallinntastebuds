@@ -264,6 +264,27 @@ function plain(s) {
     .trim();
 }
 
+/* An image in the text, [[Şəkil:…]], whose caption may hold links of its
+   own — [[Fayl:a.jpg|thumb|[[Bakı]]nın şəkli]] — so it is taken out by
+   counting the brackets rather than by a pattern that stops at the first
+   "]]" and leaves the end of the caption behind. */
+function withoutFiles(text) {
+  let out = '';
+  let i = 0;
+  const open = /\[\[(?:Şəkil|Fayl|File|Image):/gi;
+  for (let m; (m = open.exec(text)); ) {
+    out += text.slice(i, m.index);
+    let depth = 0;
+    let j = m.index;
+    for (; j < text.length; j++) {
+      if (text.startsWith('[[', j)) { depth++; j++; } else if (text.startsWith(']]', j)) { depth--; j++; if (!depth) break; }
+    }
+    i = j + 1;
+    open.lastIndex = i;
+  }
+  return out + text.slice(i);
+}
+
 function lead(text) {
   let body = text;
   // Strip whole templates, nested ones included, before the first heading.
@@ -271,7 +292,7 @@ function lead(text) {
   body = body.split(/\n==/)[0];
   const para = body
     .split(/\n\s*\n/)
-    .map((p) => plain(p.replace(/\[\[(?:Şəkil|Fayl|File|Image):[^\]]*\]\]/gi, '')))
+    .map((p) => plain(withoutFiles(p)))
     .find((p) => p.length > 20);
   if (!para) return null;
   return para.length > 600 ? para.slice(0, para.lastIndexOf('. ', 600) + 1 || 600) : para;
