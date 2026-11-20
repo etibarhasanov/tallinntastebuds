@@ -22,10 +22,10 @@
  * `237748:49478`. Matching a ride to OpenStreetMap's streets would say
  * *this stretch of Pärnu mnt* where a square says *here*, and would tell a
  * cycle lane from the road beside it, which a square cannot. It also needs
- * a matching service asked on every save. The squares need arithmetic, and
- * because the table is rebuilt from `rides` whenever its shape changes —
- * tools/ridesections.mjs — starting with them gives nothing away: the day
- * streets are worth matching, the rides are all still there to be matched.
+ * a matching service asked on every save. The squares need arithmetic.
+ * What starting with them gives away, since 2026-11-20, is the rides that
+ * were counted without being kept — COUNTED, NOT KEPT below: the day
+ * streets are worth matching, only the kept rides are there to be matched.
  *
  * AND WHICH WAY ACROSS IT
  *
@@ -105,7 +105,7 @@
  * A recording with no times cannot be told either way, and counts as it
  * always did, in `rides` and `meters`.
  *
- * A SQUARE TAKES FIFTY RIDES, THEN ONE IN TEN, THEN NONE
+ * A SQUARE TAKES FIFTY RIDES, THEN ONE IN TEN, AND FORGETS
  *
  * D1 bills a row that is written, and a row updated is a row written. A
  * ride crosses some fifty squares a kilometre, so counted whole a ride of
@@ -118,47 +118,70 @@
  * pace within fourteen points or so, and the five-hundredth moves it by
  * nothing a way is chosen by.
  *
- * So a square takes every ride until it has counted FULL of them. After
- * that it takes one ride in TENTH, so it still follows what riders do
- * there — a lane painted, a street dug up — for a tenth of the writing.
- * At MOST it takes none, until MOST is raised: the owner's line, drawn on
- * 2026-11-19, a cap to be moved once the squares reach it. And a square
- * nobody has ridden is written whatever else is full, since a new street
- * is the news worth paying for.
+ * So a square takes every ride until it has counted FULL of them, and one
+ * ride in TENTH after that. A square nobody has ridden is written whatever
+ * else is full, since a new street is the news worth paying for.
  *
- * Which rides are the one in ten is read off the ride's id — roomFor() —
- * and not drawn by chance at the save, so the rebuild, going through the
- * rides in the order they were saved, fills every square as the saves did.
- * The id was drawn at random, so the tenth is a fair sample of the rest.
+ * For a day it also stopped: at MOST a square took no ride at all, so a
+ * row was written a hundred times in its life and no more. That held only
+ * while the table could be emptied and counted again from `rides`, and
+ * since 2026-11-20 it cannot — COUNTED, NOT KEPT below. A square that
+ * stops taking rides and can never be counted again keeps what its first
+ * hundred said for ever: the street before its lane was painted, the week
+ * it was dug up, fifty rides somebody made up. So from FULL on, a ride
+ * that is counted first takes a MOST-th off everything the square holds
+ * and then adds itself. What was there halves with every sixty-nine rides
+ * counted, which is six hundred and ninety passed, and fifty made-up rides
+ * are outweighed once forty-one honest ones have been counted after them.
+ * `rides` climbs from FULL towards MOST and never reaches it, so MOST is
+ * how many rides a square remembers and no longer where it stops; and the
+ * sums past FULL are fractions, which SQLite keeps as they are in a column
+ * declared INTEGER. The price is that the writing never ends: on a street
+ * that is full, one save in TENTH writes a row for each of its squares,
+ * where the stop would have brought that to none.
  *
- * What it changes: past FULL, `rides` is the rides counted and not the
- * rides that passed. What it loses: nothing, because every ride is whole
- * in `rides` and a rebuild under other numbers counts them again. What a
- * save writes now: a row for each of its squares still under FULL, a tenth
- * of the rest on average, none at MOST. And a row is written MOST times in
- * its life and no more — a city ridden down every street both ways is
- * three hundred thousand rows by a rough count, so thirty million writes
- * in all, however many rides there are.
+ * Which rides are the one in ten is read off an id — roomFor() — and not
+ * drawn again inside the statement. For a ride that is kept it is the
+ * row's own id, so the rebuild gives it the answer its save did. For a
+ * ride that is only counted the site draws one for the purpose: an id the
+ * phone sent would be the phone choosing to be counted every time.
  *
- * NUDGED, AND REBUILT
+ * What it changes: past FULL, `rides` is the weight of the rides counted
+ * and not the rides that passed.
+ *
+ * COUNTED, NOT KEPT
+ *
+ * Until 2026-11-20 this table held nothing `rides` did not, and
+ * tools/ridesections.mjs emptied it and filled it again whenever what a
+ * square counts changed, as it did on 2026-11-19. Since then a ride saved
+ * without an account is counted here and kept nowhere — A RIDE WITHOUT AN
+ * ACCOUNT IS COUNTED, NOT KEPT in ./rides.js — so the table holds what no
+ * other does, and emptying it loses that for good. A change to the
+ * counting therefore holds from the day it lands: the squares counted the
+ * old way stay, and fade at the pace above as rides counted the new way
+ * come in. The tool is still there for a table that is lost or wrong past
+ * mending. It has to be told it may lose them, and it shrinks a square as
+ * tally() does, with the same FULL and FADE.
+ *
+ * NUDGED
  *
  * A save adds its ride's squares to the table, those with room for it, in
- * one statement: an upsert over the rows it is handed as JSON. Every
- * other count on the site is
- * recomputed rather than nudged, and this one is not, because recomputing
- * it is reading every ride there is; so the rebuild is a tool and a
- * terminal's job, and is what puts right a table a nudge was lost from. A
- * lost nudge costs one ride's weight in a few hundred squares, in a table
- * nothing reads to the metre.
+ * one statement: an upsert over the rows it is handed as JSON. Every other
+ * count on the site is recomputed rather than nudged, and this one cannot
+ * be: recomputing it is reading every ride there is, and the rides that
+ * were counted without being kept are not there to read. tally() hands the
+ * statement back rather than running it, so a save can put it in one batch
+ * with what has to happen, or not happen, together with it.
  *
  * WHEN THE TABLE IS NOT THERE, OR IS THE OLD ONE
  *
  * `ride_sections` is in db/schema.sql and loaded by hand, and `steady` was
- * added to it by hand after it. The save that calls countSections() catches
- * what it throws: the ride is kept either way, and the rebuild counts it
- * later. A read throws the same way and its caller offers no ridden way. A
- * row from before the directions is keyed by its square alone, which no
- * read asks for, so until the rebuild it is simply not found.
+ * added to it by hand after it. A statement from tally() throws where
+ * either is missing. The save of a kept ride catches that and keeps the
+ * ride; a ride that is only counted has nothing else to be, so its save
+ * answers `not-ready` and the phone sends it again later. A read throws
+ * the same way and its caller offers no ridden way. A row from before the
+ * directions is keyed by its square alone, which no read asks for.
  */
 
 /* A square's height and width in degrees: 0.00025 of latitude is 27.8 m
@@ -212,13 +235,13 @@ const PAUSE = 120;
 const DIRS = 8;
 
 /* How many rides a square counts whole, how many of the rides after those
-   it takes one of, and where it stops taking any — A SQUARE TAKES FIFTY
-   RIDES, THEN ONE IN TEN, THEN NONE. Raising MOST lets the squares that
-   reached it take rides again from the next save on; the rebuild holds
-   every ride there is to all three. */
-const FULL = 50;
+   it takes one of, and how many it remembers — A SQUARE TAKES FIFTY RIDES,
+   THEN ONE IN TEN, AND FORGETS. FADE is what is left of a full square's
+   sums when a ride is counted into it. FULL and FADE are the rebuild's too. */
+export const FULL = 50;
 const TENTH = 10;
 const MOST = 100;
+export const FADE = 1 - 1 / MOST;
 
 /* Metres between two [lat, lng] points. Flat-earth arithmetic, which over
    a step of a dozen metres is right to the centimetre. */
@@ -361,37 +384,53 @@ export function sectionsOf(line, track) {
 }
 
 /* How many rides a square has to be under to take the ride with this id:
-   MOST for one ride in TENTH, FULL for the rest. Read off the id, which
-   randomHex() drew, so a ride is the same answer at its save and in the
-   rebuild; a ride with no id is not one of the tenth. */
+   MOST, which no square reaches, for one ride in TENTH, and FULL for the
+   rest. Read off the id rather than drawn here, so a ride that is kept is
+   the same answer at its save and in the rebuild; an id that is not hex is
+   not one of the tenth. */
 export function roomFor(id) {
   const drawn = /^[0-9a-f]{8}/.test(String(id)) ? parseInt(String(id).slice(0, 8), 16) : 1;
   return drawn % TENTH === 0 ? MOST : FULL;
 }
 
-/* Add the rows of the ride with this id to the table — NUDGED, AND
-   REBUILT. One statement whatever the ride's length: the rows go in as one
-   JSON parameter and json_each() deals them out. `WHERE true` is what
-   SQLite needs to tell an upsert's ON from a join's. A square nobody has
-   ridden goes in whatever the ride; one with no room for this ride —
-   roomFor() — is left as it was, and costs no row written. Throws where the
-   table is not applied, or has no `steady` yet; the caller decides what
-   that costs. */
-export async function countSections(env, rows, id) {
-  if (!rows.length) return;
-  await env.DB
+/* What is left of a sum when a ride is counted into its square: all of it
+   under FULL (?4), and FADE (?5) of it from there on. */
+const FADED = '(CASE WHEN ride_sections.rides >= ?4 THEN ?5 ELSE 1 END)';
+
+/* The statement that adds the rows of the ride with this id to the table —
+   NUDGED — or null for a ride with none. One statement whatever the ride's
+   length: the rows go in as one JSON parameter and json_each() deals them
+   out. `WHERE true` is what SQLite needs to tell an upsert's ON from a
+   join's. A square nobody has ridden goes in whatever the ride; one with
+   no room for this ride — roomFor() — is left as it was, and costs no row
+   written. It throws, when it is run, where the table is not applied or
+   has no `steady` yet; the caller decides what that costs.
+
+   What it reads is two rows for every square that is there and one for
+   every square that is not, whether or not it then writes: 322 for a ride
+   of four kilometres down a street already ridden, under `wrangler dev` on
+   2026-11-20. A hundred rides an hour is 770,000 rows a day of the five
+   million. */
+export function tally(env, rows, id) {
+  if (!rows.length) return null;
+  return env.DB
     .prepare(
       'INSERT INTO ride_sections (cell, rides, meters, timed, paced, seconds, steady, slow, stops, updated_at) ' +
       'SELECT value ->> 0, 1, value ->> 1, value ->> 2, value ->> 3, value ->> 4, value ->> 5, value ->> 6, ' +
       'value ->> 7, ?2 FROM json_each(?1) WHERE true ' +
       'ON CONFLICT (cell) DO UPDATE SET ' +
-      'rides = rides + 1, meters = meters + excluded.meters, timed = timed + excluded.timed, ' +
-      'paced = paced + excluded.paced, seconds = seconds + excluded.seconds, steady = steady + excluded.steady, ' +
-      'slow = slow + excluded.slow, stops = stops + excluded.stops, updated_at = excluded.updated_at ' +
+      'rides = rides * ' + FADED + ' + 1, ' +
+      'meters = meters * ' + FADED + ' + excluded.meters, ' +
+      'timed = timed * ' + FADED + ' + excluded.timed, ' +
+      'paced = paced * ' + FADED + ' + excluded.paced, ' +
+      'seconds = seconds * ' + FADED + ' + excluded.seconds, ' +
+      'steady = steady * ' + FADED + ' + excluded.steady, ' +
+      'slow = slow * ' + FADED + ' + excluded.slow, ' +
+      'stops = stops * ' + FADED + ' + excluded.stops, ' +
+      'updated_at = excluded.updated_at ' +
       'WHERE ride_sections.rides < ?3'
     )
-    .bind(JSON.stringify(rows), Date.now(), roomFor(id))
-    .run();
+    .bind(JSON.stringify(rows), Date.now(), roomFor(id), FULL, FADE);
 }
 
 /* ------------------------------------------------------------ a way, weighed

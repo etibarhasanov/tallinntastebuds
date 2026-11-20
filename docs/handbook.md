@@ -3326,8 +3326,9 @@ pages under this site's name, and none of them is somewhere it vouches for.
 ## Recorded rides
 
 A bike ride somebody has really cycled is better evidence that a way can be
-ridden than any router's guess, and the site keeps them. **It does not
-record them.** A ride is recorded in Rattatee, the iPhone app, which can do
+ridden than any router's guess, and the site keeps the ones saved from an
+account and counts the rest without keeping them. **It does not record
+them.** A ride is recorded in Rattatee, the iPhone app, which can do
 it with the screen locked and the phone in a pocket, and saved through
 `POST /api/rides`; the website gives directions, and what the rides are for
 here is steering those directions — **Doors**, below.
@@ -3419,23 +3420,63 @@ times cannot — and, like the times, it is never answered to anybody. A GPS
 height is good to ten or twenty metres a point, so a climb is a trend
 across many points, not the step between two.
 
-**A ride needs no account.** What is wanted of a ride is its points, and
-who rode it adds nothing to them, so Rattatee asks for no sign-in: people
-ride, press Save, and that is it. A save that says `anon: true` and carries
-no session is kept with no account on it. It has to say so, because a
+**A ride without an account is counted, not kept.** Rattatee asks for no
+sign-in: people ride, press Save, and that is it. For three days such a
+ride was kept like any other, in `rides`, with a fingerprint of its network
+where the account would be. On 2026-11-20 the owner drew the line the other
+way: a ride somebody recorded without making an account is theirs, on their
+phone, and the site has no business holding the way a stranger went. What
+is wanted of that ride is what it says about the streets, and that is a
+count. So a save that says `anon: true` and carries no session is checked
+as any ride is, cut into its runs with the ends off each, counted into
+`ride_sections` — **What the rides say about a street**, below — and let
+go: no row in `rides`, none in `ride_cells`, nothing under `?bbox=`, nothing
+for `tools/doors.mjs` to read, and an answer of `{ counted: true }` with no
+`ride` in it, since there is none to name. It has to say `anon`, because a
 recorder that does ask for a sign-in first — the map app's, and the
 website's while it had one — is making a ride one of **Your rides**, and
 when its session ran out mid-ride it should be told `signed-out` and offer
-the sheet rather than have the ride filed under nobody. What stands where the account's cap stood is the
-network: the fingerprint the saves use, an HMAC of the address and the user
-agent under `SAVE_SALT`, written into `rides.user_id` as `net:<hmac>` and
-capped at forty a UTC day, twice an account's, since every copy of the app
-on one iOS version says the same user agent and a carrier's address is
-shared. A rider who hits it loses nothing: the ride waits on the phone and
-goes tomorrow, or today from an account. The fingerprint is kept for the
-day it caps and no longer — each such save first empties it from every ride
-of an earlier day — so what is left of an anonymous ride after midnight UTC
-is its points. Without `SAVE_SALT` the save is refused, `no-salt`.
+the sheet rather than have the ride counted and gone. A session, where
+there is one, wins, and that ride is kept exactly as it always was.
+
+What stands where the account's cap stands is the network: the fingerprint
+the saves use, an HMAC of the address and the user agent under `SAVE_SALT`,
+with how many rides it has sent that UTC day beside it in `ride_nets`,
+forty at the most — twice an account's, since every copy of the app on one
+iOS version says the same user agent and a carrier's address is shared. A
+rider who hits it loses nothing: the ride waits on the phone and goes
+tomorrow, or today from an account. The row is needed for the day it caps
+and no longer, so every such save erases the days before today's. Without
+`SAVE_SALT` the save is refused, `no-salt`. While the fingerprint was on
+the ride itself, each save emptied it from the rides of earlier days with
+an `UPDATE` that read every anonymous ride of that day to find them — a
+thousand rows read with a thousand saved, three million a day at a hundred
+rides an hour. No ride in production ever carried one, so there was nothing
+to move.
+
+Rattatee says the same on the phone. Signed out, its save card says the
+ride stays on this phone, that the website only counts the streets and
+keeps no ride, and that saving rides wants an account; it sends such a ride
+without the session even if the rider signs in before it has gone, so what
+the card said is what happens. Nothing on the phone tells a counted ride
+from a kept one beyond that, and nothing offers to move a ride to an
+account afterwards: the owner's line was that neither is needed.
+
+**A ride sent twice is done once.** A phone that never hears the answer
+cannot tell a save lost on the way there from one whose answer was lost on
+the way back, and sends the ride again. For a kept ride that was a second
+row — Rattatee's README called it a known gap — and for a counted one it
+would be the same streets counted twice with no row to find it by. So a
+save may carry `request`: the id the phone itself gave the ride, a UUID,
+which Rattatee has had on every ride since its first build. The site
+remembers it in `ride_seen` for seven days, with the id of the row it
+became where the ride was kept, and a save whose `request` is there does
+nothing again and is not counted as a use again: a kept ride is answered
+with the row it already is, a counted one with `counted: true`. It is a
+random number that names one ride on one phone and nothing else. A counted
+ride's id is written down in the same batch that counts it, so the two
+happen together or not at all. A `request` that is not a UUID is no
+`request` rather than a refusal, and the map app sends none.
 
 **Your rides, on the account page.** The one place a ride is under a name is
 its rider's own `/account.html`: a **Your rides** card between your lists
@@ -3480,9 +3521,11 @@ has the whole ride and works the sums out of it, with the same
 /api/rides` with `rename` or `drop`, each touching only a ride filed under
 the session; a deleted ride is gone from under the Bike tab too. The track
 is never answered raw — the times a point was passed are the rider's, and
-only the speeds made of them reach even the rider. The privacy page does
-not mention rides yet, and should. A browser's location is whatever the browser says, as with
-a walk's check-in; a faked ride costs a row nobody is shown.
+only the speeds made of them reach even the rider. The privacy page says
+what is kept of a ride saved from an account, and that one saved without
+is not kept. A phone's location is whatever the phone says, as with a
+walk's check-in; a faked ride costs a row nobody is shown, or a few
+squares' weight until newer rides outweigh it.
 
 `rides` is in `db/schema.sql` and is applied by hand. Until it is, the
 route answers `ready: false` and a
@@ -3583,38 +3626,70 @@ reasoning.
 streets would say *this stretch of Pärnu mnt* where a square says *here*,
 and would tell a cycle lane from the carriageway beside it, which a square
 cannot. It also means asking a matching service on every save. The squares
-are arithmetic, and starting with them gives nothing away, because **the
-table holds nothing `rides` does not**: `node tools/ridesections.mjs`
-rebuilds it whole from the rides, through the same `sectionsOf()` a save
-uses, so the day streets are worth matching every ride is still there to be
-matched. The tool's header has the terminal lines; it is how the rides
-saved before the table existed get into it, and how the table was given its
-directions.
+are arithmetic. `sectionsOf()` is what a save and the rebuild both count
+with.
 
-**A save nudges it.** One statement after the ride's rows are in, an upsert
-over the ride's squares handed in as one JSON parameter. Every other count
-here is recomputed rather than nudged; this one is not, because recomputing
-it is reading every ride there is. A nudge that fails — the table not
-applied yet among the reasons — costs the save nothing, and the rebuild
-puts it right.
+**The table holds what no other does, so it is not emptied.** Until
+2026-11-20 it held nothing `rides` did not, and `node
+tools/ridesections.mjs` emptied it and filled it again from every ride
+whenever what a square counts changed — which is how the rides saved before
+the table existed got into it, and how it was given its directions. Since
+that day a ride saved without an account is counted here and kept nowhere —
+**Recorded rides**, above — so emptying the table loses those rides for
+good, and with Rattatee asking nobody to sign in that is most of them. A
+change to the counting therefore holds from the day it lands: the squares
+counted the old way stay, and fade as rides counted the new way come in.
+The tool is a last resort now, for a table that is lost or wrong past
+mending. It will not run without `--lose-unkept`, it says what that means,
+and it counts the kept rides exactly as their saves did. The day streets
+are worth matching, only the kept rides are there to be matched.
 
-**A square takes fifty rides, then one in ten, then none.** D1 bills a row
-that is written, and a row updated is a row written: a ride crosses some
-fifty squares a kilometre, so counted whole a ride of five is 250 rows
+**A save nudges it.** One statement a run, an upsert over the ride's
+squares handed in as one JSON parameter. Every other count here is
+recomputed rather than nudged; this one cannot be. For a kept ride the
+nudge comes after its rows are in, and one that fails — the table not
+applied yet among the reasons — costs the save nothing. For a ride that is
+only counted the nudge is the save, so one that fails is a save that has
+not happened: `not-ready`, and the phone sends the ride again later.
+
+**A square takes fifty rides, then one in ten, and forgets.** D1 bills a
+row that is written, and a row updated is a row written: a ride crosses
+some fifty squares a kilometre, so counted whole a ride of five is 250 rows
 every time it is saved, new streets or not, and the free plan's hundred
 thousand a day is four hundred such rides and nothing else on the site. So
 a square counts every ride until it has fifty, which is enough to put the
-share that held their pace within fourteen points or so; after that one
-ride in ten, so it still follows a lane painted or a street dug up; and at
-a hundred none, until the number is raised. A square nobody has ridden is
-always written, since a new street is the news worth paying for. Which
-rides are the one in ten is read off the ride's id rather than drawn by
-chance, so the rebuild fills every square as the saves did. Nothing is
-lost by it — every ride is whole in `rides` — and a row is written a
-hundred times in its life and no more, however many rides there are.
-`FULL`, `TENTH` and `MOST` in `functions/api/_sections.js` are the three
-numbers and `roomFor()` the rule; a number changed there holds from the
-next save, and for the rides already passed over the rebuild applies it.
+share that held their pace within fourteen points or so, and one ride in
+ten after that. A square nobody has ridden is always written, since a new
+street is the news worth paying for.
+
+For a day a square also stopped at a hundred and took nothing more. That
+held only while the table could be counted again from `rides`. A square
+that stops and can never be recounted keeps what its first hundred rides
+said for ever — the street before its lane was painted, the week it was dug
+up, fifty rides somebody made up — so from fifty on, a ride that is counted
+first takes a hundredth off everything the square holds and then adds
+itself. What was there halves with every sixty-nine rides counted, which is
+six hundred and ninety passed; fifty made-up rides are outweighed once
+forty-one honest ones have been counted after them; and `rides` climbs from
+fifty towards a hundred and never gets there, so a hundred is how many
+rides a square remembers and no longer where it stops. Past fifty the sums
+are fractions. The price is that the writing never ends: on a street that
+is full, one save in ten writes a row for each of its squares. Driven under
+`wrangler dev` on 2026-11-20, a hundred kept rides down one street of four
+kilometres: the first save wrote 351 rows, the fiftieth 178, and of the
+fifty after it six wrote a full ride, 173 rows each, and forty-four wrote
+19, the squares at the street's edges with the ride's own rows. A hundred
+rides an hour, every one without an account and every street full, is
+about sixty thousand rows written a day and 770,000 read.
+
+Which rides are the one in ten is read off an id rather than drawn by
+chance inside the statement. For a kept ride it is the row's own id, so the
+rebuild gives it the answer its save did; for a counted one the site draws
+an id for the purpose, since one the phone sent would be the phone choosing
+to be counted every time. `FULL`, `TENTH` and `MOST` in
+`functions/api/_sections.js` are the three numbers, `roomFor()` the rule
+and `tally()` the statement; a number changed there holds from the next
+save.
 
 **One thing reads it, and nothing answers it.** A bike route weighs its
 ways by it. It is counts and no rider, and still no square is published:

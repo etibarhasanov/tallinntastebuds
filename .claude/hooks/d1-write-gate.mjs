@@ -355,6 +355,11 @@ const SIZES = {
   flashcard_known: 3956, flashcard_reports: 4, chess_games: 4, chess_moves: 42,
   chess_notes: 6, chess_asks: 1, posts: 1, post_texts: 4, walks: 5, walk_checks: 9,
   rides: 15, ride_sections: 1920, ride_cells: 39, usage_people: 37, flashcard_days: 15,
+  /* WITHOUT ROWID, new on 2026-11-20 and not in production until their two
+     statements are run there: a week of the ids rides were saved under and a
+     day of the networks that sent one with no account. Empty until Rattatee
+     is public, and to be measured then. */
+  ride_seen: 1, ride_nets: 1,
   /* WITHOUT ROWID: the counter's table on the day it stopped the site, and a
      ring that is sixty rows for ever. */
   visitor_counts: 18439, visitor_live: 60,

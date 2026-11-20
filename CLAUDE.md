@@ -606,7 +606,16 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `[lat, lng, t, acc]` — whole seconds since the ride began and whole
   metres, kept in `rides.track` — and, from 2026-11-18, `[lat, lng, t, acc,
   alt]` where the fix had a height, whole metres above the sea, kept there
-  as a third number; a point without one is sent as four — reading `ride` with `id` and `meters`. A
+  as a third number; a point without one is sent as four — reading `ride` with `id` and `meters`
+  where the save carried a session. **With none, since 2026-11-20, the
+  ride is counted and not kept**: the answer is `{ "counted": true }` and
+  has no `ride`, which is the one place here a field an app was promised is
+  not sent — there is no ride to name, and the app marks a ride saved on
+  any 2xx and asks for the kept ride only where it was given an id. From
+  the same day it sends `request`, the UUID it gave the ride itself, and a
+  save that carries one is done once however often it arrives; and it sends
+  a ride saved while signed out without the session, so that ride is
+  counted and not kept even if the rider signed in before it went. A
   ride waits on the phone until that answer comes, so the error words decide
   what becomes of it: `short`, `fast` and `malformed` are final and the ride
   is listed as not kept; `often` waits for
@@ -671,13 +680,13 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   its save card. How far apart its points are, how sure a fix has to be and
   how fast a jump may be are its own now: the website's recorder, which
   they were copied from, was taken out on 2026-11-18.
-- Strings: none asked for. Its words are compiled in, in English, Estonian
-  and Russian, the `ride*`, `account*`, `list*` and `lists*` ones copied out
+- Strings: none asked for. Its words are compiled in, in English, Estonian,
+  Russian and Azerbaijani, the `ride*`, `account*`, `list*` and `lists*` ones copied out
   of `data/ui.json` under the same keys, so a sentence fixed here is fixed
   there by hand.
 
-Written with Rattatee on 2026-11-17, and its search, its username sign-in
-and its lists added the same day.
+Written with Rattatee on 2026-11-17, its search, its username sign-in
+and its lists added the same day, and its counted saves on 2026-11-20.
 
 ## Branches and deploys
 

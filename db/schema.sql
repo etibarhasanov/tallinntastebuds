@@ -2213,11 +2213,12 @@ CREATE TABLE IF NOT EXISTS walk_checks (
 -- Everybody's comments on one list, newest first.
 CREATE INDEX IF NOT EXISTS idx_walk_checks_list ON walk_checks (list_id, checked_at);
 
--- One row is one bike ride a member recorded on the map and saved — a
--- confirmed bike route, a line somebody has really cycled. Drawn faintly
--- under the Bike tab's suggested way by functions/api/rides.js, without a
--- name on it: the rides are everybody's evidence, not anybody's profile.
--- **Recorded rides** in docs/handbook.md.
+-- One row is one bike ride a member recorded and saved while signed in — a
+-- confirmed bike route, a line somebody has really cycled. Answered under
+-- ?bbox= by functions/api/rides.js without a name on it: the rides are
+-- everybody's evidence, not anybody's profile. A ride saved with no
+-- account has no row here, or anywhere: it is counted into ride_sections
+-- and let go. **Recorded rides** in docs/handbook.md.
 CREATE TABLE IF NOT EXISTS rides (
   -- Twelve hex characters, drawn by the Function.
   id         TEXT    PRIMARY KEY,
@@ -2225,11 +2226,11 @@ CREATE TABLE IF NOT EXISTS rides (
   -- day's cap can be counted and so a ride can be taken down by its owner's
   -- account if it ever has to be.
   --
-  -- Or nobody's. A ride saved with no account — Rattatee, the iPhone
-  -- recorder, asks for none — holds `net:` and a fingerprint of the network
-  -- it came from for the UTC day it was saved on, which is what its cap is
-  -- counted by, and '' from the next day on: its points, and nothing about
-  -- who sent them. A RIDE NEEDS NO ACCOUNT in functions/api/rides.js.
+  -- Always an account's since 2026-11-20. For three days before it a ride
+  -- saved with no account was kept too, under `net:` and a fingerprint of
+  -- its network; none was ever saved in production, and now such a ride is
+  -- not kept at all — A RIDE WITHOUT AN ACCOUNT IS COUNTED, NOT KEPT in
+  -- functions/api/rides.js.
   user_id    TEXT    NOT NULL,
   -- What they called it, or ''. 60 characters, capped in the Function.
   name       TEXT    NOT NULL DEFAULT '',
@@ -2302,11 +2303,14 @@ CREATE INDEX IF NOT EXISTS idx_ride_cells_ride ON ride_cells (ride);
 -- a bike route in functions/api/route.js, which weighs its ways by it, and
 -- answered to nobody.
 --
--- It holds nothing `rides` does not: tools/ridesections.mjs rebuilds it
--- whole from that table, which is how the rides saved before it existed get
--- into it, and how it is put right when the size of a square, or what is
--- counted in one, changes. **What the rides say about a street** in
--- docs/handbook.md.
+-- Until 2026-11-20 it held nothing `rides` did not, and
+-- tools/ridesections.mjs rebuilt it whole from that table whenever what is
+-- counted in a square changed. It holds more now: a ride saved with no
+-- account is counted here and kept nowhere, so emptying this table loses
+-- those rides for good, and the tool is a last resort that has to be told
+-- so. A change to the counting holds from the day it lands, and the
+-- squares counted the old way fade as new rides come in. **What the rides
+-- say about a street** in docs/handbook.md.
 --
 -- The one question it is asked, and the key that answers it:
 --   these squares, crossed these ways          cell IN (…) — the key
@@ -2318,9 +2322,11 @@ CREATE TABLE IF NOT EXISTS ride_sections (
   -- nothing; the rebuild empties the table of them.
   cell       TEXT    PRIMARY KEY,
   -- How many rides were counted crossing it that way, each once, and the
-  -- metres of them that lie in it. Every ride to fifty, one in ten after
-  -- that and none past a hundred — roomFor() in functions/api/_sections.js
-  -- — so past fifty it is fewer than passed.
+  -- metres of them that lie in it. Every ride to fifty and one in ten after
+  -- that, each of those first taking a hundredth off every sum here —
+  -- tally() in functions/api/_sections.js — so past fifty this is a weight
+  -- that nears a hundred and not a count, and it and the sums below are
+  -- fractions, which SQLite keeps as they are in a column declared INTEGER.
   rides      INTEGER NOT NULL DEFAULT 0,
   meters     INTEGER NOT NULL DEFAULT 0,
   -- How many of those rides carried their times — rides.track — the
@@ -2344,3 +2350,41 @@ CREATE TABLE IF NOT EXISTS ride_sections (
   -- and last in the table for that reason.
   steady     INTEGER NOT NULL DEFAULT 0
 );
+
+-- One row is one save of a ride that said who it was: the id the phone
+-- itself gave the ride, a UUID as thirty-two hex digits, kept for a week
+-- so that a ride sent twice — the answer lost on the way back, and the
+-- phone trying again — is kept or counted once. A random number that names
+-- one ride on one phone and nothing else: no place, no network, no account.
+-- A RIDE SENT TWICE in functions/api/rides.js.
+--
+-- The questions it is asked, and the key that answers each:
+--   has this id been here in the last seven days    (day, id), a day at a
+--                                                   time — the key
+--   the days too old to be asked about, to erase    day < ? — its front
+CREATE TABLE IF NOT EXISTS ride_seen (
+  -- The UTC day the id first came, as 2026-11-20.
+  day  TEXT NOT NULL,
+  id   TEXT NOT NULL,
+  -- rides.id of the row the ride became, so the same answer can be given
+  -- again; '' for a ride that was counted and not kept.
+  ride TEXT NOT NULL DEFAULT '',
+  PRIMARY KEY (day, id)
+) WITHOUT ROWID;
+
+-- One row is one network that had a ride counted with no account on one
+-- UTC day, and how many: what stands where an account's cap stands, forty
+-- a day. `net` is the fingerprint the saves use, an HMAC of the address
+-- and the user agent under SAVE_SALT, and is needed only for the day it
+-- caps, so every such save erases the days before today's. A RIDE WITHOUT
+-- AN ACCOUNT IS COUNTED, NOT KEPT in functions/api/rides.js.
+--
+-- The questions it is asked, and the key that answers each:
+--   this network's rides today, and one more        (day, net) — the key
+--   the days before today's, to erase               day < ? — its front
+CREATE TABLE IF NOT EXISTS ride_nets (
+  day TEXT NOT NULL,
+  net TEXT NOT NULL,
+  n   INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (day, net)
+) WITHOUT ROWID;
