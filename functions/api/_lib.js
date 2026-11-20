@@ -446,9 +446,10 @@ export async function knownPlaces(context) {
  * still refuses a point in another country.
  *
  * It lives here rather than beside any of its users because there are
- * several: /api/lists checks a submitted pin against it, /api/geocode asks
- * Photon to look only inside it, /api/route holds both ends of a walk to it,
- * and /api/ask and /mcp refuse a point to measure from that is outside it.
+ * several: /api/ask, /mcp and the public API refuse a point to measure from
+ * that is outside it, and it is the first of THE FOUR CITIES below, which
+ * /api/lists checks a submitted pin against, /api/geocode asks Photon to
+ * look only inside one of, and /api/route holds both ends of a way to.
  * Copies would be drifting copies, and the drift would show up as an address
  * the geocoder was happy to find and the save then refused.
  */
@@ -457,6 +458,57 @@ export const TALLINN = { lat: 59.437, lng: 24.7536, degLat: 0.55, degLng: 1.1 };
 export function nearTallinn(lat, lng) {
   return Math.abs(lat - TALLINN.lat) <= TALLINN.degLat &&
     Math.abs(lng - TALLINN.lng) <= TALLINN.degLng;
+}
+
+/* ---------------------------------------------------------- the four cities
+ * Where a ride may be recorded, routed and searched for, which since
+ * 2026-11-20 is more than Tallinn: Rattatee records a ride anywhere, and the
+ * owner asked for Tartu, Pärnu and Narva beside it, each with what lies
+ * around it.
+ *
+ * Tallinn's box is TALLINN above, unchanged — it already reached Viimsi,
+ * Peetri and Pirita, and well past them, and rides had been taken inside
+ * all of it. The other three are fourteen kilometres each way from the
+ * middle, the owner's number: 0.126 of a degree of latitude, and 0.24 of
+ * longitude at 58.4 north or 0.247 at 59.4. Narva's stops in the east at
+ * the river, which is the border; fourteen kilometres west and north of the
+ * middle is what takes in Narva-Jõesuu, asked for by name. North of the
+ * town the river runs north-west to the sea, so a thin wedge of its far
+ * bank is inside the rectangle all the same. A ride there would be counted
+ * like any other; a rectangle cannot follow a river, and nothing here is
+ * worth a polygon.
+ *
+ * No two boxes touch, so a point is in one city or in none, and cityOf()
+ * says which. THE MAP IS STILL TALLINN'S: nearTallinn() is what /api/ask,
+ * /mcp, the public API and the places roll measure "near" against, because
+ * the places are Tallinn's. nearCity() is for what a bike does — /api/rides,
+ * /api/route, /api/geocode — and for a pin put on a list and a walk's
+ * check-in, which follow a rider to wherever they are.
+ *
+ * Rattatee restates the boxes, to drop a point outside them before it is
+ * sent. Change one here, change it there.
+ */
+export const CITIES = [
+  {
+    id: 'tallinn', lat: TALLINN.lat, lng: TALLINN.lng,
+    south: TALLINN.lat - TALLINN.degLat, north: TALLINN.lat + TALLINN.degLat,
+    west: TALLINN.lng - TALLINN.degLng, east: TALLINN.lng + TALLINN.degLng
+  },
+  { id: 'tartu', lat: 58.378, lng: 26.729, south: 58.252, north: 58.504, west: 26.489, east: 26.969 },
+  { id: 'parnu', lat: 58.3859, lng: 24.4971, south: 58.26, north: 58.512, west: 24.257, east: 24.737 },
+  { id: 'narva', lat: 59.3772, lng: 28.1903, south: 59.251, north: 59.503, west: 27.943, east: 28.21 }
+];
+
+/* The city a point is in, or null. */
+export function cityOf(lat, lng) {
+  for (const city of CITIES) {
+    if (lat >= city.south && lat <= city.north && lng >= city.west && lng <= city.east) return city;
+  }
+  return null;
+}
+
+export function nearCity(lat, lng) {
+  return cityOf(lat, lng) !== null;
 }
 
 /* Kilometres between two points as the crow flies, which is what a visitor

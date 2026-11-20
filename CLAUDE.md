@@ -628,7 +628,9 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   ever, if slowly.
 - Its search for somewhere to ride to, Where to?: `GET /api/places?q=` with
   `near` and `limit`, reading `id`, `name`, `address`, `category`, `lat`,
-  `lng` and `map`; `GET /api/geocode?q=`, reading `results` with `label`,
+  `lng` and `map`; `GET /api/geocode?q=` — which since 2026-11-20 takes
+  `near=lat,lng` too and searches the city that point is in, Tallinn
+  without it — reading `results` with `label`,
   `where`, `lat` and `lng`; `GET /api/lookup` and `POST /api/lookup` as the
   map app does, the button offered from five letters, hidden on `why:
   'no-key'` and resting on any other refusal; and `GET /api/route` with
@@ -677,7 +679,8 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `tallinntastebuds://signin`, which it listens for under that name.
 - Numbers it restates, to be changed in both places: its 700 m, which is
   `MIN_METERS` and twice `ENDS` in `functions/api/rides.js`; `MAX_NAME`,
-  `MAX_POINTS` and `nearTallinn()`'s box; and the 200 m in the sentence on
+  `MAX_POINTS` and the four cities' boxes, `CITIES` in `functions/api/_lib.js` —
+  `nearTallinn()`'s alone until 2026-11-20; and the 200 m in the sentence on
   its save card. How far apart its points are, how sure a fix has to be and
   how fast a jump may be are its own now: the website's recorder, which
   they were copied from, was taken out on 2026-11-18.

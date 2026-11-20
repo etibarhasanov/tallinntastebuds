@@ -157,7 +157,7 @@
  *
  * Nothing here is private: both ends are the caller's own and a place's own.
  * The route is bounded the other way instead — two points inside the box
- * `nearTallinn()` holds everything else to, a walk of at most MAX_WALK, and
+ * of the same city, one of the four `cityOf()` in ./_lib.js knows, a walk of at most MAX_WALK, and
  * an answer cached — so it is no use as an open routing proxy for anywhere
  * else. The location the browser sends is read, answered and forgotten; it is
  * never stored and never counted.
@@ -175,7 +175,7 @@
  * bar are still there.
  */
 
-import { json, nearTallinn, km, dataFile, wrongDatabase } from './_lib.js';
+import { json, cityOf, km, dataFile, wrongDatabase } from './_lib.js';
 import { riddenShare } from './_sections.js';
 
 const OSRM = {
@@ -227,7 +227,7 @@ function point(raw, places) {
   const lat = Number(a);
   const lng = Number(b);
   if (!a || !b || !Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-  if (!nearTallinn(lat, lng)) return null;
+  if (!cityOf(lat, lng)) return null;
   return { lat: Number(lat.toFixed(places)), lng: Number(lng.toFixed(places)) };
 }
 
@@ -1433,6 +1433,10 @@ export function answerRoute(context, q, withTrains) {
   const from = point(q.get('from'), 4);
   const to = point(q.get('to'), 5);
   if (!from || !to) return json({ error: 'bad-points' }, 400);
+  /* Both ends in the same city. Tallinn to Tartu is a train with a bike on
+     it and not a ride, and the answer to it is the same as to a point in
+     no city at all — a word every caller already has a sentence for. */
+  if (cityOf(from.lat, from.lng) !== cityOf(to.lat, to.lng)) return json({ error: 'bad-points' }, 400);
   const mode = q.get('mode') || 'foot';
   if (mode === 'bus') return transit(from, to);
   if (!OSRM[mode]) return json({ error: 'bad-mode' }, 400);

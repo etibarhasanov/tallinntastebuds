@@ -3391,7 +3391,8 @@ price, set before it is written** in `CLAUDE.md` is why.
 **Nobody's name is on a ride.** The points are sent once, on Save, and the
 server takes 200 m off each end before it stores anything — that is where a
 home or a workplace would be — works the length out itself, refuses a point
-outside Tallinn's box, an average past 45 km/h and a twenty-first ride in a
+outside the four cities' boxes — Tallinn's, and since 2026-11-20 fourteen
+kilometres around Tartu, Pärnu and Narva, `CITIES` in `functions/api/_lib.js` — an average past 45 km/h and a twenty-first ride in a
 day, and keeps who saved it without answering it to anybody else. What
 anybody can read is the line, its length and its time.
 

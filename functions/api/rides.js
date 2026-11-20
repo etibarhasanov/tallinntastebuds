@@ -154,7 +154,8 @@
  * WHAT IS CHECKED, AND WHAT CANNOT BE
  *
  * The length is worked out here from the points, never taken from the page.
- * Every point has to be inside nearTallinn()'s box, a line has at most
+ * Every point has to be inside one of the four cities' boxes — nearCity()
+ * in ./_lib.js, Tallinn, Tartu, Pärnu and Narva — a line has at most
  * MAX_POINTS of them, and an average faster than FASTEST is a car or a
  * train, not a bike, and is refused. Past that a browser's location is
  * whatever the browser says it is, the same as a walk's check-in — see IT
@@ -245,7 +246,7 @@
  * `rides`.
  */
 
-import { json, sessionUser, wrongDatabase, nearTallinn, km, randomHex } from './_lib.js';
+import { json, sessionUser, wrongDatabase, nearCity, km, randomHex } from './_lib.js';
 import { countUse } from './_visitors.js';
 import { pieces, sectionsOf, tally } from './_sections.js';
 import { arrayOf } from './_rides.js';
@@ -567,7 +568,7 @@ function cleanLine(raw) {
     if (!Array.isArray(p)) return null;
     const lat = Math.round(Number(p[0]) * 1e5) / 1e5;
     const lng = Math.round(Number(p[1]) * 1e5) / 1e5;
-    if (!Number.isFinite(lat) || !Number.isFinite(lng) || !nearTallinn(lat, lng)) return null;
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) || !nearCity(lat, lng)) return null;
     const t = Math.round(Number(p[2]));
     const acc = Math.round(Number(p[3]));
     const timed = p.length >= 4 && t >= 0 && t <= MAX_SECONDS && acc >= 0 && acc <= MAX_ACC;
@@ -618,6 +619,6 @@ function roundedBox(raw) {
   };
   if (box.north < box.south || box.east < box.west) return null;
   if (box.north - box.south > MAX_BOX || box.east - box.west > MAX_BOX) return null;
-  if (!nearTallinn(box.south, box.west) || !nearTallinn(box.north, box.east)) return null;
+  if (!nearCity(box.south, box.west) || !nearCity(box.north, box.east)) return null;
   return box;
 }
