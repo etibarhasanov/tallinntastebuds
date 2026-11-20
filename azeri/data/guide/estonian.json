@@ -1,0 +1,36 @@
+{
+  "tab": "estonian",
+  "checked": "2026-11",
+  "topics": [
+    {
+      "id": "settle",
+      "name": "Settle in Estonia",
+      "covers": {"az": "Dövlətin yeni gələnlər üçün pulsuz kursları, A1-dən B1-ə", "en": "The state's free courses for newcomers, from A1 to B1", "ru": "Бесплатные государственные курсы для новоприбывших, от A1 до B1", "et": "Riigi tasuta kursused uussisserändajatele, A1-st B1-ni"},
+      "url": "https://www.settleinestonia.ee"
+    },
+    {
+      "id": "keeleklikk",
+      "name": "Keeleklikk",
+      "covers": {"az": "Pulsuz onlayn kurs, ilk sözdən A2-yə qədər", "en": "A free course online, from the first word to A2", "ru": "Бесплатный онлайн-курс, с нуля до A2", "et": "Tasuta veebikursus algajale kuni A2-tasemeni"},
+      "url": "https://www.keeleklikk.ee"
+    },
+    {
+      "id": "keeletee",
+      "name": "Keeletee",
+      "covers": {"az": "Onun davamı olan kurs, B1-ə qədər", "en": "The course that follows it, to B1", "ru": "Курс-продолжение, до B1", "et": "Sellele järgnev kursus, B1-tasemeni"},
+      "url": "https://www.keeletee.ee"
+    },
+    {
+      "id": "keelemaja",
+      "name": {"az": "Eston dili evi (Eesti keele maja)", "en": "The Estonian Language House", "ru": "Дом эстонского языка (Eesti keele maja)", "et": "Eesti keele maja"},
+      "covers": {"az": "Tallinn və Narvada kurslar, dil kafeləri və klublar", "en": "Courses, language cafés and clubs in Tallinn and Narva", "ru": "Курсы, языковые кафе и клубы в Таллинне и Нарве", "et": "Kursused, keelekohvikud ja klubid Tallinnas ja Narvas"},
+      "url": "https://www.integratsioon.ee/en"
+    },
+    {
+      "id": "sonaveeb",
+      "name": "Sõnaveeb",
+      "covers": {"az": "Lüğət, sözün bütün formaları ilə", "en": "The dictionary, with every form of a word", "ru": "Словарь со всеми формами слова", "et": "Sõnastik koos sõna kõigi vormidega"},
+      "url": "https://sonaveeb.ee"
+    }
+  ]
+}

@@ -3,11 +3,11 @@
  * Tallinn Tastebuds — the Azerbaijani films, collected.
  *
  * /azeri is a corner of the site about Azerbaijan, for signed-in members
- * only, in Azerbaijani and English, and its first shelf is the country's
- * cinema. This is where that shelf's rows come from: the Azerbaijani
- * Wikipedia's "Azərbaycan filmlərinin siyahısı", 2,615 films from 1898 to
- * now — feature films, documentaries, cartoons, serials, filmed plays — in
- * alphabetical order, one line each.
+ * only, and the first of its tabs is the country's cinema, whose summaries
+ * are in Azerbaijani and English. This is where that tab's rows come from:
+ * the Azerbaijani Wikipedia's "Azərbaycan filmlərinin siyahısı", 2,615
+ * films from 1898 to now — feature films, documentaries, cartoons, serials,
+ * filmed plays — in alphabetical order, one line each.
  *
  *   az.wikipedia.org                  the list, and the article behind each
  *                                     linked title. Read with action=raw,

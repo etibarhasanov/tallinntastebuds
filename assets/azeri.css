@@ -1,24 +1,34 @@
 /* Tallinn Tastebuds — /azeri, the members' corner about Azerbaijan.
  *
  * The page is the lists page's shape — its ground, its header, its cards,
- * the tokens of every style — and this file is only what the shelf of films
- * needs on top of that: the tabs, the search and its chips, the switch, the
- * rows with their play buttons, an opened film and the player in it, and the
- * door for somebody signed out. It was drawn as a mockup first and the
- * owner said yes to that; every colour here is a token, so the swatch on
- * the map recolours the shelf with nothing in this file to change.
+ * the tokens of every style — and this file is only what the corner needs
+ * on top of that: the tabs, the search and its chips, the switches, the
+ * rows with their play buttons, an opened film and the player in it, the
+ * topics of the guide and an opened one, and the door for somebody signed
+ * out. Each was drawn as a mockup first and the owner said yes to that;
+ * every colour here is a token, so the swatch on the map recolours the
+ * page with nothing in this file to change.
  */
 
 .azeri-head { margin-bottom: 6px; }
 
-/* The shelves of the corner. One today, beside a muted "More soon". */
+/* The tabs of the corner: the films, and the three of the guide. Four fit
+   a 390px phone in each of the page's languages; a narrower one scrolls the
+   row sideways, as the chips do, rather than wrapping it — and says so with
+   pan-x, which is how assets/back.js knows a sideways finger here is not
+   Back. */
 .azeri-tabs {
   display: flex;
   gap: 20px;
   border-bottom: 1px solid var(--hairline);
   margin: 0 0 14px;
   font-size: 15px;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  touch-action: pan-x;
 }
+.azeri-tabs::-webkit-scrollbar { display: none; }
 .azeri-tab {
   padding: 0 0 9px;
   color: var(--muted);
@@ -26,8 +36,8 @@
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
 }
+.azeri-tab:hover { color: var(--ink); }
 .azeri-tab.is-on { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
-.azeri-tab.is-soon { opacity: .55; }
 
 /* ------------------------------------------------------- search and chips */
 
@@ -203,6 +213,39 @@
 .azeri-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 .azeri-out { display: inline-block; margin-top: 6px; font-size: 12px; color: var(--muted); }
 
+/* -------------------------------------------------------------- the guide */
+
+/* A topic is a film's row with a chevron where Watch is: its name, a line
+   under it saying what it covers — whole, not cut at the edge as a film's
+   is — and the width of the card to press. */
+.azeri-row.has-go { flex-direction: row; align-items: center; gap: 12px; text-decoration: none; }
+.azeri-words { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.azeri-topic .azeri-meta { white-space: normal; }
+.azeri-row.has-go:hover .menu-go { color: var(--accent); }
+.azeri-topic.is-open .menu-go { transform: rotate(90deg); color: var(--accent); }
+
+/* An opened topic: a film's detail, with lists in it. The reset the page
+   wears takes the markers off every list, and a guide's steps are numbered,
+   so they are put back here. The heading is the wide screen's. */
+.azeri-heading { display: none; }
+.azeri-article ol, .azeri-article ul { margin: 0 0 10px; padding-left: 20px; }
+.azeri-article ol { list-style: decimal; }
+.azeri-article ul { list-style: disc; }
+.azeri-article li { margin: 0 0 6px; }
+.azeri-article li::marker { color: var(--muted); font-size: 13px; }
+.azeri-article b { font-weight: 600; }
+.azeri-article li > a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.azeri-article li > a:hover { text-decoration: underline; }
+.azeri-sources { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--hairline); }
+.azeri-sources .azeri-kind { display: block; margin-bottom: 4px; }
+.azeri-sources .azeri-links { margin: 0; }
+
+/* The Estonian tab's card: the flashcards, the tab's one filled action. */
+.azeri-flash { padding: 18px 16px; margin-bottom: 18px; }
+.azeri-flash h2 { margin: 4px 0 6px; font-family: var(--display); font-size: 19px; line-height: 1.25; }
+.azeri-flash .lists-say { margin-bottom: 14px; }
+.azeri-ways { margin: 0 0 8px; }
+
 /* ------------------------------------------------------------ the states */
 
 .azeri-note { margin: 0; padding: 36px 24px; text-align: center; color: var(--muted); font-size: 14px; }
@@ -223,7 +266,7 @@
 .azeri-pager .link-btn:disabled { opacity: .4; cursor: default; }
 .azeri-where { font-size: 13px; color: var(--muted); }
 
-.azeri-credit { margin: 16px 0 24px; font-size: 12px; text-align: center; }
+.azeri-credit { margin: 16px 0 24px; font-size: 12px; text-align: center; color: var(--muted); }
 .azeri-credit a { color: var(--muted); }
 
 .azeri-door { text-align: center; padding: 44px 24px; }
@@ -344,4 +387,45 @@
   .azeri-where { font-size: 14px; }
 
   .azeri-door { max-width: 520px; margin: 40px auto 0; }
+
+  /* The guide is read rather than browsed, so it is not a wall: the topics
+     stand down the left as one ruled list, and the opened one is a card
+     beside them. The same nodes — a topic's own box is taken away, so its
+     row and its article can sit in the two columns. A way out, on the
+     Estonian tab, stays a card of the wall with its row's own padding. */
+  .azeri-flash { max-width: 560px; }
+  .azeri-topic .azeri-row { padding: 14px 16px; }
+  .azeri-list.is-guide {
+    grid-template-columns: 330px minmax(0, 1fr);
+    grid-auto-flow: row;
+    gap: 0 28px;
+    align-items: start;
+  }
+  .azeri-list.is-guide > .azeri-note, .azeri-list.is-guide > .azeri-skeleton { max-width: 640px; }
+  .azeri-list.is-guide .azeri-topic { display: contents; }
+  .azeri-list.is-guide .azeri-row {
+    grid-column: 1;
+    margin-top: -1px;
+    padding: 13px 16px;
+    border: 1px solid var(--hairline);
+    background: var(--paper);
+  }
+  .azeri-list.is-guide .azeri-topic:first-child .azeri-row { margin-top: 0; border-radius: var(--radius) var(--radius) 0 0; }
+  .azeri-list.is-guide .azeri-topic:last-child .azeri-row { border-radius: 0 0 var(--radius) var(--radius); }
+  /* The opened topic says so twice: its row is on the page's ground rather
+     than on paper, and its chevron points at the article, in the accent. */
+  .azeri-list.is-guide .azeri-topic.is-open .azeri-row { background: var(--wash); }
+  .azeri-list.is-guide .azeri-topic.is-open .azeri-name { font-size: 16px; }
+  .azeri-list.is-guide .azeri-topic.is-open .menu-go { transform: none; }
+  .azeri-list.is-guide .azeri-detail {
+    grid-column: 2;
+    grid-row: 1 / span 12;
+    max-width: 76ch;
+    padding: 22px 26px 24px;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    background: var(--paper);
+    box-shadow: var(--shadow);
+  }
+  .azeri-heading { display: block; margin: 0 0 4px; font-family: var(--display); font-size: 22px; line-height: 1.25; }
 }

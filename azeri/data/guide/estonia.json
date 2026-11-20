@@ -1,0 +1,396 @@
+{
+  "tab": "estonia",
+  "checked": "2026-11",
+  "topics": [
+    {
+      "id": "before",
+      "name": {"az": "Gəlməzdən əvvəl", "en": "Before you come", "ru": "До приезда", "et": "Enne tulekut"},
+      "covers": {"az": "Viza, yaşayış icazəsinin növləri, sənədlər", "en": "Visas, kinds of residence permit, papers", "ru": "Визы, виды на жительство, документы", "et": "Viisad, elamisloa liigid, dokumendid"},
+      "body": [
+        {"p": {
+          "az": "Nə lazım olduğu niyə gəldiyindən asılıdır. Azərbaycan vətəndaşına Estoniyaya girmək üçün viza, vizanın icazə verdiyindən uzun qalmaq üçün isə yaşayış icazəsi lazımdır.",
+          "en": "What you need depends on why you are coming. A citizen of Azerbaijan needs a visa to enter Estonia, and a residence permit to stay longer than the visa allows.",
+          "ru": "Что понадобится, зависит от цели приезда. Гражданину Азербайджана для въезда в Эстонию нужна виза, а чтобы остаться дольше срока визы, вид на жительство.",
+          "et": "Mida vaja läheb, sõltub sellest, miks sa tuled. Aserbaidžaani kodanik vajab Eestisse sisenemiseks viisat ja viisast kauemaks jäämiseks elamisluba."}},
+        {"list": [
+          {"b": {"az": "İş.", "en": "Work.", "ru": "Работа.", "et": "Töö."},
+           "t": {
+            "az": "İşəgötürən qısamüddətli işləməyini Polis və Sərhəd Mühafizəsi Departamentində qeydiyyata alır, sən isə uzunmüddətli (D) vizaya müraciət edirsən. Daha uzun qalmaq üçün işləmək üçün yaşayış icazəsi alınır.",
+            "en": "Your employer registers your short-term employment with the Police and Border Guard Board, and you apply for a long-stay (D) visa. For a longer stay you apply for a residence permit for employment.",
+            "ru": "Работодатель регистрирует краткосрочную работу в Департаменте полиции и погранохраны, а вы подаёте на долгосрочную визу (D). Для более длительного пребывания оформляется вид на жительство для работы.",
+            "et": "Tööandja registreerib sinu lühiajalise töötamise Politsei- ja Piirivalveametis ning sina taotled pikaajalist (D) viisat. Pikemaks ajaks taotletakse elamisluba töötamiseks."}},
+          {"b": {"az": "Təhsil.", "en": "Study.", "ru": "Учёба.", "et": "Õppimine."},
+           "t": {
+            "az": "Universitetin qəbul məktubu təhsil üçün yaşayış icazəsinin əsasıdır. Addımlar Təhsil bölməsindədir.",
+            "en": "A university's admission letter is the basis for a residence permit for study. The Studying tab has the steps.",
+            "ru": "Письмо о зачислении из университета даёт основание для вида на жительство для учёбы. Шаги описаны во вкладке «Учёба».",
+            "et": "Ülikooli vastuvõtukiri on aluseks elamisloale õppimiseks. Sammud on vahelehel „Õppimine“."}},
+          {"b": {"az": "Ailə.", "en": "Family.", "ru": "Семья.", "et": "Pere."},
+           "t": {
+            "az": "Estoniyada yaşayan həyat yoldaşı və ya yaxın qohum onun yanına köçmək üçün yaşayış icazəsinin əsasıdır.",
+            "en": "A spouse or a close relative who lives in Estonia is the basis for a permit to settle with them.",
+            "ru": "Супруг или близкий родственник, живущий в Эстонии, даёт основание для вида на жительство для переезда к нему.",
+            "et": "Eestis elav abikaasa või lähisugulane on aluseks elamisloale tema juurde elama asumiseks."}},
+          {"b": {"az": "Startap və ya uzaqdan iş.", "en": "A startup, or work done from afar.", "ru": "Стартап или удалённая работа.", "et": "Iduettevõte või kaugtöö."},
+           "t": {
+            "az": "Təsisçilər üçün startap vizası, xaricdəki işəgötürən üçün uzaqdan işləyənlər üçün isə rəqəmsal köçəri (digital nomad) vizası var.",
+            "en": "There is a startup visa for founders, and a digital nomad visa for people who work for an employer abroad.",
+            "ru": "Для основателей есть стартап-виза, а для тех, кто работает на зарубежного работодателя, виза цифрового кочевника.",
+            "et": "Asutajatele on iduviisa ja välismaise tööandja heaks töötajatele diginomaadi viisa."}}
+        ]},
+        {"p": {
+          "az": "Hazır olmalı sənədlər:",
+          "en": "Papers to have ready:",
+          "ru": "Документы, которые стоит подготовить:",
+          "et": "Dokumendid, mis tasub valmis panna:"}},
+        {"list": [
+          {"t": {
+            "az": "Qalma müddətindən xeyli sonra da etibarlı olan pasport.",
+            "en": "A passport that stays valid well past the end of your stay.",
+            "ru": "Паспорт, действительный с запасом после окончания пребывания.",
+            "et": "Pass, mis kehtib varuga ka pärast viibimise lõppu."}},
+          {"t": {
+            "az": "Əmək müqaviləsi və ya qəbul məktubu.",
+            "en": "The employment contract, or the admission letter.",
+            "ru": "Трудовой договор или письмо о зачислении.",
+            "et": "Tööleping või vastuvõtukiri."}},
+          {"t": {
+            "az": "İlk dövr üçün tibbi sığorta.",
+            "en": "Health insurance for the first period.",
+            "ru": "Медицинская страховка на первое время.",
+            "et": "Tervisekindlustus esimeseks ajaks."}},
+          {"t": {
+            "az": "Diplomlar, nikah və ya doğum şəhadətnaməsi: idarə tələb edəndə apostil və tərcümə ilə.",
+            "en": "Diplomas and a marriage or birth certificate, with an apostille and a translation where an office asks for them.",
+            "ru": "Дипломы, свидетельство о браке или о рождении: с апостилем и переводом, если учреждение их требует.",
+            "et": "Diplomid ning abielu- või sünnitunnistus: apostilli ja tõlkega, kui asutus neid küsib."}}
+        ]},
+        {"p": {
+          "az": "Müraciətin harada verildiyi yaşadığın yerdən asılıdır. Müraciət qəbul edən səfirliklərin və viza mərkəzlərinin siyahısı Xarici İşlər Nazirliyinin saytındadır.",
+          "en": "Where you hand the application in depends on where you live. The Ministry of Foreign Affairs lists the embassies and visa centres that take them.",
+          "ru": "Где подавать заявление, зависит от места жительства. Список посольств и визовых центров, которые их принимают, есть на сайте Министерства иностранных дел.",
+          "et": "Kuhu taotlus esitada, sõltub sinu elukohast. Välisministeeriumi lehel on saatkonnad ja viisakeskused, kus taotlusi vastu võetakse."}}
+      ],
+      "links": [
+        {"name": "politsei.ee", "url": "https://www.politsei.ee/en"},
+        {"name": "vm.ee", "url": "https://www.vm.ee/en"},
+        {"name": "workinestonia.com", "url": "https://www.workinestonia.com"}
+      ]
+    },
+    {
+      "id": "first-days",
+      "name": {"az": "İlk 30 gün", "en": "The first 30 days", "ru": "Первые 30 дней", "et": "Esimesed 30 päeva"},
+      "covers": {"az": "Şəxsi kod, ünvan, ID-kart, bank, ailə həkimi", "en": "Personal code, address, ID card, bank, family doctor", "ru": "Личный код, адрес, ID-карта, банк, семейный врач", "et": "Isikukood, aadress, ID-kaart, pank, perearst"},
+      "body": [
+        {"p": {
+          "az": "Estoniyada demək olar hər şey şəxsi kod və elektron kimliklə işləyir. Ona görə ardıcıllıq vacibdir: əvvəl kod və ünvan, sonra qalan hər şey.",
+          "en": "Nearly everything in Estonia runs on a personal code and an electronic identity. So the order matters: the code and the address first, then the rest.",
+          "ru": "В Эстонии почти всё работает через личный код и электронное удостоверение. Поэтому порядок важен: сначала код и адрес, потом всё остальное.",
+          "et": "Eestis käib peaaegu kõik isikukoodi ja elektroonilise identiteedi kaudu. Seepärast on järjekord oluline: kõigepealt kood ja aadress, siis kõik muu."}},
+        {"steps": [
+          {"b": {"az": "Şəxsi kod (isikukood).", "en": "Personal code (isikukood).", "ru": "Личный код (isikukood).", "et": "Isikukood."},
+           "t": {
+            "az": "Yaşayış icazəsi ilə birlikdə verilir. Viza ilə gələndə ayrıca müraciət edilir. Bank, həkim və hər müqavilə bu 11 rəqəmi soruşur.",
+            "en": "It comes with a residence permit. On a visa you apply for one separately. The bank, the doctor and every contract ask for these eleven digits.",
+            "ru": "Выдаётся вместе с видом на жительство. При визе его запрашивают отдельно. Эти одиннадцать цифр спрашивают в банке, у врача и в любом договоре.",
+            "et": "See antakse koos elamisloaga. Viisaga tulles tuleb seda eraldi taotleda. Neid üksteist numbrit küsivad pank, arst ja iga leping."}},
+          {"b": {"az": "Ünvanını qeydiyyata al.", "en": "Register your address.", "ru": "Зарегистрируйте адрес.", "et": "Registreeri elukoht."},
+           "t": {
+            "az": "Köçən kimi, eesti.ee-də onlayn və ya rayon idarəsində, mənzil sahibinin razılığı ilə. Ailə həkiminin siyahısı, Tallinnda pulsuz ictimai nəqliyyat və bağça növbəsi bu ünvana görə işləyir.",
+            "en": "As soon as you move in, online at eesti.ee or at the city district office, with the owner's consent. A family doctor's list, Tallinn's free public transport and a place in the kindergarten queue all go by it.",
+            "ru": "Сразу после переезда, онлайн на eesti.ee или в управе района, с согласия владельца жилья. От этого зависят список семейного врача, бесплатный общественный транспорт в Таллинне и очередь в детский сад.",
+            "et": "Kohe pärast sissekolimist, veebis eesti.ee kaudu või linnaosa valitsuses, omaniku nõusolekul. Sellest sõltuvad perearsti nimistu, Tallinna tasuta ühistransport ja lasteaiakoha järjekord."}},
+          {"b": {"az": "ID-kart və PIN kodlar.", "en": "ID card and PIN codes.", "ru": "ID-карта и PIN-коды.", "et": "ID-kaart ja PIN-koodid."},
+           "t": {
+            "az": "Yaşayış icazəsi kartı həm də elektron kimliyindir: PIN kodları ilə banka və dövlət xidmətlərinə daxil olur, sənəd imzalayırsan. Telefonunda Smart-ID də qur.",
+            "en": "The residence permit card is also your electronic identity: with its PIN codes you sign in to the bank and the state's services and sign documents. Set up Smart-ID on your phone too.",
+            "ru": "Карта вида на жительство служит и электронным удостоверением: с её PIN-кодами входят в банк и государственные услуги и подписывают документы. Установите на телефон и Smart-ID.",
+            "et": "Elamisloakaart on ühtlasi sinu elektrooniline identiteet: selle PIN-koodidega logid panka ja riigi teenustesse ning allkirjastad dokumente. Sea telefonis üles ka Smart-ID."}},
+          {"b": {"az": "Bank hesabı.", "en": "A bank account.", "ru": "Банковский счёт.", "et": "Pangakonto."},
+           "t": {
+            "az": "Böyük banklar LHV, Swedbank, SEB və Coop Pank-dır. Əmək müqaviləsi və şəxsi kod hesab açmağı asanlaşdırır.",
+            "en": "LHV, Swedbank, SEB and Coop Pank are the large banks. An employment contract and a personal code make opening one easier.",
+            "ru": "Крупные банки: LHV, Swedbank, SEB и Coop Pank. С трудовым договором и личным кодом открыть счёт проще.",
+            "et": "Suured pangad on LHV, Swedbank, SEB ja Coop Pank. Töölepingu ja isikukoodiga on konto avamine lihtsam."}},
+          {"b": {"az": "Ailə həkimi (perearst).", "en": "A family doctor (perearst).", "ru": "Семейный врач (perearst).", "et": "Perearst."},
+           "t": {
+            "az": "Yaşadığın yerdə yeni pasiyent qəbul edən həkimi seç və ərizə ver. Günün istənilən saatında məsləhət üçün 1220-yə zəng et.",
+            "en": "Choose one who takes new patients where you live and hand in an application. For advice at any hour, call 1220.",
+            "ru": "Выберите врача, который принимает новых пациентов в вашем районе, и подайте заявление. За советом в любое время звоните 1220.",
+            "et": "Vali oma elukoha lähedal arst, kes võtab uusi patsiente, ja esita avaldus. Nõu saab igal ajal numbrilt 1220."}},
+          {"b": "Settle in Estonia.",
+           "t": {
+            "az": "Dövlətin yeni gələnlər üçün pulsuz kursları: ölkədə işlərin necə qurulduğu və sıfırdan eston dili.",
+            "en": "The state's free courses for newcomers: how the country works, and Estonian from the first word.",
+            "ru": "Бесплатные государственные курсы для новоприбывших: как устроена страна и эстонский язык с нуля.",
+            "et": "Riigi tasuta kursused uussisserändajatele: kuidas riik toimib ja eesti keel päris algusest."}}
+        ]}
+      ],
+      "links": [
+        {"name": "eesti.ee", "url": "https://www.eesti.ee/en"},
+        {"name": "politsei.ee", "url": "https://www.politsei.ee/en"},
+        {"name": "settleinestonia.ee", "url": "https://www.settleinestonia.ee"},
+        {"name": "tervisekassa.ee", "url": "https://www.tervisekassa.ee/en"}
+      ]
+    },
+    {
+      "id": "housing",
+      "name": {"az": "Mənzil", "en": "Somewhere to live", "ru": "Жильё", "et": "Eluase"},
+      "covers": {"az": "Harada axtarmalı, depozit, kommunal, müqavilə", "en": "Where to look, the deposit, utilities, the contract", "ru": "Где искать, залог, коммунальные платежи, договор", "et": "Kust otsida, tagatisraha, kommunaalkulud, leping"},
+      "body": [
+        {"p": {
+          "az": "Kirayə mənzillərin çoxu iki saytdadır: KV.ee və City24. Facebook qruplarında da elanlar var, amma fırıldaq da çoxdur.",
+          "en": "Most flats to rent are on two sites, KV.ee and City24. Facebook groups have offers as well, and more fraud.",
+          "ru": "Большинство квартир в аренду есть на двух сайтах: KV.ee и City24. Объявления бывают и в группах Facebook, но там больше мошенников.",
+          "et": "Enamik üürikortereid on kahel lehel: KV.ee ja City24. Pakkumisi leidub ka Facebooki gruppides, kuid seal on rohkem pettusi."}},
+        {"list": [
+          {"b": {"az": "Depozit.", "en": "The deposit.", "ru": "Залог.", "et": "Tagatisraha."},
+           "t": {
+            "az": "Adətən bir aylıq kirayə, bəzən daha çox. Müqaviləyə yazdır: mənzili aldığın vəziyyətdə təhvil verəndə geri qaytarılır. Köçdüyün gün hər otağın şəklini çək.",
+            "en": "Usually a month's rent, sometimes more. Have it written into the contract: it comes back when you leave the flat as you found it. Photograph every room on the day you move in.",
+            "ru": "Обычно в размере месячной платы, иногда больше. Пропишите его в договоре: он возвращается, если квартира сдана в том же состоянии. В день въезда сфотографируйте каждую комнату.",
+            "et": "Tavaliselt ühe kuu üür, vahel rohkem. Lase see lepingusse kirjutada: see tagastatakse, kui annad korteri üle samas seisus. Pildista sissekolimise päeval iga tuba."}},
+          {"b": {"az": "Kommunal xərclər (kommunaalid).", "en": "Utilities (kommunaalid).", "ru": "Коммунальные платежи (kommunaalid).", "et": "Kommunaalkulud."},
+           "t": {
+            "az": "Adətən kirayədən əlavə ödənilir. Köhnə binalarda istilik qış aylarını bahalaşdırır, ona görə sahibindən qış ayının hesabını istə.",
+            "en": "Usually paid on top of the rent. Heating makes the winter months dearer in older buildings, so ask the owner for a winter bill.",
+            "ru": "Обычно оплачиваются сверх аренды. В старых домах зимой дорого обходится отопление, поэтому попросите у владельца зимний счёт.",
+            "et": "Tavaliselt lisanduvad need üürile. Vanemates majades teeb küte talvekuud kallimaks, seega küsi omanikult talvist arvet."}},
+          {"b": {"az": "Müqavilə.", "en": "The contract.", "ru": "Договор.", "et": "Leping."},
+           "t": {
+            "az": "Yazılı olmalıdır; notarius lazım deyil. Tərəflərin onu necə və nə qədər əvvəl xəbərdarlıqla ləğv edə bildiyini oxu.",
+            "en": "In writing; a notary is not needed. Read how and with how much notice either side can end it.",
+            "ru": "Письменный; нотариус не нужен. Прочитайте, как и с каким сроком предупреждения его может расторгнуть каждая сторона.",
+            "et": "Kirjalik; notarit ei ole vaja. Loe läbi, kuidas ja kui pika etteteatamisega saab kumbki pool selle lõpetada."}},
+          {"b": {"az": "Makler haqqı.", "en": "A broker's fee.", "ru": "Плата маклеру.", "et": "Maakleritasu."},
+           "t": {
+            "az": "Mənzili makler göstərəndə təxminən bir aylıq kirayə qədər haqq adi haldır. Baxışdan əvvəl onu kimin ödədiyini soruş.",
+            "en": "Where a broker shows the flat, a fee of about a month's rent is common. Ask before the viewing who pays it.",
+            "ru": "Если квартиру показывает маклер, обычно берут плату примерно в размере месячной аренды. До просмотра спросите, кто её платит.",
+            "et": "Kui korterit näitab maakler, on tavaline umbes ühe kuu üüri suurune tasu. Küsi enne vaatamist, kes selle maksab."}},
+          {"b": {"az": "Görmədiyin mənzil üçün pul göndərmə.", "en": "Never pay for a flat you have not seen.", "ru": "Не платите за квартиру, которую не видели.", "et": "Ära maksa korteri eest, mida sa pole näinud."},
+           "t": {
+            "az": "İlk həftələr üçün qısamüddətli yer tut və mənzillərə yerində bax.",
+            "en": "For the first weeks, a short-term place lets you look at flats in person.",
+            "ru": "На первые недели снимите временное жильё и смотрите квартиры лично.",
+            "et": "Esimesteks nädalateks võta ajutine koht ja vaata kortereid kohapeal."}},
+          {"b": {"az": "Ünvan.", "en": "The address.", "ru": "Адрес.", "et": "Aadress."},
+           "t": {
+            "az": "Ünvanı qeydiyyata almaq üçün sahibin razılığı lazımdır. İmzalamazdan əvvəl bunu soruş.",
+            "en": "Registering your address needs the owner's consent. Ask for it before you sign.",
+            "ru": "Для регистрации адреса нужно согласие владельца. Спросите о нём до подписания.",
+            "et": "Elukoha registreerimiseks on vaja omaniku nõusolekut. Küsi seda enne allkirjastamist."}}
+        ]}
+      ],
+      "links": [
+        {"name": "kv.ee", "url": "https://www.kv.ee"},
+        {"name": "city24.ee", "url": "https://www.city24.ee"},
+        {"name": "eesti.ee", "url": "https://www.eesti.ee/en"}
+      ]
+    },
+    {
+      "id": "work",
+      "name": {"az": "İş və vergi", "en": "Work and tax", "ru": "Работа и налоги", "et": "Töö ja maksud"},
+      "covers": {"az": "İş axtarışı, maaşdan tutulan vergi, illik bəyannamə", "en": "Finding work, what comes off a salary, the yearly return", "ru": "Поиск работы, что удерживают из зарплаты, годовая декларация", "et": "Tööotsing, maksud palgalt, iga-aastane tuludeklaratsioon"},
+      "body": [
+        {"p": {
+          "az": "Töötukassa dövlətin məşğulluq xidmətidir: vakansiyalar orada olur və bəzi təlimlərin pulunu o ödəyir. Ən böyük iş saytları CV.ee və CV Keskus-dur, ofis işləri üçün LinkedIn də işləyir. İnformasiya texnologiyalarında çox vaxt ingilis dili kifayətdir; mağaza və xidmət sahəsində eston və ya rus dili tələb olunur.",
+          "en": "Töötukassa, the state's employment service, lists vacancies and pays for some training. CV.ee and CV Keskus are the two big job sites, and LinkedIn works for office jobs. In information technology English is often enough; in shops and services Estonian or Russian is asked for.",
+          "ru": "Töötukassa, государственная служба занятости, публикует вакансии и оплачивает часть обучения. Два крупных сайта вакансий: CV.ee и CV Keskus, для офисной работы подходит и LinkedIn. В информационных технологиях часто хватает английского; в магазинах и сфере услуг нужен эстонский или русский.",
+          "et": "Töötukassa on riigi tööturuasutus: seal on tööpakkumised ja osa koolitusi maksab ta kinni. Kaks suurt tööportaali on CV.ee ja CV Keskus, kontoritöö jaoks sobib ka LinkedIn. Infotehnoloogias piisab sageli inglise keelest; poodides ja teeninduses küsitakse eesti või vene keelt."}},
+        {"list": [
+          {"b": {"az": "Müqavilə.", "en": "The contract.", "ru": "Договор.", "et": "Leping."},
+           "t": {
+            "az": "Yazılı əmək müqaviləsi (tööleping) normadır. İşəgötürən səni ilk iş gününə qədər məşğulluq reyestrinə yazır, dövlət tibbi sığortası da bundan yaranır.",
+            "en": "A written employment contract (tööleping) is the norm. Your employer enters you in the employment register by your first day, and state health insurance follows from that.",
+            "ru": "Письменный трудовой договор (tööleping) является нормой. Работодатель вносит вас в регистр работы к первому рабочему дню, и из этого возникает государственная медицинская страховка.",
+            "et": "Kirjalik tööleping on tavaline. Tööandja kannab su töötamise registrisse hiljemalt esimeseks tööpäevaks ja sellest tekib ka riiklik ravikindlustus."}},
+          {"b": {"az": "Vergi.", "en": "Tax.", "ru": "Налоги.", "et": "Maksud."},
+           "t": {
+            "az": "Gəlir vergisi sabit faizlidir, işəgötürən onu digər ödənişlərlə birlikdə maaşdan tutur. İş elanında adətən ümumi məbləğ (bruto) yazılır; hesabına gələn isə xalis məbləğdir (neto).",
+            "en": "Income tax is a flat rate, and the employer takes it off your salary with the other contributions. A job advert usually names the gross pay (bruto); what reaches your account is the net (neto).",
+            "ru": "Подоходный налог имеет единую ставку, работодатель удерживает его из зарплаты вместе с другими платежами. В объявлении обычно указана зарплата брутто; на счёт приходит нетто.",
+            "et": "Tulumaks on ühtse määraga ja tööandja peab selle koos muude maksetega palgast kinni. Töökuulutuses on tavaliselt brutopalk; kontole laekub netopalk."}},
+          {"b": {"az": "İllik bəyannamə.", "en": "The yearly return.", "ru": "Годовая декларация.", "et": "Tuludeklaratsioon."},
+           "t": {
+            "az": "Fevral–aprel aylarında Vergi və Gömrük Departamentinin saytında onlayn verilir. Əvvəlcədən doldurulmuş gəlir, çoxları üçün təsdiqləmək bir neçə dəqiqə çəkir.",
+            "en": "Filed online with the Tax and Customs Board between February and April. It arrives filled in, and for most people confirming it takes minutes.",
+            "ru": "Подаётся онлайн в Налогово-таможенный департамент с февраля по апрель. Она приходит уже заполненной, и большинству остаётся подтвердить её за несколько минут.",
+            "et": "Esitatakse veebis Maksu- ja Tolliametile veebruarist aprillini. See on eeltäidetud ja enamikul kulub kinnitamiseks mõni minut."}},
+          {"b": {"az": "Öz şirkətin.", "en": "A company of your own.", "ru": "Своя фирма.", "et": "Oma ettevõte."},
+           "t": {
+            "az": "Məhdud məsuliyyətli şirkət (OÜ) biznes reyestrində onlayn qurulur, adətən bir günə.",
+            "en": "A private limited company (OÜ) is set up online in the business register, usually within a day.",
+            "ru": "Товарищество с ограниченной ответственностью (OÜ) создаётся онлайн в коммерческом регистре, обычно за один день.",
+            "et": "Osaühingu (OÜ) saab asutada veebis äriregistris, tavaliselt ühe päevaga."}}
+        ]}
+      ],
+      "links": [
+        {"name": "tootukassa.ee", "url": "https://www.tootukassa.ee/en"},
+        {"name": "emta.ee", "url": "https://www.emta.ee/en"},
+        {"name": "workinestonia.com", "url": "https://www.workinestonia.com"},
+        {"name": "cv.ee", "url": "https://www.cv.ee"}
+      ]
+    },
+    {
+      "id": "health",
+      "name": {"az": "Səhiyyə", "en": "Health", "ru": "Здоровье", "et": "Tervis"},
+      "covers": {"az": "Tervisekassa, ailə həkimi, 1220 və 112", "en": "Tervisekassa, the family doctor, 1220 and 112", "ru": "Tervisekassa, семейный врач, 1220 и 112", "et": "Tervisekassa, perearst, 1220 ja 112"},
+      "body": [
+        {"list": [
+          {"b": "Tervisekassa.",
+           "t": {
+            "az": "Dövlətin tibbi sığorta fondudur. Qeydiyyatlı müqavilə ilə işləyənlər və burada yaşayan uşaqlar sığortalıdır. Öz sığortanı eesti.ee-də yoxla.",
+            "en": "The state's health insurance fund. People working under a registered contract are insured, and so are children who live here. Check your own cover at eesti.ee.",
+            "ru": "Государственная больничная касса. Застрахованы те, кто работает по зарегистрированному договору, и живущие здесь дети. Свою страховку можно проверить на eesti.ee.",
+            "et": "Riiklik tervisekassa. Kindlustatud on registreeritud lepinguga töötajad ja siin elavad lapsed. Oma kindlustust saad kontrollida eesti.ee-s."}},
+          {"b": {"az": "Ailə həkimi (perearst).", "en": "The family doctor (perearst).", "ru": "Семейный врач (perearst).", "et": "Perearst."},
+           "t": {
+            "az": "Hər şey ondan başlayır, əksər mütəxəssislərə göndərişi də o verir.",
+            "en": "Everything starts there, and a referral to most specialists comes from them.",
+            "ru": "Всё начинается с него, и направление к большинству специалистов даёт он.",
+            "et": "Kõik algab temast ja saatekirja enamiku eriarstide juurde annab tema."}},
+          {"b": {"az": "1220 və 112.", "en": "1220 and 112.", "ru": "1220 и 112.", "et": "1220 ja 112."},
+           "t": {
+            "az": "Ailə həkimi məsləhət xətti 1220 eston və rus dillərində gecə-gündüz, ingilis dilində müəyyən saatlarda cavab verir. Təcili halda 112-yə zəng et.",
+            "en": "The family doctor advice line, 1220, answers around the clock in Estonian and Russian, and in English at set hours. In an emergency, call 112.",
+            "ru": "Консультационная линия семейных врачей 1220 отвечает круглосуточно на эстонском и русском, на английском в определённые часы. В экстренном случае звоните 112.",
+            "et": "Perearsti nõuandeliin 1220 vastab ööpäev läbi eesti ja vene keeles, inglise keeles kindlatel kellaaegadel. Hädaolukorras helista 112."}},
+          {"b": {"az": "Diş həkimi.", "en": "The dentist.", "ru": "Стоматолог.", "et": "Hambaarst."},
+           "t": {
+            "az": "Böyüklər diş müalicəsini özləri ödəyir. Tervisekassa onunla müqaviləsi olan klinikalarda hər il xərcin bir hissəsini qaytarır.",
+            "en": "Adults pay for dental care themselves. Tervisekassa pays back a part each year at clinics that have a contract with it.",
+            "ru": "Взрослые оплачивают лечение зубов сами. Tervisekassa ежегодно возмещает часть расходов в клиниках, у которых с ней договор.",
+            "et": "Täiskasvanud maksavad hambaravi eest ise. Tervisekassa hüvitab igal aastal osa kuludest nendes kliinikutes, kellel on temaga leping."}},
+          {"b": {"az": "Reseptlər.", "en": "Prescriptions.", "ru": "Рецепты.", "et": "Retseptid."},
+           "t": {
+            "az": "Elektrondur. Əczaçı sənin reseptini şəxsiyyət sənədinlə istənilən aptekdə tapır.",
+            "en": "They are digital. The pharmacist finds yours with your identity document, in any pharmacy.",
+            "ru": "Они электронные. В любой аптеке фармацевт найдёт ваш рецепт по документу, удостоверяющему личность.",
+            "et": "Need on digitaalsed. Apteeker leiab sinu retsepti isikut tõendava dokumendi järgi igas apteegis."}},
+          {"b": {"az": "Sığortasız.", "en": "Without insurance.", "ru": "Без страховки.", "et": "Kindlustuseta."},
+           "t": {
+            "az": "Avropa İttifaqından kənardan gələn tələbəyə və ya iki iş arasında qalana özəl sığorta lazımdır. Sığortasız qəbulun haqqı tam ödənilir.",
+            "en": "A student from outside the European Union, or someone between jobs, needs a private policy. A visit with no cover is paid in full.",
+            "ru": "Студенту из-за пределов Европейского союза или человеку между двумя работами нужен частный полис. Визит без страховки оплачивается полностью.",
+            "et": "Väljastpoolt Euroopa Liitu tulnud üliõpilane või kahe töökoha vahel olija vajab erakindlustust. Kindlustuseta visiidi eest tuleb maksta täies mahus."}}
+        ]}
+      ],
+      "links": [
+        {"name": "tervisekassa.ee", "url": "https://www.tervisekassa.ee/en"},
+        {"name": "terviseportaal.ee", "url": "https://www.terviseportaal.ee"},
+        {"name": "eesti.ee", "url": "https://www.eesti.ee/en"}
+      ]
+    },
+    {
+      "id": "children",
+      "name": {"az": "Uşaqlar", "en": "Children", "ru": "Дети", "et": "Lapsed"},
+      "covers": {"az": "Bağça növbəsi, məktəb, uşaq pulu", "en": "The kindergarten queue, school, child allowance", "ru": "Очередь в детский сад, школа, детское пособие", "et": "Lasteaiajärjekord, kool, lapsetoetus"},
+      "body": [
+        {"list": [
+          {"b": {"az": "Uşaq bağçası (lasteaed).", "en": "Kindergarten (lasteaed).", "ru": "Детский сад (lasteaed).", "et": "Lasteaed."},
+           "t": {
+            "az": "Ünvanın qeydiyyata düşən kimi uşağı bələdiyyə bağçasının növbəsinə yaz: Tallinnda gözləmək uzun çəkə bilər. Özəl bağçalar daha bahadır.",
+            "en": "Put your child in the queue for a municipal kindergarten as soon as your address is registered: in Tallinn the wait can be long. Private ones cost more.",
+            "ru": "Поставьте ребёнка в очередь в муниципальный сад сразу после регистрации адреса: в Таллинне ждать приходится долго. Частные сады дороже.",
+            "et": "Pane laps munitsipaallasteaia järjekorda kohe, kui elukoht on registreeritud: Tallinnas võib ooteaeg olla pikk. Eralasteaiad on kallimad."}},
+          {"b": {"az": "Məktəb.", "en": "School.", "ru": "Школа.", "et": "Kool."},
+           "t": {
+            "az": "Yeddi yaşdan məcburidir. Şəhər qeydiyyatda olduğun ünvana yaxın məktəb təyin edir. Məktəblər eston dilində tədrisə keçir, dili bilmədən gələn uşağa əlavə dil dərsləri verilir.",
+            "en": "Compulsory from the age of seven. The city assigns a school near your registered address. Schools are moving to teaching in Estonian, and a child who arrives without it gets extra language lessons.",
+            "ru": "Обязательна с семи лет. Город назначает школу рядом с зарегистрированным адресом. Школы переходят на обучение на эстонском, а ребёнку, который приехал без языка, дают дополнительные уроки.",
+            "et": "Kohustuslik alates seitsmendast eluaastast. Linn määrab kooli registreeritud elukoha lähedal. Koolid lähevad üle eestikeelsele õppele ja keeleoskuseta saabunud laps saab lisatunde."}},
+          {"b": {"az": "Uşaq pulu.", "en": "Child allowance.", "ru": "Детское пособие.", "et": "Lapsetoetus."},
+           "t": {
+            "az": "Dövlət hər uşaq üçün aylıq müavinət verir. Müraciət Sosial Sığorta Departamenti vasitəsilə, eesti.ee-də onlayn edilir.",
+            "en": "The state pays a monthly allowance for every child. You apply through the Social Insurance Board, online at eesti.ee.",
+            "ru": "Государство платит ежемесячное пособие на каждого ребёнка. Заявление подаётся через Департамент социального страхования, онлайн на eesti.ee.",
+            "et": "Riik maksab iga lapse eest igakuist toetust. Taotlus esitatakse Sotsiaalkindlustusametile veebis eesti.ee kaudu."}},
+          {"b": {"az": "Dərsdən sonra.", "en": "After school.", "ru": "После уроков.", "et": "Pärast kooli."},
+           "t": {
+            "az": "Maraq məktəbləri (huvikool) musiqi, idman, rəsm və robototexnika öyrədir. Rayon idarəsindən nəyin xərcinə kömək etdiyini soruş.",
+            "en": "Hobby schools (huvikool) teach music, sport, art and robotics. Ask your city district what it helps to pay for.",
+            "ru": "Школы по интересам (huvikool) учат музыке, спорту, рисованию и робототехнике. Спросите в управе района, что она помогает оплачивать.",
+            "et": "Huvikoolides õpetatakse muusikat, sporti, kunsti ja robootikat. Küsi linnaosa valitsusest, mille eest aitab maksta linn."}}
+        ]}
+      ],
+      "links": [
+        {"name": "tallinn.ee", "url": "https://www.tallinn.ee/en"},
+        {"name": "eesti.ee", "url": "https://www.eesti.ee/en"},
+        {"name": "sotsiaalkindlustusamet.ee", "url": "https://www.sotsiaalkindlustusamet.ee/en"}
+      ]
+    },
+    {
+      "id": "daily",
+      "name": {"az": "Gündəlik həyat", "en": "Day to day", "ru": "Повседневная жизнь", "et": "Igapäevaelu"},
+      "covers": {"az": "Nəqliyyat, qış, tullantı, səfirlik", "en": "Getting around, winter, sorting rubbish, the embassy", "ru": "Транспорт, зима, сортировка мусора, посольство", "et": "Ühistransport, talv, prügi sorteerimine, saatkond"},
+      "body": [
+        {"list": [
+          {"b": {"az": "Nəqliyyat.", "en": "Getting around.", "ru": "Транспорт.", "et": "Liiklemine."},
+           "t": {
+            "az": "Tallinnda ictimai nəqliyyat qeydiyyatlı sakinlər üçün pulsuzdur, adına yazılmış yaşıl kartla (Ühiskaart). Şəhərlər arasında Elron qatarları və avtobuslar işləyir.",
+            "en": "In Tallinn public transport is free for registered residents, with a personalised green card (Ühiskaart). Between cities there are Elron's trains and the coaches.",
+            "ru": "В Таллинне общественный транспорт бесплатен для зарегистрированных жителей, по именной зелёной карте (Ühiskaart). Между городами ходят поезда Elron и автобусы.",
+            "et": "Tallinnas on ühistransport registreeritud elanikele tasuta, isikustatud rohelise kaardiga (Ühiskaart). Linnade vahel sõidavad Elroni rongid ja bussid."}},
+          {"b": {"az": "Qış.", "en": "Winter.", "ru": "Зима.", "et": "Talv."},
+           "t": {
+            "az": "Noyabrdan fevrala qədər günlər qısa və qaranlıq olur. Qaranlıqda paltoda əksetdirici (helkur) qanunla tələb olunur, burada çoxları D vitamini qəbul edir.",
+            "en": "From November to February the days are short and dark. A reflector on your coat is required by law in the dark, and most people here take vitamin D.",
+            "ru": "С ноября по февраль дни короткие и тёмные. В темноте закон требует носить светоотражатель, и большинство здесь принимает витамин D.",
+            "et": "Novembrist veebruarini on päevad lühikesed ja pimedad. Pimedas on helkur seadusega kohustuslik ja enamik inimesi võtab D-vitamiini."}},
+          {"b": {"az": "Tullantı və butulkalar.", "en": "Rubbish and bottles.", "ru": "Мусор и бутылки.", "et": "Prügi ja pudelid."},
+           "t": {
+            "az": "Tullantı çeşidlənir. Butulka və bankaların girov haqqı var, mağazadakı avtomat onu geri qaytarır.",
+            "en": "Rubbish is sorted. Bottles and cans carry a deposit, and the machine at the shop pays it back.",
+            "ru": "Мусор сортируют. За бутылки и банки берётся залог, и автомат в магазине его возвращает.",
+            "et": "Prügi sorteeritakse. Pudelitel ja purkidel on pant, mille poe taaraautomaat tagasi maksab."}},
+          {"b": {"az": "Telefon nömrəsi.", "en": "A phone number.", "ru": "Номер телефона.", "et": "Telefoninumber."},
+           "t": {
+            "az": "Üç mobil operator var: Telia, Elisa və Tele2. Əvvəlcədən ödənişli kartı istənilən köşkdən almaq olur.",
+            "en": "Telia, Elisa and Tele2 are the three networks. A prepaid card is sold at any kiosk.",
+            "ru": "Три оператора: Telia, Elisa и Tele2. Предоплаченную карту продают в любом киоске.",
+            "et": "Kolm mobiilioperaatorit on Telia, Elisa ja Tele2. Kõnekaardi saab igast kioskist."}},
+          {"b": {"az": "Səfirlik.", "en": "The embassy.", "ru": "Посольство.", "et": "Saatkond."},
+           "t": {
+            "az": "Azərbaycanın səfirliyi Tallinndədir. Pasport, etibarnamə və digər konsulluq sənədləri orada əvvəlcədən yazılmaqla hazırlanır.",
+            "en": "Azerbaijan's embassy is in Tallinn. Passports, powers of attorney and other consular papers are done there by appointment.",
+            "ru": "Посольство Азербайджана находится в Таллинне. Паспорта, доверенности и другие консульские документы оформляют там по записи.",
+            "et": "Aserbaidžaani saatkond asub Tallinnas. Passid, volikirjad ja muud konsulaardokumendid vormistatakse seal eelregistreerimisega."}}
+        ]}
+      ],
+      "links": [
+        {"name": "tallinn.ee", "url": "https://www.tallinn.ee/en"},
+        {"name": "elron.ee", "url": "https://elron.ee/en"},
+        {"name": "tallinn.mfa.gov.az", "url": "https://tallinn.mfa.gov.az"}
+      ]
+    },
+    {
+      "id": "links",
+      "name": {"az": "Faydalı linklər", "en": "Useful links", "ru": "Полезные ссылки", "et": "Kasulikud lingid"},
+      "covers": {"az": "Dövlət saytları bir yerdə", "en": "The state's websites in one place", "ru": "Государственные сайты в одном месте", "et": "Riigi veebilehed ühes kohas"},
+      "body": [
+        {"list": [
+          {"b": "eesti.ee", "url": "https://www.eesti.ee/en",
+           "t": {"az": "Bütün dövlət xidmətləri bir yerdə.", "en": "Every state service in one place.", "ru": "Все государственные услуги в одном месте.", "et": "Kõik riigi teenused ühes kohas."}},
+          {"b": "politsei.ee", "url": "https://www.politsei.ee/en",
+           "t": {"az": "Vizalar, yaşayış icazələri və şəxsiyyət sənədləri.", "en": "Visas, residence permits and identity documents.", "ru": "Визы, виды на жительство и удостоверения личности.", "et": "Viisad, elamisload ja isikut tõendavad dokumendid."}},
+          {"b": "settleinestonia.ee", "url": "https://www.settleinestonia.ee",
+           "t": {"az": "Yeni gələnlər üçün pulsuz kurslar.", "en": "Free courses for newcomers.", "ru": "Бесплатные курсы для новоприбывших.", "et": "Tasuta kursused uussisserändajatele."}},
+          {"b": "workinestonia.com", "url": "https://www.workinestonia.com",
+           "t": {"az": "İş üçün köçənlərə.", "en": "Moving here for work.", "ru": "Для тех, кто переезжает работать.", "et": "Töö pärast Eestisse kolijale."}},
+          {"b": "tootukassa.ee", "url": "https://www.tootukassa.ee/en",
+           "t": {"az": "Vakansiyalar və təlimlər.", "en": "Vacancies and training.", "ru": "Вакансии и обучение.", "et": "Tööpakkumised ja koolitused."}},
+          {"b": "emta.ee", "url": "https://www.emta.ee/en",
+           "t": {"az": "Vergi və illik bəyannamə.", "en": "Tax, and the yearly return.", "ru": "Налоги и годовая декларация.", "et": "Maksud ja tuludeklaratsioon."}},
+          {"b": "tervisekassa.ee", "url": "https://www.tervisekassa.ee/en",
+           "t": {"az": "Tibbi sığorta.", "en": "Health insurance.", "ru": "Медицинское страхование.", "et": "Ravikindlustus."}},
+          {"b": "tallinn.ee", "url": "https://www.tallinn.ee/en",
+           "t": {"az": "Şəhər: ünvan qeydiyyatı, bağçalar, nəqliyyat.", "en": "The city: addresses, kindergartens, transport.", "ru": "Город: регистрация адреса, детские сады, транспорт.", "et": "Linn: elukoha registreerimine, lasteaiad, ühistransport."}},
+          {"b": "studyinestonia.ee", "url": "https://www.studyinestonia.ee",
+           "t": {"az": "Universitetlər və proqramlar.", "en": "Universities and programmes.", "ru": "Университеты и программы.", "et": "Ülikoolid ja õppekavad."}}
+        ]}
+      ],
+      "links": []
+    }
+  ]
+}
