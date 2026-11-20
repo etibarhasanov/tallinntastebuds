@@ -16857,6 +16857,19 @@ let other sites play, where the player says so itself. A film's other links
 the row that put that video in the same player, and a link that is not
 YouTube's opens where it lives.
 
+### In Russian
+
+The studio keeps a playlist of its films in Russian — the dubbed versions
+most of them were released in across the Soviet Union — and a reader of
+Russian who has no Azerbaijani wants exactly those. **In Russian** is a
+second switch beside **Only ones I can watch**: on, the shelf is the films
+with a Russian version, 91 so far, Watch plays that version rather than the
+Azerbaijani one, and each film shows the title the studio gives it in
+Russian under its own — *Dədə Qorqud* over *Свет погасших костров*. A search
+finds a film by that title too, switch or no switch. The tool marks a film
+in the index as having one, so the route's filter is a flag read off a row
+it was already walking.
+
 ### Wide, it is a wall of films
 
 On a phone the shelf is a list, a line or two a film. From 900px the page
@@ -21076,6 +21089,7 @@ Azerbaijan, `assets/azeri.js`:
 | --- | --- |
 | `azeri_shelf` | `shelf` — the chip pressed: `feature`, `animation`, `documentary`, `series` or `all` |
 | `azeri_watchable` | `on` (`1`/`0`) — the Only ones I can watch switch |
+| `azeri_russian` | `on` (`1`/`0`) — the In Russian switch |
 | `azeri_page` | `page` — Previous or Next, the page turned to |
 | `azeri_film` | `film` — a film opened |
 | `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) — a film played in the page, or a link out where it is not YouTube's |

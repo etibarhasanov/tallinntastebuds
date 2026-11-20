@@ -39,22 +39,26 @@
 
  * WHAT IT ANSWERS
  *
- *   GET /api/azeri?kind=feature&q=&watch=1&page=2
+ *   GET /api/azeri?kind=feature&q=&watch=1&ru=1&page=2
  *
  *   kind    feature (the default), animation, documentary, series, or all.
  *           "documentary" takes in the docudramas, the newsreel sketches and
  *           the filmed concerts; "series" the filmed plays and anthologies
  *           too, so every film is on exactly one shelf besides All.
- *   q       words to find in the title, its English title, the director,
- *           the writer and the cast, folded so "e" finds "ə" and "i" "ı".
+ *   q       words to find in the title, its English and Russian titles, the
+ *           director, the writer and the cast, folded so "e" finds "ə" and
+ *           "i" "ı".
  *   watch   1 for only the films with a link to watch them; the page asks
  *           for that first, and a person switches it off.
+ *   ru      1 for only the films with a version in Russian — the studio
+ *           keeps a Russian playlist, and somebody who reads Russian and not
+ *           Azerbaijani wants exactly those.
  *   page    which page of PAGE (twenty), from 1; past the last is the last.
  *
  *   { films: [ … PAGE of them ], page, pages, total, counts, source }
  *
  * `total` is how many match, `counts` how many each shelf holds with the
- * search and the switch applied, so the chips can say. A film carries every
+ * search and the switches applied, so the chips can say. A film carries every
  * field the tool wrote, since the page opens a row without asking again.
  *
  * Signed out it is 401 `signed-out` and nothing else, so the page draws its
@@ -90,6 +94,7 @@ export async function onRequestGet(context) {
   const kind = SHELVES.includes(asked) || asked === 'all' ? asked : 'feature';
   const words = fold(String(url.searchParams.get('q') || '').slice(0, MAX_Q)).split(' ').filter(Boolean);
   const watch = url.searchParams.get('watch') === '1';
+  const russian = url.searchParams.get('ru') === '1';
   const askedPage = Number.parseInt(url.searchParams.get('page'), 10);
 
   try {
@@ -99,8 +104,9 @@ export async function onRequestGet(context) {
        the chips, and where in the whole order each film of this shelf is. */
     const counts = { all: 0, feature: 0, animation: 0, documentary: 0, series: 0 };
     const found = [];
-    index.rows.forEach(([id, shelf, , watchable, text], at) => {
+    index.rows.forEach(([id, shelf, , watchable, text, ru], at) => {
       if (watch && !watchable) return;
+      if (russian && !ru) return;
       if (words.length && !words.every((w) => text.includes(w))) return;
       counts.all++;
       counts[shelf]++;
