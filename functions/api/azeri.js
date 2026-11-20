@@ -1,20 +1,23 @@
 /**
- * Tallinn Tastebuds — /api/azeri, the films shelf of the Azerbaijan corner.
+ * Tallinn Tastebuds — /api/azeri, what the Azerbaijan corner is read from.
  *
- * /azeri is a page about Azerbaijan for members only, in Azerbaijani and
- * English, linked from nowhere. Its first shelf is the country's cinema: the
- * 2,615 films of the Azerbaijani Wikipedia's list, collected by
- * tools/azfilms.mjs into azeri/data/. This route is the only way to read
- * them.
+ * /azeri is a page for members only, linked from nowhere: Azerbaijan's
+ * films, and beside them a guide to living in Estonia for somebody arriving
+ * from there. The films are the 2,615 of the Azerbaijani Wikipedia's list,
+ * collected by tools/azfilms.mjs into azeri/data/. The guide is three files
+ * written by hand under azeri/data/guide/ — estonia.json, study.json and
+ * estonian.json, one to a tab — and every sentence in them is an object
+ * keyed by language, az, en, ru and et, as a deck's is. This route is the
+ * only way to read any of it.
  *
  * WHY A ROUTE AND NOT THE FILE
  *
- * The films are behind the members' door, and a static file has no door:
+ * The corner is behind the members' door, and a static file has no door:
  * _routes.json hands /data/* to the asset server past every Function. So
- * they live under /azeri/data/, which functions/_middleware.js answers with
- * the not-found page for everybody, and this reads them through env.ASSETS,
- * which goes around the middleware — the way every other Function reads a
- * data file.
+ * its files live under /azeri/data/, which functions/_middleware.js answers
+ * with the not-found page for everybody, and this reads them through
+ * env.ASSETS, which goes around the middleware — the way every other
+ * Function reads a data file.
  *
  * WHAT IT COSTS
  *
@@ -25,7 +28,10 @@
  * it. A member reading every one of the 523 feature films is twenty-seven
  * pages and twenty-seven reads, and a hundred members doing that every day
  * is 2,700 against the five million; the number does not grow with the
- * films.
+ * films. A tab of the guide is the same one read, once: the whole tab comes
+ * in one answer, and opening a topic asks for nothing. A thousand members
+ * opening all three tabs every day is 3,000 reads, 12,000 rows at the very
+ * worst, and it does not grow with the topics, which are a file.
  *
  * And the CPU, which on the free plan is ten milliseconds a request. The
  * whole shelf as one file was 1.7 MB, and a cold isolate spent four to ten
@@ -35,8 +41,10 @@
  * already folded; and the films themselves in files of a hundred in that
  * order, films/<n>.json. A request walks the index once and parses the one
  * or two files its page is in. All of them are kept five minutes per
- * isolate by dataFile().
-
+ * isolate by dataFile(). A tab of the guide is 2 to 45 KB in all four
+ * languages, a fraction of a millisecond to parse, and the answer carries
+ * the one language that was asked for.
+ *
  * WHAT IT ANSWERS
  *
  *   GET /api/azeri?kind=feature&q=&watch=1&ru=1&page=2
@@ -61,6 +69,23 @@
  * search and the switches applied, so the chips can say. A film carries every
  * field the tool wrote, since the page opens a row without asking again.
  *
+ *   GET /api/azeri?tab=estonia&lang=az
+ *
+ *   tab     estonia, study or estonian: a tab of the guide. Anything else,
+ *           or nothing, is the films above.
+ *   lang    az, en, ru or et, the four the guide is written in; anything
+ *           else is English.
+ *
+ *   { tab, checked, topics: [ { id, name, covers, body, links } or
+ *                             { id, name, covers, url } ] }
+ *
+ * `checked` is the month the tab was last read against its sources,
+ * `2026-11`. A topic with a `body` opens in the page: its blocks are
+ * `{ p }`, a paragraph, and `{ steps }` and `{ list }`, a numbered and a
+ * plain list of `{ b, t, url }` — a lead in bold, the sentence after it, and
+ * where the lead is a link, its address. A topic with a `url` is a way out
+ * and has no body. Every string is in the language asked for.
+ *
  * Signed out it is 401 `signed-out` and nothing else, so the page draws its
  * door; without a database, 503 `no-database`, the same as every route that
  * needs a session. The order is the index's, which tools/azfilms.mjs
@@ -75,6 +100,9 @@ const CHUNKS = '/azeri/data/films/';
 const PAGE = 20;
 const MAX_Q = 80;
 const SHELVES = ['feature', 'animation', 'documentary', 'series'];
+const GUIDE = '/azeri/data/guide/';
+const TABS = ['estonia', 'study', 'estonian'];
+const GUIDE_LANGS = ['az', 'en', 'ru', 'et'];
 
 /* The same fold tools/azfilms.mjs gave every film's words: foldWords()
    leaves ə and ı as they are, since neither has a base letter NFD can take
@@ -84,12 +112,43 @@ function fold(value) {
   return foldWords(value).replace(/ə/g, 'e').replace(/ı/g, 'i').trim();
 }
 
+/* A tab of the guide in one language. The file holds all four, and `say`
+   takes the one asked for out of every string in it: a name that is the
+   same in each — TalTech, eesti.ee — is written once, as a string, and
+   passes through. tools/validate.mjs holds every object to all four, so
+   the English is a fallback nothing should reach. */
+function guideIn(file, lang) {
+  const say = (text) => (typeof text === 'string' ? text : text[lang] || text.en);
+  const item = (it) => ({ ...(it.b ? { b: say(it.b) } : {}), t: say(it.t), ...(it.url ? { url: it.url } : {}) });
+  const block = (b) => (b.p ? { p: say(b.p) } : b.steps ? { steps: b.steps.map(item) } : { list: b.list.map(item) });
+  return {
+    tab: file.tab,
+    checked: file.checked,
+    topics: file.topics.map((topic) => ({
+      id: topic.id,
+      name: say(topic.name),
+      covers: say(topic.covers),
+      ...(topic.url ? { url: topic.url } : { body: topic.body.map(block), links: topic.links })
+    }))
+  };
+}
+
 export async function onRequestGet(context) {
   const { request, env } = context;
   if (!env.DB || (await wrongDatabase(env))) return json({ error: 'no-database' }, 503);
   if (!(await sessionUser(request, env))) return json({ error: 'signed-out' }, 401);
 
   const url = new URL(request.url);
+  const tab = url.searchParams.get('tab');
+  if (TABS.includes(tab)) {
+    const asked = url.searchParams.get('lang');
+    try {
+      return json(guideIn(await dataFile(context, GUIDE + tab + '.json'), GUIDE_LANGS.includes(asked) ? asked : 'en'));
+    } catch (e) {
+      return json({ error: 'unavailable' }, 503);
+    }
+  }
+
   const asked = url.searchParams.get('kind');
   const kind = SHELVES.includes(asked) || asked === 'all' ? asked : 'feature';
   const words = fold(String(url.searchParams.get('q') || '').slice(0, MAX_Q)).split(' ').filter(Boolean);

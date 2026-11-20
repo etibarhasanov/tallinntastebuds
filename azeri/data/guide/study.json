@@ -1,0 +1,355 @@
+{
+  "tab": "study",
+  "checked": "2026-11",
+  "topics": [
+    {
+      "id": "universities",
+      "name": {"az": "Universitetlər", "en": "Universities", "ru": "Университеты", "et": "Ülikoolid"},
+      "covers": {"az": "Altı universitet, şəhəri və güclü sahələri", "en": "Six universities, their city and what each is strong in", "ru": "Шесть университетов, их город и сильные направления", "et": "Kuus ülikooli, nende linn ja tugevad erialad"},
+      "body": [
+        {"p": {
+          "az": "İngilis dilində bakalavr, magistr və doktorantura proqramları olan dövlət universitetləri.",
+          "en": "The public universities with bachelor's, master's and doctoral programmes in English.",
+          "ru": "Государственные университеты с программами бакалавриата, магистратуры и докторантуры на английском.",
+          "et": "Avalik-õiguslikud ülikoolid, kus on ingliskeelsed bakalaureuse-, magistri- ja doktoriõppekavad."}},
+        {"list": [
+          {"b": "TalTech", "url": "https://taltech.ee/en",
+           "t": {
+            "az": "Tallinn. İnformasiya texnologiyaları, mühəndislik, kibertəhlükəsizlik, biznes.",
+            "en": "Tallinn. Information technology, engineering, cyber security, business.",
+            "ru": "Таллинн. Информационные технологии, инженерия, кибербезопасность, бизнес.",
+            "et": "Tallinn. Infotehnoloogia, inseneeria, küberturve, ärindus."}},
+          {"b": {"az": "Tartu Universiteti", "en": "University of Tartu", "ru": "Тартуский университет", "et": "Tartu Ülikool"}, "url": "https://ut.ee/en",
+           "t": {
+            "az": "Tartu. Tibb, təbiət elmləri, informatika, hüquq, sosial elmlər.",
+            "en": "Tartu. Medicine, natural sciences, computer science, law, social sciences.",
+            "ru": "Тарту. Медицина, естественные науки, информатика, право, социальные науки.",
+            "et": "Tartu. Arstiteadus, loodusteadused, informaatika, õigus, sotsiaalteadused."}},
+          {"b": {"az": "Tallinn Universiteti", "en": "Tallinn University", "ru": "Таллиннский университет", "et": "Tallinna Ülikool"}, "url": "https://www.tlu.ee/en",
+           "t": {
+            "az": "Tallinn. Humanitar və sosial elmlər, media, təhsil, rəqəmsal texnologiyalar.",
+            "en": "Tallinn. Humanities and social sciences, media, education, digital technologies.",
+            "ru": "Таллинн. Гуманитарные и социальные науки, медиа, образование, цифровые технологии.",
+            "et": "Tallinn. Humanitaar- ja sotsiaalteadused, meedia, haridus, digitehnoloogiad."}},
+          {"b": {"az": "Estoniya Həyat Elmləri Universiteti", "en": "Estonian University of Life Sciences", "ru": "Эстонский университет естественных наук", "et": "Eesti Maaülikool"}, "url": "https://www.emu.ee/en",
+           "t": {
+            "az": "Tartu. Kənd təsərrüfatı, ətraf mühit, baytarlıq, meşəçilik.",
+            "en": "Tartu. Agriculture, environment, veterinary medicine, forestry.",
+            "ru": "Тарту. Сельское хозяйство, окружающая среда, ветеринария, лесное хозяйство.",
+            "et": "Tartu. Põllumajandus, keskkond, veterinaaria, metsandus."}},
+          {"b": {"az": "Estoniya İncəsənət Akademiyası", "en": "Estonian Academy of Arts", "ru": "Эстонская академия художеств", "et": "Eesti Kunstiakadeemia"}, "url": "https://www.artun.ee/en",
+           "t": {
+            "az": "Tallinn. Dizayn, memarlıq, təsviri sənət.",
+            "en": "Tallinn. Design, architecture, fine arts.",
+            "ru": "Таллинн. Дизайн, архитектура, изобразительное искусство.",
+            "et": "Tallinn. Disain, arhitektuur, vabad kunstid."}},
+          {"b": {"az": "Estoniya Musiqi və Teatr Akademiyası", "en": "Estonian Academy of Music and Theatre", "ru": "Эстонская академия музыки и театра", "et": "Eesti Muusika- ja Teatriakadeemia"}, "url": "https://eamt.ee/en",
+           "t": {
+            "az": "Tallinn. İfaçılıq, bəstəkarlıq, musiqi texnologiyası, teatr.",
+            "en": "Tallinn. Performance, composition, music technology, theatre.",
+            "ru": "Таллинн. Исполнительство, композиция, музыкальные технологии, театр.",
+            "et": "Tallinn. Interpretatsioon, kompositsioon, muusikatehnoloogia, teater."}}
+        ]},
+        {"p": {
+          "az": "İngilis dilində tədris olunan bütün proqramları studyinestonia.ee-də axtarmaq olur. Özəl məktəblər də var, məsələn Estonian Business School.",
+          "en": "Every programme taught in English can be searched at studyinestonia.ee. There are private schools as well, Estonian Business School among them.",
+          "ru": "Все программы на английском можно найти на studyinestonia.ee. Есть и частные вузы, например Estonian Business School.",
+          "et": "Kõiki ingliskeelseid õppekavasid saab otsida lehelt studyinestonia.ee. On ka erakoole, näiteks Estonian Business School."}}
+      ],
+      "links": [
+        {"name": "studyinestonia.ee", "url": "https://www.studyinestonia.ee"}
+      ]
+    },
+    {
+      "id": "admission",
+      "name": {"az": "Qəbul, addım-addım", "en": "Getting in, step by step", "ru": "Поступление, шаг за шагом", "et": "Sisseastumine samm-sammult"},
+      "covers": {"az": "Proqram seçimindən vizaya qədər altı addım", "en": "Six steps, from picking a programme to the visa", "ru": "Шесть шагов: от выбора программы до визы", "et": "Kuus sammu õppekava valikust viisani"},
+      "body": [
+        {"steps": [
+          {"b": {"az": "Proqram seç.", "en": "Pick a programme.", "ru": "Выберите программу.", "et": "Vali õppekava."},
+           "t": {
+            "az": "Altı–on iki ay əvvəldən. Proqramın öz səhifəsində qəbul tələblərini, təhsil haqqını və son tarixi oxu.",
+            "en": "Six to twelve months ahead. On the programme's own page, read the entry requirements, the fee and the deadline.",
+            "ru": "За шесть–двенадцать месяцев. На странице программы прочитайте требования к поступающим, стоимость и крайний срок.",
+            "et": "Kuus kuni kaksteist kuud ette. Loe õppekava lehelt vastuvõtutingimusi, õppemaksu ja tähtaega."}},
+          {"b": {"az": "Sənədləri hazırla.", "en": "Get the papers ready.", "ru": "Подготовьте документы.", "et": "Pane dokumendid valmis."},
+           "t": {
+            "az": "Attestat və ya diplom, qiymət cədvəli ilə, tərcümə olunmuş. Proqramın tələb etdiyi balla ingilis dili sertifikatı. Motivasiya məktubu və pasport. Bəzi proqramlar tövsiyə məktubu və ya portfolio istəyir.",
+            "en": "A school-leaving certificate or a diploma with its transcript, translated. A certificate of English, with the score the programme names. A motivation letter and a passport. Some programmes ask for letters of recommendation or a portfolio.",
+            "ru": "Аттестат или диплом с выпиской оценок, с переводом. Сертификат по английскому с баллом, который называет программа. Мотивационное письмо и паспорт. Некоторые программы просят рекомендательные письма или портфолио.",
+            "et": "Lõputunnistus või diplom koos hinnetelehega, tõlgituna. Inglise keele tunnistus õppekava nõutud tulemusega. Motivatsioonikiri ja pass. Mõni õppekava küsib soovituskirju või portfooliot."}},
+          {"b": {"az": "Onlayn müraciət et.", "en": "Apply online.", "ru": "Подайте заявление онлайн.", "et": "Kandideeri veebis."},
+           "t": {
+            "az": "Estoniya universitetlərinin ortaq portalı olan DreamApply vasitəsilə. Vizaya ehtiyacı olanlar üçün son tarix başqalarından tez gəlir, hər proqramda yoxla.",
+            "en": "Through DreamApply, the portal Estonia's universities share. The deadline for applicants who need a visa comes earlier than for others, so check each programme.",
+            "ru": "Через DreamApply, общий портал эстонских университетов. Для тех, кому нужна виза, срок наступает раньше, поэтому проверяйте каждую программу.",
+            "et": "DreamApply kaudu, mis on Eesti ülikoolide ühine portaal. Viisat vajavatele kandidaatidele on tähtaeg varasem, seega kontrolli iga õppekava."}},
+          {"b": {"az": "İmtahan və ya müsahibə.", "en": "The test or the interview.", "ru": "Тест или собеседование.", "et": "Test või vestlus."},
+           "t": {
+            "az": "Bir çox proqramda onlayn müsahibə, test və ya yazılı tapşırıq olur.",
+            "en": "Many programmes hold an online interview, a test or a written task.",
+            "ru": "Во многих программах проводят онлайн-собеседование, тест или письменное задание.",
+            "et": "Paljudel õppekavadel on veebivestlus, test või kirjalik ülesanne."}},
+          {"b": {"az": "Qəbul təklifi.", "en": "The offer.", "ru": "Предложение о зачислении.", "et": "Vastuvõtuotsus."},
+           "t": {
+            "az": "Yerini təsdiqlə, tələb olunan yerdə təhsil haqqının ilk hissəsini ödə. Yataqxanaya elə həmin gün müraciət et: otaqlar tez dolur.",
+            "en": "Confirm your place, and pay the first part of the fee where it is asked for. Apply for a dormitory the same day: the rooms go fast.",
+            "ru": "Подтвердите место и, где требуется, внесите первую часть оплаты. В тот же день подайте заявку на общежитие: комнаты быстро заканчиваются.",
+            "et": "Kinnita oma koht ja maksa õppemaksu esimene osa, kui seda küsitakse. Taotle ühiselamukohta samal päeval: toad lähevad kiiresti."}},
+          {"b": {"az": "Viza və icazə.", "en": "The visa and the permit.", "ru": "Виза и вид на жительство.", "et": "Viisa ja elamisluba."},
+           "t": {
+            "az": "Qəbul məktubu ilə uzunmüddətli vizaya və ya təhsil üçün yaşayış icazəsinə müraciət edirsən. Sənədlərin harada verildiyini Polis və Sərhəd Mühafizəsi Departamenti deyir. Bu, həftələr çəkir, dərhal başla.",
+            "en": "With the admission letter you apply for a long-stay visa or a residence permit for study. The Police and Border Guard Board says where to hand it in. It takes weeks, so start at once.",
+            "ru": "С письмом о зачислении подают на долгосрочную визу или вид на жительство для учёбы. Куда подавать, указывает Департамент полиции и погранохраны. Это занимает недели, начинайте сразу.",
+            "et": "Vastuvõtukirjaga taotled pikaajalist viisat või elamisluba õppimiseks. Kuhu taotlus esitada, ütleb Politsei- ja Piirivalveamet. See võtab nädalaid, alusta kohe."}}
+        ]}
+      ],
+      "links": [
+        {"name": "studyinestonia.ee", "url": "https://www.studyinestonia.ee"},
+        {"name": "estonia.dreamapply.com", "url": "https://estonia.dreamapply.com"},
+        {"name": "politsei.ee", "url": "https://www.politsei.ee/en"}
+      ]
+    },
+    {
+      "id": "fees",
+      "name": {"az": "Təhsil haqqı və təqaüdlər", "en": "Fees and scholarships", "ru": "Плата за обучение и стипендии", "et": "Õppemaks ja stipendiumid"},
+      "covers": {"az": "Nə pulsuzdur, nə ödənişlidir, kim kömək edir", "en": "What is free, what is paid, and who helps", "ru": "Что бесплатно, что платно и кто помогает", "et": "Mis on tasuta, mis tasuline ja kes aitab"},
+      "body": [
+        {"list": [
+          {"b": {"az": "Eston dilində pulsuz.", "en": "In Estonian, free.", "ru": "На эстонском бесплатно.", "et": "Eesti keeles tasuta."},
+           "t": {
+            "az": "Dövlət universitetində eston dilində əyani təhsil pulsuzdur. Bunun üçün eston dilini yaxşı bilmək lazımdır.",
+            "en": "Full-time study in Estonian at a public university costs nothing. It asks for strong Estonian.",
+            "ru": "Очное обучение на эстонском в государственном университете бесплатно. Для него нужен хороший эстонский.",
+            "et": "Täiskoormusega õpe eesti keeles on avalik-õiguslikus ülikoolis tasuta. See eeldab head eesti keele oskust."}},
+          {"b": {"az": "İngilis dilində əsasən ödənişli.", "en": "In English, mostly paid.", "ru": "На английском в основном платно.", "et": "Inglise keeles enamasti tasuline."},
+           "t": {
+            "az": "Məbləğ universitetdən və ixtisasdan asılıdır. Hər proqramın səhifəsində yazılır.",
+            "en": "The fee depends on the university and the field. Each programme's page names it.",
+            "ru": "Стоимость зависит от университета и специальности. Она указана на странице каждой программы.",
+            "et": "Õppemaks sõltub ülikoolist ja erialast. See on kirjas iga õppekava lehel."}},
+          {"b": {"az": "Təhsil haqqından azadolma.", "en": "Tuition waivers.", "ru": "Освобождение от платы.", "et": "Õppemaksust vabastus."},
+           "t": {
+            "az": "Universitetlər güclü abituriyentləri təhsil haqqından tam və ya qismən azad edir. Buna necə müraciət edildiyini hər universitet özü deyir.",
+            "en": "Universities free strong applicants from the fee, in whole or in part. Each university says how to apply for one.",
+            "ru": "Университеты полностью или частично освобождают сильных абитуриентов от платы. Как на это претендовать, сообщает каждый университет.",
+            "et": "Ülikoolid vabastavad tugevad kandidaadid õppemaksust täielikult või osaliselt. Kuidas seda taotleda, ütleb iga ülikool ise."}},
+          {"b": {"az": "Dövlət təqaüdləri.", "en": "State scholarships.", "ru": "Государственные стипендии.", "et": "Riiklikud stipendiumid."},
+           "t": {
+            "az": "Estoniyanın xarici tələbə və tədqiqatçılar üçün təqaüdlərini Təhsil və Gənclər Şurası (Harno) idarə edir.",
+            "en": "Estonia's scholarships for international students and researchers are run by the Education and Youth Board (Harno).",
+            "ru": "Стипендиями Эстонии для иностранных студентов и исследователей занимается Департамент образования и по делам молодёжи (Harno).",
+            "et": "Eesti stipendiume välisüliõpilastele ja -teadlastele haldab Haridus- ja Noorteamet (Harno)."}},
+          {"b": {"az": "Doktorantura bir işdir.", "en": "A doctorate is a job.", "ru": "Докторантура как работа.", "et": "Doktorantuur on töö."},
+           "t": {
+            "az": "Doktorantlar adətən universitet tərəfindən kiçik elmi işçi kimi işə götürülür və maaş alırlar.",
+            "en": "Doctoral students are usually hired by the university as junior researchers and paid a salary.",
+            "ru": "Докторантов обычно принимают в университет на должность младшего научного сотрудника с зарплатой.",
+            "et": "Doktorandid võetakse tavaliselt ülikooli tööle nooremteadurina ja neile makstakse palka."}},
+          {"b": {"az": "Azərbaycandan.", "en": "From Azerbaijan.", "ru": "Из Азербайджана.", "et": "Aserbaidžaanist."},
+           "t": {
+            "az": "Azərbaycanın xaricdə təhsil üzrə Dövlət Proqramı öz siyahısındakı universitetlərdə təhsili maliyyələşdirir. Ona güvənməzdən əvvəl universitetinin siyahıda olub-olmadığını yoxla.",
+            "en": "Azerbaijan's state programme for study abroad pays for places at universities on its own list. Check whether yours is on it before you count on it.",
+            "ru": "Государственная программа Азербайджана по обучению за рубежом оплачивает учёбу в университетах из своего списка. Прежде чем рассчитывать на неё, проверьте, есть ли в нём ваш университет.",
+            "et": "Aserbaidžaani riiklik välisõppe programm rahastab õpinguid ülikoolides, mis on tema nimekirjas. Enne kui sellega arvestad, kontrolli, kas sinu ülikool on seal."}}
+        ]}
+      ],
+      "links": [
+        {"name": "studyinestonia.ee", "url": "https://www.studyinestonia.ee"},
+        {"name": "harno.ee", "url": "https://harno.ee/en"}
+      ]
+    },
+    {
+      "id": "permit",
+      "name": {"az": "Tələbə yaşayış icazəsi", "en": "A student's residence permit", "ru": "Вид на жительство для учёбы", "et": "Elamisluba õppimiseks"},
+      "covers": {"az": "Şərtlər, tibbi sığorta, ailə", "en": "The conditions, health insurance, family", "ru": "Условия, медицинская страховка, семья", "et": "Tingimused, tervisekindlustus, pere"},
+      "body": [
+        {"list": [
+          {"b": {"az": "Təhsil müddətinə.", "en": "For as long as you study.", "ru": "На время учёбы.", "et": "Õpingute ajaks."},
+           "t": {
+            "az": "İcazə təhsil üçün verilir və əyani oxuyub proqramdan geri qalmadığın müddətdə qüvvədə qalır.",
+            "en": "The permit is given for study and holds while you study full-time and keep up with the programme.",
+            "ru": "Вид на жительство даётся для учёбы и действует, пока вы учитесь очно и не отстаёте от программы.",
+            "et": "Luba antakse õppimiseks ja see kehtib, kuni õpid täiskoormusega ja püsid õppekava graafikus."}},
+          {"b": {"az": "Tibbi sığortanı özün alırsan.", "en": "Health insurance is yours to buy.", "ru": "Страховку покупаете сами.", "et": "Tervisekindlustuse ostad ise."},
+           "t": {
+            "az": "Avropa İttifaqından kənardan gələn tələbə işləmirsə, Tervisekassa onu sığortalamır. Bütün müddət üçün özəl sığorta lazımdır.",
+            "en": "A student from outside the European Union is not covered by Tervisekassa unless they also work. You need a private policy for the whole period.",
+            "ru": "Студента из-за пределов Европейского союза Tervisekassa не страхует, если он не работает. На весь срок нужен частный полис.",
+            "et": "Väljastpoolt Euroopa Liitu tulnud üliõpilast Tervisekassa ei kindlusta, kui ta ei tööta. Kogu ajaks on vaja erakindlustust."}},
+          {"b": {"az": "Dolanışıq.", "en": "Money to live on.", "ru": "Средства на жизнь.", "et": "Elatusvahendid."},
+           "t": {
+            "az": "Müraciətdə özünü təmin edə bildiyini göstərmək tələb olunur.",
+            "en": "The application asks you to show that you can support yourself.",
+            "ru": "В заявлении нужно показать, что вы можете себя содержать.",
+            "et": "Taotluses tuleb näidata, et suudad end ülal pidada."}},
+          {"b": {"az": "Ailə.", "en": "Family.", "ru": "Семья.", "et": "Pere."},
+           "t": {
+            "az": "Həyat yoldaşı və uşaqlar sənin yanına gəlmək üçün müraciət edə bilər.",
+            "en": "A spouse and children can apply to join you.",
+            "ru": "Супруг и дети могут подать заявление, чтобы приехать к вам.",
+            "et": "Abikaasa ja lapsed võivad taotleda luba sinu juurde elama asumiseks."}},
+          {"b": {"az": "Gələndə.", "en": "When you arrive.", "ru": "По приезде.", "et": "Kohale jõudes."},
+           "t": {
+            "az": "Ünvanını qeydiyyata al və kartını götür. Ardıcıllıq Estoniya bölməsində, «İlk 30 gün» mövzusundadır.",
+            "en": "Register your address and collect your card. The first 30 days, under Estonia, has the order.",
+            "ru": "Зарегистрируйте адрес и получите карту. Порядок описан во вкладке «Эстония», в теме «Первые 30 дней».",
+            "et": "Registreeri elukoht ja võta kaart välja. Järjekord on vahelehel „Eesti“ teemas „Esimesed 30 päeva“."}}
+        ]}
+      ],
+      "links": [
+        {"name": "politsei.ee", "url": "https://www.politsei.ee/en"},
+        {"name": "studyinestonia.ee", "url": "https://www.studyinestonia.ee"}
+      ]
+    },
+    {
+      "id": "life",
+      "name": {"az": "Tələbə həyatı", "en": "Student life", "ru": "Студенческая жизнь", "et": "Tudengielu"},
+      "covers": {"az": "Yataqxana, endirimlər, buddy proqramı", "en": "Dormitories, discounts, the buddy programme", "ru": "Общежития, скидки, программа buddy", "et": "Ühiselamud, soodustused, tuutoriprogramm"},
+      "body": [
+        {"list": [
+          {"b": {"az": "Yataqxanalar.", "en": "Dormitories.", "ru": "Общежития.", "et": "Ühiselamud."},
+           "t": {
+            "az": "TalTech və Tartu Universitetinin öz yataqxanaları var, şəhərdəki mənzildən ucuzdur. Qəbul təklifi gələn gün müraciət et.",
+            "en": "TalTech and the University of Tartu have their own, cheaper than a flat in town. Apply the day your offer arrives.",
+            "ru": "У TalTech и Тартуского университета есть свои, дешевле квартиры в городе. Подайте заявку в день, когда придёт предложение.",
+            "et": "TalTechil ja Tartu Ülikoolil on oma ühiselamud, mis on odavamad kui korter linnas. Esita taotlus päeval, mil saad vastuvõtuotsuse."}},
+          {"b": {"az": "Tələbə kartı.", "en": "The student card.", "ru": "Студенческая карта.", "et": "Üliõpilaspilet."},
+           "t": {
+            "az": "ISIC tələbə kartı nəqliyyatda, muzeylərdə və başqa yerlərdə endirim verir.",
+            "en": "An ISIC student card brings discounts on transport, museums and more.",
+            "ru": "Студенческая карта ISIC даёт скидки на транспорт, музеи и многое другое.",
+            "et": "ISIC-üliõpilaspilet annab soodustusi transpordis, muuseumides ja mujal."}},
+          {"b": {"az": "Buddy.", "en": "A buddy.", "ru": "Buddy.", "et": "Tuutor."},
+           "t": {
+            "az": "Universitetlər yeni xarici tələbəni orada artıq oxuyan tələbə ilə cütləşdirir. Gəlməzdən əvvəl yazıl.",
+            "en": "Universities pair a new international student with one who already studies there. Sign up before you arrive.",
+            "ru": "Университеты ставят новому иностранному студенту в пару того, кто уже там учится. Запишитесь до приезда.",
+            "et": "Ülikoolid panevad uue välisüliõpilase paari tudengiga, kes seal juba õpib. Pane end kirja enne saabumist."}},
+          {"b": "ESN.",
+           "t": {
+            "az": "Erasmus Student Network Tallinn və Tartuda səfərlər və görüşlər təşkil edir.",
+            "en": "The Erasmus Student Network runs trips and evenings in Tallinn and Tartu.",
+            "ru": "Erasmus Student Network устраивает поездки и вечера в Таллинне и Тарту.",
+            "et": "Erasmus Student Network korraldab Tallinnas ja Tartus reise ja õhtuid."}},
+          {"b": {"az": "Tartu, yoxsa Tallinn.", "en": "Tartu or Tallinn.", "ru": "Тарту или Таллинн.", "et": "Tartu või Tallinn."},
+           "t": {
+            "az": "Tartu universitet şəhəridir, hər yerə piyada getmək olur. Tallinn paytaxtdır, yarımştat iş orada daha çoxdur.",
+            "en": "Tartu is a university town where everything is a walk away. Tallinn is the capital, with more part-time work.",
+            "ru": "Тарту: университетский город, где до всего можно дойти пешком. Таллинн: столица, где больше подработки.",
+            "et": "Tartu on ülikoolilinn, kus kõik on jalutuskäigu kaugusel. Tallinn on pealinn, kus on rohkem osalise ajaga tööd."}}
+        ]}
+      ],
+      "links": [
+        {"name": "studyinestonia.ee", "url": "https://www.studyinestonia.ee"},
+        {"name": "esn.ee", "url": "https://www.esn.ee"}
+      ]
+    },
+    {
+      "id": "work",
+      "name": {"az": "Oxuyarkən iş", "en": "Working while studying", "ru": "Работа во время учёбы", "et": "Töötamine õpingute ajal"},
+      "covers": {"az": "İşləmək olar; şərti nədir, haradan tapmalı", "en": "It is allowed: on what condition, and where to look", "ru": "Работать можно: при каком условии и где искать", "et": "Töötada tohib: mis tingimusel ja kust otsida"},
+      "body": [
+        {"list": [
+          {"b": {"az": "İcazəlidir.", "en": "It is allowed.", "ru": "Это разрешено.", "et": "See on lubatud."},
+           "t": {
+            "az": "Təhsil üçün yaşayış icazəsi olan tələbə, iş təhsilə mane olmadıqca, ayrıca icazə almadan işləyə bilər.",
+            "en": "A student with a residence permit for study may work without a separate permit, as long as the work does not get in the way of the studies.",
+            "ru": "Студент с видом на жительство для учёбы может работать без отдельного разрешения, пока работа не мешает учёбе.",
+            "et": "Õppimiseks antud elamisloaga üliõpilane võib töötada eraldi loata, kui töö ei sega õpinguid."}},
+          {"b": {"az": "Harada axtarmalı.", "en": "Where to look.", "ru": "Где искать.", "et": "Kust otsida."},
+           "t": {
+            "az": "Universitetin karyera mərkəzi, CV.ee və LinkedIn. Startaplar təcrübəçi götürür, ən çox informasiya texnologiyalarında.",
+            "en": "The university's career centre, CV.ee and LinkedIn. Startups take interns, in information technology most of all.",
+            "ru": "Центр карьеры университета, CV.ee и LinkedIn. Стартапы берут стажёров, больше всего в информационных технологиях.",
+            "et": "Ülikooli karjäärikeskus, CV.ee ja LinkedIn. Iduettevõtted võtavad praktikante, kõige rohkem infotehnoloogias."}},
+          {"b": {"az": "Sığorta müqavilə ilə gəlir.", "en": "Insurance comes with a contract.", "ru": "Страховка приходит с договором.", "et": "Kindlustus tuleb lepinguga."},
+           "t": {
+            "az": "Qeydiyyatlı əmək müqaviləsi dövlət tibbi sığortasını da gətirir. Sığortanın göründüyünü eesti.ee-də yoxla.",
+            "en": "A registered employment contract brings state health insurance with it. Check at eesti.ee that yours shows.",
+            "ru": "Зарегистрированный трудовой договор даёт и государственную медицинскую страховку. Проверьте на eesti.ee, что она у вас появилась.",
+            "et": "Registreeritud tööleping toob kaasa ka riikliku ravikindlustuse. Kontrolli eesti.ee-st, et see on sul olemas."}},
+          {"b": {"az": "Vergi.", "en": "Tax.", "ru": "Налоги.", "et": "Maksud."},
+           "t": {
+            "az": "Burada işləyən hər kəs üçün olduğu kimi: Estoniya bölməsində «İş və vergi».",
+            "en": "The same as for anyone who works here: Work and tax, under Estonia.",
+            "ru": "Так же, как у всех, кто здесь работает: тема «Работа и налоги» во вкладке «Эстония».",
+            "et": "Nagu kõigil, kes siin töötavad: teema „Töö ja maksud“ vahelehel „Eesti“."}}
+        ]}
+      ],
+      "links": [
+        {"name": "studyinestonia.ee", "url": "https://www.studyinestonia.ee"},
+        {"name": "workinestonia.com", "url": "https://www.workinestonia.com"}
+      ]
+    },
+    {
+      "id": "after",
+      "name": {"az": "Məzun olandan sonra", "en": "After graduating", "ru": "После выпуска", "et": "Pärast lõpetamist"},
+      "covers": {"az": "İş axtarmaq üçün qalmaq, iş icazəsinə keçid", "en": "Staying to look for work, moving to a work permit", "ru": "Остаться для поиска работы, переход на рабочий вид на жительство", "et": "Tööotsinguks jäämine, üleminek töötamise elamisloale"},
+      "body": [
+        {"list": [
+          {"b": {"az": "İş axtarmaq üçün vaxt.", "en": "Time to look for work.", "ru": "Время на поиск работы.", "et": "Aeg töö otsimiseks."},
+           "t": {
+            "az": "Məzun olandan sonra iş axtarmaq üçün bir neçə ay qala bilərsən. Dəqiq qayda Polis və Sərhəd Mühafizəsi Departamentindədir.",
+            "en": "After graduating you may stay on for some months to look for a job. The Police and Border Guard Board has the exact rule.",
+            "ru": "После выпуска можно остаться на несколько месяцев, чтобы искать работу. Точное правило есть у Департамента полиции и погранохраны.",
+            "et": "Pärast lõpetamist võid jääda mõneks kuuks tööd otsima. Täpne reegel on Politsei- ja Piirivalveametil."}},
+          {"b": {"az": "Təhsildən işə.", "en": "From study to work.", "ru": "От учёбы к работе.", "et": "Õpingutelt tööle."},
+           "t": {
+            "az": "İş tapanda işləmək üçün yaşayış icazəsinə keçirsən. Estoniya universitetinin diplomu başqalarının yerinə yetirməli olduğu bəzi şərtləri aradan qaldırır.",
+            "en": "With a job you move to a residence permit for employment. A degree from an Estonian university lifts some of the conditions others have to meet.",
+            "ru": "С работой вы переходите на вид на жительство для работы. Диплом эстонского университета снимает часть условий, которые должны выполнять другие.",
+            "et": "Töökoha leidnuna lähed üle elamisloale töötamiseks. Eesti ülikooli diplom vabastab osast tingimustest, mida teised peavad täitma."}},
+          {"b": {"az": "Öz şirkətin.", "en": "A company of your own.", "ru": "Своя компания.", "et": "Oma ettevõte."},
+           "t": {
+            "az": "Təsisçilər üçün startap vizası var: Startup Estonia bunu izah edir.",
+            "en": "There is a startup visa for founders: Startup Estonia explains it.",
+            "ru": "Для основателей есть стартап-виза: её объясняет Startup Estonia.",
+            "et": "Asutajatele on iduviisa: seda selgitab Startup Estonia."}},
+          {"b": {"az": "Həmişəlik qalmaq.", "en": "Staying for good.", "ru": "Остаться надолго.", "et": "Päriseks jäämine."},
+           "t": {
+            "az": "Uzunmüddətli sakin icazəsi burada beş il yaşamağı və eston dilini B1 səviyyəsində bilməyi tələb edir.",
+            "en": "A long-term resident's permit asks for five years of living here and Estonian at level B1.",
+            "ru": "Для вида на жительство долговременного жителя нужно прожить здесь пять лет и знать эстонский на уровне B1.",
+            "et": "Pikaajalise elaniku elamisluba eeldab viit aastat siin elamist ja eesti keele oskust B1-tasemel."}}
+        ]}
+      ],
+      "links": [
+        {"name": "politsei.ee", "url": "https://www.politsei.ee/en"},
+        {"name": "workinestonia.com", "url": "https://www.workinestonia.com"},
+        {"name": "startupestonia.ee", "url": "https://startupestonia.ee"}
+      ]
+    },
+    {
+      "id": "recognition",
+      "name": {"az": "Diplom tanınması", "en": "Having a degree recognised", "ru": "Признание диплома", "et": "Diplomi tunnustamine"},
+      "covers": {"az": "Azərbaycan diplomu burada, Estoniya diplomu orada", "en": "An Azerbaijani degree here, an Estonian one there", "ru": "Азербайджанский диплом здесь, эстонский там", "et": "Aserbaidžaani diplom siin, Eesti diplom seal"},
+      "body": [
+        {"list": [
+          {"b": {"az": "Azərbaycan diplomu Estoniyada.", "en": "An Azerbaijani degree in Estonia.", "ru": "Азербайджанский диплом в Эстонии.", "et": "Aserbaidžaani diplom Eestis."},
+           "t": {
+            "az": "Xarici təhsil sənədlərini Estoniya ENIC/NARIC Mərkəzi qiymətləndirir. Qəbul üçün bunu universitet özü sorğulayır. Həkim və ya müəllim kimi tənzimlənən peşələrdə qərarı həmin peşənin səlahiyyətli qurumu verir.",
+            "en": "The Estonian ENIC/NARIC Centre assesses foreign qualifications. For admission the university asks for it itself. For a regulated profession, such as a doctor or a teacher, the authority for that profession decides.",
+            "ru": "Иностранные квалификации оценивает эстонский центр ENIC/NARIC. При поступлении запрос делает сам университет. Для регулируемых профессий, таких как врач или учитель, решение принимает ведомство этой профессии.",
+            "et": "Välisriigi kvalifikatsioone hindab Eesti ENIC/NARIC Keskus. Sisseastumisel küsib hinnangut ülikool ise. Reguleeritud kutsealal, näiteks arsti või õpetaja puhul, otsustab selle kutseala pädev asutus."}},
+          {"b": {"az": "Estoniya diplomu Azərbaycanda.", "en": "An Estonian degree in Azerbaijan.", "ru": "Эстонский диплом в Азербайджане.", "et": "Eesti diplom Aserbaidžaanis."},
+           "t": {
+            "az": "Xarici diplomları orada Təhsildə Keyfiyyət Təminatı Agentliyi (TKTA) tanıyır.",
+            "en": "Foreign diplomas are recognised there by the Education Quality Assurance Agency (TKTA).",
+            "ru": "Иностранные дипломы там признаёт Агентство по обеспечению качества в образовании (TKTA).",
+            "et": "Välisdiplomeid tunnustab seal Hariduse Kvaliteedi Tagamise Agentuur (TKTA)."}},
+          {"b": {"az": "Getməzdən əvvəl.", "en": "Before you leave.", "ru": "Перед отъездом.", "et": "Enne lahkumist."},
+           "t": {
+            "az": "Universitetdən diplom əlavəsini ingilis dilində istə və hələ Estoniyada ikən diploma apostil qoydur: bunu notarius edir.",
+            "en": "Ask the university for the diploma supplement in English, and have an apostille put on the diploma while you are still in Estonia: a notary does it.",
+            "ru": "Попросите в университете приложение к диплому на английском и поставьте на диплом апостиль, пока вы ещё в Эстонии: это делает нотариус.",
+            "et": "Küsi ülikoolist ingliskeelset akadeemilist õiendit ja lase diplomile panna apostill, kuni oled veel Eestis: seda teeb notar."}}
+        ]}
+      ],
+      "links": [
+        {"name": "harno.ee", "url": "https://harno.ee/en"},
+        {"name": "tkta.edu.az", "url": "https://tkta.edu.az"}
+      ]
+    }
+  ]
+}

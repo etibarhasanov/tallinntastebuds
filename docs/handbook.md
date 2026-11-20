@@ -16768,11 +16768,13 @@ the table.
 ## Azerbaijan, for members
 
 `/azeri` — a corner of the site about Azerbaijan, for people with an
-account, read in Azerbaijani or English and linked from nowhere. Its first
-shelf is the country's cinema; the next section is a second tab beside
-**Films**, where **More soon** stands now. Nothing in the apps reads any of
-it, and nothing on the map, the rail or Discover points at it: the address is
-given to somebody, or it is not found.
+account, read in Azerbaijani, English, Russian or Estonian and linked from
+nowhere. It has four tabs. **Films** is the country's cinema. **Estonia**,
+**Studying** and **Estonian** are a guide for somebody arriving in Estonia
+from there, which is who the corner is for: what to sort out and in what
+order, how to get into a university, and where to learn the language.
+Nothing in the apps reads any of it, and nothing on the map, the rail or
+Discover points at it: the address is given to somebody, or it is not found.
 
 ### Where the films come from
 
@@ -16888,15 +16890,87 @@ screen asks for them: on a phone the frame is not drawn, and an image that
 is not drawn and is marked lazy is not fetched, so a phone on mobile data
 pays nothing for them.
 
+### A guide to Estonia, beside the films
+
+The corner's title is a country and its readers are somewhere else: an
+Azerbaijani who has moved to Estonia, or is about to. The films are the part
+about home. The other three tabs are the part about here, and they are what
+a community's group chat answers every week for somebody new — written down
+once, in the order the questions come.
+
+**Estonia** is eight topics: before you come, the first thirty days, somewhere
+to live, work and tax, health, children, day to day, and the state's websites
+in one place. **Studying** is eight more: the universities, getting in step by
+step, fees and scholarships, a student's residence permit, student life,
+working while studying, after graduating, and having a degree recognised.
+**Estonian** is not topics but ways: a card whose button opens the site's own
+flashcards — the tab's one filled action, and the address names the reader's
+language where it is one of the three the cards speak — and under it the
+state's free courses, the two free ones online, the language house and the
+dictionary, each a row that leads out.
+
+A topic is a film's row with a chevron where **Watch** is: its name, a line
+saying what it covers, and the width of the card to press. It opens under its
+row, one at a time, and what opens is short on purpose — a paragraph, a list
+whose every item starts with the thing in bold, and under them the links to
+the offices that decide. **The guide names no figure that changes.** No fee,
+no deadline, no number of days: a sentence says the thing exists and the link
+says how much it is this year, because a guide that was right in November is
+a guide somebody will be told off at a counter for in March. Each topic says
+the month it was last read against its sources, the tab's `checked`, and the
+line under every list says it is not official advice and whose word is final.
+
+A tab is an address — `/azeri?tab=estonia`, and the tabs are links, so Back
+goes where it should — and an opened topic is written into it beside the tab,
+`&topic=housing`, so the address somebody copies into a chat opens what they
+were reading.
+
+**From 900px the guide is not the wall the films are.** A wall is for
+browsing and a guide is read in order, so the topics stand down the left as
+one ruled list and the opened one is a card beside them, at a line length
+worth reading. It is the same nodes: a topic's own box is taken away with
+`display: contents`, so its row and its article fall into the two columns of
+the list. The first topic is open on arrival there, since an empty half
+would be the first thing seen, and pressing the open one does not close it.
+The Estonian tab's ways out stay a wall of cards. The owner was shown both
+layouts as mockups, the wall and the two columns, before either was built.
+
+**The text is three files written by hand**, `azeri/data/guide/estonia.json`,
+`study.json` and `estonian.json`, and it is content rather than interface,
+so like a deck's it is not in `data/ui.json`: every sentence is an object
+keyed by language, `az`, `en`, `ru` and `et`, and a name that is the same in
+each — TalTech, eesti.ee — is a plain string. A topic has a `body` of blocks
+— `p`, a paragraph, and `steps` and `list`, each item a lead `b`, its
+sentence `t` and, where the lead is a link, a `url` — and its `links`; or it
+has a `url` alone and is a way out. `node tools/validate.mjs` fails a
+sentence missing one of the four languages, a topic with neither a body nor
+an address, a repeated id, and an address that is not https. To change what
+the guide says, edit the file; to add a topic, add it to the file. Nothing
+is generated from it and no script names a topic.
+
+What it deliberately does not do: search, comments, questions and answers,
+events, mentors, or editing from the admin page. Those belong to a community
+site of its own, and this is the part of one that is only words.
+
 ### The door, and what a page costs
 
-The films are behind the members' door, and a static file has no door:
-`/data/*` is handed to the asset server past every Function. So they live
+The corner is behind the members' door, and a static file has no door:
+`/data/*` is handed to the asset server past every Function. So its files live
 under `/azeri/data/`, which `functions/_middleware.js` answers with the
 not-found page, and `GET /api/azeri` reads them through `env.ASSETS` for a
 session and nobody else. Signed out, the page draws a card whose button is
-the map's own sign-in sheet, `/?account=in&then=/azeri`, which brings
-somebody back when they are in.
+the map's own sign-in sheet, `/?account=in&then=` and the address that was
+asked for, tab and topic and all, which brings somebody back to it when they
+are in.
+
+A tab of the guide is asked for whole, once, with `tab` and `lang`, and the
+answer carries the one language: the same single read, the session, and
+opening a topic asks for nothing. Changing the language asks again. A
+thousand members opening all three tabs every day is 3,000 reads, 12,000
+rows at the very worst, against the five million, and it does not grow with
+the topics. The files are 2 to 45 KB with all four languages in them, a
+fraction of a millisecond to parse, kept five minutes per isolate like the
+films'.
 
 The shelf is never sent whole. It opens on the feature films that can be
 watched, the most watched first, twenty to a page, with **Previous** and **Next** under
@@ -16918,15 +16992,25 @@ milliseconds cold, and the route keeps them five minutes per isolate. A member r
 523 feature films is eleven reads. A hundred members doing that every day is
 1,100 against the five million, and the number does not grow with the films.
 
-### Two languages, in a site of eleven
+### Four languages, in a site of eleven
 
 The page's words are `azeri*` keys in `data/ui.json`, in all eleven
 languages like every other page's, because **There is no exception** to one
-strings file; the page reads two of them. Its switch offers Azerbaijani and
-English only, and the choice is kept under `ttb.azeri.lang` rather than
-`ttb.lang`, so reading this page in Azerbaijani does not turn the map into
-Azerbaijani for somebody who reads it in Russian. A search folds `ə` to `e`
-and `ı` to `i`, the two letters an English keyboard writes that way.
+strings file; the page reads four of them. Its switch offers Azerbaijani,
+English, Russian and Estonian — the four the guide is written in, and the
+four somebody from Azerbaijan living in Estonia is likely to read — and the
+choice is kept under `ttb.azeri.lang` rather than `ttb.lang`, so reading this
+page in Azerbaijani does not turn the map into Azerbaijani for somebody who
+reads it in Russian. It was Azerbaijani and English alone until the guide
+arrived.
+
+The films are written in two of the four. A summary is the wiki's
+Azerbaijani or the English made from it, so somebody reading in Russian or
+Estonian is shown the English, as nearer to them than the Azerbaijani, under
+the same line saying it is a translation; and in Russian a film shows the
+studio's Russian title under its own, whether or not **In Russian** is on. A
+search folds `ə` to `e` and `ı` to `i`, the two letters an English keyboard
+writes that way.
 
 ## Who uses the site, drawn
 
@@ -21094,6 +21178,11 @@ Azerbaijan, `assets/azeri.js`:
 | `azeri_film` | `film` — a film opened |
 | `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) — a film played in the page, or a link out where it is not YouTube's |
 | `azeri_youtube` | `film` — Open on YouTube, under the player |
+| `azeri_films`, `azeri_estonia`, `azeri_study`, `azeri_estonian` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters |
+| `azeri_topic` | `tab`, `topic` — a topic of the guide opened |
+| `azeri_source` | `topic` — a link out of an opened topic: an office, a university, a site in the list of them |
+| `azeri_way` | `way` — one of the other ways to learn Estonian, under the flashcards |
+| `azeri_flashcards` | Open the flashcards, on the Estonian tab |
 | `language_select`, `language_open`, `home`, `account_open` | as on the map |
 
 The privacy policy is read rather than pressed, so what is reported is the way

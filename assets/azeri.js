@@ -1,17 +1,37 @@
 /* Tallinn Tastebuds — /azeri, the members' corner about Azerbaijan.
  *
- * WHAT IT IS. A page about Azerbaijan, for people with an account, read in
- * Azerbaijani or English and linked from nowhere on the site. It has one
- * shelf so far, the country's films: the 2,615 of the Azerbaijani
- * Wikipedia's list, which tools/azfilms.mjs collects and /api/azeri hands
- * out twenty at a time. **Azerbaijan, for members** in docs/handbook.md.
+ * WHAT IT IS. A page for people with an account, linked from nowhere on the
+ * site, and four tabs on it. Films is the country's cinema: the 2,615 of the
+ * Azerbaijani Wikipedia's list, which tools/azfilms.mjs collects and
+ * /api/azeri hands out twenty at a time. Estonia, Studying and Estonian are
+ * a guide for somebody arriving here from there — what to sort out and in
+ * what order, how to get into a university, and where to learn the
+ * language. **Azerbaijan, for members** in docs/handbook.md.
  *
- * TWO LANGUAGES, NOT ELEVEN. The page's words are in data/ui.json in all
+ * FOUR LANGUAGES, NOT ELEVEN. The page's words are in data/ui.json in all
  * eleven, like every other page's, because the validator holds every key to
- * every language; the page reads two of them. Which of the two is kept under
- * its own key, LANG_KEY, rather than in ttb.lang, so choosing Azerbaijani
- * here does not turn the map into Azerbaijani for somebody who reads it in
- * Russian.
+ * every language; the page reads four of them, Azerbaijani, English, Russian
+ * and Estonian, which are the four the guide is written in. Which of the
+ * four is kept under its own key, LANG_KEY, rather than in ttb.lang, so
+ * choosing Azerbaijani here does not turn the map into Azerbaijani for
+ * somebody who reads it in Russian.
+ *
+ * A TAB IS AN ADDRESS. /azeri is the films and /azeri?tab=estonia a tab of
+ * the guide: the tabs are links, the page loads again under the one that
+ * was pressed, and Back goes where it should with nothing here keeping
+ * count. A topic that is opened is written into the address beside it,
+ * &topic=housing, so the address somebody copies opens what they were
+ * reading.
+ *
+ * THE GUIDE. A tab is asked for whole, once, in the language the page is
+ * read in — and again when that changes, since the answer carries one
+ * language. Its topics are the films' rows with a chevron where Watch is:
+ * one with a body opens under its row, one topic at a time, and one with an
+ * address is a way out. Estonian opens on the site's own flashcards, which
+ * is the tab's one filled action. From 900px the topics stand down the left
+ * and the opened one beside them, so the first is open on arrival there —
+ * an empty half would be the first thing seen. The layout is all in
+ * assets/azeri.css.
  *
  * A PAGE AT A TIME. The shelf is never fetched whole. It opens on the
  * feature films that can be watched, the most watched first, twenty to a page, and
@@ -58,7 +78,15 @@
   var API = '/api/azeri';
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
-  var LANGS = ['az', 'en'];
+  var LANGS = ['az', 'en', 'ru', 'et'];
+  var TABS = ['films', 'estonia', 'study', 'estonian'];
+  var SAY_KEYS = { estonia: 'azeriEstoniaSay', study: 'azeriStudySay' };
+  /* The flashcards live on a host of their own and speak three languages:
+     DECK_LANGS in functions/api/_lib.js. */
+  var FLASHCARDS = 'https://flashcard.tallinntastebuds.ee/';
+  var FLASH_LANGS = ['az', 'en', 'ru'];
+  var WIDE = '(min-width: 900px)';
+  var CHEVRON = '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>';
   var LANG_KEY = 'ttb.azeri.lang';
   var STYLE_KEY = 'ttb.style';
   var STYLES = ['red', 'green', 'blue', 'plum'];
@@ -81,6 +109,9 @@
     lang: 'en',
     ui: {},
     names: {},
+    tab: 'films',    // which of TABS the address names
+    guide: null,     // a tab of the guide, as the route answered it
+    topic: null,     // the id of the topic opened, if one is
     kind: 'feature',
     q: '',
     watch: true,
@@ -160,7 +191,7 @@
     }
   }
 
-  /* Azerbaijani or English: the address, then this page's own choice, then
+  /* One of the page's four: the address, then this page's own choice, then
      the site's, then the browser's, then English. */
   function pickLanguage() {
     var fromUrl = new URLSearchParams(window.location.search).get('lang');
@@ -175,6 +206,24 @@
       if (LANGS.indexOf(base) !== -1) return base;
     }
     return 'en';
+  }
+
+  /* The tab the address names, and the films where it names none. */
+  function pickTab() {
+    var asked = new URLSearchParams(window.location.search).get('tab');
+    return TABS.indexOf(asked) !== -1 ? asked : 'films';
+  }
+
+  /* The tabs are links in the markup, which cannot know which of them it
+     was served for: this says so on the one that is on. */
+  function markTab() {
+    var tabs = document.querySelectorAll('.azeri-tab');
+    for (var i = 0; i < tabs.length; i++) {
+      var on = tabs[i].getAttribute('data-tab') === state.tab;
+      tabs[i].className = 'azeri-tab' + (on ? ' is-on' : '');
+      if (on) tabs[i].setAttribute('aria-current', 'page');
+      else tabs[i].removeAttribute('aria-current');
+    }
   }
 
   function loadWords(lang) {
@@ -192,6 +241,9 @@
     };
     each('data-i18n', function (n, k) { n.textContent = t(k); });
     each('data-i18n-aria-label', function (n, k) { n.setAttribute('aria-label', t(k)); });
+    /* The skip link is written for the films; under a tab of the guide it
+       leads to topics. */
+    if (state.tab !== 'films') document.querySelector('.skip-link').textContent = t('azeriSkipTopics');
     document.title = t('azeriTitle') + ' | Tallinn Tastebuds';
   }
 
@@ -210,7 +262,10 @@
     loadWords(code).then(function () {
       applyStaticStrings();
       drawSwitch();
-      draw();
+      /* The films carry both of their languages; a tab of the guide was
+         answered in one, so it is asked for again. */
+      if (state.tab === 'films') draw();
+      else askGuide();
     }).catch(function () { /* the page stays in the language it has */ });
   }
 
@@ -226,18 +281,16 @@
     return API + '?' + p.toString();
   }
 
-  /* A page of the shelf: the first, from a chip, the switch or the search,
-     or another, from the pager. An answer to an older ask that arrives after
-     a newer one is dropped, so typing fast never leaves the shelf showing
-     what the last-but-one word found. */
-  function ask(page) {
+  /* Ask the route, and hand what it answers to `took`: the door where
+     nobody is signed in, the failed state for anything else that is not an
+     answer. An answer to an older ask that arrives after a newer one is
+     dropped, so typing fast never leaves the shelf showing what the
+     last-but-one word found. */
+  function send(url, took) {
     var mine = ++state.asking;
-    state.films = [];
-    state.open = null;
-    state.playing = null;
     state.loading = true;
     draw();
-    fetch(query(page), { headers: { accept: 'application/json' }, credentials: 'same-origin' })
+    fetch(url, { headers: { accept: 'application/json' }, credentials: 'same-origin' })
       .then(function (res) {
         return res.json().then(function (out) { return { status: res.status, out: out }; });
       })
@@ -248,10 +301,7 @@
         if (answer.status !== 200) throw new Error(String(answer.status));
         state.door = false;
         state.failed = false;
-        state.films = answer.out.films;
-        state.page = answer.out.page;
-        state.pages = answer.out.pages;
-        state.counts = answer.out.counts;
+        took(answer.out);
         draw();
       })
       .catch(function () {
@@ -260,6 +310,46 @@
         state.failed = true;
         draw();
       });
+  }
+
+  /* A page of the shelf: the first, from a chip, the switch or the search,
+     or another, from the pager. */
+  function ask(page) {
+    state.films = [];
+    state.open = null;
+    state.playing = null;
+    send(query(page), function (out) {
+      state.films = out.films;
+      state.page = out.page;
+      state.pages = out.pages;
+      state.counts = out.counts;
+    });
+  }
+
+  /* A tab of the guide, whole, in the language the page is read in. */
+  function askGuide() {
+    state.guide = null;
+    send(API + '?tab=' + state.tab + '&lang=' + state.lang, function (out) {
+      state.guide = out;
+      state.topic = firstTopic(out.topics);
+    });
+  }
+
+  /* The topic open on arrival: the one the address names, and on a wide
+     screen the first where it names none, since there the opened topic
+     stands beside the list and an empty half would be the first thing
+     seen. */
+  function firstTopic(topics) {
+    var asked = new URLSearchParams(window.location.search).get('topic');
+    var readable = topics.filter(function (topic) { return topic.body; });
+    for (var i = 0; i < readable.length; i++) {
+      if (readable[i].id === asked) return asked;
+    }
+    return readable.length && isWide() ? readable[0].id : null;
+  }
+
+  function isWide() {
+    return !!window.matchMedia && window.matchMedia(WIDE).matches;
   }
 
   /* Previous, where the page is, and Next. A turn takes the reader back to
@@ -290,6 +380,7 @@
     var host = document.getElementById('shelf');
     while (host.firstChild) host.removeChild(host.firstChild);
     if (state.door) { host.appendChild(door()); return; }
+    if (state.tab !== 'films') { drawGuide(host); return; }
     host.appendChild(tools());
     var list = el('div', { className: 'azeri-list card' });
     if (state.loading) {
@@ -478,8 +569,8 @@
     }, [
       el('span', { className: 'azeri-name' }, [
         film.title,
-        state.ru && film.titleRu ? el('span', { className: 'azeri-en', lang: 'ru', text: film.titleRu })
-          : state.lang === 'en' && film.titleEn ? el('span', { className: 'azeri-en', text: film.titleEn }) : null
+        (state.ru || state.lang === 'ru') && film.titleRu ? el('span', { className: 'azeri-en', lang: 'ru', text: film.titleRu })
+          : state.lang !== 'az' && film.titleEn ? el('span', { className: 'azeri-en', lang: 'en', text: film.titleEn }) : null
       ]),
       el('span', { className: 'azeri-meta', text: meta })
     ]);
@@ -570,11 +661,16 @@
        where there is not; open, the kind is said if the row did not. */
     if (film.director.length) box.appendChild(el('p', { className: 'azeri-kind', text: kindLine(film) }));
 
-    var english = state.lang === 'en' && film.aboutEn;
+    /* A summary is written in two languages, the wiki's Azerbaijani and the
+       English made from it. Somebody reading the page in Russian or Estonian
+       gets the English, as nearer to them than the Azerbaijani, under the
+       same line saying which it is. */
+    var foreign = state.lang !== 'az';
+    var english = foreign && film.aboutEn;
     var about = english ? film.aboutEn : film.about;
     if (about) {
       box.appendChild(el('p', { lang: english ? 'en' : 'az', text: about }));
-      if (state.lang === 'en') {
+      if (foreign) {
         box.appendChild(el('p', { className: 'azeri-aside', text: t(english ? 'azeriTranslated' : 'azeriInAzerbaijani') }));
       }
     }
@@ -601,9 +697,141 @@
     return box;
   }
 
+  /* ----------------------------------------------------------- the guide */
+
+  /* A tab of the guide: the line saying what it is, the flashcards where
+     the tab is Estonian, the topics, and under them the line saying whose
+     word is final. */
+  function drawGuide(host) {
+    if (SAY_KEYS[state.tab]) host.appendChild(el('p', { className: 'lists-say', text: t(SAY_KEYS[state.tab]) }));
+    if (state.tab === 'estonian') {
+      host.appendChild(flashcards());
+      host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriWays') }));
+    }
+    /* Topics that open are a list beside an article on a wide screen; ways
+       out are the wall the films are. */
+    var list = el('div', { className: 'azeri-list card' + (state.tab === 'estonian' ? '' : ' is-guide') });
+    if (state.loading) {
+      list.appendChild(skeleton());
+    } else if (!state.guide) {
+      list.appendChild(el('p', { className: 'azeri-note', role: 'status', text: t('azeriGuideError') }));
+    } else {
+      state.guide.topics.forEach(function (topic) { list.appendChild(topicRow(topic)); });
+    }
+    host.appendChild(list);
+    if (state.guide && state.tab !== 'estonian') {
+      host.appendChild(el('p', { className: 'azeri-credit', text: t('azeriGuideCredit') }));
+    }
+  }
+
+  /* The site's own way to learn the language, and the tab's one filled
+     action. The flashcards speak three languages, so their address names
+     the reader's only where it is one of the three. */
+  function flashcards() {
+    var go = el('a', {
+      className: 'go',
+      href: FLASHCARDS + (FLASH_LANGS.indexOf(state.lang) !== -1 ? '?lang=' + state.lang : ''),
+      text: t('azeriFlashOpen')
+    });
+    go.addEventListener('click', function () { track('azeri_flashcards'); });
+    return el('div', { className: 'card azeri-flash' }, [
+      el('p', { className: 'eyebrow', text: t('azeriFlashEyebrow') }),
+      el('h2', { text: t('azeriFlashTitle') }),
+      el('p', { className: 'lists-say', text: t('azeriFlashSay') }),
+      go
+    ]);
+  }
+
+  /* A topic: a film's row with a chevron where Watch is. One with a body
+     opens in the page; one with an address is a way out, and the whole row
+     is the link. */
+  function topicRow(topic) {
+    var go = el('span', { className: 'menu-go', 'aria-hidden': 'true' });
+    go.innerHTML = CHEVRON;
+    var kids = [
+      el('span', { className: 'azeri-words' }, [
+        el('span', { className: 'azeri-name', text: topic.name }),
+        el('span', { className: 'azeri-meta', text: topic.covers })
+      ]),
+      go
+    ];
+    if (topic.url) {
+      var out = el('a', { className: 'azeri-row has-go', href: topic.url, target: '_blank', rel: 'noopener' }, kids);
+      out.addEventListener('click', function () { track('azeri_way', { way: topic.id }); });
+      return el('div', { className: 'azeri-film azeri-topic' }, [out]);
+    }
+    var isOpen = state.topic === topic.id;
+    var head = el('button', { type: 'button', className: 'azeri-row has-go', 'aria-expanded': String(isOpen) }, kids);
+    head.addEventListener('click', function () { openTopic(topic.id); });
+    var wrap = el('div', { className: 'azeri-film azeri-topic' + (isOpen ? ' is-open' : ''), id: 'topic-' + topic.id }, [head]);
+    if (isOpen) wrap.appendChild(article(topic));
+    return wrap;
+  }
+
+  /* Open a topic, or close the one that is open — except on a wide screen,
+     where the opened one is the other half of the page and closing it would
+     leave that half empty. The address follows, so it can be copied. */
+  function openTopic(id) {
+    if (state.topic === id && isWide()) return;
+    state.topic = state.topic === id ? null : id;
+    if (state.topic) track('azeri_topic', { tab: state.tab, topic: id });
+    var p = new URLSearchParams(window.location.search);
+    if (state.topic) p.set('topic', state.topic);
+    else p.delete('topic');
+    window.history.replaceState(null, '', window.location.pathname + '?' + p.toString());
+    draw();
+    var again = document.getElementById('topic-' + id);
+    if (again) again.querySelector('.azeri-row').focus();
+  }
+
+  /* The month a tab was last read against its sources, 2026-11, as the
+     reader's language says it. */
+  function checkedMonth() {
+    var parts = String(state.guide.checked).split('-');
+    return t('monthYear', { month: t('months').split('|')[Number(parts[1]) - 1] || parts[1], year: parts[0] });
+  }
+
+  /* A link out of the guide, counted under the topic it was pressed in. */
+  function outLink(text, url, topic) {
+    var a = el('a', { href: url, target: '_blank', rel: 'noopener', text: text });
+    a.addEventListener('click', function () { track('azeri_source', { topic: topic.id }); });
+    return a;
+  }
+
+  /* An opened topic: when it was checked, its paragraphs and lists, and the
+     links to where the rule itself is written. Its name is drawn again as a
+     heading for the wide screen, where the article stands beside the list
+     rather than under its own row; a phone does not show it. */
+  function article(topic) {
+    var box = el('div', { className: 'azeri-detail azeri-article' }, [
+      el('h2', { className: 'azeri-heading', text: topic.name }),
+      el('p', { className: 'azeri-kind', text: t('azeriChecked', { when: checkedMonth() }) })
+    ]);
+    topic.body.forEach(function (block) {
+      if (block.p) { box.appendChild(el('p', { text: block.p })); return; }
+      var list = el(block.steps ? 'ol' : 'ul');
+      (block.steps || block.list).forEach(function (it) {
+        var lead = !it.b ? null : it.url ? outLink(it.b, it.url, topic) : el('b', { text: it.b });
+        list.appendChild(el('li', {}, [lead, lead ? ' ' : null, it.t]));
+      });
+      box.appendChild(list);
+    });
+    if (topic.links.length) {
+      var links = el('p', { className: 'azeri-links' });
+      topic.links.forEach(function (l) { links.appendChild(outLink(l.name, l.url, topic)); });
+      box.appendChild(el('div', { className: 'azeri-sources' }, [
+        el('span', { className: 'azeri-kind', text: t('azeriSources') }),
+        links
+      ]));
+    }
+    return box;
+  }
+
   /* ---------------------------------------------------------------- boot */
 
   applyStyle();
+  state.tab = pickTab();
+  markTab();
   var lang = pickLanguage();
   Promise.all([
     getJSON(LANGS_URL).then(function (names) { state.names = names; }).catch(function () {}),
@@ -611,6 +839,7 @@
   ]).then(function () {
     applyStaticStrings();
     drawSwitch();
-    ask(1);
+    if (state.tab === 'films') ask(1);
+    else askGuide();
   });
 })();

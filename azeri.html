@@ -29,7 +29,7 @@
      — the tabs, the chips, the rows — from its own. -->
 <link rel="stylesheet" href="/assets/styles.lean.css?v=4f81ed66">
 <link rel="stylesheet" href="/assets/lists.lean.css?v=e7381579">
-<link rel="stylesheet" href="/assets/azeri.css?v=7a42ad22">
+<link rel="stylesheet" href="/assets/azeri.css?v=ec8fa21c">
 </head>
 <body class="lists-body azeri-body">
 
@@ -40,9 +40,10 @@
     <img class="lists-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
     <span class="lists-wordmark" data-i18n="wordmark">Tallinn Tastebuds</span>
   </a>
-  <!-- Two languages and no more: the page is read in Azerbaijani or in
-       English, whatever the rest of the site is in. Drawn by
-       assets/language.js out of the two names data/lang/index.json has. -->
+  <!-- Four languages and no more: the page is read in Azerbaijani, English,
+       Russian or Estonian, the four its guide is written in, whatever the
+       rest of the site is in. Drawn by assets/language.js out of the names
+       data/lang/index.json has for them. -->
   <div class="seg lang-surface" id="lang-switch" role="group"
        data-i18n-aria-label="language" aria-label="Language"></div>
 </header>
@@ -51,17 +52,21 @@
   <div class="azeri-head">
     <p class="eyebrow" data-i18n="azeriEyebrow">For members</p>
     <h1 class="lists-title" data-i18n="azeriTitle">Azerbaijan</h1>
-    <p class="lists-say" data-i18n="azeriLead">A corner of the site about the country.</p>
+    <p class="lists-say" data-i18n="azeriLead">A corner about Azerbaijan, and about living in Estonia.</p>
   </div>
-  <!-- The shelves. One today; the next section is a second tab here. -->
+  <!-- The tabs: the country's films, and a guide to living in Estonia for
+       somebody arriving from there. Each is an address, so they are links;
+       which one is on is said by assets/azeri.js, from the address. -->
   <nav class="azeri-tabs" data-i18n-aria-label="azeriTitle" aria-label="Azerbaijan">
-    <a class="azeri-tab is-on" href="/azeri" aria-current="page" data-i18n="azeriFilms">Films</a>
-    <span class="azeri-tab is-soon" data-i18n="azeriSoon">More soon</span>
+    <a class="azeri-tab" href="/azeri" data-tab="films" data-track="azeri_films" data-i18n="azeriFilms">Films</a>
+    <a class="azeri-tab" href="/azeri?tab=estonia" data-tab="estonia" data-track="azeri_estonia" data-i18n="azeriEstonia">Estonia</a>
+    <a class="azeri-tab" href="/azeri?tab=study" data-tab="study" data-track="azeri_study" data-i18n="azeriStudy">Studying</a>
+    <a class="azeri-tab" href="/azeri?tab=estonian" data-tab="estonian" data-track="azeri_estonian" data-i18n="azeriEstonian">Estonian</a>
   </nav>
   <!-- Everything under the tabs — the door when nobody is signed in, the
-       search, the chips and the films — is built by assets/azeri.js once
-       /api/azeri has answered, so nothing from the state before is left
-       standing. -->
+       search, the chips and the films, or the topics of the guide — is built
+       by assets/azeri.js once /api/azeri has answered, so nothing from the
+       state before is left standing. -->
   <div id="shelf"></div>
 </main>
 
@@ -84,6 +89,6 @@
 <script src="/assets/back.js?v=9d9a7dd8" defer></script>
 <!-- The language switch, a global for the page's own script to use. -->
 <script src="/assets/language.js?v=fcaf98e0" defer></script>
-<script src="/assets/azeri.js?v=1c204037" defer></script>
+<script src="/assets/azeri.js?v=63bcbc3b" defer></script>
 </body>
 </html>

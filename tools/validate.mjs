@@ -72,6 +72,10 @@
  *     before its start, no video or photo (or both), a file that is not in
  *     the repo, a video too big for Cloudflare Pages to serve, or a link to a
  *     place that does not exist
+ *   - a tab of the guide on /azeri — azeri/data/guide/<tab>.json — with a
+ *     sentence that is not written in all four of its languages, a topic
+ *     that neither opens nor leads anywhere, a repeated id, or a link that
+ *     is not https
  *   - wrangler.toml pointing the preview deployments and the live site at the
  *     same D1 database, or at no database of their own
  *
@@ -2032,6 +2036,74 @@ if (existsSync(CLIPS_DIR)) {
       }
     }
     if (!ids.size) fail(where, 'has no sections');
+  }
+}
+
+/* ---------------------------------------------------- azeri/data/guide/*.json
+   The guide on /azeri: Estonia, Studying and Estonian, a file to a tab, which
+   /api/azeri answers in one of four languages. It is written by hand, and
+   what goes wrong by hand is a sentence added in three languages and
+   forgotten in the fourth — the route would then answer it in English to
+   somebody reading Azerbaijani, and nothing would say so. So every piece of
+   text is held to all four, or is a plain string where it is a name that is
+   the same in each; a topic has a body to open or an address to lead to, and
+   never neither; and every address is https, since they are the offices a
+   reader is sent to. TABS and GUIDE_LANGS are functions/api/azeri.js's. */
+{
+  const GUIDE_TABS = ['estonia', 'study', 'estonian'];
+  const GUIDE_LANGS = ['az', 'en', 'ru', 'et'];
+  const HTTPS_URL = /^https:\/\/[^\s]+$/;
+  for (const tab of GUIDE_TABS) {
+    const where = `azeri/data/guide/${tab}.json`;
+    let guide = null;
+    try { guide = JSON.parse(readFileSync(join(ROOT, 'azeri', 'data', 'guide', `${tab}.json`), 'utf8')); } catch (e) {
+      fail(where, 'is missing or is not JSON — the tab would say it is not answering');
+      continue;
+    }
+    const said = (text, at, plainToo) => {
+      if (plainToo && isNonEmptyString(text)) return;
+      for (const lang of GUIDE_LANGS) {
+        if (!isPlainObject(text) || !isNonEmptyString(text[lang])) fail(where, `${at} has no ${lang}`);
+      }
+    };
+    const linked = (url, at) => {
+      if (typeof url !== 'string' || !HTTPS_URL.test(url)) fail(where, `${at} is not an https address`);
+    };
+    if (guide.tab !== tab) fail(where, `"tab" is ${JSON.stringify(guide.tab)}, not the file's own name`);
+    if (!MONTH.test(guide.checked || '')) fail(where, '"checked" is not a YYYY-MM month');
+    if (!Array.isArray(guide.topics) || !guide.topics.length) { fail(where, 'has no topics'); continue; }
+    const seen = new Set();
+    guide.topics.forEach((topic, n) => {
+      const at = `topic ${topic && topic.id ? topic.id : n}`;
+      if (!isPlainObject(topic) || !SLUG.test(topic.id || '')) { fail(where, `${at} has no slug for an id`); return; }
+      if (seen.has(topic.id)) fail(where, `${at} is there twice`);
+      seen.add(topic.id);
+      said(topic.name, `${at}: name`, true);
+      said(topic.covers, `${at}: covers`);
+      if (topic.url !== undefined) {
+        linked(topic.url, `${at}: url`);
+        if (topic.body !== undefined) fail(where, `${at} has both a body and an address — it is one or the other`);
+        return;
+      }
+      if (!Array.isArray(topic.body) || !topic.body.length) { fail(where, `${at} has neither a body nor an address`); return; }
+      topic.body.forEach((block, b) => {
+        const here = `${at}: block ${b + 1}`;
+        const items = isPlainObject(block) ? (block.steps || block.list) : null;
+        if (isPlainObject(block) && block.p !== undefined) { said(block.p, here); return; }
+        if (!Array.isArray(items) || !items.length) { fail(where, `${here} is not a paragraph, steps or a list`); return; }
+        items.forEach((item, i) => {
+          if (!isPlainObject(item)) { fail(where, `${here}, item ${i + 1} is not an object`); return; }
+          if (item.b !== undefined) said(item.b, `${here}, item ${i + 1}: b`, true);
+          said(item.t, `${here}, item ${i + 1}: t`);
+          if (item.url !== undefined) linked(item.url, `${here}, item ${i + 1}: url`);
+        });
+      });
+      if (!Array.isArray(topic.links)) { fail(where, `${at} has no "links", which may be empty but is always there`); return; }
+      topic.links.forEach((link, i) => {
+        if (!isPlainObject(link) || !isNonEmptyString(link.name)) fail(where, `${at}: link ${i + 1} has no name`);
+        linked(link && link.url, `${at}: link ${i + 1}`);
+      });
+    });
   }
 }
 
