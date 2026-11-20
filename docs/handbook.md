@@ -16806,10 +16806,23 @@ trailers — and `azeri/data/youtube.json` is their videos, each with its
 title and how often it has been watched. The tool matches every video to its
 film by title and year, either side of the bar where the studio writes two
 titles, takes the English title where there is one, and files a trailer as
-a trailer. 268 films have a video of the studio's that way, 190 of the 523
-feature films and 64 of the 127 cartoons. What matches nothing — the Russian
-titles, and the films the wiki's list does not have — is in the index's
-`unmatched`, for matching by hand.
+a trailer. A video the studio titled in Russian first is the Russian version,
+whichever playlist it sits in — the classics hold both.
+
+What no title can match is matched by hand, in
+`azeri/data/youtube-by-hand.json`: a video's id, the film it is, which
+version, and which part of a serial. The Russian and English versions are
+there — *Свет погасших костров* is *Dədə Qorqud*, *Only the Clouds Are
+Higher* is *Çətirimiz buludlardır* — 111 of them, each resolved against the
+list by its Azerbaijani title and year so that no id was typed. With those,
+341 films have a video of the studio's: the film itself for 227 of the 523
+feature films and 68 of the 127 cartoons. The 67 videos that still match
+nothing are films the wiki's list does not have — the studio's own shorts of
+2019 to 2021, the novellas inside an anthology — and they are in the index's
+`unmatched`.
+
+A film whose only video is its trailer is not one that can be watched: the
+switch leaves it out, and its button says **Trailer**.
 
 That file was read off the playlists' own pages on 2026-11-20, which show a
 playlist's first hundred videos and no more; four of the nine are longer.
@@ -16843,6 +16856,24 @@ let other sites play, where the player says so itself. A film's other links
 — a trailer, the Russian or the English version, a Maybe — are buttons in
 the row that put that video in the same player, and a link that is not
 YouTube's opens where it lives.
+
+### Wide, it is a wall of films
+
+On a phone the shelf is a list, a line or two a film. From 900px the page
+stops being a phone's column in the middle of a monitor: the header and the
+main open out to 1180px, the search and the switch share a line, and the
+shelf is a grid of cards, four across at full width, each under the picture
+YouTube keeps for its video — the studio's own title card, for most — or
+under its year where there is no video. Pressing the picture plays the film.
+The film that is opened takes a whole row of the grid, the player on the left
+at about 640px and what the film is on the right, and the cards after it
+close the gap it leaves.
+
+It is the same nodes drawn the same way, and the difference is all in
+`assets/azeri.css`. The pictures come from `i.ytimg.com` and only a wide
+screen asks for them: on a phone the frame is not drawn, and an image that
+is not drawn and is marked lazy is not fetched, so a phone on mobile data
+pays nothing for them.
 
 ### The door, and what a page costs
 

@@ -345,6 +345,13 @@ function details(text) {
      azeri/data/youtube-check.json   { dead: [ id ], views: { id: n } } — which
                                      of the films' YouTube links no longer
                                      play, and each one's exact views.
+     azeri/data/youtube-by-hand.json { videoId: { film, lang, part? } } — the
+                                     videos no title could match, matched
+                                     by somebody who knew both names: the
+                                     Russian and English versions, which
+                                     the studio titles in Russian and
+                                     English, and the three parts of a
+                                     serial. Kept by hand and read first.
 
    The first was read off the playlists' own pages on 2026-11-20, which show
    a playlist's first hundred videos and a rounded count beside each; a
@@ -355,6 +362,7 @@ function details(text) {
    rounded ones that file then lacks. Both are read on every run when they
    are there, the way films-en.json is. */
 const PLAYLIST_FILE = join(OUT, 'youtube.json');
+const HAND_FILE = join(OUT, 'youtube-by-hand.json');
 const CHECK_FILE = join(OUT, 'youtube-check.json');
 const YOUTUBE_ID = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/;
 
@@ -444,16 +452,20 @@ if (ARTICLES) {
 
 const check = existsSync(CHECK_FILE) ? JSON.parse(readFileSync(CHECK_FILE, 'utf8')) : {};
 const exact = check.views || {};
+const byHand = existsSync(HAND_FILE) ? JSON.parse(readFileSync(HAND_FILE, 'utf8')) : {};
 const unmatched = [];
 const studio = existsSync(PLAYLIST_FILE) ? JSON.parse(readFileSync(PLAYLIST_FILE, 'utf8')).playlists : [];
 for (const list of studio) {
   const trailer = list.kind === 'trailer';
   let found = 0;
   for (const v of list.videos) {
-    const { t, film } = match(films, v);
+    const hand = byHand[v.id];
+    const { t, film } = hand
+      ? { t: videoTitle(v.title), film: films.find((f) => f.id === hand.film) }
+      : match(films, v);
     const url = `https://www.youtube.com/watch?v=${v.id}`;
     if (!film) {
-      if (!unmatched.some((u) => u.url === url)) unmatched.push({ url, title: v.title, lang: list.lang, kind: list.kind });
+      if (!unmatched.some((u) => u.url === url)) unmatched.push({ url, title: v.title, kind: list.kind });
       continue;
     }
     found++;
@@ -463,10 +475,28 @@ for (const list of studio) {
     const views = exact[v.id] != null ? exact[v.id] : v.views || 0;
     if (!trailer) film.views = Math.max(film.views || 0, views);
     if (film.watch.some((w) => w.url === url)) continue;
-    film.watch.push({ url, kind: trailer ? 'trailer' : 'film', part: null, lang: list.lang, studio: true });
-    if (!trailer && t.en && !film.titleEn) film.titleEn = t.en;
+    /* Which version it is: what the hand said; else Russian where the studio
+       titled it in Russian first, whichever playlist it sits in — the
+       classics hold both; else the playlist's own language. */
+    const lang = hand ? hand.lang : /[\u0400-\u04ff]/.test(t.names[0] || '') ? 'ru' : list.lang;
+    film.watch.push({ url, kind: trailer ? 'trailer' : 'film', part: (hand && hand.part) || null, lang, studio: true });
+    if (!trailer && !hand && t.en && !film.titleEn) film.titleEn = t.en;
   }
   console.log(`${list.videos.length} videos in playlist ${list.id}, ${found} matched`);
+}
+const strangers = Object.keys(byHand).filter((id) => !films.some((f) => f.id === byHand[id].film));
+if (strangers.length) console.warn(`  ${strangers.length} hand match(es) name a film not on the list: ${strangers.join(', ')}`);
+
+/* The Azerbaijani version first among a film's links, since Watch plays the
+   first: then the other versions, then the trailers. */
+const LANG_ORDER = { az: 0, en: 1, ru: 2 };
+for (const f of films) {
+  f.watch = f.watch
+    .map((w, at) => ({ w, at }))
+    .sort((a, b) => (a.w.kind === 'trailer') - (b.w.kind === 'trailer')
+      || (a.w.studio ? LANG_ORDER[a.w.lang] ?? 3 : 0) - (b.w.studio ? LANG_ORDER[b.w.lang] ?? 3 : 0)
+      || a.at - b.at)
+    .map((x) => x.w);
 }
 
 /* A link YouTube no longer plays is no link: taken off the watch links and
@@ -521,7 +551,8 @@ const ordered = films.map((f) => ({
      index.json       every film in the shelf's order — the most watched on
                       the studio's channel first, then the newest, no year
                       last, then by title — as [id, shelf, year, watchable,
-                      words], words being the title, the English title and
+                      words], watchable meaning the film and not only its
+                      trailer, and words being the title, the English title and
                       the people, folded the way functions/api/azeri.js folds
                       a search; the source, the licence and the date; and
                       `linked`, every YouTube id a film links to, which is
@@ -558,7 +589,7 @@ writeFileSync(join(OUT, 'index.json'), JSON.stringify({
     f.id,
     SHELF_OF[f.kind] || 'series',
     f.year,
-    f.watch.length ? 1 : 0,
+    f.watch.some((w) => w.kind === 'film') ? 1 : 0,
     fold([f.title, f.titleEn, f.director.join(' '), f.writer.join(' '), f.cast.join(' ')].join(' ')),
   ]),
   linked: [...new Set(ordered.flatMap((f) => f.watch.concat(f.video))

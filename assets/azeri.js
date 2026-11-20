@@ -42,6 +42,15 @@
  * film plays at a time, and closing its row stops it — the player is in the
  * row, so taking the row away is taking the sound away. A link that is not
  * YouTube's opens where it lives.
+ *
+ * WIDE, IT IS A WALL OF FILMS. On a phone the shelf is a list, a line or
+ * two a film. From 900px it is a grid of cards, each under the picture
+ * YouTube keeps for its video — or under its year, where there is no video
+ * — and the film that is opened takes the whole row, the player on the left
+ * at a size worth watching and what the film is on the right. The pictures
+ * are asked for only there: on a phone the frame they would sit in is not
+ * drawn, and an image that is not drawn and is marked lazy is not fetched.
+ * The layout is all in assets/azeri.css; this file draws one set of nodes.
  */
 (function () {
   'use strict';
@@ -394,12 +403,18 @@
     return film.length === 'short' ? kind + ', ' + t('azeriShort') : kind;
   }
 
-  /* The film's own link to watch it, the first one that is the film rather
-     than a trailer: the list's, else the studio's. */
-  function watchLink(film) {
+  /* What the button on a row plays, and what it is called: the film where
+     there is one — the list's link, else the studio's, the Azerbaijani
+     version first, which is the order the tool leaves them in — else its
+     trailer, else a link the article only mentions. */
+  function mainLink(film) {
+    var trailer = null;
     for (var i = 0; i < film.watch.length; i++) {
-      if (film.watch[i].kind === 'film') return film.watch[i];
+      if (film.watch[i].kind === 'film') return { link: film.watch[i], key: 'azeriWatch', lead: false };
+      if (film.watch[i].kind === 'trailer' && !trailer) trailer = film.watch[i];
     }
+    if (trailer) return { link: trailer, key: 'azeriTrailer', lead: true };
+    if (film.video.length) return { link: film.video[0], key: 'azeriMaybe', lead: true };
     return null;
   }
 
@@ -420,13 +435,27 @@
     if (again) again.scrollIntoView({ block: 'nearest' });
   }
 
+  /* The picture over a card on a wide screen: YouTube's own for the video
+     the button plays, pressed to play it, or the film's year where there is
+     nothing to play. Not drawn on a phone — assets/azeri.css — and lazy, so
+     not fetched there either. */
+  function thumb(film, main) {
+    var id = main ? youtubeId(main.link.url) : '';
+    if (!id) return el('span', { className: 'azeri-thumb is-empty', 'aria-hidden': 'true', text: years(film) || '·' });
+    var b = el('button', { type: 'button', className: 'azeri-thumb', 'aria-label': t(main.key) + ': ' + film.title }, [
+      el('img', { src: 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg', alt: '', loading: 'lazy', width: '320', height: '180' })
+    ]);
+    b.addEventListener('click', function () { play(film, main.link, main.lead); });
+    return b;
+  }
+
   function row(film) {
     var isOpen = state.open === film.id;
     var meta = [years(film), film.director.length ? film.director[0] : kindLine(film)]
       .filter(Boolean).join(' · ');
     var head = el('button', {
       type: 'button',
-      className: 'azeri-row' + (isOpen ? ' is-open' : ''),
+      className: 'azeri-row',
       'aria-expanded': String(isOpen)
     }, [
       el('span', { className: 'azeri-name' }, [
@@ -444,15 +473,15 @@
       if (again) again.querySelector('.azeri-row').focus();
     });
 
-    var wrap = el('div', { className: 'azeri-film', id: 'film-' + film.id }, [head]);
-    var link = watchLink(film);
-    if (link) wrap.appendChild(watchButton(film, link, 'azeriWatch', false));
-    else if (film.video.length) wrap.appendChild(watchButton(film, film.video[0], 'azeriMaybe', true));
+    var main = mainLink(film);
+    var wrap = el('div', { className: 'azeri-film' + (isOpen ? ' is-open' : ''), id: 'film-' + film.id },
+      [thumb(film, main), head]);
+    if (main) wrap.appendChild(watchButton(film, main.link, main.key, main.lead));
     if (isOpen) wrap.appendChild(detail(film));
     return wrap;
   }
 
-  /* Watch, or Maybe: a button that plays the film here where the link is
+  /* Watch, Trailer or Maybe: a button that plays it here where the link is
      YouTube's, and a link out where it is anybody else's. */
   function watchButton(film, link, key, lead) {
     var cls = 'azeri-play' + (lead ? ' is-lead' : '');
@@ -514,8 +543,9 @@
   }
 
   function detail(film) {
-    var box = el('div', { className: 'azeri-detail' });
-    if (state.playing && youtubeId(state.playing)) box.appendChild(player(film));
+    var playing = !!(state.playing && youtubeId(state.playing));
+    var box = el('div', { className: 'azeri-detail' + (playing ? ' has-player' : '') });
+    if (playing) box.appendChild(player(film));
 
     /* The row says the year and the director where there is one, and the kind
        where there is not; open, the kind is said if the row did not. */
