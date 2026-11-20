@@ -39,6 +39,7 @@ tallinntastebuds.ee                 one Cloudflare Pages project, one Worker
 ├── /blog  ?post=                   blog.html, in-document between index and post
 ├── /write                          write.html, where a member writes a post for it
 ├── /flashcard  ?d=                 flashcard.html, in-document between decks and a deck
+├── /azeri                          azeri.html, members only, linked from nowhere; /api/azeri is its door
 ├── /chess                          chess.html
 ├── /feedback                       feedback.html
 ├── /deal /verify /staff            the three pass pages, no-store

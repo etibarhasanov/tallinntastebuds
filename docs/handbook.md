@@ -19,7 +19,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, fifty-two small Functions, no build step and no npm install. Adding a
+Static files, fifty-four small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -16685,6 +16685,76 @@ the table.
 
 ---
 
+## Azerbaijan, for members
+
+`/azeri` — a corner of the site about Azerbaijan, for people with an
+account, read in Azerbaijani or English and linked from nowhere. Its first
+shelf is the country's cinema; the next section is a second tab beside
+**Films**, where **More soon** stands now. Nothing in the apps reads any of
+it, and nothing on the map, the rail or Discover points at it: the address is
+given to somebody, or it is not found.
+
+### Where the films come from
+
+The Azerbaijani Wikipedia keeps a list of every film made in the country
+since 1898 — 2,615 lines, feature films, documentaries, cartoons, serials and
+filmed plays, each with its year and kind and, on about a hundred and sixty,
+a link to watch it. `tools/azfilms.mjs` reads that list and, with
+`--articles`, the article behind each linked title for its director, writer,
+cast, IMDb id and opening paragraph, and writes `azeri/data/films.json`. It
+is run by hand and committed, like a refresh of the Google export, because
+its source is a website rather than a file here; it is not in
+`tools/generate.mjs` and CI never runs it. The text is CC BY-SA and the page
+credits and links the list under the shelf and the article in every film.
+
+The summaries are the wiki's opening paragraph, in Azerbaijani. The English
+ones for the feature films and the cartoons were written for this page, kept
+by hand in `azeri/data/films-en.json` — a film id and its English, nothing
+else — and folded in by the tool, so a refresh of the list never loses them.
+The page says an English summary is a translation, and where a film has none
+yet it shows the Azerbaijani with a line saying so.
+
+A link the list gives is a **Watch** button. A YouTube link the article only
+mentions is a **Maybe** button, because an article links an interview, a
+premiere or a dubbing as readily as the film. The studio's own playlists —
+Azərbaycanfilm's — are where most of the films can actually be watched;
+`--youtube` reads them through the YouTube Data API and matches each video to
+its film by title and year, taking the English title the studio gives where
+it gives one. It needs a key of our own in `YOUTUBE_API_KEY` — the playlist
+page and the endpoint it asks for the rest are YouTube's, not ours to call —
+and until there is one the pass is skipped. The Russian playlist's titles are
+in Russian and match nothing on an Azerbaijani list; they come out in the
+file's `unmatched` for matching by hand.
+
+### The door, and what a page costs
+
+The file is behind the members' door, and a static file has no door:
+`/data/*` is handed to the asset server past every Function. So it lives
+under `/azeri/data/`, which `functions/_middleware.js` answers with the
+not-found page, and `GET /api/azeri` reads it through `env.ASSETS` for a
+session and nobody else. Signed out, the page draws a card whose button is
+the map's own sign-in sheet, `/?account=in&then=/azeri`, which brings
+somebody back when they are in.
+
+The shelf is never sent whole. It opens on the feature films, newest first,
+and **Show more** asks for the next fifty after the last one shown; a chip,
+the switch or the search starts again from the top. Each ask costs the
+database one read — the session, by its key — and nothing else, because the
+films are not in the database: the route keeps the file five minutes per
+isolate and filters, searches and pages it in memory. A member reading all
+523 feature films is eleven reads. A hundred members doing that every day is
+1,100 against the five million, and the number does not grow with the films.
+
+### Two languages, in a site of eleven
+
+The page's words are `azeri*` keys in `data/ui.json`, in all eleven
+languages like every other page's, because **There is no exception** to one
+strings file; the page reads two of them. Its switch offers Azerbaijani and
+English only, and the choice is kept under `ttb.azeri.lang` rather than
+`ttb.lang`, so reading this page in Azerbaijani does not turn the map into
+Azerbaijani for somebody who reads it in Russian. A search folds `ə` to `e`
+and `ı` to `i`, the two letters an English keyboard writes that way.
+
 ## Who uses the site, drawn
 
 `/admin/flows` — one BPMN diagram for each kind of person this site answers,
@@ -20839,6 +20909,17 @@ Feedback, `assets/feedback.js`:
 | `feedback_google` | — Continue with Google, from inside the composer |
 | `feedback_open` | — the Feedback row behind More on the map, and the word at the foot of Discover |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
+
+Azerbaijan, `assets/azeri.js`:
+
+| event | parameters |
+| --- | --- |
+| `azeri_shelf` | `shelf` — the chip pressed: `feature`, `animation`, `documentary`, `series` or `all` |
+| `azeri_watchable` | `on` (`1`/`0`) — the Only ones I can watch switch |
+| `azeri_more` | `shelf` — Show more, the next fifty |
+| `azeri_film` | `film` — a film opened |
+| `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) |
+| `language_select`, `language_open`, `home`, `account_open` | as on the map |
 
 The privacy policy is read rather than pressed, so what is reported is the way
 in: `privacy_open`, from the row on the map's **More** sheet and the word

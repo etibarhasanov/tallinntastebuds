@@ -84,6 +84,9 @@
       ],
       "nodes": [
         {"id": "signed-in", "type": "start", "lane": "member", "name": "Arrives signed in", "when": ["page:map"], "ref": ["functions/api/account.js GET"]},
+        {"id": "azeri", "type": "user", "lane": "member", "name": "Opens /azeri and reads the films", "when": ["page:azeri", "azeri_shelf", "azeri_more", "azeri_film"], "note": "By its address: nothing links to it. In Azerbaijani or English; feature films first, newest first, fifty at a time. Signed out it is a door to the sign-in sheet.", "ref": ["azeri.html", "assets/azeri.js"]},
+        {"id": "azeri-page", "type": "service", "lane": "member", "name": "Answers a page of fifty, for a session only", "note": "One read, the session; the films are a file, kept five minutes per isolate and searched in memory.", "ref": ["functions/api/azeri.js GET", "tools/azfilms.mjs"]},
+        {"id": "azeri-watch", "type": "end", "lane": "member", "name": "Watches one on YouTube", "when": ["azeri_watch"]},
         {"id": "what-now", "type": "gateway", "lane": "member", "name": "What now?"},
         {"id": "save", "type": "user", "lane": "member", "name": "Saves a place", "when": ["save_place"], "ref": ["assets/app.js"]},
         {"id": "account-page", "type": "user", "lane": "member", "name": "Opens their account page", "when": ["page:account"], "note": "Their saves, their lists and the ones they kept, and the doors to everything else a member can do.", "ref": ["account.html", "assets/account.js"]},
@@ -132,6 +135,9 @@
         {"id": "deleted", "type": "end", "lane": "member", "name": "Nobody, on the map"}
       ],
       "edges": [
+        ["what-now", "azeri", "Azerbaijan"],
+        ["azeri", "azeri-page"],
+        ["azeri-page", "azeri-watch"],
         ["signed-in", "what-now"],
         ["what-now", "save", "save"],
         ["save", "save-account"],

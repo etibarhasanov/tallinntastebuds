@@ -221,6 +221,19 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, follow
 
+# Azerbaijan, the members' corner. Stored as azeri.html and served at /azeri.
+# Linked from nowhere and for members only, so neither indexed nor followed:
+# what is behind it is /api/azeri, which answers a session alone. The page
+# carries the meta robots tag to match; this is the half that binds for
+# anything that does not parse the HTML to find it.
+/azeri.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
+/azeri
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
 # in the HTML carries a hash of the file — so a year-long cache would be safe
 # for a stamped request and is deliberately not used anyway. These rules match

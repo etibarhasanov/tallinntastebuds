@@ -41,7 +41,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /* Every page that loads something out of assets/. */
 export const PAGES = [
-  'index.html', 'lists.html', 'account.html', 'blog.html', 'feedback.html',
+  'index.html', 'lists.html', 'account.html', 'blog.html', 'feedback.html', 'azeri.html',
   'deal.html', 'verify.html', 'staff.html',
   'flashcard.html', 'edit.html', 'write.html', 'insights.html', 'chess.html', '404.html', 'privacy.html',
   /* The public API's page and the map other sites frame — functions/api/v1/. */

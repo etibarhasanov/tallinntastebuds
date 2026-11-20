@@ -1,0 +1,201 @@
+/* Tallinn Tastebuds — /azeri, the members' corner about Azerbaijan.
+ *
+ * The page is the lists page's shape — its ground, its header, its cards,
+ * the tokens of every style — and this file is only what the shelf of films
+ * needs on top of that: the tabs, the search and its chips, the switch, the
+ * rows with their decades and their play buttons, an opened film, and the
+ * door for somebody signed out. It was drawn as a mockup first and the
+ * owner said yes to that; every colour here is a token, so the swatch on
+ * the map recolours the shelf with nothing in this file to change.
+ */
+
+.azeri-head { margin-bottom: 6px; }
+
+/* The shelves of the corner. One today, beside a muted "More soon". */
+.azeri-tabs {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid var(--hairline);
+  margin: 0 0 14px;
+  font-size: 15px;
+}
+.azeri-tab {
+  padding: 0 0 9px;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.azeri-tab.is-on { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
+.azeri-tab.is-soon { opacity: .55; }
+
+/* ------------------------------------------------------- search and chips */
+
+.azeri-tools { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.azeri-search { width: 100%; box-sizing: border-box; }
+
+/* One row that scrolls sideways on a phone rather than wrapping into three:
+   the chips are a choice of one, and a choice reads as a line. */
+.azeri-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  touch-action: pan-x;
+  margin: 0 -2px;
+  padding: 2px;
+}
+.azeri-chips::-webkit-scrollbar { display: none; }
+.azeri-chip {
+  flex: none;
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.azeri-chip:hover { border-color: var(--muted); }
+.azeri-chip.is-on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.azeri-chip small { margin-left: 5px; opacity: .65; font-size: 12px; }
+
+.azeri-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+}
+/* The switch is a real checkbox, drawn as a track and a knob. */
+.azeri-switch {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  position: relative;
+  width: 36px;
+  height: 21px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--hairline);
+  cursor: pointer;
+  transition: background .15s var(--ease);
+}
+.azeri-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+  transition: transform .15s var(--ease);
+}
+.azeri-switch:checked { background: var(--accent); }
+.azeri-switch:checked::after { transform: translateX(15px); }
+.azeri-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------------------------------------------------------------- the list */
+
+.azeri-list { padding: 0; overflow: hidden; }
+.azeri-decade {
+  margin: 0;
+  padding: 14px 16px 5px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+.azeri-film {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  border-top: 1px solid var(--hairline);
+}
+.azeri-decade + .azeri-film { border-top: 0; }
+.azeri-row {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 11px 16px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.azeri-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.azeri-name { font-weight: 600; font-size: 15px; line-height: 1.3; }
+.azeri-en { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+.azeri-meta {
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.azeri-play {
+  flex: none;
+  margin-right: 14px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.azeri-play:hover { background: var(--accent-lit); border-color: var(--accent-lit); }
+.azeri-play.is-lead { background: transparent; color: var(--accent); }
+.azeri-play.is-lead:hover { color: var(--accent-lit); }
+
+/* An opened film: the whole width under its row. */
+.azeri-detail {
+  flex: 1 0 100%;
+  padding: 0 16px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.azeri-detail p { margin: 0 0 8px; }
+.azeri-kind { color: var(--muted); font-size: 13px; }
+.azeri-aside { color: var(--muted); font-size: 12px; font-style: italic; }
+.azeri-people {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 2px 10px;
+  margin: 0 0 8px;
+}
+.azeri-people dt { color: var(--muted); }
+.azeri-people dd { margin: 0; }
+.azeri-links { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.azeri-links a { color: var(--accent); font-weight: 500; text-decoration: none; }
+.azeri-links a:hover { text-decoration: underline; }
+
+/* ------------------------------------------------------------ the states */
+
+.azeri-note { margin: 0; padding: 36px 24px; text-align: center; color: var(--muted); font-size: 14px; }
+.azeri-skeleton { padding: 16px; }
+.azeri-bone { height: 14px; border-radius: 6px; background: var(--hairline); opacity: .6; margin: 6px 0; width: 64%; }
+.azeri-bone:nth-child(4n + 1) { width: 48%; }
+.azeri-bone.is-short { width: 32%; margin-bottom: 18px; }
+
+.azeri-more { display: block; margin: 14px auto 0; cursor: pointer; background: var(--paper); }
+.azeri-more:disabled { opacity: .5; cursor: default; }
+
+.azeri-credit { margin: 16px 0 24px; font-size: 12px; text-align: center; }
+.azeri-credit a { color: var(--muted); }
+
+.azeri-door { text-align: center; padding: 44px 24px; }
+.azeri-door p { margin: 0 auto 20px; max-width: 34ch; line-height: 1.5; }
+.azeri-signin { display: inline-block; font-size: 14px; padding: 11px 22px; }
