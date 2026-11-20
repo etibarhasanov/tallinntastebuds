@@ -16904,8 +16904,9 @@ in one place. **Studying** is eight more: the universities, getting in step by
 step, fees and scholarships, a student's residence permit, student life,
 working while studying, after graduating, and having a degree recognised.
 **Estonian** is not topics but ways: a card whose button opens the site's own
-flashcards — the tab's one filled action, and the address names the reader's
-language where it is one of the three the cards speak — and under it the
+flashcards — the tab's one filled action, at `/flashcard` on this host as the
+map's own door to them is, and the address names the reader's language where
+it is one of the three the cards speak — and under it the
 state's free courses, the two free ones online, the language house and the
 dictionary, each a row that leads out.
 
@@ -16951,6 +16952,13 @@ sentence missing one of the four languages, a topic with neither a body nor
 an address, a repeated id, and an address that is not https. To change what
 the guide says, edit the file; to add a topic, add it to the file. Nothing
 is generated from it and no script names a topic.
+
+The button went to `flashcard.tallinntastebuds.ee` for its first day and did
+not open for the owner. It was the only link on the site to the subdomain:
+the map, the account page and the door an assistant reads the decks through
+all say `/flashcard`, and so does this now. A page in the corner that sends
+somebody to another part of the site uses the address the rest of the site
+uses for it.
 
 What it deliberately does not do: search, comments, questions and answers,
 events, mentors, or editing from the admin page. Those belong to a community
