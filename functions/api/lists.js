@@ -63,7 +63,7 @@
  * exactly the same reason.
  */
 
-import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase, nearCity, inPages, PAGE } from './_lib.js';
+import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase, inEstonia, inPages, PAGE } from './_lib.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
 import { countUse } from './_visitors.js';
 /* Reading one list is shared with functions/list/[id].js, which serves the
@@ -493,11 +493,11 @@ async function addPlace(context, body, user) {
   const lat = point(body.lat);
   const lng = point(body.lng);
   if (lat === null || lng === null) return json({ error: 'where' }, 400);
-  /* The map itself opens on Tallinn, and a rider in Tartu, Pärnu or Narva
-     taps a place onto a list from Rattatee. The boxes are CITIES in
-     ./_lib.js, shared with the geocoder so the two cannot disagree about
-     what counts as here. */
-  if (!nearCity(lat, lng)) return json({ error: 'where' }, 400);
+  /* The map itself opens on Tallinn, and a rider anywhere in the country
+     taps a place onto a list from Rattatee. The box is ESTONIA in
+     ./_lib.js, shared with the geocoder and the router so the three cannot
+     disagree about what counts as here. */
+  if (!inEstonia(lat, lng)) return json({ error: 'where' }, 400);
 
   const held = await env.DB
     .prepare('SELECT COUNT(*) AS n FROM added_places WHERE owner = ?')

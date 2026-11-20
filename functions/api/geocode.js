@@ -6,9 +6,9 @@
  *                      "label": "Telliskivi 60a", "where": "Tallinn" }, … ] }
  *
  * GET /api/geocode?q=Riia&near=58.38,26.72
- *   the same, in the city that point is in — one of the four in CITIES in
- *   ./_lib.js. Rattatee sends where its rider is. With no `near`, or one in
- *   no city, the search is Tallinn's, as it was for everybody before
+ *   the same, anywhere in Estonia, what is nearest that point first.
+ *   Rattatee sends where its rider is. With no `near`, or one outside
+ *   Estonia, the search is Tallinn's, as it was for everybody before
  *   2026-11-20.
  *
  * Three things ask. The "add a place" form on the lists page asks through
@@ -78,7 +78,7 @@
  * a change to ask() below and nothing else.
  */
 
-import { json, CITIES, cityOf } from './_lib.js';
+import { json, TALLINN, ESTONIA, nearTallinn, inEstonia } from './_lib.js';
 
 const ENDPOINT = 'https://photon.komoot.io/api';
 
@@ -99,22 +99,42 @@ const LIMIT = 5;
    everybody who types that street. */
 const CACHE_SECONDS = 86400;
 
+/* What a search is biased towards and held inside. Tallinn's middle and
+   Tallinn's box by default. With a `near` in Estonia, that point and the
+   country — the point rounded to a tenth of a degree, eleven kilometres
+   north to south and six across, so everybody in one town sends Photon the
+   same address and the day's cache in ask() is theirs together, where a
+   rider's own five decimals would make every request the first. */
+const HERE = {
+  lat: TALLINN.lat, lng: TALLINN.lng,
+  south: TALLINN.lat - TALLINN.degLat, north: TALLINN.lat + TALLINN.degLat,
+  west: TALLINN.lng - TALLINN.degLng, east: TALLINN.lng + TALLINN.degLng,
+  holds: nearTallinn
+};
+
+function where(near) {
+  const [lat, lng] = String(near || '').split(',').map(Number);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || !inEstonia(lat, lng)) return HERE;
+  return Object.assign({}, ESTONIA, {
+    lat: Math.round(lat * 10) / 10, lng: Math.round(lng * 10) / 10, holds: inEstonia
+  });
+}
+
 /* The upstream call and the shape it comes back in — the only part of this
    file that knows what Photon is. */
-async function ask(q, city) {
+async function ask(q, around) {
   const url = new URL(ENDPOINT);
   url.searchParams.set('q', q);
   url.searchParams.set('limit', String(LIMIT * 2));
   url.searchParams.set('lang', 'en');
-  /* Bias towards the city, then bound to it. The bias is what puts a Tallinn
-     Pärnu maantee above the one in Pärnu; the box is what stops a query that
-     matches nothing here from answering with somewhere it does match. The
-     middle of the city and never the asker's own point, so everybody in
-     one city sends Photon the same address and the day's cache is theirs
-     together. */
-  url.searchParams.set('lat', String(city.lat));
-  url.searchParams.set('lon', String(city.lng));
-  url.searchParams.set('bbox', [city.west, city.south, city.east, city.north]
+  /* Bias towards a point, then bound to a box. For Tallinn the bias is what
+     puts a Tallinn Pärnu maantee above the one in Pärnu, and the box is
+     what stops a query that matches nothing here from answering with
+     somewhere it does match. For somebody who said where they are it is
+     their own point, rounded by where() below, and the country. */
+  url.searchParams.set('lat', String(around.lat));
+  url.searchParams.set('lon', String(around.lng));
+  url.searchParams.set('bbox', [around.west, around.south, around.east, around.north]
     .map((n) => n.toFixed(6)).join(','));
 
   const res = await fetch(url.toString(), {
@@ -132,7 +152,7 @@ async function ask(q, city) {
 /* Photon answers GeoJSON with an OSM tag soup attached. This is the whole of
    what the form needs out of it: a line to show, a line of context under it,
    and a point. */
-function shape(feature, city) {
+function shape(feature, around) {
   const geo = feature && feature.geometry;
   const at = geo && Array.isArray(geo.coordinates) ? geo.coordinates : null;
   if (!at) return null;
@@ -142,7 +162,7 @@ function shape(feature, city) {
   const lng = Number(at[0]);
   const lat = Number(at[1]);
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-  if (cityOf(lat, lng) !== city) return null;
+  if (!around.holds(lat, lng)) return null;
 
   const p = feature.properties || {};
 
@@ -183,18 +203,17 @@ function shape(feature, city) {
    { short }, { busy }, { failed } or { results }, and throws only when the
    fetch itself does.
 
-   `near` is "lat,lng", where whoever is typing is: the search is held to
-   the city that point is in. Without one, or with one in no city, it is
-   Tallinn's — what every caller asked before 2026-11-20 and what the map,
-   the chat and an installed app still ask. */
+   `near` is "lat,lng", where whoever is typing is: the search is the
+   country's, nearest that point first. Without one, or with one outside
+   Estonia, it is Tallinn's — what every caller asked before 2026-11-20 and
+   what the map, the chat and an installed app still ask. */
 export async function suggest(raw, near) {
   const q = String(raw || '').replace(/\s+/g, ' ').trim().slice(0, MAX_Q);
   if (q.length < MIN_Q) return { short: true };
 
-  const [lat, lng] = String(near || '').split(',').map(Number);
-  const city = cityOf(lat, lng) || CITIES[0];
+  const around = where(near);
 
-  const answer = await ask(q, city);
+  const answer = await ask(q, around);
   if (answer.busy || answer.failed) return answer;
 
   /* Photon will happily return the same street four times over, once per
@@ -204,7 +223,7 @@ export async function suggest(raw, near) {
   const seen = new Set();
   const results = [];
   for (const feature of answer.features) {
-    const made = shape(feature, city);
+    const made = shape(feature, around);
     if (!made) continue;
     const key = made.label + '|' + made.where;
     if (seen.has(key)) continue;

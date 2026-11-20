@@ -453,9 +453,9 @@ export async function knownPlaces(context) {
  *
  * It lives here rather than beside any of its users because there are
  * several: /api/ask, /mcp and the public API refuse a point to measure from
- * that is outside it, and it is the first of THE FOUR CITIES below, which
- * /api/lists checks a submitted pin against, /api/geocode asks Photon to
- * look only inside one of, and /api/route holds both ends of a way to.
+ * that is outside it, /api/geocode asks Photon to look only inside it when
+ * it is not told where the asker is, and it is the first of THE FOUR CITIES
+ * below, which /api/rides holds every point of a ride to.
  * Copies would be drifting copies, and the drift would show up as an address
  * the geocoder was happy to find and the save then refused.
  */
@@ -473,8 +473,9 @@ export function nearTallinn(lat, lng) {
  * around it.
  *
  * Every box is fourteen kilometres each way from the middle, the owner's
- * number, Tallinn's — TALLINN above — included: 0.126 of a degree of latitude, and 0.24 of
- * longitude at 58.4 north or 0.247 at 59.4. Narva's stops in the east at
+ * number, Tallinn's — TALLINN above — included: 0.126 of a degree of
+ * latitude, and 0.24 of longitude at 58.4 north or 0.247 at 59.4. Narva's
+ * stops in the east at
  * the river, which is the border; fourteen kilometres west and north of the
  * middle is what takes in Narva-Jõesuu, asked for by name. North of the
  * town the river runs north-west to the sea, so a thin wedge of its far
@@ -485,9 +486,14 @@ export function nearTallinn(lat, lng) {
  * No two boxes touch, so a point is in one city or in none, and cityOf()
  * says which. THE MAP IS STILL TALLINN'S: nearTallinn() is what /api/ask,
  * /mcp, the public API and the places roll measure "near" against, because
- * the places are Tallinn's. nearCity() is for what a bike does — /api/rides,
- * /api/route, /api/geocode — and for a pin put on a list and a walk's
- * check-in, which follow a rider to wherever they are.
+ * the places are Tallinn's.
+ *
+ * THE CITIES ARE WHERE A RIDE IS COUNTED, AND ONLY THAT. nearCity() is
+ * /api/rides' alone: a ride is some 320 rows written into ride_sections
+ * down streets nobody has ridden, out of 100,000 a day, and four cities
+ * fill their squares where a country would not. Finding a way and finding
+ * an address write nothing, so those are held to the whole country —
+ * ESTONIA and inEstonia() below.
  *
  * Rattatee restates the boxes, to drop a point outside them before it is
  * sent. Change one here, change it there.
@@ -513,6 +519,27 @@ export function cityOf(lat, lng) {
 
 export function nearCity(lat, lng) {
   return cityOf(lat, lng) !== null;
+}
+
+/* ------------------------------------------------------------------ Estonia
+ * Where a way may be asked for and an address searched for, since
+ * 2026-11-20: /api/route, /api/geocode with a `near`, a pin put on a list
+ * and a walk's check-in. None of them writes a row for being asked, which
+ * is why they may have the country when a counted ride may not.
+ *
+ * One rectangle, from the south of Võrumaa to the islands off the north
+ * coast and from the west of Saaremaa to the Narva river. A country is not
+ * a rectangle, so a strip of northern Latvia and of Russia east of Lake
+ * Peipus is inside it, and a way asked for there is answered like any
+ * other. What it is for is refusing Helsinki, Riga and everywhere further,
+ * so the route is no use as a router for the world on somebody else's
+ * server.
+ */
+export const ESTONIA = { south: 57.5, north: 59.7, west: 21.7, east: 28.21 };
+
+export function inEstonia(lat, lng) {
+  return lat >= ESTONIA.south && lat <= ESTONIA.north &&
+    lng >= ESTONIA.west && lng <= ESTONIA.east;
 }
 
 /* Kilometres between two points as the crow flies, which is what a visitor
