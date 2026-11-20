@@ -441,9 +441,15 @@ export async function knownPlaces(context) {
 }
 
 /* ---------------------------------------------------------------- Tallinn
- * The box a point has to fall inside to be one of ours. Roughly 60km around
- * the city, which is generous — it reaches Paldiski and past Kehra — and
- * still refuses a point in another country.
+ * The box a point has to fall inside to be one of ours: fourteen kilometres
+ * each way from the middle, the owner's number since 2026-11-20 and the same
+ * as the other three cities'. It takes in Pirita, Peetri, Viimsi as far up
+ * the peninsula as Leppneeme, Tabasalu, Laagri, Saue, Jüri and Muuga; it
+ * stops a kilometre or two short of Rohuneeme at the peninsula's tip, runs
+ * through Maardu, and leaves Keila and Saku out. Until that day it was some
+ * sixty kilometres, to Paldiski and past Kehra, so a ride kept from out
+ * there is still in `rides` and still counted, and an installed Rattatee
+ * that records one now is told `malformed` and lists it as not kept.
  *
  * It lives here rather than beside any of its users because there are
  * several: /api/ask, /mcp and the public API refuse a point to measure from
@@ -453,7 +459,7 @@ export async function knownPlaces(context) {
  * Copies would be drifting copies, and the drift would show up as an address
  * the geocoder was happy to find and the save then refused.
  */
-export const TALLINN = { lat: 59.437, lng: 24.7536, degLat: 0.55, degLng: 1.1 };
+export const TALLINN = { lat: 59.437, lng: 24.7536, degLat: 0.126, degLng: 0.247 };
 
 export function nearTallinn(lat, lng) {
   return Math.abs(lat - TALLINN.lat) <= TALLINN.degLat &&
@@ -466,10 +472,8 @@ export function nearTallinn(lat, lng) {
  * owner asked for Tartu, Pärnu and Narva beside it, each with what lies
  * around it.
  *
- * Tallinn's box is TALLINN above, unchanged — it already reached Viimsi,
- * Peetri and Pirita, and well past them, and rides had been taken inside
- * all of it. The other three are fourteen kilometres each way from the
- * middle, the owner's number: 0.126 of a degree of latitude, and 0.24 of
+ * Every box is fourteen kilometres each way from the middle, the owner's
+ * number, Tallinn's — TALLINN above — included: 0.126 of a degree of latitude, and 0.24 of
  * longitude at 58.4 north or 0.247 at 59.4. Narva's stops in the east at
  * the river, which is the border; fourteen kilometres west and north of the
  * middle is what takes in Narva-Jõesuu, asked for by name. North of the
