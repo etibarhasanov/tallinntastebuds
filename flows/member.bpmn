@@ -68,7 +68,7 @@ ref: functions/api/account.js GET</bpmn:documentation>
       <bpmn:outgoing>member-e4</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="azeri" name="Opens /azeri and reads the films">
-      <bpmn:documentation>By its address: nothing links to it. In Azerbaijani or English; the feature films that can be watched first, newest first, twenty to a page. Signed out it is a door to the sign-in sheet.
+      <bpmn:documentation>By its address: nothing links to it. In Azerbaijani or English; the feature films that can be watched first, the most watched leading, twenty to a page, and Watch plays one in the page. Signed out it is a door to the sign-in sheet.
 when: page:azeri
 when: azeri_shelf
 when: azeri_page
@@ -85,8 +85,9 @@ ref: tools/azfilms.mjs</bpmn:documentation>
       <bpmn:incoming>member-e2</bpmn:incoming>
       <bpmn:outgoing>member-e3</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="azeri-watch" name="Watches one on YouTube">
-      <bpmn:documentation>when: azeri_watch</bpmn:documentation>
+    <bpmn:endEvent id="azeri-watch" name="Watches one, in the page or on YouTube">
+      <bpmn:documentation>when: azeri_watch
+when: azeri_youtube</bpmn:documentation>
       <bpmn:incoming>member-e3</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:exclusiveGateway id="what-now" name="What now?">

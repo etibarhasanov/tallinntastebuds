@@ -1521,10 +1521,11 @@
     "azeriError": "Filmlər hazırda cavab vermir.",
     "azeriDoorText": "Saytın bu guşəsi hesabı olanlar üçün açılır. Daxil ol və ya hesab yarat: istifadəçi adı və şifrə kifayətdir.",
     "azeriSignIn": "Daxil ol",
-    "azeriNoYear": "İli bilinmir",
     "azeriPrev": "Əvvəlki",
     "azeriNext": "Növbəti",
-    "azeriPageOf": "{n} / {total} səhifə"
+    "azeriPageOf": "{n} / {total} səhifə",
+    "azeriOnYoutube": "YouTube-da aç",
+    "azeriEnglish": "ingiliscə versiya"
   },
   "en": {
     "langName": "English",
@@ -3048,10 +3049,11 @@
     "azeriError": "The films are not answering right now.",
     "azeriDoorText": "This corner of the site opens for people with an account. Sign in, or make one: it takes a username and a password.",
     "azeriSignIn": "Sign in",
-    "azeriNoYear": "Year unknown",
     "azeriPrev": "Previous",
     "azeriNext": "Next",
-    "azeriPageOf": "Page {n} of {total}"
+    "azeriPageOf": "Page {n} of {total}",
+    "azeriOnYoutube": "Open on YouTube",
+    "azeriEnglish": "English version"
   },
   "et": {
     "langName": "Eesti",
@@ -4575,10 +4577,11 @@
     "azeriError": "Filmid ei vasta praegu.",
     "azeriDoorText": "See saidi nurk avaneb neile, kellel on konto. Logi sisse või loo konto: vaja on kasutajanime ja parooli.",
     "azeriSignIn": "Logi sisse",
-    "azeriNoYear": "Aasta teadmata",
     "azeriPrev": "Eelmine",
     "azeriNext": "Järgmine",
-    "azeriPageOf": "Leht {n} / {total}"
+    "azeriPageOf": "Leht {n} / {total}",
+    "azeriOnYoutube": "Ava YouTube'is",
+    "azeriEnglish": "ingliskeelne versioon"
   },
   "fi": {
     "langName": "Suomi",
@@ -6102,10 +6105,11 @@
     "azeriError": "Elokuvat eivät vastaa juuri nyt.",
     "azeriDoorText": "Tämä sivuston nurkka aukeaa tilin omistajille. Kirjaudu sisään tai luo tili: tarvitset vain käyttäjänimen ja salasanan.",
     "azeriSignIn": "Kirjaudu",
-    "azeriNoYear": "Vuosi tuntematon",
     "azeriPrev": "Edellinen",
     "azeriNext": "Seuraava",
-    "azeriPageOf": "Sivu {n}/{total}"
+    "azeriPageOf": "Sivu {n}/{total}",
+    "azeriOnYoutube": "Avaa YouTubessa",
+    "azeriEnglish": "englanninkielinen versio"
   },
   "pt": {
     "langName": "Português",
@@ -7629,10 +7633,11 @@
     "azeriError": "Os filmes não estão a responder agora.",
     "azeriDoorText": "Este canto do site abre para quem tem conta. Entra, ou cria uma: basta um nome de utilizador e uma palavra-passe.",
     "azeriSignIn": "Entrar",
-    "azeriNoYear": "Ano desconhecido",
     "azeriPrev": "Anterior",
     "azeriNext": "Seguinte",
-    "azeriPageOf": "Página {n} de {total}"
+    "azeriPageOf": "Página {n} de {total}",
+    "azeriOnYoutube": "Abrir no YouTube",
+    "azeriEnglish": "versão em inglês"
   },
   "ru": {
     "langName": "Русский",
@@ -9156,10 +9161,11 @@
     "azeriError": "Фильмы сейчас не отвечают.",
     "azeriDoorText": "Этот уголок сайта открыт тем, у кого есть аккаунт. Войдите или создайте его: нужны только имя пользователя и пароль.",
     "azeriSignIn": "Войти",
-    "azeriNoYear": "Год неизвестен",
     "azeriPrev": "Назад",
     "azeriNext": "Дальше",
-    "azeriPageOf": "Страница {n} из {total}"
+    "azeriPageOf": "Страница {n} из {total}",
+    "azeriOnYoutube": "Открыть на YouTube",
+    "azeriEnglish": "английская версия"
   },
   "es": {
     "langName": "Español",
@@ -10683,10 +10689,11 @@
     "azeriError": "Las películas no responden ahora mismo.",
     "azeriDoorText": "Este rincón del sitio se abre para quien tiene cuenta. Entra o crea una: solo hace falta un nombre de usuario y una contraseña.",
     "azeriSignIn": "Entrar",
-    "azeriNoYear": "Año desconocido",
     "azeriPrev": "Anterior",
     "azeriNext": "Siguiente",
-    "azeriPageOf": "Página {n} de {total}"
+    "azeriPageOf": "Página {n} de {total}",
+    "azeriOnYoutube": "Abrir en YouTube",
+    "azeriEnglish": "versión en inglés"
   },
   "tr": {
     "langName": "Türkçe",
@@ -12210,10 +12217,11 @@
     "azeriError": "Filmler şu anda yanıt vermiyor.",
     "azeriDoorText": "Sitenin bu köşesi hesabı olanlara açılır. Giriş yap ya da hesap aç: bir kullanıcı adı ve şifre yeter.",
     "azeriSignIn": "Giriş yap",
-    "azeriNoYear": "Yılı bilinmiyor",
     "azeriPrev": "Önceki",
     "azeriNext": "Sonraki",
-    "azeriPageOf": "Sayfa {n} / {total}"
+    "azeriPageOf": "Sayfa {n} / {total}",
+    "azeriOnYoutube": "YouTube'da aç",
+    "azeriEnglish": "İngilizce sürüm"
   },
   "uk": {
     "langName": "Українська",
@@ -13737,10 +13745,11 @@
     "azeriError": "Фільми зараз не відповідають.",
     "azeriDoorText": "Цей куточок сайту відкритий для тих, хто має акаунт. Увійдіть або створіть його: потрібні лише ім'я користувача й пароль.",
     "azeriSignIn": "Увійти",
-    "azeriNoYear": "Рік невідомий",
     "azeriPrev": "Назад",
     "azeriNext": "Далі",
-    "azeriPageOf": "Сторінка {n} з {total}"
+    "azeriPageOf": "Сторінка {n} з {total}",
+    "azeriOnYoutube": "Відкрити на YouTube",
+    "azeriEnglish": "англійська версія"
   },
   "fr": {
     "langName": "Français",
@@ -15264,10 +15273,11 @@
     "azeriError": "Les films ne répondent pas pour le moment.",
     "azeriDoorText": "Ce coin du site s'ouvre à ceux qui ont un compte. Connectez-vous ou créez-en un : un nom d'utilisateur et un mot de passe suffisent.",
     "azeriSignIn": "Se connecter",
-    "azeriNoYear": "Année inconnue",
     "azeriPrev": "Précédent",
     "azeriNext": "Suivant",
-    "azeriPageOf": "Page {n} sur {total}"
+    "azeriPageOf": "Page {n} sur {total}",
+    "azeriOnYoutube": "Ouvrir sur YouTube",
+    "azeriEnglish": "version anglaise"
   },
   "de": {
     "langName": "Deutsch",
@@ -16791,9 +16801,10 @@
     "azeriError": "Die Filme antworten gerade nicht.",
     "azeriDoorText": "Diese Ecke der Seite öffnet sich für alle mit einem Konto. Melde dich an oder lege eines an: ein Nutzername und ein Passwort genügen.",
     "azeriSignIn": "Anmelden",
-    "azeriNoYear": "Jahr unbekannt",
     "azeriPrev": "Zurück",
     "azeriNext": "Weiter",
-    "azeriPageOf": "Seite {n} von {total}"
+    "azeriPageOf": "Seite {n} von {total}",
+    "azeriOnYoutube": "Auf YouTube öffnen",
+    "azeriEnglish": "englische Fassung"
   }
 }

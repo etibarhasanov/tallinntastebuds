@@ -1521,10 +1521,11 @@
   "azeriError": "Las películas no responden ahora mismo.",
   "azeriDoorText": "Este rincón del sitio se abre para quien tiene cuenta. Entra o crea una: solo hace falta un nombre de usuario y una contraseña.",
   "azeriSignIn": "Entrar",
-  "azeriNoYear": "Año desconocido",
   "azeriPrev": "Anterior",
   "azeriNext": "Siguiente",
-  "azeriPageOf": "Página {n} de {total}"
+  "azeriPageOf": "Página {n} de {total}",
+  "azeriOnYoutube": "Abrir en YouTube",
+  "azeriEnglish": "versión en inglés"
  },
  "blurbs": {
   "180-degrees": "El único restaurante con dos estrellas Michelin del Báltico. Un sitio experimental y muy bonito en el paseo marítimo de Noblessner, donde el menú degustación está montado para sorprenderte plato tras plato.",

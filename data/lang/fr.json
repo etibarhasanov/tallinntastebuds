@@ -1521,10 +1521,11 @@
   "azeriError": "Les films ne répondent pas pour le moment.",
   "azeriDoorText": "Ce coin du site s'ouvre à ceux qui ont un compte. Connectez-vous ou créez-en un : un nom d'utilisateur et un mot de passe suffisent.",
   "azeriSignIn": "Se connecter",
-  "azeriNoYear": "Année inconnue",
   "azeriPrev": "Précédent",
   "azeriNext": "Suivant",
-  "azeriPageOf": "Page {n} sur {total}"
+  "azeriPageOf": "Page {n} sur {total}",
+  "azeriOnYoutube": "Ouvrir sur YouTube",
+  "azeriEnglish": "version anglaise"
  },
  "blurbs": {
   "180-degrees": "Le seul restaurant deux étoiles Michelin des pays baltes. Une adresse expérimentale vraiment chouette sur le front de mer de Noblessner, où le menu dégustation est pensé pour te surprendre, plat après plat.",

@@ -1521,10 +1521,11 @@
   "azeriError": "Filmid ei vasta praegu.",
   "azeriDoorText": "See saidi nurk avaneb neile, kellel on konto. Logi sisse või loo konto: vaja on kasutajanime ja parooli.",
   "azeriSignIn": "Logi sisse",
-  "azeriNoYear": "Aasta teadmata",
   "azeriPrev": "Eelmine",
   "azeriNext": "Järgmine",
-  "azeriPageOf": "Leht {n} / {total}"
+  "azeriPageOf": "Leht {n} / {total}",
+  "azeriOnYoutube": "Ava YouTube'is",
+  "azeriEnglish": "ingliskeelne versioon"
  },
  "blurbs": {
   "180-degrees": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",

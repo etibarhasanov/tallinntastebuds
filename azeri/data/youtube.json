@@ -1,1222 +1,3407 @@
 {
- "at": "2026-11-20T13:53:46.856Z",
- "source": "the first hundred videos of each playlist page",
+ "at": "2026-11-20T14:10:36.267Z",
+ "source": "the first hundred videos of each playlist's page, with the views it shows",
  "playlists": [
   {
    "id": "PLAtI5OWgNzB3iuvjwhQzW60A1jQ8LdxBp",
    "lang": "az",
+   "kind": "film",
    "videos": [
     {
      "id": "ZbUIsDxr-Ms",
-     "title": "Xeyirlə şərin rəqsi (2015)"
+     "title": "Xeyirlə şərin rəqsi (2015)",
+     "views": 68000
     },
     {
      "id": "UlGxAqPEiOs",
-     "title": "Həddən artıq uyğunluq (2016)"
+     "title": "Həddən artıq uyğunluq (2016)",
+     "views": 181000
     },
     {
      "id": "9RC5KJRxN6Q",
-     "title": "Yarımçıq xatirələr (2015)"
+     "title": "Yarımçıq xatirələr (2015)",
+     "views": 925000
     },
     {
      "id": "1_mhSOeK6D8",
-     "title": "Günaydın, mələyim (2008)"
+     "title": "Günaydın, mələyim (2008)",
+     "views": 14000
     },
     {
      "id": "xYcT3-9W1f0",
-     "title": "Dolu (2012)"
+     "title": "Dolu (2012)",
+     "views": 1100000
     },
     {
      "id": "Es3DYf26Fhg",
-     "title": "Dərvişin qeydləri (2013)"
+     "title": "Dərvişin qeydləri (2013)",
+     "views": 13000
     },
     {
      "id": "m_nS3-UeLa0",
-     "title": "İçəri şəhər (2016)"
+     "title": "İçəri şəhər (2016)",
+     "views": 67000
     },
     {
      "id": "u94OuzAQY0I",
-     "title": "Qırmızı bağ (2016)"
+     "title": "Qırmızı bağ (2016)",
+     "views": 210000
     },
     {
      "id": "U7tx-2sq8v0",
-     "title": "Qisas almadan ölmə. Keçmişdən məktublar (2013)"
+     "title": "Qisas almadan ölmə. Keçmişdən məktublar (2013)",
+     "views": 23000
     },
     {
      "id": "m80bPY_U5nI",
-     "title": "Həm ziyarət, həm ticarət (1995)"
+     "title": "Həm ziyarət, həm ticarət (1995)",
+     "views": 179000
     },
     {
      "id": "P0jcgIcdvpo",
-     "title": "Fəryad (1993)"
+     "title": "Fəryad (1993)",
+     "views": 436000
     },
     {
      "id": "ePwpbTqnksY",
-     "title": "Ümid (1995)"
+     "title": "Ümid (1995)",
+     "views": 75000
     },
     {
      "id": "c63hK7vBxmA",
-     "title": "\"Ağ-qara\" gecələr ( 2013)"
+     "title": "\"Ağ-qara\" gecələr ( 2013)",
+     "views": 17000
     },
     {
      "id": "uFKf9BvCyeU",
-     "title": "Məkanın melodiyası (2004)"
+     "title": "Məkanın melodiyası (2004)",
+     "views": 47000
     },
     {
      "id": "sd0ysdB6W2s",
-     "title": "Tərsinə çevrilən dünya (2011)"
+     "title": "Tərsinə çevrilən dünya (2011)",
+     "views": 134000
     },
     {
      "id": "aFW0qZBOWIE",
-     "title": "Axırıncı dayanacaq (2014)"
+     "title": "Axırıncı dayanacaq (2014)",
+     "views": 658000
     },
     {
      "id": "RLfkKCSOLO0",
-     "title": "Hacı Qara (2002)"
+     "title": "Hacı Qara (2002)",
+     "views": 81000
     },
     {
      "id": "DkK6o_INw2g",
-     "title": "Yalan (2005)"
+     "title": "Yalan (2005)",
+     "views": 172000
     },
     {
      "id": "klg4QIznODY",
-     "title": "Od içində (1978)"
+     "title": "Od içində (1978)",
+     "views": 452000
     },
     {
      "id": "br9zD5f-c4A",
-     "title": "Bizim Cəbiş müəllim (1969) | Our Teacher Jabish"
+     "title": "Bizim Cəbiş müəllim (1969) | Our Teacher Jabish",
+     "views": 850000
     },
     {
      "id": "b_rVza9XrB4",
-     "title": "Uzaq sahillərdə (1958)"
+     "title": "Uzaq sahillərdə (1958)",
+     "views": 194000
     },
     {
      "id": "NI9D6hvuOGE",
-     "title": "Yeddi oğul istərəm (1970)"
+     "title": "Yeddi oğul istərəm (1970)",
+     "views": 1300000
     },
     {
      "id": "HD_TLBLipgw",
-     "title": "Arxadan vurulan zərbə (1977)"
+     "title": "Arxadan vurulan zərbə (1977)",
+     "views": 1300000
     },
     {
      "id": "phEjrY4czs4",
-     "title": "Sən niyə susursan? (1966)"
+     "title": "Sən niyə susursan? (1966)",
+     "views": 216000
     },
     {
      "id": "vABWeekHdjU",
-     "title": "Telefonçu qız (1962)"
+     "title": "Telefonçu qız (1962)",
+     "views": 30000
     },
     {
      "id": "U1csklsXuAs",
-     "title": "Nəsimi (1973)"
+     "title": "Nəsimi (1973)",
+     "views": 715000
     },
     {
      "id": "2hRp7-F_8Iw",
-     "title": "O olmasın, bu olsun (1956)"
+     "title": "O olmasın, bu olsun (1956)",
+     "views": 131000
     },
     {
      "id": "aSX1AO1zF6Q",
-     "title": "Uşaqlığın son gecəsi (1968) | The Last Night of Childhood"
+     "title": "Uşaqlığın son gecəsi (1968) | The Last Night of Childhood",
+     "views": 564000
     },
     {
      "id": "-Y1JmAZeUMA",
-     "title": "Əhməd haradadır? (1963)"
+     "title": "Əhməd haradadır? (1963)",
+     "views": 2400000
     },
     {
      "id": "596lOCYdiaA",
-     "title": "Gün keçdi (1971)"
+     "title": "Gün keçdi (1971)",
+     "views": 278000
     },
     {
      "id": "TGzQ9hRpffA",
-     "title": "Babamızın babasının babası (1981)"
+     "title": "Babamızın babasının babası (1981)",
+     "views": 228000
     },
     {
      "id": "4ILjM5NzSKs",
-     "title": "Dərviş Parisi partladır (1976)"
+     "title": "Dərviş Parisi partladır (1976)",
+     "views": 549000
     },
     {
      "id": "x7GxpWC20Cc",
-     "title": "Dədə Qorqud (1975)"
+     "title": "Dədə Qorqud (1975)",
+     "views": 824000
     },
     {
      "id": "cMuB6vv13Ps",
-     "title": "Alma almaya bənzər (1975)"
+     "title": "Alma almaya bənzər (1975)",
+     "views": 473000
     },
     {
      "id": "bPjf942ZYmc",
-     "title": "Tütək səsi (1975)"
+     "title": "Tütək səsi (1975)",
+     "views": 164000
     },
     {
      "id": "CHSocBvQmBw",
-     "title": "Möcüzələr adası (1963)"
+     "title": "Möcüzələr adası (1963)",
+     "views": 44000
     },
     {
      "id": "2auKCopLedM",
-     "title": "Bəyin oğurlanması (1985)"
+     "title": "Bəyin oğurlanması (1985)",
+     "views": 1100000
     },
     {
      "id": "zeDXLXmPBPA",
-     "title": "Gümüşgöl əfsanəsi (1984)"
+     "title": "Gümüşgöl əfsanəsi (1984)",
+     "views": 141000
     },
     {
      "id": "JVQRfwXtcOQ",
-     "title": "Cin mikrorayonda (1985)"
+     "title": "Cin mikrorayonda (1985)",
+     "views": 66000
     },
     {
      "id": "2ZX5ssKQwqw",
-     "title": "Axırıncı aşırım (1971)"
+     "title": "Axırıncı aşırım (1971)",
+     "views": 2700000
     },
     {
      "id": "JFGKyPqQuwA",
-     "title": "Qaynana (1978) filmi"
+     "title": "Qaynana (1978) filmi",
+     "views": 2700000
     },
     {
      "id": "QJWHSuzBa6Q",
-     "title": "Yol əhvalatı (1980)"
+     "title": "Yol əhvalatı (1980)",
+     "views": 2100000
     },
     {
      "id": "LN67kcl2DeY",
-     "title": "İstintaq (1979)"
+     "title": "İstintaq (1979)",
+     "views": 313000
     },
     {
      "id": "HRrs3pW_1ok",
-     "title": "Arşın mal alan (1965)"
+     "title": "Arşın mal alan (1965)",
+     "views": 838000
     },
     {
      "id": "LfFApsH1Kz8",
-     "title": "Böyük dayaq (1962)"
+     "title": "Böyük dayaq (1962)",
+     "views": 76000
     },
     {
      "id": "Js9RX9k5VnI",
-     "title": "Ögey ana (1958)"
+     "title": "Ögey ana (1958)",
+     "views": 2100000
     },
     {
      "id": "SzXbMIebD5w",
-     "title": "Sehrli xalat (1964)"
+     "title": "Sehrli xalat (1964)",
+     "views": 47000
     },
     {
      "id": "Y6s-lnv74oA",
-     "title": "Ölsəm... bağışla (1989)"
+     "title": "Ölsəm... bağışla (1989)",
+     "views": 330000
     },
     {
      "id": "OZvmNlhRISE",
-     "title": "O qızı tapın (1970)"
+     "title": "O qızı tapın (1970)",
+     "views": 41000
     },
     {
      "id": "5Ey7IYtSoCM",
-     "title": "Ulduz (1964)"
+     "title": "Ulduz (1964)",
+     "views": 919000
     },
     {
      "id": "SJ4aSq5ZgO0",
-     "title": "Firəngiz (1975)"
+     "title": "Firəngiz (1975)",
+     "views": 33000
     },
     {
      "id": "KsrvZ8OFBqY",
-     "title": "Park (1983)"
+     "title": "Park (1983)",
+     "views": 241000
     },
     {
      "id": "U85W2-7XzAo",
-     "title": "Pəncərə (1991)"
+     "title": "Pəncərə (1991)",
+     "views": 296000
     },
     {
      "id": "9-IaqW9pHJ4",
-     "title": "Sahilsiz gecə (1989)"
+     "title": "Sahilsiz gecə (1989)",
+     "views": 192000
     },
     {
      "id": "JZ44PkW3Ipk",
-     "title": "Nar bağı (2017)"
+     "title": "Nar bağı (2017)",
+     "views": 92000
     },
     {
      "id": "wZTrcrucGt4",
-     "title": "Yay günlərində xəzan yarpaqları (1986)"
+     "title": "Yay günlərində xəzan yarpaqları (1986)",
+     "views": 32000
     },
     {
      "id": "zkfAy7DUT3o",
-     "title": "Yaramaz (1988)"
+     "title": "Yaramaz (1988)",
+     "views": 68000
     },
     {
      "id": "1ErjO8DlkCI",
-     "title": "Sizi dünyalar qədər sevirdim (1985)"
+     "title": "Sizi dünyalar qədər sevirdim (1985)",
+     "views": 95000
     },
     {
      "id": "6FKwIef3D7o",
-     "title": "Səhər (1960)"
+     "title": "Səhər (1960)",
+     "views": 228000
     },
     {
      "id": "t9NyeiJKTsQ",
-     "title": "Nabat (2014)"
+     "title": "Nabat (2014)",
+     "views": 161000
     },
     {
      "id": "OQwBXsTSCtE",
-     "title": "Sübhün səfiri (2012)"
+     "title": "Sübhün səfiri (2012)",
+     "views": 55000
     },
     {
      "id": "OC_Eyd4M5Ao",
-     "title": "40-cı paraleldə (2016)"
+     "title": "40-cı paraleldə (2016)",
+     "views": 13000
     },
     {
      "id": "ahNZIRCIAO8",
-     "title": "Ağ atlı oğlan (1995)"
+     "title": "Ağ atlı oğlan (1995)",
+     "views": 21000
     },
     {
      "id": "Q7Xl-LGP3LU",
-     "title": "Nar bağı (2017)"
+     "title": "Nar bağı (2017)",
+     "views": 132000
     },
     {
      "id": "RJKIMEbMimo",
-     "title": "Ovsunçu (2002)"
+     "title": "Ovsunçu (2002)",
+     "views": 24000
     },
     {
      "id": "PiSqFzlnKnw",
-     "title": "Gecə qatarında qətl (1990)"
+     "title": "Gecə qatarında qətl (1990)",
+     "views": 512000
     },
     {
      "id": "p0hsPdzM_zg",
-     "title": "Girov (2005)"
+     "title": "Girov (2005)",
+     "views": 36000
     },
     {
      "id": "NAqOFMCf7os",
-     "title": "Tолько ты (1986)"
+     "title": "Tолько ты (1986)",
+     "views": 65000
     },
     {
      "id": "xcqavFiRdFI",
-     "title": "Qala (2008) | The Castle"
+     "title": "Qala (2008) | The Castle",
+     "views": 25000
     },
     {
      "id": "lefj-XvePV8",
-     "title": "İnsan məskən salır (1967)"
+     "title": "İnsan məskən salır (1967)",
+     "views": 29000
     },
     {
      "id": "ck3ZhneDbyI",
-     "title": "Nar bağı | Гранатовый сад (2017)"
+     "title": "Nar bağı | Гранатовый сад (2017)",
+     "views": 93000
     },
     {
      "id": "Wr_5UP99n38",
-     "title": "Onu bağışlamaq olarmı? (1959)"
+     "title": "Onu bağışlamaq olarmı? (1959)",
+     "views": 599000
     },
     {
      "id": "YUPIIrgwhuA",
-     "title": "Qatır Məmməd (1974)"
+     "title": "Qatır Məmməd (1974)",
+     "views": 2300000
     },
     {
      "id": "35ZOIvL_VMk",
-     "title": "Qızıl qaz (1972)"
+     "title": "Qızıl qaz (1972)",
+     "views": 118000
     },
     {
      "id": "p6wXkPkVa8E",
-     "title": "Sahilsiz gecə (1989)"
+     "title": "Sahilsiz gecə (1989)",
+     "views": 461000
     },
     {
      "id": "88uxFYb1354",
-     "title": "Şərikli çörək | Shared bread (1969)"
+     "title": "Shared bread",
+     "views": 508000
     },
     {
      "id": "XVdKLmqYm9U",
-     "title": "Перед закрытой дверью (1981)"
+     "title": "Перед закрытой дверью (1981)",
+     "views": 96000
     },
     {
      "id": "_vxgMXuHnwc",
-     "title": "Bəxtiyar (1955)"
+     "title": "Bəxtiyar (1955)",
+     "views": 448000
     },
     {
      "id": "yfPWDxvogXY",
-     "title": "Görüş (1955)"
+     "title": "Görüş (1955)",
+     "views": 1100000
     },
     {
      "id": "mZTbGUGk7Rc",
-     "title": "O olmasın, bu olsun (1956)"
+     "title": "O olmasın, bu olsun (1956)",
+     "views": 1300000
     },
     {
      "id": "DTLxHu9PVhY",
-     "title": "Bir cənub şəhərində (1969)"
+     "title": "Bir cənub şəhərində (1969)",
+     "views": 192000
     },
     {
      "id": "g7apfwPQ_70",
-     "title": "Ad günü (1977)"
+     "title": "Ad günü (1977)",
+     "views": 478000
     },
     {
      "id": "0lGWhpqXrRU",
-     "title": "Arşın mal alan (1945) - rəngləndirilmiş versiya"
+     "title": "Arşın mal alan (1945) - rəngləndirilmiş versiya",
+     "views": 97000
     },
     {
      "id": "Mctfb_hvsGE",
-     "title": "Əsl dost (1959)"
+     "title": "Əsl dost (1959)",
+     "views": 73000
     },
     {
      "id": "qnILHJ2NsPY",
-     "title": "Qızmar günəş altında (1957)"
+     "title": "Qızmar günəş altında (1957)",
+     "views": 725000
     },
     {
      "id": "yOIpgYGqa7g",
-     "title": "Uzaq sahillərdə (1958)"
+     "title": "Uzaq sahillərdə (1958)",
+     "views": 1100000
     },
     {
      "id": "TiV03AGUA2g",
-     "title": "İstintaq davam edir (1966)"
+     "title": "İstintaq davam edir (1966)",
+     "views": 143000
     },
     {
      "id": "--JkGGPcxeY",
-     "title": "Mən ki gözəl deyildim (1968)"
+     "title": "Mən ki gözəl deyildim (1968)",
+     "views": 114000
     },
     {
      "id": "Xiq9edTTktY",
-     "title": "Bir qalanın sirri (1959)"
+     "title": "Bir qalanın sirri (1959)",
+     "views": 1200000
     },
     {
      "id": "8xHIu4-I-1Y",
-     "title": "Fətəli xan (1947)"
+     "title": "Fətəli xan (1947)",
+     "views": 46000
     },
     {
      "id": "k1NbwevShMk",
-     "title": "Uşaqlığın son gecəsi (1968)"
+     "title": "Uşaqlığın son gecəsi (1968)",
+     "views": 2100
     },
     {
      "id": "-bmpuq-0_QM",
-     "title": "Ən vacib müsahibə (1971)"
+     "title": "Ən vacib müsahibə (1971)",
+     "views": 42000
     },
     {
      "id": "hrKn5tocaAQ",
-     "title": "Xatirələr sahili (1972)"
+     "title": "Xatirələr sahili (1972)",
+     "views": 75000
     },
     {
      "id": "LY3tSAhPMGA",
-     "title": "Bizim küçə (1961)"
+     "title": "Bizim küçə (1961)",
+     "views": 249000
     },
     {
      "id": "yt-1zuQJ3nA",
-     "title": "Dəli Kür (1969)"
+     "title": "Dəli Kür (1969)",
+     "views": 466000
     },
     {
      "id": "AEYQsu-rkmc",
-     "title": "Qanun naminə (1968)"
+     "title": "Qanun naminə (1968)",
+     "views": 500000
     },
     {
      "id": "Osuji5TvA3Y",
-     "title": "O qızı tapın (1970)"
+     "title": "O qızı tapın (1970)",
+     "views": 301000
     },
     {
      "id": "M06c43Bc2-k",
-     "title": "Böyük dayaq (1962)"
+     "title": "Böyük dayaq (1962)",
+     "views": 1700000
     },
     {
      "id": "Jw7r3CSr69U",
-     "title": "De ki, məni sevirsən! (1977)"
+     "title": "De ki, məni sevirsən! (1977)",
+     "views": 156000
     },
     {
      "id": "iBLMmGPu9gM",
-     "title": "Güllələnmə təxirə salınır!... (2002)"
+     "title": "Güllələnmə təxirə salınır!... (2002)",
+     "views": 362000
     }
    ]
   },
   {
    "id": "PLAtI5OWgNzB1wzuPM18PZ2eKSagWgFMAv",
    "lang": "az",
+   "kind": "film",
    "videos": [
     {
      "id": "br9zD5f-c4A",
-     "title": "Bizim Cəbiş müəllim (1969) | Our Teacher Jabish"
+     "title": "Bizim Cəbiş müəllim (1969) | Our Teacher Jabish",
+     "views": 850000
     },
     {
      "id": "b_rVza9XrB4",
-     "title": "Uzaq sahillərdə (1958)"
+     "title": "Uzaq sahillərdə (1958)",
+     "views": 194000
     },
     {
      "id": "NI9D6hvuOGE",
-     "title": "Yeddi oğul istərəm (1970)"
+     "title": "Yeddi oğul istərəm (1970)",
+     "views": 1300000
     },
     {
      "id": "HD_TLBLipgw",
-     "title": "Arxadan vurulan zərbə (1977)"
+     "title": "Arxadan vurulan zərbə (1977)",
+     "views": 1300000
     },
     {
      "id": "phEjrY4czs4",
-     "title": "Sən niyə susursan? (1966)"
+     "title": "Sən niyə susursan? (1966)",
+     "views": 216000
     },
     {
      "id": "vABWeekHdjU",
-     "title": "Telefonçu qız (1962)"
+     "title": "Telefonçu qız (1962)",
+     "views": 30000
     },
     {
      "id": "U1csklsXuAs",
-     "title": "Nəsimi (1973)"
+     "title": "Nəsimi (1973)",
+     "views": 715000
     },
     {
      "id": "2hRp7-F_8Iw",
-     "title": "O olmasın, bu olsun (1956)"
+     "title": "O olmasın, bu olsun (1956)",
+     "views": 131000
     },
     {
      "id": "aSX1AO1zF6Q",
-     "title": "Uşaqlığın son gecəsi (1968) | The Last Night of Childhood"
+     "title": "Uşaqlığın son gecəsi (1968) | The Last Night of Childhood",
+     "views": 564000
     },
     {
      "id": "-Y1JmAZeUMA",
-     "title": "Əhməd haradadır? (1963)"
+     "title": "Əhməd haradadır? (1963)",
+     "views": 2400000
     },
     {
      "id": "596lOCYdiaA",
-     "title": "Gün keçdi (1971)"
+     "title": "Gün keçdi (1971)",
+     "views": 278000
     },
     {
      "id": "TGzQ9hRpffA",
-     "title": "Babamızın babasının babası (1981)"
+     "title": "Babamızın babasının babası (1981)",
+     "views": 228000
     },
     {
      "id": "4ILjM5NzSKs",
-     "title": "Dərviş Parisi partladır (1976)"
+     "title": "Dərviş Parisi partladır (1976)",
+     "views": 549000
     },
     {
      "id": "x7GxpWC20Cc",
-     "title": "Dədə Qorqud (1975)"
+     "title": "Dədə Qorqud (1975)",
+     "views": 824000
     },
     {
      "id": "cMuB6vv13Ps",
-     "title": "Alma almaya bənzər (1975)"
+     "title": "Alma almaya bənzər (1975)",
+     "views": 473000
     },
     {
      "id": "bPjf942ZYmc",
-     "title": "Tütək səsi (1975)"
+     "title": "Tütək səsi (1975)",
+     "views": 164000
     },
     {
      "id": "CHSocBvQmBw",
-     "title": "Möcüzələr adası (1963)"
+     "title": "Möcüzələr adası (1963)",
+     "views": 44000
     },
     {
      "id": "2auKCopLedM",
-     "title": "Bəyin oğurlanması (1985)"
+     "title": "Bəyin oğurlanması (1985)",
+     "views": 1100000
     },
     {
      "id": "zeDXLXmPBPA",
-     "title": "Gümüşgöl əfsanəsi (1984)"
+     "title": "Gümüşgöl əfsanəsi (1984)",
+     "views": 141000
     },
     {
      "id": "JVQRfwXtcOQ",
-     "title": "Cin mikrorayonda (1985)"
+     "title": "Cin mikrorayonda (1985)",
+     "views": 66000
     },
     {
      "id": "2ZX5ssKQwqw",
-     "title": "Axırıncı aşırım (1971)"
+     "title": "Axırıncı aşırım (1971)",
+     "views": 2700000
     },
     {
      "id": "JFGKyPqQuwA",
-     "title": "Qaynana (1978) filmi"
+     "title": "Qaynana (1978) filmi",
+     "views": 2700000
     },
     {
      "id": "QJWHSuzBa6Q",
-     "title": "Yol əhvalatı (1980)"
+     "title": "Yol əhvalatı (1980)",
+     "views": 2100000
     },
     {
      "id": "LN67kcl2DeY",
-     "title": "İstintaq (1979)"
+     "title": "İstintaq (1979)",
+     "views": 313000
     },
     {
      "id": "HRrs3pW_1ok",
-     "title": "Arşın mal alan (1965)"
+     "title": "Arşın mal alan (1965)",
+     "views": 838000
     },
     {
      "id": "LfFApsH1Kz8",
-     "title": "Böyük dayaq (1962)"
+     "title": "Böyük dayaq (1962)",
+     "views": 76000
     },
     {
      "id": "Js9RX9k5VnI",
-     "title": "Ögey ana (1958)"
+     "title": "Ögey ana (1958)",
+     "views": 2100000
     },
     {
      "id": "SzXbMIebD5w",
-     "title": "Sehrli xalat (1964)"
+     "title": "Sehrli xalat (1964)",
+     "views": 47000
     },
     {
      "id": "Y6s-lnv74oA",
-     "title": "Ölsəm... bağışla (1989)"
+     "title": "Ölsəm... bağışla (1989)",
+     "views": 330000
     },
     {
      "id": "OZvmNlhRISE",
-     "title": "O qızı tapın (1970)"
+     "title": "O qızı tapın (1970)",
+     "views": 41000
     },
     {
      "id": "5Ey7IYtSoCM",
-     "title": "Ulduz (1964)"
+     "title": "Ulduz (1964)",
+     "views": 919000
     },
     {
      "id": "SJ4aSq5ZgO0",
-     "title": "Firəngiz (1975)"
+     "title": "Firəngiz (1975)",
+     "views": 33000
     },
     {
      "id": "klg4QIznODY",
-     "title": "Od içində (1978)"
+     "title": "Od içində (1978)",
+     "views": 452000
     },
     {
      "id": "KsrvZ8OFBqY",
-     "title": "Park (1983)"
+     "title": "Park (1983)",
+     "views": 241000
     },
     {
      "id": "U85W2-7XzAo",
-     "title": "Pəncərə (1991)"
+     "title": "Pəncərə (1991)",
+     "views": 296000
     },
     {
      "id": "9-IaqW9pHJ4",
-     "title": "Sahilsiz gecə (1989)"
+     "title": "Sahilsiz gecə (1989)",
+     "views": 192000
     },
     {
      "id": "wZTrcrucGt4",
-     "title": "Yay günlərində xəzan yarpaqları (1986)"
+     "title": "Yay günlərində xəzan yarpaqları (1986)",
+     "views": 32000
     },
     {
      "id": "1ErjO8DlkCI",
-     "title": "Sizi dünyalar qədər sevirdim (1985)"
+     "title": "Sizi dünyalar qədər sevirdim (1985)",
+     "views": 95000
     },
     {
      "id": "6FKwIef3D7o",
-     "title": "Səhər (1960)"
+     "title": "Səhər (1960)",
+     "views": 228000
     },
     {
      "id": "zkfAy7DUT3o",
-     "title": "Yaramaz (1988)"
+     "title": "Yaramaz (1988)",
+     "views": 68000
     },
     {
      "id": "PiSqFzlnKnw",
-     "title": "Gecə qatarında qətl (1990)"
+     "title": "Gecə qatarında qətl (1990)",
+     "views": 512000
     },
     {
      "id": "Wr_5UP99n38",
-     "title": "Onu bağışlamaq olarmı? (1959)"
+     "title": "Onu bağışlamaq olarmı? (1959)",
+     "views": 599000
     },
     {
      "id": "YUPIIrgwhuA",
-     "title": "Qatır Məmməd (1974)"
+     "title": "Qatır Məmməd (1974)",
+     "views": 2300000
     },
     {
      "id": "NAqOFMCf7os",
-     "title": "Tолько ты (1986)"
+     "title": "Tолько ты (1986)",
+     "views": 65000
     },
     {
      "id": "lefj-XvePV8",
-     "title": "İnsan məskən salır (1967)"
+     "title": "İnsan məskən salır (1967)",
+     "views": 29000
     },
     {
      "id": "p6wXkPkVa8E",
-     "title": "Sahilsiz gecə (1989)"
+     "title": "Sahilsiz gecə (1989)",
+     "views": 461000
     },
     {
      "id": "88uxFYb1354",
-     "title": "Şərikli çörək | Shared bread (1969)"
+     "title": "Shared bread",
+     "views": 508000
     },
     {
      "id": "35ZOIvL_VMk",
-     "title": "Qızıl qaz (1972)"
+     "title": "Qızıl qaz (1972)",
+     "views": 118000
     },
     {
      "id": "XVdKLmqYm9U",
-     "title": "Перед закрытой дверью (1981)"
+     "title": "Перед закрытой дверью (1981)",
+     "views": 96000
     },
     {
      "id": "_vxgMXuHnwc",
-     "title": "Bəxtiyar (1955)"
+     "title": "Bəxtiyar (1955)",
+     "views": 448000
     },
     {
      "id": "yfPWDxvogXY",
-     "title": "Görüş (1955)"
+     "title": "Görüş (1955)",
+     "views": 1100000
     },
     {
      "id": "mZTbGUGk7Rc",
-     "title": "O olmasın, bu olsun (1956)"
+     "title": "O olmasın, bu olsun (1956)",
+     "views": 1300000
     },
     {
      "id": "DTLxHu9PVhY",
-     "title": "Bir cənub şəhərində (1969)"
+     "title": "Bir cənub şəhərində (1969)",
+     "views": 192000
     },
     {
      "id": "qnILHJ2NsPY",
-     "title": "Qızmar günəş altında (1957)"
+     "title": "Qızmar günəş altında (1957)",
+     "views": 725000
     },
     {
      "id": "yOIpgYGqa7g",
-     "title": "Uzaq sahillərdə (1958)"
+     "title": "Uzaq sahillərdə (1958)",
+     "views": 1100000
     },
     {
      "id": "0lGWhpqXrRU",
-     "title": "Arşın mal alan (1945) - rəngləndirilmiş versiya"
+     "title": "Arşın mal alan (1945) - rəngləndirilmiş versiya",
+     "views": 97000
     },
     {
      "id": "Mctfb_hvsGE",
-     "title": "Əsl dost (1959)"
+     "title": "Əsl dost (1959)",
+     "views": 73000
     },
     {
      "id": "TiV03AGUA2g",
-     "title": "İstintaq davam edir (1966)"
+     "title": "İstintaq davam edir (1966)",
+     "views": 143000
     },
     {
      "id": "--JkGGPcxeY",
-     "title": "Mən ki gözəl deyildim (1968)"
+     "title": "Mən ki gözəl deyildim (1968)",
+     "views": 114000
     },
     {
      "id": "Xiq9edTTktY",
-     "title": "Bir qalanın sirri (1959)"
+     "title": "Bir qalanın sirri (1959)",
+     "views": 1200000
     },
     {
      "id": "8xHIu4-I-1Y",
-     "title": "Fətəli xan (1947)"
+     "title": "Fətəli xan (1947)",
+     "views": 46000
     },
     {
      "id": "k1NbwevShMk",
-     "title": "Uşaqlığın son gecəsi (1968)"
+     "title": "Uşaqlığın son gecəsi (1968)",
+     "views": 2100
     },
     {
      "id": "-bmpuq-0_QM",
-     "title": "Ən vacib müsahibə (1971)"
+     "title": "Ən vacib müsahibə (1971)",
+     "views": 42000
     },
     {
      "id": "hrKn5tocaAQ",
-     "title": "Xatirələr sahili (1972)"
+     "title": "Xatirələr sahili (1972)",
+     "views": 75000
     },
     {
      "id": "LY3tSAhPMGA",
-     "title": "Bizim küçə (1961)"
+     "title": "Bizim küçə (1961)",
+     "views": 249000
     },
     {
      "id": "yt-1zuQJ3nA",
-     "title": "Dəli Kür (1969)"
+     "title": "Dəli Kür (1969)",
+     "views": 466000
     },
     {
      "id": "AEYQsu-rkmc",
-     "title": "Qanun naminə (1968)"
+     "title": "Qanun naminə (1968)",
+     "views": 500000
     },
     {
      "id": "Osuji5TvA3Y",
-     "title": "O qızı tapın (1970)"
+     "title": "O qızı tapın (1970)",
+     "views": 301000
     },
     {
      "id": "M06c43Bc2-k",
-     "title": "Böyük dayaq (1962)"
+     "title": "Böyük dayaq (1962)",
+     "views": 1700000
     },
     {
      "id": "Jw7r3CSr69U",
-     "title": "De ki, məni sevirsən! (1977)"
+     "title": "De ki, məni sevirsən! (1977)",
+     "views": 156000
     },
     {
      "id": "Vh3jmsJDzu4",
-     "title": "Qərib cinlər diyarında (1977)"
+     "title": "Qərib cinlər diyarında (1977)",
+     "views": 26000
     },
     {
      "id": "xKVvYhs6YZc",
-     "title": "Sehrli xalat (1964)"
+     "title": "Sehrli xalat (1964)",
+     "views": 803000
     },
     {
      "id": "Yp40I3vLh24",
-     "title": "Xoşbəxtlik qayğıları (1976)"
+     "title": "Xoşbəxtlik qayğıları (1976)",
+     "views": 173000
     },
     {
      "id": "OJ0Frq-C8As",
-     "title": "Var olun, qızlar... (1972)"
+     "title": "Var olun, qızlar... (1972)",
+     "views": 61000
     },
     {
      "id": "UibxoZ9z_Ao",
-     "title": "Gözlə məni (1980)"
+     "title": "Gözlə məni (1980)",
+     "views": 419000
     },
     {
      "id": "kZpBXp_Q4H0",
-     "title": "Mən mahnı qoşuram (1979)"
+     "title": "Mən mahnı qoşuram (1979)",
+     "views": 77000
     },
     {
      "id": "wqEVy2ww35c",
-     "title": "Onun bəlalı sevgisi (1980)"
+     "title": "Onun bəlalı sevgisi (1980)",
+     "views": 298000
     },
     {
      "id": "bpkBTImuwkI",
-     "title": "Yarımçıq qalmış mahnı (1979)"
+     "title": "Yarımçıq qalmış mahnı (1979)",
+     "views": 13000
     },
     {
      "id": "dDfsOzVwVEQ",
-     "title": "Qızıl uçurum (1980)"
+     "title": "Qızıl uçurum (1980)",
+     "views": 452000
     },
     {
      "id": "MxrGbakkAtc",
-     "title": "Юбилей Данте (1978)"
+     "title": "Dante's Jubilee (1978)",
+     "views": 4700
     },
     {
      "id": "in4TPD5-pkQ",
-     "title": "Əlavə iz (1981)"
+     "title": "Əlavə iz (1981)",
+     "views": 260000
     },
     {
      "id": "FtEFserjMKU",
-     "title": "Əzablı yollar (1982)"
+     "title": "Əzablı yollar (1982)",
+     "views": 134000
     },
     {
      "id": "W84imt8Ly80",
-     "title": "Ölsəm... bağışla (1989)"
+     "title": "Ölsəm... bağışla (1989)",
+     "views": 284000
     },
     {
      "id": "yFJ9qqhpu_Y",
-     "title": "Sevil (1970)"
+     "title": "Sevil (1970)",
+     "views": 40000
     },
     {
      "id": "uXJwyGfjjmU",
-     "title": "Çətirimiz buludlardır (1976)"
+     "title": "Çətirimiz buludlardır (1976)",
+     "views": 52000
     },
     {
      "id": "-rKXnz4JoqA",
-     "title": "O dünyadan salam (1991)"
+     "title": "O dünyadan salam (1991)",
+     "views": 203000
     },
     {
      "id": "EntBRbGwC4E",
-     "title": "Evlənmək istəyirəm (1983)"
+     "title": "Evlənmək istəyirəm (1983)",
+     "views": 112000
     },
     {
      "id": "nhxq5YBQgQ0",
-     "title": "Тайна корабельных часов (1983)"
+     "title": "The Mystery of the Ship's Clock (1983)",
+     "views": 8400
     },
     {
      "id": "lXxuWeiV69c",
-     "title": "Выше только облака (1976)"
+     "title": "Only the Clouds Are Higher (1976)",
+     "views": 3300
     },
     {
      "id": "D-4Y_-wzKdI",
-     "title": "Я придумываю песню (1979)"
+     "title": "Я придумываю песню (1979)",
+     "views": 7100
     },
     {
      "id": "ejXWMAbiOh8",
-     "title": "Şir evdən getdi (1977)"
+     "title": "Şir evdən getdi (1977)",
+     "views": 154000
     },
     {
      "id": "udNvstrMV74",
-     "title": "Лев ушёл из дома (1977)"
+     "title": "Лев ушёл из дома (1977)",
+     "views": 16000
     },
     {
      "id": "jMBBwQFaPCo",
-     "title": "Qərib cinlər diyarında (1977)"
+     "title": "Qərib cinlər diyarında (1977)",
+     "views": 686000
     },
     {
      "id": "TTJEJKzXFrQ",
-     "title": "Qorxma, mən səninləyəm (1981)"
+     "title": "Qorxma, mən səninləyəm (1981)",
+     "views": 39000
     },
     {
      "id": "ZyOAmoVHYUY",
-     "title": "Не бойся, я с тобой! (1981)"
+     "title": "Не бойся, я с тобой! (1981)",
+     "views": 82000
     },
     {
      "id": "Iw-YsQQ3RRA",
-     "title": "Üzeyir ömrü (1981)"
+     "title": "Üzeyir ömrü (1981)",
+     "views": 60000
     },
     {
      "id": "yUoGA7AeYZE",
-     "title": "Bağ mövsümü (1985)"
+     "title": "Bağ mövsümü (1985)",
+     "views": 97000
     },
     {
      "id": "LIlC1Mqx9Ls",
-     "title": "Burulğan (1986)"
+     "title": "Burulğan (1986)",
+     "views": 30000
     },
     {
      "id": "VZf66_n1kxk",
-     "title": "Yay günlərində xəzan yarpaqları (1986)"
+     "title": "Yay günlərində xəzan yarpaqları (1986)",
+     "views": 168000
     },
     {
      "id": "LOf6jXFGdyc",
-     "title": "Листопад в пору лета (1986)"
+     "title": "Листопад в пору лета (1986)",
+     "views": 3400
+    }
+   ]
+  },
+  {
+   "id": "PLAtI5OWgNzB2yNSbw37qGVVI8imrRaVlI",
+   "lang": "az",
+   "kind": "film",
+   "videos": [
+    {
+     "id": "OC_Eyd4M5Ao",
+     "title": "40-cı paraleldə (2016)",
+     "views": 13000
+    },
+    {
+     "id": "Qvr8ktiiR9w",
+     "title": "Biri vardı, biri yoxdu (1967)",
+     "views": 51000
+    },
+    {
+     "id": "OaXW1EpwlL4",
+     "title": "Qara bağ (2015)",
+     "views": 4700
+    },
+    {
+     "id": "PTUbGRAt4Zc",
+     "title": "Onun atası (2016)",
+     "views": 3500
+    },
+    {
+     "id": "NE_lJSVH2i0",
+     "title": "Zabit şərəfi (2016)",
+     "views": 7200
+    },
+    {
+     "id": "yYiCZpO1c3w",
+     "title": "Dənizə çıxmaq qorxuludur (1973)",
+     "views": 9200
+    },
+    {
+     "id": "ptuPw9M94WU",
+     "title": "Sonuncu (2013)",
+     "views": 6000
+    },
+    {
+     "id": "WrJTGtb-dhU",
+     "title": "İnikas (2014)",
+     "views": 1400
+    },
+    {
+     "id": "JDS5w0cZ6N0",
+     "title": "Qonşu qadın (2015)",
+     "views": 267000
+    },
+    {
+     "id": "38DibfMeZ84",
+     "title": "Ömrün səhifələri (1974)",
+     "views": 155000
+    },
+    {
+     "id": "ECxLZ2XuyJg",
+     "title": "Axırıncı namaz (1963)",
+     "views": 185000
+    },
+    {
+     "id": "KNe5CjxY81E",
+     "title": "Hədiyyə (2016)",
+     "views": 5400
+    },
+    {
+     "id": "kaJ8LvIzhAM",
+     "title": "Səs (2019)",
+     "views": 1400
+    },
+    {
+     "id": "PLT5bfJjPhI",
+     "title": "Sənin sevdiyin musiqi (2019)",
+     "views": 2000
+    },
+    {
+     "id": "M3TQwthPN4I",
+     "title": "Titrəmə (2021)",
+     "views": 4100
+    },
+    {
+     "id": "6vvYK3QY4SQ",
+     "title": "Sizə məktub var (2021)",
+     "views": 161000
+    },
+    {
+     "id": "SNzKVwLCEWc",
+     "title": "Naməlum dahi (2019)",
+     "views": 2000
+    },
+    {
+     "id": "Tk-k9a9fKTc",
+     "title": "Dan yeli (2019)",
+     "views": 23000
+    },
+    {
+     "id": "D-dXoHJMc_I",
+     "title": "Postskriptum (2015)",
+     "views": 2000
+    },
+    {
+     "id": "hgS6eZ5YtAA",
+     "title": "Lal çinar (2005)",
+     "views": 3100
+    },
+    {
+     "id": "0G_Op07SMbk",
+     "title": "Бахтияр (1942)",
+     "views": 14000
+    },
+    {
+     "id": "ECn6Rk7TKOY",
+     "title": "Kazbek qutusu (1958)",
+     "views": 244000
+    },
+    {
+     "id": "nWgdP-sJ2dg",
+     "title": "Yeni il gecəsində (1958)",
+     "views": 49000
+    },
+    {
+     "id": "3CfxjoCVENM",
+     "title": "Qəribə əhvalat (1960)",
+     "views": 755000
+    },
+    {
+     "id": "1Fsu_1FVwWw",
+     "title": "Gilas ağacı (1972)",
+     "views": 57000
+    },
+    {
+     "id": "lLwxy1t5x2k",
+     "title": "İntizar (1969)",
+     "views": 29000
+    },
+    {
+     "id": "D92cvIT9Plw",
+     "title": "Matteo Falkone (1960)",
+     "views": 29000
+    },
+    {
+     "id": "sPzfrjZq3JU",
+     "title": "The Adventures of Molly (1960)",
+     "views": 21000
+    },
+    {
+     "id": "nHm4fmcUfh8",
+     "title": "Şosedə hadisə (1960)",
+     "views": 12000
+    },
+    {
+     "id": "Ug4tAoAlkc0",
+     "title": "Su ərizəsi (1964)",
+     "views": 11000
+    },
+    {
+     "id": "4S2epchK64M",
+     "title": "A Plea for Water (1964)",
+     "views": 2900
+    },
+    {
+     "id": "eOU5EWZ2m9o",
+     "title": "Старая черешня (1972)",
+     "views": 3900
+    },
+    {
+     "id": "8pWhXcAxfyg",
+     "title": "Опасной морской дорогой (1973)",
+     "views": 2300
+    },
+    {
+     "id": "ixpI1d_DPqE",
+     "title": "The Extraordinary Hunt (1974)",
+     "views": 5700
+    },
+    {
+     "id": "O7uBY5u5Y4w",
+     "title": "Diplom işi (1979)",
+     "views": 37000
+    },
+    {
+     "id": "-X5TYqhfWsM",
+     "title": "Защита диплома (1979)",
+     "views": 2200
+    },
+    {
+     "id": "3jP5lKQGk5w",
+     "title": "Liftçi qız (1966)",
+     "views": 56000
+    },
+    {
+     "id": "L5Tle5z60Ss",
+     "title": "Qaraca qız (1966)",
+     "views": 579000
+    },
+    {
+     "id": "8qZKocmV7ys",
+     "title": "Yaşa, qızıl balıq (1988)",
+     "views": 20000
+    },
+    {
+     "id": "ClEHa-PkOCU",
+     "title": "Səs | Voice (2019)",
+     "views": 1100
+    },
+    {
+     "id": "m5-sXpTc9Ns",
+     "title": "Danışan məktub (1975)",
+     "views": 43000
+    },
+    {
+     "id": "mU9MbecT2Sc",
+     "title": "Sizə məktub var | You have got a letter (2021)",
+     "views": 3900
+    },
+    {
+     "id": "Me4IY5yn09M",
+     "title": "Sizə məktub var | Вам письмо (2021)",
+     "views": 8300
+    },
+    {
+     "id": "7iIyqwH5Vos",
+     "title": "Titrəmə | Tremble (2021)",
+     "views": 2400
+    },
+    {
+     "id": "ZvnqOa1QRnc",
+     "title": "Вах!.. (1980)",
+     "views": 7100
+    },
+    {
+     "id": "VghBEOWi8UQ",
+     "title": "Arzunu yarat | Сотвори мечту (1979)",
+     "views": 1400
+    },
+    {
+     "id": "2SiEd30ctD8",
+     "title": "Dan yeli | The Breeze at Dawn (2019)-film",
+     "views": 2900
+    },
+    {
+     "id": "BsGp8Gynqvg",
+     "title": "Onun atası | His father (2016)",
+     "views": 1300
+    },
+    {
+     "id": "WR2Fe5woQtg",
+     "title": "Qara bağ | Black Ribbon (2015)",
+     "views": 1000
+    },
+    {
+     "id": "M3v9S_Y9aGw",
+     "title": "Qara bağ | Черная повязка (2015)",
+     "views": 1000
+    },
+    {
+     "id": "g8t_uTpWmiI",
+     "title": "Postskriptum | Postscript (2015)",
+     "views": 1000
+    },
+    {
+     "id": "UOsjtQv1sOw",
+     "title": "Dmitrov küçəsi, 86 | 86 Dmitrov Street (2015)",
+     "views": 3000
+    },
+    {
+     "id": "DzGsyu6QvUM",
+     "title": "Kədərim (2015)",
+     "views": 1000
+    },
+    {
+     "id": "nfVetHUojSw",
+     "title": "Yuxarıda və aşağıda (2014)",
+     "views": 2700
+    },
+    {
+     "id": "7pqqthYiA5k",
+     "title": "Sirr | Mystery (2014)",
+     "views": 1000
+    },
+    {
+     "id": "L-cH1pfYP0k",
+     "title": "İnikas | Reflection (2014)",
+     "views": 1000
+    },
+    {
+     "id": "lGeS--jH2hE",
+     "title": "Sonuncu | The Last One (2013)",
+     "views": 1300
+    },
+    {
+     "id": "rcqf11H_xO8",
+     "title": "\"Yapon\" və yaponiyalı (1990) - qısametrajlı film",
+     "views": 2500
+    },
+    {
+     "id": "7maFtlrTtIc",
+     "title": "Güzgü (1990) - qısametrajlı film",
+     "views": 44000
+    },
+    {
+     "id": "D4N2eMyrUv4",
+     "title": "Bəxtəvər (1990) - qısametrajlı film",
+     "views": 14000
+    },
+    {
+     "id": "emiueLOJpqM",
+     "title": "Hücum (1989) - qısametrajlı film",
+     "views": 15000
+    },
+    {
+     "id": "JJYQzVs7UTs",
+     "title": "Həmyerli (1989) - qısametrajlı film",
+     "views": 23000
+    },
+    {
+     "id": "H5lWN-Mz4OY",
+     "title": "Dairə (1989) - qısametrajlı film",
+     "views": 9600
+    },
+    {
+     "id": "h5-rfnksKHA",
+     "title": "Dəvətnamə (1989) - qısametrajlı film",
+     "views": 11000
+    },
+    {
+     "id": "L6XEKpmqz6U",
+     "title": "Хаш с музыкой | Musiqili xaş (1984)",
+     "views": 79000
+    },
+    {
+     "id": "h4QN4O_sS_s",
+     "title": "Так надо | Belə lazımdır (1982) - короткометражный фильм",
+     "views": 9600
+    },
+    {
+     "id": "9-JP7zUju9o",
+     "title": "Rəqiblər (1974) - qısametrajlı film",
+     "views": 161000
+    },
+    {
+     "id": "hXf_YLRsb6Q",
+     "title": "Baladadaşın ilk məhəbbəti (1974) - qısametrajlı film",
+     "views": 35000
+    },
+    {
+     "id": "eQPFNRo2IAs",
+     "title": "Nəğmə dərsi (1974) - qısametrajlı film",
+     "views": 6300
+    },
+    {
+     "id": "aaDkk5Z21io",
+     "title": "Последний рейс | Axırıncı reys (1989) - короткометражный фильм",
+     "views": 4500
+    },
+    {
+     "id": "jgkdi4v4q4I",
+     "title": "Arvadım mənim, uşaqlarım mənim (1978) - qısametrajlı film",
+     "views": 184000
+    },
+    {
+     "id": "a66t5CFiTZM",
+     "title": "Bağçada rahat yer (1978) - qısametrajlı film",
+     "views": 115000
+    },
+    {
+     "id": "EsWkI0j5nxE",
+     "title": "Toy (1978) - qısametrajlı film",
+     "views": 27000
+    },
+    {
+     "id": "52BCAjZ7iDs",
+     "title": "Dağ meşəsindən keçərkən... (1964) - qısametrajlı film",
+     "views": 32000
+    },
+    {
+     "id": "ogycIR69fUM",
+     "title": "Zirvə (1964) - qısametrajlı film",
+     "views": 15000
+    },
+    {
+     "id": "vb8gYhLYra8",
+     "title": "Cazibə qüvvəsi (1964) - qısametrajlı film",
+     "views": 28000
+    },
+    {
+     "id": "WmBWF5i0UU4",
+     "title": "Günlərin bir günü (1976) - qısametrajlı film",
+     "views": 10000
+    },
+    {
+     "id": "mp5iFq1N_NI",
+     "title": "Suita (1976) - qısametrajlı film",
+     "views": 3500
+    },
+    {
+     "id": "dRksTXr_ET4",
+     "title": "Через горный лес | Dağ meşəsindən keçərkən... (1964) - короткометражный фильм",
+     "views": 2600
+    },
+    {
+     "id": "6wtMn016HUA",
+     "title": "Вершина | Zirvə (1964) - короткометражный фильм",
+     "views": 1400
+    },
+    {
+     "id": "_bh3mbYpqJo",
+     "title": "Сила притяжения | Cazibə qüvvəsi (1964) - короткометражный фильм",
+     "views": 2000
+    },
+    {
+     "id": "6I9UKPakiP8",
+     "title": "Afroditanın qolları (1987)",
+     "views": 2200
+    },
+    {
+     "id": "IphuE2AEiKI",
+     "title": "Leylanın skripkası (2021)",
+     "views": 2500
+    }
+   ]
+  },
+  {
+   "id": "PLAtI5OWgNzB1VocO-jqiHsBtsFSoHTCwU",
+   "lang": "az",
+   "kind": "film",
+   "videos": [
+    {
+     "id": "xwxE834HLg0",
+     "title": "Шуша (1978)",
+     "views": 10000
+    },
+    {
+     "id": "q-n3knoBG-Y",
+     "title": "10 минут о Баку (1966)",
+     "views": 95000
+    },
+    {
+     "id": "LYQ_SRzf05c",
+     "title": "Arazın o tayında (1947)",
+     "views": 82000
+    },
+    {
+     "id": "nkhCDKsPwIo",
+     "title": "Naxçıvan MSSR (1959)",
+     "views": 16000
+    },
+    {
+     "id": "k_gCvcLqdMI",
+     "title": "10 минут по СССР. Баку (1970)",
+     "views": 6600
+    },
+    {
+     "id": "A0Cx4Pv8FGc",
+     "title": "Respublika stadionu (1951)",
+     "views": 6600
+    },
+    {
+     "id": "BWjV60OS59o",
+     "title": "Əmbizlərin keşiyində (1988)",
+     "views": 19000
+    },
+    {
+     "id": "0V5y_OFMjiQ",
+     "title": "Fikrət Əmirov (2022)",
+     "views": 15000
+    },
+    {
+     "id": "WTOCM0Bzkhc",
+     "title": "Baku, the capital of Soviet Azerbaijan (1977)",
+     "views": 20000
+    },
+    {
+     "id": "BYUNPqPJgYI",
+     "title": "В нашем Баку (1958)",
+     "views": 34000
+    },
+    {
+     "id": "jDhy0XdY6yo",
+     "title": "Октябрьские зори (1977)",
+     "views": 1900
+    },
+    {
+     "id": "HUi6I04QcAs",
+     "title": "Тарлан Мусаева (1980)",
+     "views": 3400
+    },
+    {
+     "id": "1xzTdluY5PM",
+     "title": "Torpağın sahibi (1976)",
+     "views": 2400
+    },
+    {
+     "id": "A4i0ec0a6Ro",
+     "title": "Cказочная сила (1978)",
+     "views": 1400
+    },
+    {
+     "id": "PuxeCR_j1Xw",
+     "title": "Fikret Amirov (belgesel, 2022)",
+     "views": 1400
+    },
+    {
+     "id": "RwsmwCai6Dc",
+     "title": "Fikrat Amirov (documentary, 2022)",
+     "views": 875
+    },
+    {
+     "id": "knsu2N01Vvw",
+     "title": "Фикрет Амиров (документальный фильм, 2022)",
+     "views": 3600
+    },
+    {
+     "id": "sGJK_YBDU4E",
+     "title": "Бакинские балконы (1986)",
+     "views": 12000
+    },
+    {
+     "id": "V4DfMDLPrLI",
+     "title": "Caspian Sea (1944)",
+     "views": 5900
+    },
+    {
+     "id": "O5DmXXOhww4",
+     "title": "Низами (1941)",
+     "views": 2600
+    },
+    {
+     "id": "lJa2pszRB-c",
+     "title": "Səttar Bəhlulzadə (1989)",
+     "views": 5700
+    },
+    {
+     "id": "zsKfTo2dx84",
+     "title": "10 dəqiqə SSRİ-yə səyahət. Bakı (1970)",
+     "views": 2200
+    },
+    {
+     "id": "iFVPKX0zIyg",
+     "title": "Arazın o tayında (1947)",
+     "views": 14000
+    },
+    {
+     "id": "o-0ZEPRAJ70",
+     "title": "Azərbaycan atları (1953)",
+     "views": 3700
+    },
+    {
+     "id": "g96c_V9Fc7k",
+     "title": "10 минут по СССР. Баку (1970)",
+     "views": 24000
+    },
+    {
+     "id": "bSh9gApQhYw",
+     "title": "10 минут о Баку (1966)",
+     "views": 19000
+    },
+    {
+     "id": "FTc_bT_bnGg",
+     "title": "Naxçıvan MSSR (1959)",
+     "views": 17000
+    },
+    {
+     "id": "ZHJDQivrllk",
+     "title": "Bu, həqiqətin səsidir. Bəstəkar Qara Qarayev (1968)",
+     "views": 3700
+    },
+    {
+     "id": "fbh21sLut_w",
+     "title": "Это вступает правда. Композитор Кара Караев (1968)",
+     "views": 2600
+    },
+    {
+     "id": "TDvKARXyKi8",
+     "title": "Payız konserti (1962)",
+     "views": 1800
+    },
+    {
+     "id": "YpHRprWcRBk",
+     "title": "Oсенний концерт (1962)",
+     "views": 760
+    },
+    {
+     "id": "4CdTTwaH_RU",
+     "title": "Respublika stadionu (1951)",
+     "views": 1700
+    },
+    {
+     "id": "TQcXNlxXvaQ",
+     "title": "Самед Вургун (1966)",
+     "views": 2300
+    },
+    {
+     "id": "YGhpZr38Z64",
+     "title": "Şirvanşahlar sarayı (1969)",
+     "views": 2600
+    },
+    {
+     "id": "eBK8Ph-_FVo",
+     "title": "This is the voice of truth. Composer Gara Garayev (1968)",
+     "views": 1100
+    },
+    {
+     "id": "Gg2EEy3bIU4",
+     "title": "Etibarlı əllər (1973)",
+     "views": 2100
+    },
+    {
+     "id": "MkzmqUznYgQ",
+     "title": "Bəstəkar Müslüm Maqomayev (1976)",
+     "views": 2000
+    },
+    {
+     "id": "IqOqTtQIU8Q",
+     "title": "Диссонанс (1978)",
+     "views": 1000
+    },
+    {
+     "id": "y6eEnEbWvNk",
+     "title": "Nizami Gəncəvi (1976)",
+     "views": 4500
+    },
+    {
+     "id": "PeuWTz34yuw",
+     "title": "Карабахские соловьи (1977)",
+     "views": 7800
+    },
+    {
+     "id": "omCZ4eV0PZs",
+     "title": "Üzeyir Hacıbəyov (1976)",
+     "views": 7600
+    },
+    {
+     "id": "GC6ZVKPdaF4",
+     "title": "Abşeron rəngləri (1982)",
+     "views": 2600
+    },
+    {
+     "id": "EFY_YZdM0Yg",
+     "title": "Под номером 8 (1988)",
+     "views": 1000
+    },
+    {
+     "id": "c0Yh-RJ6fCw",
+     "title": "Ağ-qara dünya (1991)",
+     "views": 2300
+    },
+    {
+     "id": "uCtUZRnjeJw",
+     "title": "Ağa, cəddinə qurban (1993)",
+     "views": 14000
+    },
+    {
+     "id": "M12yzVMppis",
+     "title": "Balaban (1987)",
+     "views": 3200
+    },
+    {
+     "id": "XI6LY2DZxWc",
+     "title": "Cəmşid Naxçıvanski (1982)",
+     "views": 2100
+    },
+    {
+     "id": "XPwWwa9xEX0",
+     "title": "Fikrət Əmirov (1985)",
+     "views": 2700
+    },
+    {
+     "id": "5b8qNMyuPdo",
+     "title": "L'alpeggio  (1983)",
+     "views": 2300
+    },
+    {
+     "id": "vinrMENLPgA",
+     "title": "Natəvan (1982)",
+     "views": 2500
+    },
+    {
+     "id": "ngSPv03Wzsk",
+     "title": "Neftçi - 87 (1987)",
+     "views": 24000
+    },
+    {
+     "id": "JA3iVXituQo",
+     "title": "Ömür səhifələri (1986)",
+     "views": 2100
+    },
+    {
+     "id": "jvzJVMqSN6k",
+     "title": "Гражданин, доктор, ученый (1984)",
+     "views": 750
+    },
+    {
+     "id": "t1z1e9Gv3LI",
+     "title": "Ömürdən keçən yollar (1985)",
+     "views": 2400
+    },
+    {
+     "id": "cwB-U3HYd-A",
+     "title": "Azərbaycan ağsaqqalları (1969)",
+     "views": 59000
+    },
+    {
+     "id": "qiyMdO2Durc",
+     "title": "The Road to the Top (1981)",
+     "views": 1400
+    },
+    {
+     "id": "3sKUH5ShCuM",
+     "title": "Yurdun qədim guşəsi (1984)",
+     "views": 5000
+    },
+    {
+     "id": "8pfu7R7KvKQ",
+     "title": "Daş yaddaş (1985)",
+     "views": 1400
+    },
+    {
+     "id": "9j04jcjL_PQ",
+     "title": "Memory of Stone (1986)",
+     "views": 878
+    },
+    {
+     "id": "yMGML0oktpA",
+     "title": "Estafet (1982 )",
+     "views": 1400
+    },
+    {
+     "id": "H5aIpaGENsw",
+     "title": "Sərhəd (1990)",
+     "views": 2700
+    },
+    {
+     "id": "HkB8OQ4MOVY",
+     "title": "Muhammad Fizuli (born in 1958)",
+     "views": 7300
+    },
+    {
+     "id": "F7qlLT9SbGY",
+     "title": "Əbədiyyətə qovuşan ömür (1987)",
+     "views": 1900
+    },
+    {
+     "id": "C7I8NzjzuVU",
+     "title": "Armenian \"folk\" tales (2019)",
+     "views": 7200
+    },
+    {
+     "id": "-n9KP1xsyx4",
+     "title": "Nə yaxşı ki, dünyada Səməd Vurğun var (1976)",
+     "views": 20000
+    },
+    {
+     "id": "Fum9biO0Bto",
+     "title": "Dənizçi ürəyi (1986)",
+     "views": 1700
+    },
+    {
+     "id": "HJZ3fPdBApk",
+     "title": "Xəzər üzərində körpü (1988)",
+     "views": 2700
+    },
+    {
+     "id": "475mQZgd0SU",
+     "title": "Maestro Niyazi (1975)",
+     "views": 4500
+    },
+    {
+     "id": "LNGwjevPejg",
+     "title": "Qalxan və qılınc (2018)",
+     "views": 3900
+    },
+    {
+     "id": "WhMujL7fxQA",
+     "title": "Ovçu, vurma məni... (1977)",
+     "views": 1900
+    },
+    {
+     "id": "aJJcLp5MTYY",
+     "title": "Gazelle (1977)",
+     "views": 1200
+    },
+    {
+     "id": "oJyR9yCtulU",
+     "title": "Bəstəkar (2015)",
+     "views": 1100
+    },
+    {
+     "id": "jlci4hY3VCM",
+     "title": "Путь, озаренный октябрем (1977)",
+     "views": 1100
+    },
+    {
+     "id": "A7yUAbm6VFo",
+     "title": "Sarylar – A Journey to the Karabakh Horse (2016)",
+     "views": 1400
+    },
+    {
+     "id": "a5adhA-8HSY",
+     "title": "Azadlığa gedən yollar (1990)",
+     "views": 3100
+    },
+    {
+     "id": "yCzqJRBEdQA",
+     "title": "Bəyaz gəmilərlə rənglərin dansı (2014) | Dancing Colurs in White Ships",
+     "views": 621
+    },
+    {
+     "id": "SlPxP8t9r_o",
+     "title": "Çempion (2014)",
+     "views": 840
+    },
+    {
+     "id": "QQAz8zWPmxw",
+     "title": "Ağır illər... Xoş xatirələr.... (2014)",
+     "views": 1200
+    },
+    {
+     "id": "4p0ZVS48_jM",
+     "title": "Hard Years... Fond Memories... (2014)",
+     "views": 945
+    },
+    {
+     "id": "-x4B32PF9hE",
+     "title": "Belə bir kənd var (1981)",
+     "views": 12000
+    },
+    {
+     "id": "CRb-7jSNZqo",
+     "title": "Aşıq Ələsgər (1972)",
+     "views": 7200
+    },
+    {
+     "id": "7q3MoBL-2Cw",
+     "title": "Nəğməkar torpaq (1981)",
+     "views": 6600
+    },
+    {
+     "id": "LYwMIpC9fMY",
+     "title": "Xınalıqlarda qonaqlıqda (1937) - sənədli film",
+     "views": 2900
+    },
+    {
+     "id": "Rz7gb3a_Kes",
+     "title": "Pionerlər | Пионерия (1938)",
+     "views": 1200
+    },
+    {
+     "id": "g330QiTz0Bg",
+     "title": "Баку сегодня (1959)",
+     "views": 49000
+    },
+    {
+     "id": "ma-5yHTRMgM",
+     "title": "Farewell to the Red Army units in Iran (1946)",
+     "views": 2500
+    },
+    {
+     "id": "menWmW1cOhs",
+     "title": "Путь в скалах (1941)",
+     "views": 789
+    },
+    {
+     "id": "8IcRwDE0zRM",
+     "title": "Bülbül (1968)",
+     "views": 5800
+    },
+    {
+     "id": "Jj2Zrd1majc",
+     "title": "Divlər sarayı (1968)",
+     "views": 5100
+    },
+    {
+     "id": "Gwk652BQMDI",
+     "title": "Остров в горах (1971)",
+     "views": 1700
+    },
+    {
+     "id": "CGl_FZ4jhFM",
+     "title": "Nəsimi (1971)",
+     "views": 1200
+    },
+    {
+     "id": "52vMfg4bKXI",
+     "title": "Haray (1990)",
+     "views": 1300
+    },
+    {
+     "id": "nJ0wgZurm2g",
+     "title": "Dözümlü minarələr (1990)",
+     "views": 779
+    },
+    {
+     "id": "woOrx9DLTzg",
+     "title": "Meydan (1989)",
+     "views": 11000
+    },
+    {
+     "id": "hOxmYswQujc",
+     "title": "Gözəllik ilahəsi (1989)",
+     "views": 2400
+    },
+    {
+     "id": "_0aUTuYnhtM",
+     "title": "Yusif Məmmədəliyev (1987)",
+     "views": 2900
+    },
+    {
+     "id": "gAcTAYt2XrU",
+     "title": "Fərhad. Portret cizgiləri (1987)",
+     "views": 1000
+    },
+    {
+     "id": "LHZYy8EHvKI",
+     "title": "İlmələrin nağılı (1984)",
+     "views": 748
+    },
+    {
+     "id": "Cqa2A12HT8s",
+     "title": "Bakı-42 (1985)",
+     "views": 2400
+    },
+    {
+     "id": "LEQWNu8Gcko",
+     "title": "Баку-42 (1985)",
+     "views": 1700
+    }
+   ]
+  },
+  {
+   "id": "PLAtI5OWgNzB36qwjeBfvf7i-sDvj1fs63",
+   "lang": "az",
+   "kind": "film",
+   "videos": [
+    {
+     "id": "u49vMoD8_RE",
+     "title": "Cücələrim (1975) I Мои цыплята",
+     "views": 29000
+    },
+    {
+     "id": "kTL3IUF-5ew",
+     "title": "Xoruz (1977)",
+     "views": 24000
+    },
+    {
+     "id": "yoU8zi5M1J8",
+     "title": "Cırtdan (1969)",
+     "views": 9800
+    },
+    {
+     "id": "w_vislIBkzg",
+     "title": "Pıspısa xanım və Siçan bəy (1974) I Tık-tık xanım",
+     "views": 957000
+    },
+    {
+     "id": "jLujV33Jvos",
+     "title": "Ayı və siçan (1970) - animasiya filmi",
+     "views": 7700
+    },
+    {
+     "id": "6Hh2m88Fo1c",
+     "title": "Медведь и мышь | Ayı və siçan (1970) - анимационный фильм",
+     "views": 3000
+    },
+    {
+     "id": "pZnJEnIpUJY",
+     "title": "Anam ağaca çıxıb (1986) - animasiya filmi",
+     "views": 4300
+    },
+    {
+     "id": "mJlCBALoYc8",
+     "title": "Mom Is in the Tree | Anam ağaca çıxıb (1986) - Animated Film",
+     "views": 2000
+    },
+    {
+     "id": "40IJcK3VhlY",
+     "title": "Лев и два быка | Aslan və iki öküz (1970) - анимационный фильм",
+     "views": 2700
+    },
+    {
+     "id": "8ZY8zA4-D1g",
+     "title": "Bulud niyə ağlayır (1973) - animasiya filmi",
+     "views": 2700
+    },
+    {
+     "id": "PyyQEH4EMB4",
+     "title": "Fitnə (1970) - animasiya filmi",
+     "views": 10000
+    },
+    {
+     "id": "0psNVn1O6co",
+     "title": "Tülkü həccə gedir (1971) - animasiya filmi",
+     "views": 264000
+    },
+    {
+     "id": "2rUMoz5fMGE",
+     "title": "Cırtdanın yeni sərgüzəşti (1973) - animasiya filmi",
+     "views": 21000
+    },
+    {
+     "id": "aKGFVMwUwRI",
+     "title": "Günlərin bir günündə (1975) - animasiya filmi",
+     "views": 3500
+    },
+    {
+     "id": "stQA9rMNPNU",
+     "title": "Pəncə, qulaq, palaz, tikan (1976) - animasiya filmi",
+     "views": 3000
+    },
+    {
+     "id": "Z_YWi9l5Niw",
+     "title": "Şah və xidmətçi (1976) - animasiya filmi",
+     "views": 28000
+    },
+    {
+     "id": "grzmh7lyroI",
+     "title": "The Shah and the Servant | Şah və xidmətçi (1976)",
+     "views": 13000
+    },
+    {
+     "id": "OxF25j2QPcA",
+     "title": "Звени, мой саз, звени | Dınqıl sazım, dınqıl (1976)",
+     "views": 3400
+    },
+    {
+     "id": "72iRoajq7Zg",
+     "title": "Kirpi balası və alma (1977)",
+     "views": 20000
+    },
+    {
+     "id": "RGymzom-MOY",
+     "title": "Ежик и яблоко (1977)",
+     "views": 3600
+    },
+    {
+     "id": "68ipIG21O7A",
+     "title": "Toplan və kölgəsi (1977)",
+     "views": 12000
+    },
+    {
+     "id": "zznOPH8S56s",
+     "title": "A Dog and His Shadow (1977)",
+     "views": 2300
+    },
+    {
+     "id": "BXgIcKpGhKI",
+     "title": "Daş (1978)",
+     "views": 2600
+    },
+    {
+     "id": "CiWfAjIh-UQ",
+     "title": "Qız qalası əfsanəsi (1978)",
+     "views": 52000
+    },
+    {
+     "id": "7KMrRlNDf2I",
+     "title": "Sonrakı peşmançılıq (1978)",
+     "views": 2900
+    },
+    {
+     "id": "XBWwZ-H7Oig",
+     "title": "Dəcəl dovşan (1981)",
+     "views": 2800
+    },
+    {
+     "id": "fTDIKbw5Hk0",
+     "title": "Meşəyə insan gəlir (1980)",
+     "views": 21000
+    },
+    {
+     "id": "7VpwiiJrcPI",
+     "title": "Sehrlənmiş küpə (1978)",
+     "views": 27000
+    },
+    {
+     "id": "KRZurqCLmm4",
+     "title": "Taya (1980)",
+     "views": 6400
+    },
+    {
+     "id": "FX2d0hHp_e0",
+     "title": "Sən belə cımbılısan (1982)",
+     "views": 31000
+    },
+    {
+     "id": "PeRSGL0d9lY",
+     "title": "Aквариум (1983)",
+     "views": 1500
+    },
+    {
+     "id": "T-pYSUKgR1Y",
+     "title": "Toral və Zəri (1979)",
+     "views": 25000
+    },
+    {
+     "id": "-u4coq4x_Ic",
+     "title": "Akvarium (1983)",
+     "views": 1400
+    },
+    {
+     "id": "1cXwEI94DEI",
+     "title": "Xeyir və Şər (1980)",
+     "views": 41000
+    },
+    {
+     "id": "EgnCoXl--KU",
+     "title": "Джыртдана \"Великана I Cırtdan-\"pəhləvan\" (1981)",
+     "views": 2000
+    },
+    {
+     "id": "PXovYK4x3NY",
+     "title": "Uşaq və külək (1982)",
+     "views": 2800
+    },
+    {
+     "id": "UgABUQgo19I",
+     "title": "Balaca çoban (1985)",
+     "views": 59000
+    },
+    {
+     "id": "pgL-bSAcyJ4",
+     "title": "Yatmaq vaxtıdır (1984)",
+     "views": 58000
+    },
+    {
+     "id": "SNfS3iFBG_A",
+     "title": "Təqib (1984)",
+     "views": 4000
+    },
+    {
+     "id": "HoD0dc9i7RU",
+     "title": "Kitabi Dədə Qorqud. Səkrəyin dastanı (1990)",
+     "views": 129000
+    },
+    {
+     "id": "gNTND9rkTyg",
+     "title": "The Astrologer's Apprentice (1983)",
+     "views": 1900
+    },
+    {
+     "id": "Iru2NRW0g4Q",
+     "title": "Münəccimin şagirdi (1983)",
+     "views": 21000
+    },
+    {
+     "id": "GfRQ8_kMxdw",
+     "title": "Uçan zürafə (1983)",
+     "views": 2700
+    },
+    {
+     "id": "2zCHCkVf2oQ",
+     "title": "The Flying Giraffe (1983)",
+     "views": 2800
+    },
+    {
+     "id": "CQeA92_khGY",
+     "title": "Magic Patterns (1984)-Sehrli naxışlar (1984)",
+     "views": 1700
+    },
+    {
+     "id": "IugE58wPmYw",
+     "title": "Bir axşam... (1985)",
+     "views": 1600
+    },
+    {
+     "id": "V_RN9lXVb24",
+     "title": "Домик на поляне (1986)",
+     "views": 2100
+    },
+    {
+     "id": "XoIny0pYD8w",
+     "title": "Talada ev (1986)",
+     "views": 27000
+    },
+    {
+     "id": "ZMeafjpRJWM",
+     "title": "Humayın yuxusu (1985)",
+     "views": 59000
+    },
+    {
+     "id": "E68sqUkdUiI",
+     "title": "Однажды вечером (1985)",
+     "views": 2300
+    },
+    {
+     "id": "e1cGVdix9vA",
+     "title": "From the Star Diaries of Ijon Tichy. Voyage to Enteropia (1985)",
+     "views": 2200
+    },
+    {
+     "id": "ND_Wpjk_jEE",
+     "title": "Çətin məsələ (1988)",
+     "views": 51000
+    },
+    {
+     "id": "mCa7W12g6Hw",
+     "title": "The Tricky Problem (1988)",
+     "views": 5000
+    },
+    {
+     "id": "VPnfQvRQoi8",
+     "title": "Arzular... Arzular...(1988)",
+     "views": 2700
+    },
+    {
+     "id": "PAC5Aiu4C-w",
+     "title": "Düşüncə (1987)",
+     "views": 1900
+    },
+    {
+     "id": "h2osePitqWo",
+     "title": "Yeni il əhvalatı (1986)",
+     "views": 1500
+    },
+    {
+     "id": "PtfSbS_tcq8",
+     "title": "Новогодняя история (1986)",
+     "views": 1100
+    },
+    {
+     "id": "PW47ncD8S7s",
+     "title": "Güzgü (1990)",
+     "views": 1800
+    },
+    {
+     "id": "dBdzGnQNYlg",
+     "title": "The Little Shepherd (1985)",
+     "views": 2300
+    },
+    {
+     "id": "ITRDUCp8LgY",
+     "title": "Springtime Fun (1989)",
+     "views": 1700
+    },
+    {
+     "id": "9i9EwZftNVI",
+     "title": "Bahar əyləncələri (1989)",
+     "views": 5200
+    },
+    {
+     "id": "9K0jTZOfkuM",
+     "title": "Əndazədən çıxanda (1988)",
+     "views": 3100
+    },
+    {
+     "id": "U1iOFTBBR0I",
+     "title": "It Will Echo (1987)",
+     "views": 1500
+    },
+    {
+     "id": "xybX35ImIGk",
+     "title": "Dedication (1990)",
+     "views": 1400
+    },
+    {
+     "id": "i5h__dGDfKU",
+     "title": "İthaf (1990)",
+     "views": 1200
+    },
+    {
+     "id": "cb_80WjxUfk",
+     "title": "Посвящение (1990)",
+     "views": 1100
+    },
+    {
+     "id": "DlashalyTF4",
+     "title": "Gəldi kosa (1988)",
+     "views": 2100
+    },
+    {
+     "id": "UnRvifJXecc",
+     "title": "Yeni il əhvalatı (1986)",
+     "views": 4400
+    },
+    {
+     "id": "hMW8poqTg9g",
+     "title": "Lovğa fil balası (1987)",
+     "views": 2400
+    },
+    {
+     "id": "oeyOOS67geo",
+     "title": "The Boastful Little Elephant (1987)",
+     "views": 1500
+    },
+    {
+     "id": "N4wtAjdiMeM",
+     "title": "Qaravəlli (1989)",
+     "views": 11000
+    },
+    {
+     "id": "aL5cDQ4bkqs",
+     "title": "Seans (1988)",
+     "views": 1800
+    },
+    {
+     "id": "yFDRDGscr4M",
+     "title": "Xrizantema yarpağı (1989)",
+     "views": 3100
+    }
+   ]
+  },
+  {
+   "id": "PLAtI5OWgNzB1VNsoEVz-rdfbPydVbB-Qg",
+   "lang": "az",
+   "kind": "film",
+   "videos": [
+    {
+     "id": "OC_Eyd4M5Ao",
+     "title": "40-cı paraleldə (2016)",
+     "views": 13000
+    },
+    {
+     "id": "OaXW1EpwlL4",
+     "title": "Qara bağ (2015)",
+     "views": 4700
+    },
+    {
+     "id": "PTUbGRAt4Zc",
+     "title": "Onun atası (2016)",
+     "views": 3500
+    },
+    {
+     "id": "NE_lJSVH2i0",
+     "title": "Zabit şərəfi (2016)",
+     "views": 7200
+    },
+    {
+     "id": "JDS5w0cZ6N0",
+     "title": "Qonşu qadın (2015)",
+     "views": 267000
+    },
+    {
+     "id": "38DibfMeZ84",
+     "title": "Ömrün səhifələri (1974)",
+     "views": 155000
+    },
+    {
+     "id": "yw1X9ghl7K8",
+     "title": "Жена моя, дети мои (1978)",
+     "views": 18000
+    },
+    {
+     "id": "GoWzcSjPDkE",
+     "title": "Günlərin bir günü... (1976)",
+     "views": 82000
+    },
+    {
+     "id": "_rs-_5cnlCE",
+     "title": "4.1 .Şəhər motivləri | Urban motives (2015)",
+     "views": 4300
+    },
+    {
+     "id": "vAbUELRNwto",
+     "title": "Məryəm (2014)",
+     "views": 1400
+    },
+    {
+     "id": "4QC_6kWac0w",
+     "title": "Cazibə qüvvəsi (1964) - kinoalmanax",
+     "views": 27000
+    },
+    {
+     "id": "CvLrUsUGQNw",
+     "title": "Who we love more | The Force of Charm (1964) - film almanac",
+     "views": 2900
+    }
+   ]
+  },
+  {
+   "id": "PLAtI5OWgNzB16Bgp3_v4WSSmMyyRnG474",
+   "lang": "en",
+   "kind": "film",
+   "videos": [
+    {
+     "id": "aSX1AO1zF6Q",
+     "title": "Uşaqlığın son gecəsi (1968) | The Last Night of Childhood",
+     "views": 564000
+    },
+    {
+     "id": "br9zD5f-c4A",
+     "title": "Bizim Cəbiş müəllim (1969) | Our Teacher Jabish",
+     "views": 850000
+    },
+    {
+     "id": "xcqavFiRdFI",
+     "title": "Qala (2008) | The Castle",
+     "views": 25000
+    },
+    {
+     "id": "k1NbwevShMk",
+     "title": "Uşaqlığın son gecəsi (1968)",
+     "views": 2100
+    },
+    {
+     "id": "RwsmwCai6Dc",
+     "title": "Fikrat Amirov (documentary, 2022)",
+     "views": 875
+    },
+    {
+     "id": "eBK8Ph-_FVo",
+     "title": "This is the voice of truth. Composer Gara Garayev (1968)",
+     "views": 1100
+    },
+    {
+     "id": "A7yUAbm6VFo",
+     "title": "Sarylar – A Journey to the Karabakh Horse (2016)",
+     "views": 1400
+    },
+    {
+     "id": "yCzqJRBEdQA",
+     "title": "Bəyaz gəmilərlə rənglərin dansı (2014) | Dancing Colurs in White Ships",
+     "views": 621
+    },
+    {
+     "id": "8yf1izCXitM",
+     "title": "Çölçü | Steppe Man (2012)",
+     "views": 3100
+    },
+    {
+     "id": "YSo7Lboov8o",
+     "title": "Niyyət | The Intention (2010)",
+     "views": 8700
+    },
+    {
+     "id": "tasPS69CcPI",
+     "title": "Biz | We (2021)",
+     "views": 1100
+    },
+    {
+     "id": "46Awfl3aUQ0",
+     "title": "Halallıq | Absolution (2019)",
+     "views": 681
+    },
+    {
+     "id": "_rs-_5cnlCE",
+     "title": "4.1 .Şəhər motivləri | Urban motives (2015)",
+     "views": 4300
+    },
+    {
+     "id": "TT12Ms66jKA",
+     "title": "Ailə | The family (1998)",
+     "views": 8800
+    },
+    {
+     "id": "LbKOYB4HuVA",
+     "title": "Üçüncü günün adamı | A Man of the Third Day (2017)",
+     "views": 11000
+    },
+    {
+     "id": "h488X2UclrE",
+     "title": "Nar bağı | Pomegranate Orchard (2017)",
+     "views": 68000
+    },
+    {
+     "id": "XPh7XwqBFsc",
+     "title": "Arşın mal alan | The Cloth Peddler (1945)",
+     "views": 7700
+    },
+    {
+     "id": "kngYqXQYB14",
+     "title": "O olmasın, bu olsun | If not that one, this one (1956)",
+     "views": 3800
+    },
+    {
+     "id": "ClEHa-PkOCU",
+     "title": "Səs | Voice (2019)",
+     "views": 1100
+    },
+    {
+     "id": "mU9MbecT2Sc",
+     "title": "Sizə məktub var | You have got a letter (2021)",
+     "views": 3900
+    },
+    {
+     "id": "7iIyqwH5Vos",
+     "title": "Titrəmə | Tremble (2021)",
+     "views": 2400
+    },
+    {
+     "id": "372cRym5zHw",
+     "title": "Qırmızı bağ | Red garden (2016)",
+     "views": 2600
+    },
+    {
+     "id": "ZsSQfDUnSew",
+     "title": "İçəri şəhər | Inner city (2016)",
+     "views": 1700
+    },
+    {
+     "id": "XFySnD0klUc",
+     "title": "Dərvişin qeydləri | The Dervish`s Diary (2013)",
+     "views": 2200
+    },
+    {
+     "id": "FjBakxIjf_M",
+     "title": "Sübhün səfiri | Messenger of the Dawn (2012)",
+     "views": 4000
+    },
+    {
+     "id": "FCSuwBCktks",
+     "title": "Buta (2011)",
+     "views": 7000
+    },
+    {
+     "id": "Fb879aH94Og",
+     "title": "\"Ağ-qara\" gecələr | Black & White Nights (2013)",
+     "views": 6500
+    },
+    {
+     "id": "2SiEd30ctD8",
+     "title": "Dan yeli | The Breeze at Dawn (2019)-film",
+     "views": 2900
+    },
+    {
+     "id": "BsGp8Gynqvg",
+     "title": "Onun atası | His father (2016)",
+     "views": 1300
+    },
+    {
+     "id": "WR2Fe5woQtg",
+     "title": "Qara bağ | Black Ribbon (2015)",
+     "views": 1000
+    },
+    {
+     "id": "g8t_uTpWmiI",
+     "title": "Postskriptum | Postscript (2015)",
+     "views": 1000
+    },
+    {
+     "id": "O-noUxrdd_o",
+     "title": "Günaydın, mələyim | Welcome, My Angel (2008)",
+     "views": 2400
+    },
+    {
+     "id": "UOsjtQv1sOw",
+     "title": "Dmitrov küçəsi, 86 | 86 Dmitrov Street (2015)",
+     "views": 3000
+    },
+    {
+     "id": "hGt90tAw7fw",
+     "title": "Məhkumlar | The Doomed (2006)",
+     "views": 5000
+    },
+    {
+     "id": "4h7EIwSh-Jo",
+     "title": "Əlvida, cənub şəhəri | Good bye, southern city (2006)",
+     "views": 7500
+    },
+    {
+     "id": "7pqqthYiA5k",
+     "title": "Sirr | Mystery (2014)",
+     "views": 1000
+    },
+    {
+     "id": "L-cH1pfYP0k",
+     "title": "İnikas | Reflection (2014)",
+     "views": 1000
+    },
+    {
+     "id": "lGeS--jH2hE",
+     "title": "Sonuncu | The Last One (2013)",
+     "views": 1300
+    },
+    {
+     "id": "Cg5dGRAEtPQ",
+     "title": "Girov | Hostage (2005)",
+     "views": 3200
+    },
+    {
+     "id": "_n4bnlxTaA8",
+     "title": "Məkanın melodiyası | Melody of space (2004)",
+     "views": 2700
+    },
+    {
+     "id": "NaAC8gsntXQ",
+     "title": "Küçələrə su səpmişəm | Where the rivers flow together (2004)",
+     "views": 7300
+    },
+    {
+     "id": "rmUEQc-sYjQ",
+     "title": "Arxada qalmış gələcək | Future left behind (2004)",
+     "views": 5400
+    },
+    {
+     "id": "Q8mP_Lz4ASs",
+     "title": "Sarı gəlin | Yellow bride (1998)",
+     "views": 2200
+    },
+    {
+     "id": "qT_wzgWEOhg",
+     "title": "Özgə vaxt | Strange times (1996)",
+     "views": 5000
+    },
+    {
+     "id": "88uxFYb1354",
+     "title": "Shared bread",
+     "views": 508000
+    },
+    {
+     "id": "YPDjtGC2Xq4",
+     "title": "Latif | Lətif (1930) - səssiz film",
+     "views": 4200
+    },
+    {
+     "id": "CB-XU3TDFHs",
+     "title": "To die avenged. The letters from the past | Qisas almadan ölmə. Keçmişdən məktublar (2013)",
+     "views": 1300
+    },
+    {
+     "id": "8JGoM-WhDQA",
+     "title": "The Oil simphony | Neft simfoniyası (1933)",
+     "views": 1500
+    },
+    {
+     "id": "LWMAwKkYQew",
+     "title": "ANAMA (2023)",
+     "views": 1700
+    },
+    {
+     "id": "xybX35ImIGk",
+     "title": "Dedication (1990)",
+     "views": 1400
     }
    ]
   },
   {
    "id": "PLAtI5OWgNzB2qF-wUqAn0spyq2C6HLVq0",
    "lang": "ru",
+   "kind": "film",
    "videos": [
     {
      "id": "xwxE834HLg0",
-     "title": "Шуша (1978)"
+     "title": "Шуша (1978)",
+     "views": 10000
     },
     {
      "id": "q-n3knoBG-Y",
-     "title": "10 минут о Баку (1966)"
+     "title": "10 минут о Баку (1966)",
+     "views": 95000
     },
     {
      "id": "k_gCvcLqdMI",
-     "title": "10 минут по СССР. Баку (1970)"
+     "title": "10 минут по СССР. Баку (1970)",
+     "views": 6600
     },
     {
      "id": "NAqOFMCf7os",
-     "title": "Tолько ты (1986)"
+     "title": "Tолько ты (1986)",
+     "views": 65000
     },
     {
      "id": "ck3ZhneDbyI",
-     "title": "Nar bağı | Гранатовый сад (2017)"
+     "title": "Nar bağı | Гранатовый сад (2017)",
+     "views": 93000
     },
     {
      "id": "u49vMoD8_RE",
-     "title": "Cücələrim (1975) I Мои цыплята"
+     "title": "Cücələrim (1975) I Мои цыплята",
+     "views": 29000
     },
     {
      "id": "XVdKLmqYm9U",
-     "title": "Перед закрытой дверью (1981)"
+     "title": "Перед закрытой дверью (1981)",
+     "views": 96000
     },
     {
      "id": "WTOCM0Bzkhc",
-     "title": "Баку столица советского Азербайджана (1977)"
+     "title": "Baku, the capital of Soviet Azerbaijan (1977)",
+     "views": 20000
     },
     {
      "id": "BYUNPqPJgYI",
-     "title": "В нашем Баку (1958)"
+     "title": "В нашем Баку (1958)",
+     "views": 34000
     },
     {
      "id": "A4i0ec0a6Ro",
-     "title": "Cказочная сила (1978)"
+     "title": "Cказочная сила (1978)",
+     "views": 1400
     },
     {
      "id": "jDhy0XdY6yo",
-     "title": "Октябрьские зори (1977)"
+     "title": "Октябрьские зори (1977)",
+     "views": 1900
     },
     {
      "id": "HUi6I04QcAs",
-     "title": "Тарлан Мусаева (1980)"
+     "title": "Тарлан Мусаева (1980)",
+     "views": 3400
     },
     {
      "id": "knsu2N01Vvw",
-     "title": "Фикрет Амиров (документальный фильм, 2022)"
+     "title": "Фикрет Амиров (документальный фильм, 2022)",
+     "views": 3600
     },
     {
      "id": "sGJK_YBDU4E",
-     "title": "Бакинские балконы (1986)"
+     "title": "Бакинские балконы (1986)",
+     "views": 12000
     },
     {
      "id": "V4DfMDLPrLI",
-     "title": "Каспийцы (1944)"
+     "title": "Caspian Sea (1944)",
+     "views": 5900
     },
     {
      "id": "O5DmXXOhww4",
-     "title": "Низами (1941)"
+     "title": "Низами (1941)",
+     "views": 2600
     },
     {
      "id": "g96c_V9Fc7k",
-     "title": "10 минут по СССР. Баку (1970)"
+     "title": "10 минут по СССР. Баку (1970)",
+     "views": 24000
     },
     {
      "id": "fbh21sLut_w",
-     "title": "Это вступает правда. Композитор Кара Караев (1968)"
+     "title": "Это вступает правда. Композитор Кара Караев (1968)",
+     "views": 2600
     },
     {
      "id": "YpHRprWcRBk",
-     "title": "Oсенний концерт (1962)"
+     "title": "Oсенний концерт (1962)",
+     "views": 760
     },
     {
      "id": "TQcXNlxXvaQ",
-     "title": "Самед Вургун (1966)"
+     "title": "Самед Вургун (1966)",
+     "views": 2300
     },
     {
      "id": "IqOqTtQIU8Q",
-     "title": "Диссонанс (1978)"
+     "title": "Диссонанс (1978)",
+     "views": 1000
     },
     {
      "id": "PeuWTz34yuw",
-     "title": "Карабахские соловьи (1977)"
+     "title": "Карабахские соловьи (1977)",
+     "views": 7800
     },
     {
      "id": "EFY_YZdM0Yg",
-     "title": "Под номером 8 (1988)"
+     "title": "Под номером 8 (1988)",
+     "views": 1000
     },
     {
      "id": "jvzJVMqSN6k",
-     "title": "Гражданин, доктор, ученый (1984)"
+     "title": "Гражданин, доктор, ученый (1984)",
+     "views": 750
     },
     {
      "id": "qiyMdO2Durc",
-     "title": "Путь к вершине (1981)"
+     "title": "The Road to the Top (1981)",
+     "views": 1400
     },
     {
      "id": "nhxq5YBQgQ0",
-     "title": "Тайна корабельных часов (1983)"
+     "title": "The Mystery of the Ship's Clock (1983)",
+     "views": 8400
     },
     {
      "id": "lXxuWeiV69c",
-     "title": "Выше только облака (1976)"
+     "title": "Only the Clouds Are Higher (1976)",
+     "views": 3300
     },
     {
      "id": "MxrGbakkAtc",
-     "title": "Юбилей Данте (1978)"
+     "title": "Dante's Jubilee (1978)",
+     "views": 4700
     },
     {
      "id": "9j04jcjL_PQ",
-     "title": "Память камня (1986)"
+     "title": "Memory of Stone (1986)",
+     "views": 878
     },
     {
      "id": "D-4Y_-wzKdI",
-     "title": "Я придумываю песню (1979)"
+     "title": "Я придумываю песню (1979)",
+     "views": 7100
     },
     {
      "id": "udNvstrMV74",
-     "title": "Лев ушёл из дома (1977)"
+     "title": "Лев ушёл из дома (1977)",
+     "views": 16000
     },
     {
      "id": "ZyOAmoVHYUY",
-     "title": "Не бойся, я с тобой! (1981)"
+     "title": "Не бойся, я с тобой! (1981)",
+     "views": 82000
     },
     {
      "id": "HkB8OQ4MOVY",
-     "title": "Mухаммед Физули (1958)"
+     "title": "Muhammad Fizuli (born in 1958)",
+     "views": 7300
     },
     {
      "id": "uAnk0bCTqCs",
-     "title": "Волны возвращаются в море (1986)"
+     "title": "Волны возвращаются в море (1986)",
+     "views": 5200
     },
     {
      "id": "IRI6WV3GL3U",
-     "title": "Pодному народу (1954)"
+     "title": "Pодному народу (1954)",
+     "views": 6300
     },
     {
      "id": "LOf6jXFGdyc",
-     "title": "Листопад в пору лета (1986)"
+     "title": "Листопад в пору лета (1986)",
+     "views": 3400
     },
     {
      "id": "q_rILSp9Zqg",
-     "title": "Асиф, Васиф, Агасиф (1983)"
+     "title": "Asif, Vasif, Agasif (1983)",
+     "views": 12000
     },
     {
      "id": "C7I8NzjzuVU",
-     "title": "Армянские \"народные\" сказки (2019)"
+     "title": "Armenian \"folk\" tales (2019)",
+     "views": 7200
     },
     {
      "id": "475mQZgd0SU",
-     "title": "Маэстро Ниязи (1975)"
+     "title": "Maestro Niyazi (1975)",
+     "views": 4500
     },
     {
      "id": "uUUXhzGNqg0",
-     "title": "Свет погасших костров (1975)"
+     "title": "Свет погасших костров (1975)",
+     "views": 17000
     },
     {
      "id": "ZhQphunRLVY",
-     "title": "Экзамен (1987)"
+     "title": "Экзамен (1987)",
+     "views": 13000
     },
     {
      "id": "aJJcLp5MTYY",
-     "title": "Джейран (1977)"
+     "title": "Gazelle (1977)",
+     "views": 1200
     },
     {
      "id": "jlci4hY3VCM",
-     "title": "Путь, озаренный октябрем (1977)"
+     "title": "Путь, озаренный октябрем (1977)",
+     "views": 1100
     },
     {
      "id": "4p0ZVS48_jM",
-     "title": "Тяжкие годы... Добрая память... (2014)"
+     "title": "Hard Years... Fond Memories... (2014)",
+     "views": 945
     },
     {
      "id": "yw1X9ghl7K8",
-     "title": "Жена моя, дети мои (1978)"
+     "title": "Жена моя, дети мои (1978)",
+     "views": 18000
     },
     {
      "id": "bSh9gApQhYw",
-     "title": "10 минут о Баку (1966)"
+     "title": "10 минут о Баку (1966)",
+     "views": 19000
     },
     {
      "id": "w-Hg6ofULrM",
-     "title": "Аршин мал алан (1945)"
+     "title": "Аршин мал алан (1945)",
+     "views": 21000
     },
     {
      "id": "SZ8kOmWo5kQ",
-     "title": "Двое из одного квартала (1957)"
+     "title": "Двое из одного квартала (1957)",
+     "views": 5500
     },
     {
      "id": "WWQc5Ix9QLs",
-     "title": "Огни Баку (1950)"
+     "title": "Lights of Baku (1950)",
+     "views": 4500
     },
     {
      "id": "k--fXifyc9g",
-     "title": "Не входи - убьет! (1991)"
+     "title": "Не входи - убьет! (1991)",
+     "views": 17000
     },
     {
      "id": "2Bp7y-BS8pI",
-     "title": "У самого синего моря (1935)"
+     "title": "У самого синего моря (1935)",
+     "views": 6300
     },
     {
      "id": "YOIFctpfCWk",
-     "title": "Бакинцы (1938)"
+     "title": "Бакинцы (1938)",
+     "views": 17000
     },
     {
      "id": "pyQNxQQhrww",
-     "title": "Кендлиляр (1939)"
+     "title": "Кендлиляр (1939)",
+     "views": 29000
     },
     {
      "id": "17yAXH9Dfbc",
-     "title": "Одна семья (1943)"
+     "title": "Одна семья (1943)",
+     "views": 4300
     },
     {
      "id": "n3bC2jaxcHo",
-     "title": "Иду на вулкан (1976-1977) - 1-я серия"
+     "title": "Going to the Volcano (1976-1977) - Episode 1",
+     "views": 6700
     },
     {
      "id": "b4b5lN6bZ74",
-     "title": "Иду на вулкан (1976-1977) - 2-я серия"
+     "title": "I’m Heading to the Volcano (1976-1977) - Episode 2",
+     "views": 2100
     },
     {
      "id": "7Fz7RVRsqEA",
-     "title": "Иду на вулкан (1976-1977) - 3-я серия"
+     "title": "Climbing the Volcano (1976-1977) - Episode 3",
+     "views": 2000
     },
     {
      "id": "zHyiMNaKa0g",
-     "title": "Льдина в теплом море (1983)"
+     "title": "Ice Floe in the Warm Sea (1983)",
+     "views": 5300
     },
     {
      "id": "J8Co7Dw94ZE",
-     "title": "Любимая песня (Бахтияр) (1955)"
+     "title": "Любимая песня (Бахтияр) (1955)",
+     "views": 25000
     },
     {
      "id": "xmm62h7WaqM",
-     "title": "Севиль (1970)"
+     "title": "Севиль (1970)",
+     "views": 5900
     },
     {
      "id": "dSSTDytZd0A",
-     "title": "1001-ая гастроль (1974)"
+     "title": "1001-ая гастроль (1974)",
+     "views": 1900
     },
     {
      "id": "LmI9xK4Ntog",
-     "title": "Yeddi gözəl | Семь красавиц (1982)"
+     "title": "Yeddi gözəl | Семь красавиц (1982)",
+     "views": 2900
     },
     {
      "id": "iqnfUhyewAE",
-     "title": "Eviniz abad | Мир вашему дому (2018)"
+     "title": "Eviniz abad | Мир вашему дому (2018)",
+     "views": 1300
     },
     {
      "id": "Rz7gb3a_Kes",
-     "title": "Pionerlər | Пионерия (1938)"
+     "title": "Pionerlər | Пионерия (1938)",
+     "views": 1200
     },
     {
      "id": "g330QiTz0Bg",
-     "title": "Баку сегодня (1959)"
+     "title": "Баку сегодня (1959)",
+     "views": 49000
     },
     {
      "id": "ma-5yHTRMgM",
-     "title": "Проводы частей красной армии в Иране (1946)"
+     "title": "Farewell to the Red Army units in Iran (1946)",
+     "views": 2500
     },
     {
      "id": "mXt6j59h8Yw",
-     "title": "Последняя ночь уходяшего года (1983)"
+     "title": "Последняя ночь уходяшего года (1983)",
+     "views": 7500
     },
     {
      "id": "gkxK-mngXlY",
-     "title": "Допрос (1979)"
+     "title": "Допрос (1979)",
+     "views": 24000
     },
     {
      "id": "menWmW1cOhs",
-     "title": "Путь в скалах (1941)"
+     "title": "Путь в скалах (1941)",
+     "views": 789
     },
     {
      "id": "Jj2Zrd1majc",
-     "title": "Divlər sarayı (1968)"
+     "title": "Divlər sarayı (1968)",
+     "views": 5100
     },
     {
      "id": "Gwk652BQMDI",
-     "title": "Остров в горах (1971)"
+     "title": "Остров в горах (1971)",
+     "views": 1700
     },
     {
      "id": "2SjmZS63cUw",
-     "title": "Подводная лодка Т-9 (1943)"
+     "title": "Submarine T-9 (1943)",
+     "views": 28000
     },
     {
      "id": "Vxk6Cw2VmVo",
-     "title": "Так рождается песня (1957)"
+     "title": "Так рождается песня (1957)",
+     "views": 5800
     },
     {
      "id": "25-9O-tMleI",
-     "title": "Звезды не гаснут (1971)"
+     "title": "Звезды не гаснут (1971)",
+     "views": 11000
     },
     {
      "id": "GWrPe-CMvkY",
-     "title": "Мезозойская история (1976)"
+     "title": "Мезозойская история (1976)",
+     "views": 3300
     },
     {
      "id": "LEQWNu8Gcko",
-     "title": "Баку-42 (1985)"
+     "title": "Баку-42 (1985)",
+     "views": 1700
     },
     {
      "id": "RykUNfAoNg4",
-     "title": "Рашид Бейбутов (1985)"
+     "title": "Рашид Бейбутов (1985)",
+     "views": 14000
     },
     {
      "id": "nUUajCKuYj4",
-     "title": "Простите нас (1979)"
+     "title": "Простите нас (1979)",
+     "views": 6000
     },
     {
      "id": "hz2fYzoqIxc",
-     "title": "Герой тайти (1968)"
+     "title": "Hero of the Taiga (1968)",
+     "views": 1700
     },
     {
      "id": "4vPoUa-Tktw",
-     "title": "Ступени в небо (1977)"
+     "title": "Ступени в небо (1977)",
+     "views": 1000
     },
     {
      "id": "AGfSj25FCA8",
-     "title": "Очень скучная история | Une Histoire Bien Triste (1988)"
+     "title": "Очень скучная история | Une Histoire Bien Triste (1988)",
+     "views": 4100
     },
     {
      "id": "4C1diuF1uMs",
-     "title": "Сабухи (1941)"
+     "title": "Sabuhi (1941)",
+     "views": 2800
     },
     {
      "id": "7LMUtLMX3l8",
-     "title": "Чудак (1979)"
+     "title": "Чудак (1979)",
+     "views": 9700
     },
     {
      "id": "Il6_RAGWDiA",
-     "title": "Только остров не возьмешь с собой... (1980)"
+     "title": "Только остров не возьмешь с собой... (1980)",
+     "views": 4100
     },
     {
      "id": "yKNEelxUb4k",
-     "title": "Баку столица советского Азербайджана (1987)"
+     "title": "Baku, the capital of Soviet Azerbaijan (1987)",
+     "views": 34000
     },
     {
      "id": "ehf0Z_FwpVI",
-     "title": "Заводила (1987)"
+     "title": "Ringleader (1987)",
+     "views": 8700
     },
     {
      "id": "8iVgW4zA8fk",
-     "title": "Серебристый фургон (1982)"
+     "title": "Серебристый фургон (1982)",
+     "views": 4900
     },
     {
      "id": "idncE_WaM1Q",
-     "title": "Вот придет август (1984)"
+     "title": "Вот придет август (1984)",
+     "views": 3000
     },
     {
      "id": "NZbRQe5JR7Y",
-     "title": "Подвал (1990)"
+     "title": "Подвал (1990)",
+     "views": 16000
     },
     {
      "id": "vChgV5iKjQI",
-     "title": "Особые обстоятельства (1986)"
+     "title": "Особые обстоятельства (1986)",
+     "views": 14000
     },
     {
      "id": "fp2wZHRD-7E",
-     "title": "Семь дней после убийства (1991) -Qətldən yeddi gün sonra"
+     "title": "Семь дней после убийства (1991) -Qətldən yeddi gün sonra",
+     "views": 8800
     },
     {
      "id": "FHkZgB0G64g",
-     "title": "Daxildəki ada | Внутренний Остров (2020)"
+     "title": "Daxildəki ada | Внутренний Остров (2020)",
+     "views": 13000
     },
     {
      "id": "5S9JNw4RTpo",
-     "title": "Посторонние (1992)"
+     "title": "Посторонние (1992)",
+     "views": 6800
     },
     {
      "id": "-V2QLREN1xo",
-     "title": "Тысяча дней борьбы (1975)"
+     "title": "A Thousand Days of Struggle (1975)",
+     "views": 3000
     },
     {
      "id": "e1lFnSdrKA0",
-     "title": "Кер оглы (1960)"
+     "title": "Koroghlu (1960)",
+     "views": 39000
     },
     {
      "id": "uArpPPscCQo",
-     "title": "Мужчина в доме (1978)"
+     "title": "Мужчина в доме (1978)",
+     "views": 13000
     },
     {
      "id": "SfHEZvdnM10",
-     "title": "По следам Чарвадаров (1974) I Çarvadarların izi ilə"
+     "title": "По следам Чарвадаров (1974) I Çarvadarların izi ilə",
+     "views": 6000
     },
     {
      "id": "851MCueohGU",
-     "title": "Если мы вместе (1975)"
+     "title": "Если мы вместе (1975)",
+     "views": 6700
     },
     {
      "id": "0G_Op07SMbk",
-     "title": "Бахтияр (1942)"
+     "title": "Бахтияр (1942)",
+     "views": 14000
     },
     {
      "id": "4jMVWRRh8Wc",
-     "title": "Ветер в лицо (1977)"
+     "title": "Wind in the Face (1977)",
+     "views": 3800
+    }
+   ]
+  },
+  {
+   "id": "PLAtI5OWgNzB2SGFZKcNcAJYeX7WXYjwXn",
+   "lang": "az",
+   "kind": "trailer",
+   "videos": [
+    {
+     "id": "8Hzdc5NSn7Q",
+     "title": "Yarımçıq xatirələr (2015) - treyler",
+     "views": 29000
+    },
+    {
+     "id": "r9mujDmn9SU",
+     "title": "Nar bağı | Pomegranate Orchard (2017) - Official Trailer",
+     "views": 4500
+    },
+    {
+     "id": "ptdU4mLyx30",
+     "title": "Köşk (2021) - treyler",
+     "views": 6300
+    },
+    {
+     "id": "9TJ-Xvrf2ak",
+     "title": "“Qarabağ hekayələri: Dünən, bu gün, sabah” - 2 fevraldan kinoteatrlarda",
+     "views": 1300
+    },
+    {
+     "id": "YmUJLgIAIKU",
+     "title": "\"Bizimkilər: Cırtdan, Bahar qız, Şahzadə və Qəhrəman\" animasiya toplusu (2023) - treyler",
+     "views": 1200
+    },
+    {
+     "id": "lcYJe8Er6iQ",
+     "title": "\"Bizimkilər: Cırtdan, Bahar qız, Şahzadə və Qəhrəman\" animasiya toplusu (2023) - tizer",
+     "views": 823
+    },
+    {
+     "id": "Gcwvqt85pI8",
+     "title": "Dərviş parisi partladır (1976) - treyler",
+     "views": 2600
+    },
+    {
+     "id": "dd5uk5pJ8Z8",
+     "title": "Əhməd haradadır? (1963) - treyler",
+     "views": 2800
+    },
+    {
+     "id": "sqAkM2huijM",
+     "title": "Pıspısa xanım ve siçan bəy (1974)- treyler",
+     "views": 1400
+    },
+    {
+     "id": "zM7q6wDyXjA",
+     "title": "\"Ağ-qara\" gecələr | Black and white nights (2013) - Official trailer",
+     "views": 438
+    },
+    {
+     "id": "hNaM6l8Cd8o",
+     "title": "Alma almaya bənzər (1975) - treyler",
+     "views": 1400
+    },
+    {
+     "id": "zSmQEsFFY8M",
+     "title": "Arşın mal alan (1945) - treyler",
+     "views": 1100
+    },
+    {
+     "id": "nBri_1YNSJ0",
+     "title": "Axınla aşağı (2014) - tizer 2",
+     "views": 442
+    },
+    {
+     "id": "pkzrLykWg1g",
+     "title": "Axınla aşağı (2014) - tizer 3",
+     "views": 422
+    },
+    {
+     "id": "6hph8XbKQ6M",
+     "title": "Fikrət Əmirov (2022) - tizer",
+     "views": 405
+    },
+    {
+     "id": "ikuoBFSyqzI",
+     "title": "Bəxtiyar (1955) - treyler",
+     "views": 1600
+    },
+    {
+     "id": "jTYKLp3zoL8",
+     "title": "Böyük dayaq (1962) - treyler",
+     "views": 2600
+    },
+    {
+     "id": "-FEN2ZdRik8",
+     "title": "4.1 Şəhər motivləri | Urban motives (2015) - Official trailer",
+     "views": 252
+    },
+    {
+     "id": "M315km3pCgI",
+     "title": "4.1 Şəhər motivləri (2015) - treyler",
+     "views": 209
+    },
+    {
+     "id": "nqGYlDOjCIY",
+     "title": "Çölçü | Steppe man (2012) - Official trailer",
+     "views": 665
+    },
+    {
+     "id": "0NK7ayzTR9w",
+     "title": "Çölçü (2012) - treyler",
+     "views": 1200
+    },
+    {
+     "id": "emQx3Kjvjmc",
+     "title": "Dərs (2015) - tizer",
+     "views": 2300
+    },
+    {
+     "id": "ZB_d1nCp-rA",
+     "title": "Zabit şərəfi (2015) - treyler",
+     "views": 301
+    },
+    {
+     "id": "4enweTIFsGo",
+     "title": "Yuxu (2001) - treyler",
+     "views": 2200
+    },
+    {
+     "id": "umb25XlTlEo",
+     "title": "Yarımçıq xatirələr (2015) - tizer",
+     "views": 616
+    },
+    {
+     "id": "KnPUQhBQskY",
+     "title": "Xeyirlə şərin rəqsi (2015) - treyler",
+     "views": 446
+    },
+    {
+     "id": "GpyuS4o1FqA",
+     "title": "Xeyirlə şərin rəqsi (2015) - tizer",
+     "views": 311
+    },
+    {
+     "id": "rp3_2WhYseM",
+     "title": "Uşaqlığın son gecəsi (1968) - treyler",
+     "views": 2700
+    },
+    {
+     "id": "QE06nAIEduA",
+     "title": "Üçüncü günün adamı (2017) - tizer 1",
+     "views": 1200
+    },
+    {
+     "id": "8aQTvJh7RxM",
+     "title": "Üçüncü günün adamı (2017) - tizer 2",
+     "views": 787
+    },
+    {
+     "id": "pZKnOF7sP2c",
+     "title": "Sübhün səfiri (2012) - tizer",
+     "views": 1000
+    },
+    {
+     "id": "bhTXqr8U1kE",
+     "title": "Sehrli xalat (1964) - treyler",
+     "views": 11000
+    },
+    {
+     "id": "WfNtwbKqVnc",
+     "title": "Dərvişin qeydləri (2013) - tizer 1",
+     "views": 199
+    },
+    {
+     "id": "qZz5glYLoh8",
+     "title": "Dərvişin qeydləri (2013) - tizer 2",
+     "views": 252
+    },
+    {
+     "id": "aom3f7WmPFI",
+     "title": "Dərvişin qeydləri (2013) - treyler",
+     "views": 415
+    },
+    {
+     "id": "8yDd5-0Xjvk",
+     "title": "Dolu (2012) - treyler",
+     "views": 4200
+    },
+    {
+     "id": "n_vWzWriNxc",
+     "title": "Dolu (2012) - tizer",
+     "views": 909
+    },
+    {
+     "id": "lwQm-BrVoag",
+     "title": "Fulya (2021) - fragman | treyler",
+     "views": 273
+    },
+    {
+     "id": "GdUh4jKkEEQ",
+     "title": "Fulya (2021) - teaser",
+     "views": 585
+    },
+    {
+     "id": "qTCGFKs3Quc",
+     "title": "Baladadaşın ilk məhəbbəti (1974) - treyler",
+     "views": 2000
+    },
+    {
+     "id": "7DBOoUVNigQ",
+     "title": "Dan yeli | The breeze at dawn (2019) - official trailer",
+     "views": 442
+    },
+    {
+     "id": "t9d1LLYl6KU",
+     "title": "Dan yeli (2019) - treyler",
+     "views": 969
+    },
+    {
+     "id": "u3QIj28aLPE",
+     "title": "Daxildəki ada | The Island within (2020) - Official trailer",
+     "views": 1200
+    },
+    {
+     "id": "Dz1wh3i00lc",
+     "title": "Daxildəki ada | The Island within (2020) - teaser",
+     "views": 375
+    },
+    {
+     "id": "pTZ-piZZxFs",
+     "title": "Dəli Kür (1969) - treyler",
+     "views": 3300
+    },
+    {
+     "id": "97pobOXTqPY",
+     "title": "Güllələnmə təxirə salınır (2002) - treyler",
+     "views": 1800
+    },
+    {
+     "id": "8vHQj-fx6VU",
+     "title": "Gümüşgöl əfsanəsi (1984) - treyler",
+     "views": 4400
+    },
+    {
+     "id": "Cu46EgOlnrA",
+     "title": "Kino söhbətləri 1. Elxan Cəfərov - anons",
+     "views": 711
+    },
+    {
+     "id": "yJ_qh9r890Y",
+     "title": "Azerbaijanfilm - 102",
+     "views": 32000
+    },
+    {
+     "id": "hB9tfsGxBoA",
+     "title": "Millət naminə. Əbdül Kərim bəy Mehmandarov (2022) -treyler",
+     "views": 2400
     }
    ]
   }

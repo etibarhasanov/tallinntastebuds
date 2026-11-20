@@ -84,9 +84,9 @@
       ],
       "nodes": [
         {"id": "signed-in", "type": "start", "lane": "member", "name": "Arrives signed in", "when": ["page:map"], "ref": ["functions/api/account.js GET"]},
-        {"id": "azeri", "type": "user", "lane": "member", "name": "Opens /azeri and reads the films", "when": ["page:azeri", "azeri_shelf", "azeri_page", "azeri_film"], "note": "By its address: nothing links to it. In Azerbaijani or English; the feature films that can be watched first, newest first, twenty to a page. Signed out it is a door to the sign-in sheet.", "ref": ["azeri.html", "assets/azeri.js"]},
+        {"id": "azeri", "type": "user", "lane": "member", "name": "Opens /azeri and reads the films", "when": ["page:azeri", "azeri_shelf", "azeri_page", "azeri_film"], "note": "By its address: nothing links to it. In Azerbaijani or English; the feature films that can be watched first, the most watched leading, twenty to a page, and Watch plays one in the page. Signed out it is a door to the sign-in sheet.", "ref": ["azeri.html", "assets/azeri.js"]},
         {"id": "azeri-page", "type": "service", "lane": "member", "name": "Answers a page of twenty, for a session only", "note": "One read, the session; the films are a file, kept five minutes per isolate and searched in memory.", "ref": ["functions/api/azeri.js GET", "tools/azfilms.mjs"]},
-        {"id": "azeri-watch", "type": "end", "lane": "member", "name": "Watches one on YouTube", "when": ["azeri_watch"]},
+        {"id": "azeri-watch", "type": "end", "lane": "member", "name": "Watches one, in the page or on YouTube", "when": ["azeri_watch", "azeri_youtube"]},
         {"id": "what-now", "type": "gateway", "lane": "member", "name": "What now?"},
         {"id": "save", "type": "user", "lane": "member", "name": "Saves a place", "when": ["save_place"], "ref": ["assets/app.js"]},
         {"id": "account-page", "type": "user", "lane": "member", "name": "Opens their account page", "when": ["page:account"], "note": "Their saves, their lists and the ones they kept, and the doors to everything else a member can do.", "ref": ["account.html", "assets/account.js"]},
