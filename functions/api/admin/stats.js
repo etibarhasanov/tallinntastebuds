@@ -2,12 +2,13 @@
  * Tallinn Tastebuds — /api/admin/stats, the ranking of what gets pressed.
  *
  *   GET ?lang=&device=
- *                the whole ranking, the page's words beside it, and five
- *                minutes of edge cache on the pair. What /admin/stats draws.
+ *                the whole ranking, the page's words beside it, and the
+ *                UTC day of edge cache on the pair. What /admin/stats draws.
  *                `device` is `phone` for the presses made on phones and
  *                `other` for every device's less those — BY DEVICE in
- *                ../stats.js — and every device without. The saves and what the site holds
- *                are not presses and stay the same under any device.
+ *                ../stats.js — and every device without. The saves and
+ *                what the site holds are not presses and stay the same
+ *                under any device.
  *
  * The presses themselves are counted by POST /api/stats in ../stats.js, which
  * anybody may send and every page does; that file says what is counted and
@@ -70,17 +71,44 @@
  * accounts, the saves and the places they are on, the lists and the public
  * ones among them, the lists saved by somebody else, the feedback still up,
  * the decks people made and the places added to lists by hand — each a
- * COUNT(*) of its table read fresh on every cache miss, HELD below. The
- * tables are small enough that a running counter would be one more thing to
- * keep in step for no reason, and each count is a statement of its own, so a
+ * COUNT(*) of its table, HELD below, read with the rest of the answer once
+ * a UTC day per colo — ONCE A DAY below. Rule 3 of **Every read has a
+ * price** in CLAUDE.md wants a total kept by the write; this is the owner's
+ * page, read a few times a day, and nine walks a day of a few hundred rows
+ * is cheaper than nine counters every write route would have to keep in
+ * step. Each count is a statement of its own, so a
  * table not there yet answers 0 rather than failing the others, the way the
  * ranking answers empty rather than failing when `press_counts` is not.
  *
- * The tests' deals are in the same table, under the `look` and `style`
- * kinds, and are not read here: ./visitors.js carries them to
- * /admin/visitors, to sit with everything else about each test. The rails'
- * old `layout` rows are there too, and read by nothing since the short rail
- * became everybody's.
+ * ONCE A DAY, AND NO STATEMENT PAST A HUNDRED ROWS
+ *
+ * The owner reads this page to see how the site is used, not to watch it
+ * move, so the answer is worked out once a UTC day per colo, language and
+ * device view and held there until midnight — the date is in the cache key,
+ * so the first open after midnight is the day's one read. Until 2026-11-21
+ * it was five minutes, and every open past them read all of press_counts
+ * (715 rows on 2026-11-19, every device's and every kind's, to keep a third
+ * of them), all of save_counts and the nine counts: about 1,100 rows a miss,
+ * and a statement answering 715 rows. The owner's line since then: no
+ * statement here answers more than a hundred rows. So press_counts is asked
+ * by its key, (kind, id), a kind at a time — the map's places by their ids,
+ * a hundred at a time; Google's venues by the place kind, the top VENUES of
+ * them; each other kind most pressed first, at most a hundred — and the
+ * saves ride on the same statements. Rows read on a miss, from the counts by
+ * kind on 2026-11-19: about 410 for every device, 250 for the phones, 560
+ * for every device less the phones, which reads the phones' rows beside
+ * every device's; plus the nine counts, about 250.
+ *
+ * The one part that is not held is `reads`, the day's database reads so far
+ * — a figure about today is worth nothing a day old, and it is one row per
+ * table read today, by the key, about twenty. It is read on every open and
+ * put on the held answer on the way out.
+ *
+ * The directory's test is in the same table, under the `look` kind, and is
+ * not read here: ./visitors.js carries it to /admin/visitors, to sit with
+ * everything else about it. The colours' old `style` rows and the rails'
+ * old `layout` rows are there too, and read by nothing since both tests
+ * ended.
  */
 
 import {
@@ -91,24 +119,30 @@ import {
 import { PLACE, FILTER, RAIL, RAIL_PILLS, DEAL_FILTER, LIST, POST } from '../stats.js';
 /* The countries under a list, read the way /insights reads them. */
 import { listCountries } from '../_visits.js';
-import { askedDevice, lessPhone } from '../_visitors.js';
+import { askedDevice } from '../_visitors.js';
 import { AUTHOR } from '../_posts.js';
 import { readsByTable, DAY_READS, BRAKE } from '../_meter.js';
 
-/* Five minutes in the colo, which is what the page is allowed to be stale by.
- *
- * Nothing purges this. A save purges the counts cache because the number it
- * changed is on the screen that changed it — press the mark, see the count go
- * up — and nothing here is like that: the ranking is read on a page of its
- * own, by somebody who is not the person whose press moved it. Five minutes is
- * also what /api/places holds, and this reads the same shape of table it does.
+/* A day in the colo — ONCE A DAY in the header. The key carries the date,
+ * so this only has to outlast it; nothing purges it.
  *
  * It is the only thing between this route and the database, so it is also the
- * cost control: however often /admin/stats is opened, each colo asks D1
- * twelve times an hour per language and no more. Nothing reaches it before the
- * owner check in functions/_middleware.js, so holding it never hands the
+ * cost control: however often /admin/stats is opened, each colo asks D1 once
+ * a day per language and device view and no more. Nothing reaches it before
+ * the owner check in functions/_middleware.js, so holding it never hands the
  * answer to anybody else. */
-const TTL = 300;
+const TTL = 86400;
+
+/* What the answer looks like, in the cache key, so a deploy that changes it
+   is not handed a copy of the old shape for the rest of the day — rule 9 of
+   **The rules of a count** in the /stats skill. */
+const SHAPE = '2';
+
+/* The most rows any one statement here answers with — ONCE A DAY. */
+const PAGE = 100;
+
+/* A kind nothing is filed under, for "take nothing off" — see kindsOf(). */
+const NONE = '-';
 
 /* How many Google venues the second table prints. Twenty-five is a screen of
    them on a phone and about as far down a list of places nobody has been to as
@@ -157,10 +191,26 @@ export async function onRequestGet(context) {
   const device = askedDevice(params);
   const words = { lang: lang, ui: ui, device: device };
 
+  /* The day's database reads so far, by table — ../_meter.js. One row a
+     table read today, by the key, about twenty; null where read_meter is not
+     there. Not filed by device: a read is the site's, not a visitor's. And
+     read on every open rather than held — ONCE A DAY in the header. */
+  const day = new Date().toISOString().slice(0, 10);
+  const withReads = async (body) => {
+    const byTable = await readsByTable(env.DB, day);
+    const reads = byTable && {
+      today: byTable.reduce((sum, r) => sum + r.rows, 0),
+      limit: DAY_READS,
+      brake: BRAKE,
+      tables: byTable.map((r) => ({ name: r.what, n: r.rows }))
+    };
+    return privately(json({ ...body, reads: reads }, 200));
+  };
+
   const cache = caches.default;
-  const key = statsKey(request, words.lang, device);
+  const key = statsKey(request, words.lang, device, day);
   const hit = await cache.match(key);
-  if (hit) return privately(hit);
+  if (hit) return withReads(await hit.json());
 
   const empty = {
     ready: false, opens: 0, held: null,
@@ -173,41 +223,6 @@ export async function onRequestGet(context) {
      writing to them. */
   if (await wrongDatabase(env)) return json(empty, 200);
 
-  let rows;
-  try {
-    const answer = await env.DB
-      .prepare('SELECT kind, id, n FROM press_counts WHERE n > 0')
-      .all();
-    rows = answer.results || [];
-  } catch (e) {
-    /* No table yet — see the header. */
-    return json(empty, 200);
-  }
-  /* Every device's rows, which have no dot in their kind; the phones', with
-     `phone.` taken back off; or every device's less the phones' — BY DEVICE
-     in ../stats.js. A kind is one row per id either side. */
-  const all = rows.filter((row) => !row.kind.includes('.'));
-  const phone = rows
-    .filter((row) => row.kind.startsWith('phone.'))
-    .map((row) => ({ ...row, kind: row.kind.slice('phone.'.length) }));
-  rows = device === 'phone' ? phone
-       : device ? lessPhone(all, phone, (row) => row.kind + '\u0000' + row.id)
-       : all;
-
-  const counted = new Map();
-  for (const row of rows) counted.set(row.kind + '\u0000' + row.id, row.n);
-  const countOf = (kind, id) => counted.get(kind + '\u0000' + id) || 0;
-
-  /* How many people saved each place — see the header. Nothing under any
-     place where save_counts is not there yet. */
-  let saved = new Map();
-  try {
-    const { results } = await env.DB.prepare('SELECT place_id, n FROM save_counts WHERE n > 0').all();
-    saved = new Map((results || []).map((r) => [r.place_id, r.n]));
-  } catch (e) {
-    saved = new Map();
-  }
-
   let places;
   try {
     places = await mapPlaces(context);
@@ -217,6 +232,32 @@ export async function onRequestGet(context) {
        and has nothing to print. */
     return json(empty, 200);
   }
+  const ids = places.map((p) => p.id);
+
+  /* The presses, a kind at a time by the key — ONCE A DAY in the header.
+     The map's places and Google's are asked with their saves beside them;
+     the chips and pills whole; the lists and posts most opened first. */
+  let mine;
+  let theirs;
+  let pressed;
+  try {
+    [mine, theirs, ...pressed] = await Promise.all([
+      onTheMap(env, kindsOf(device, PLACE), ids),
+      offTheMap(env, kindsOf(device, PLACE), ids),
+      most(env, kindsOf(device, FILTER), PAGE),
+      most(env, kindsOf(device, RAIL), PAGE),
+      most(env, kindsOf(device, LIST), LISTS),
+      most(env, kindsOf(device, POST), POSTS)
+    ]);
+  } catch (e) {
+    /* No table yet — see the header. */
+    return json(empty, 200);
+  }
+  const [chips, pills, lists, posts] = pressed;
+  const counted = new Map();
+  for (const row of chips) counted.set(FILTER + '\u0000' + row.id, row.n);
+  for (const row of pills) counted.set(RAIL + '\u0000' + row.id, row.n);
+  const countOf = (kind, id) => counted.get(kind + '\u0000' + id) || 0;
 
   /* The map, every one of them, most opened first.
 
@@ -229,8 +270,8 @@ export async function onRequestGet(context) {
     .map((p) => ({
       id: p.id,
       name: p.name,
-      n: countOf(PLACE, p.id),
-      saves: saved.get(p.id) || 0,
+      n: (mine.get(p.id) || {}).n || 0,
+      saves: (mine.get(p.id) || {}).saves || 0,
       /* A shut place is still on the map, still has a card and can still be
          opened, so it is still in the ranking — but a row at the bottom of one
          needs to say why it is there, or the table reads as a verdict on a
@@ -240,26 +281,17 @@ export async function onRequestGet(context) {
     }))
     .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
 
-  /* Everything counted as a place that is not on the map is one of Google's,
-     most pressed first, capped. Sorted before the lookup, so the cap is what
-     bounds the query. */
-  const onMap = new Set(places.map((p) => p.id));
-  const strangers = rows
-    .filter((row) => row.kind === PLACE && !onMap.has(row.id))
-    .sort((a, b) => b.n - a.n)
-    .slice(0, VENUES);
-
   let venues = [];
-  if (strangers.length) {
+  if (theirs.top.length) {
     try {
-      const found = await venuesByIds(env, strangers.map((row) => row.id));
+      const found = await venuesByIds(env, theirs.top.map((row) => row.id));
       /* A venue the export no longer carries is dropped rather than printed
          with its key for a name: a refresh takes rows out, and a row nobody
          can put a name to says nothing to anybody reading a ranking. Its count
          stays in the table and in `opens` below, because it happened. */
-      venues = strangers
+      venues = theirs.top
         .filter((row) => found.has(row.id))
-        .map((row) => ({ id: row.id, name: found.get(row.id).name, n: row.n, saves: saved.get(row.id) || 0 }));
+        .map((row) => ({ id: row.id, name: found.get(row.id).name, n: row.n, saves: row.saves }));
     } catch (e) {
       /* The names did not come back. The map's own ranking is the page, and
          this half of it is not worth failing the other half for. */
@@ -274,13 +306,7 @@ export async function onRequestGet(context) {
      be a number about nothing.
      It is the one figure on the page that is about the site rather than about
      a restaurant. */
-  let opens = 0;
-  for (const row of rows) if (row.kind === PLACE) opens += row.n;
-
-  const filters = await ranked(context, words, countOf);
-  const rail = railed(words, countOf);
-  const lists = await opened(env, rows);
-  const posts = await read(env, rows, words.lang);
+  const opens = map.reduce((sum, p) => sum + p.n, 0) + theirs.rest;
 
   /* What the site holds — see the header. Each count on its own, so a table
      not applied yet answers 0 and never fails the others or the ranking. */
@@ -289,28 +315,101 @@ export async function onRequestGet(context) {
     env.DB.prepare(HELD[k]).first().then((row) => (row && row.n) || 0, () => 0)));
   const held = Object.fromEntries(kinds.map((k, i) => [k, counts[i]]));
 
-  /* The day's database reads so far, by table — ../_meter.js. One row a
-     table read today, by the key; null where read_meter is not there. Not
-     filed by device: a read is the site's, not a visitor's. */
-  const day = new Date().toISOString().slice(0, 10);
-  const byTable = await readsByTable(env.DB, day);
-  const reads = byTable && {
-    today: byTable.reduce((sum, r) => sum + r.rows, 0),
-    limit: DAY_READS,
-    brake: BRAKE,
-    tables: byTable.map((r) => ({ name: r.what, n: r.rows }))
+  const body = {
+    ready: true, opens: opens, held: held,
+    map: map, venues: venues,
+    filters: await ranked(context, words, countOf),
+    rail: railed(words, countOf),
+    lists: await opened(env, lists),
+    posts: await read(env, posts, words.lang),
+    ...words
   };
+  context.waitUntil(cache.put(key, json(body, 200, TTL)));
+  return withReads(body);
+}
 
-  const res = json(
-    {
-      ready: true, opens: opens, held: held, reads: reads,
-      map: map, venues: venues, filters: filters, rail: rail, lists: lists, posts: posts,
-      ...words
-    },
-    200, TTL
-  );
-  context.waitUntil(cache.put(key, res.clone()));
-  return privately(res);
+/* The kind to read and the kind to take off it, for a device view — BY
+ * DEVICE in ../stats.js. Every device is the kind as it is and the phones
+ * are `phone.<kind>`, each with NONE taken off; every device less the phones
+ * is the kind with `phone.<kind>` taken off, row by row, which is what
+ * lessPhone() in ../_visitors.js does over rows already in hand. */
+function kindsOf(device, kind) {
+  if (device === 'phone') return ['phone.' + kind, NONE];
+  return [kind, device ? 'phone.' + kind : NONE];
+}
+
+/* The map's own places, by id, with their saves: Map(id → { n, saves }).
+ *
+ * A lookup on press_counts' key (kind, id) per place, another for the
+ * phones' row where one is taken off, and one on save_counts' key — so it
+ * reads at most three rows a place and never a place that is not on the
+ * map. The ids go in as one JSON array, a hundred to a statement, because a
+ * statement binds at most a hundred values and answers at most PAGE rows.
+ * 82 places on 2026-11-21: one statement, 82 rows answered, about 82 read
+ * from press_counts (164 for every device less the phones) and one per
+ * saved place from save_counts. */
+async function onTheMap(env, [kind, less], ids) {
+  const out = new Map();
+  for (let at = 0; at < ids.length; at += PAGE) {
+    const { results } = await env.DB
+      .prepare(
+        'SELECT j.value AS id, IFNULL(a.n, 0) - IFNULL(p.n, 0) AS n, IFNULL(s.n, 0) AS saves ' +
+        'FROM json_each(?3) j ' +
+        'LEFT JOIN press_counts a ON a.kind = ?1 AND a.id = j.value ' +
+        'LEFT JOIN press_counts p ON p.kind = ?2 AND p.id = j.value ' +
+        'LEFT JOIN save_counts s ON s.place_id = j.value'
+      )
+      .bind(kind, less, JSON.stringify(ids.slice(at, at + PAGE)))
+      .all();
+    for (const row of results || []) out.set(row.id, { n: row.n, saves: row.saves });
+  }
+  return out;
+}
+
+/* Everything counted as a place that is not on the map is one of Google's:
+ * the top VENUES of them, most opened first, with their saves, and `rest`,
+ * every open of all of them, past the cap too, for `opens`.
+ *
+ *   { top: [{ id, n, saves }], rest }
+ *
+ * The one statement here that walks: every row of the place kind, by the
+ * key's first column, because nothing is ordered by `n` to find the top
+ * without looking at them all — 275 rows on 2026-11-19, 145 for the phones,
+ * and 420 for every device less the phones with their rows looked up
+ * beside. It grows with the Google venues anybody has opened, at most the
+ * 1,177 there are, and runs once a day — ONCE A DAY. The saves are looked
+ * up for the VENUES rows that come out of it, not for every row walked. */
+async function offTheMap(env, [kind, less], ids) {
+  const { results } = await env.DB
+    .prepare(
+      'SELECT t.id, t.n, t.rest, IFNULL(s.n, 0) AS saves FROM (' +
+        'SELECT a.id AS id, a.n - IFNULL(p.n, 0) AS n, SUM(a.n - IFNULL(p.n, 0)) OVER () AS rest ' +
+        'FROM press_counts a ' +
+        'LEFT JOIN press_counts p ON p.kind = ?2 AND p.id = a.id ' +
+        'WHERE a.kind = ?1 AND a.id NOT IN (SELECT value FROM json_each(?3)) ' +
+        'ORDER BY n DESC LIMIT ?4' +
+      ') t LEFT JOIN save_counts s ON s.place_id = t.id ORDER BY t.n DESC'
+    )
+    .bind(kind, less, JSON.stringify(ids), VENUES)
+    .all();
+  const rows = results || [];
+  return { top: rows.filter((row) => row.n > 0), rest: rows.length ? rows[0].rest : 0 };
+}
+
+/* One kind's ids, most pressed first, at most `limit` — [{ id, n }]. By the
+ * key's first column, so it reads that kind's rows and, where the phones'
+ * are taken off, a lookup each beside them: on 2026-11-19 14 chips, 11
+ * pills, 31 lists and a post for every device. */
+async function most(env, [kind, less], limit) {
+  const { results } = await env.DB
+    .prepare(
+      'SELECT a.id AS id, a.n - IFNULL(p.n, 0) AS n FROM press_counts a ' +
+      'LEFT JOIN press_counts p ON p.kind = ?2 AND p.id = a.id ' +
+      'WHERE a.kind = ?1 ORDER BY n DESC LIMIT ?3'
+    )
+    .bind(kind, less, limit)
+    .all();
+  return (results || []).filter((row) => row.n > 0);
 }
 
 /* Every chip on the map, most pressed first, named in the reading language.
@@ -390,8 +489,8 @@ function railed(words, countOf) {
  *
  *   [{ id, name, by, public, n, country }]
  *
- * `n` is the running count press_counts keeps under kind 'list' — the rows
- * are already in hand — and `country` is [{ id, n }] out of list_counts,
+ * `n` is the running count press_counts keeps under kind 'list', `most`
+ * read by most() already ranked and capped — and `country` is [{ id, n }] out of list_counts,
  * most first, or null where that table is not applied. `by` is the owner's
  * username, so the row can lead to their page, and `public` is whether the
  * list still is: one made private since keeps the number it had and stops
@@ -399,14 +498,10 @@ function railed(words, countOf) {
  * since is dropped rather than printed with its id for a name; its count
  * stays in the table, because it happened.
  *
- * Sorted before the lookup, so the cap is what bounds the query. The names
+ * Capped before the lookup, so the cap is what bounds the query. The names
  * did not come back, or `lists` is not there yet: an empty table rather
  * than a failed page, the way Google's venues answer. */
-async function opened(env, rows) {
-  const most = rows
-    .filter((row) => row.kind === LIST)
-    .sort((a, b) => b.n - a.n)
-    .slice(0, LISTS);
+async function opened(env, most) {
   if (!most.length) return [];
 
   let named;
@@ -444,8 +539,8 @@ async function opened(env, rows) {
  *
  *   [{ id, name, by, draft, n }]
  *
- * `n` is the running count press_counts keeps under kind 'post' — the rows
- * are already in hand — and `name` the title in the language the page is
+ * `n` is the running count press_counts keeps under kind 'post', `most`
+ * read by most() already ranked and capped — and `name` the title in the language the page is
  * read in where the post is written in it, the one it was first written in
  * where it is not, the way the blog picks. `draft` is whether it has been
  * taken back to draft since: it keeps the number it had and stops growing,
@@ -453,11 +548,7 @@ async function opened(env, rows) {
  * dropped, its count staying in the table because it happened. The posts
  * not there, or their names not back: an empty table rather than a failed
  * page, the way the lists answer. */
-async function read(env, rows, lang) {
-  const most = rows
-    .filter((row) => row.kind === POST)
-    .sort((a, b) => b.n - a.n)
-    .slice(0, POSTS);
+async function read(env, most, lang) {
   if (!most.length) return [];
 
   const ids = most.map((row) => row.id);
@@ -503,15 +594,18 @@ async function read(env, rows, lang) {
     });
 }
 
-/* What the colo files the answer under: the route, the language and the
-   device, and never the rest of the address. The page sends its whole list
+/* What the colo files the answer under: the route, the language, the
+   device view, the UTC day and the shape, and never the rest of the address. The page sends its whole list
    of candidate languages — "et,en,ru" — and the answer only depends on
    which one of them won, so keying on the raw query would file the same ten
-   answers under however many orders browsers happen to send. Forty keys per
-   colo, one per language the site speaks and device. */
-function statsKey(request, lang, device) {
+   answers under however many orders browsers happen to send. Thirty-three
+   keys per colo a day at the most, one per language the site speaks and
+   device view; the day is what makes each a day's — ONCE A DAY. */
+function statsKey(request, lang, device, day) {
   const url = new URL('/api/admin/stats', request.url);
   url.searchParams.set('lang', lang);
   if (device) url.searchParams.set('device', device);
+  url.searchParams.set('day', day);
+  url.searchParams.set('shape', SHAPE);
   return new Request(url.toString());
 }

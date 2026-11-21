@@ -15764,24 +15764,38 @@ is also why the rail cost no schema change at all, exactly as `list` did not:
 a fourth kind is four letters in a column that was always going to hold more
 than two.
 
-### One request on the way in, and five minutes of cache
+### One request on the way in, and a day of cache
 
 `GET /api/admin/stats?lang=` answers with the ranking **and** the page's words in one
 block, so `assets/stats.js` never fetches `data/ui.json` at all — the
 arrangement the flashcards page introduced, and `wordsFor()` in
 `functions/api/_lib.js` is now shared by both.
 
-The answer is held in the colo for five minutes — read only after the owner
+The answer is held in the colo for the UTC day — read only after the owner
 check above, and handed to the browser `private, no-store` whatever the colo's
-copy says, so no cache in between can pass it on. Nothing purges it: a save
-purges the counts cache because the number it changed is on the screen that
-changed it, and this is the opposite — the ranking is read on a page of its
-own by somebody who is not the person whose press moved it. So the page is at
-most five minutes stale, which is the honest reading of "lately", and each
-colo asks D1 twelve times an hour per language however many people open it.
-The cache is keyed on the route, the chosen language and the device alone, so
-whatever candidate lists browsers send collapse to forty keys at most — one
-per language and device, the whole site's included.
+copy says, so no cache in between can pass it on. Nothing purges it: the page
+is read to see how the site is used, not to watch it move, and the owner said
+on 2026-11-21 that once a day is enough. The date is in the cache key, so the
+first open after midnight UTC is the day's one read, per colo, language and
+device view; until then it was five minutes, and every open past them read
+the whole of `press_counts`. The key is the route, the chosen language, the
+device view, the day and `SHAPE` — whatever candidate lists browsers send
+collapse to thirty-three keys a day at most.
+
+The one figure not held is the day's database reads at the top, a row per
+table read today, which is worth nothing a day old: it is read on every open,
+about twenty rows by the key, and put on the held answer on the way out.
+
+And no statement behind it answers more than a hundred rows, which is the
+owner's line for this page. `press_counts` is asked by its key a kind at a
+time — the map's places by their ids, a hundred to a statement; the top
+twenty-five of Google's, with the total of every open of theirs for the
+headline; the chips, the pills, the lists and the posts most pressed first —
+and the saves come on the same statements, rather than all of `save_counts`
+beside them. On the counts of 2026-11-19 that is about 410 rows of
+`press_counts` for every device, 250 for the phones and 560 for every device
+less the phones, against the 715 every open read before; the heading comment
+of `functions/api/admin/stats.js`, **ONCE A DAY**, has the numbers.
 
 ### The bottom of the ranking is not a verdict
 
@@ -15848,9 +15862,9 @@ as its tables stand: **Accounts**; **Saves** and the **Places saved** they
 are on; **Lists** and the **Public lists** among them; **Lists saved** —
 somebody else's list kept, `list_keeps`; **Feedback** still up; **Decks
 made** on the flashcards; and **Places added** to a list by hand. Each is a
-`SELECT COUNT(*)` of its own table, read fresh on every cache miss rather
-than kept as a running total — the tables are small enough, unlike
-`press_counts`, that there is nothing to save by not asking them directly —
+`SELECT COUNT(*)` of its own table, read with the rest of the answer once a
+day rather than kept as a running total — about 280 rows a day per colo and
+view, which is cheaper than a counter every write route would have to keep —
 and each is a statement of its own, so a table not applied yet answers 0
 rather than taking the others with it. `held` in the answer
 `/api/admin/stats` gives, `HELD` in `functions/api/admin/stats.js` the nine
