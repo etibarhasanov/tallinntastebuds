@@ -53,7 +53,7 @@ and requires the first twelve. An unknown key is a warning ("typo?"), which is h
 | `added` | `YYYY-MM-DD` when present; it orders **New on the map** on the front page. Absent is fine and warns about nothing. `/admin.html` stamps one | error |
 | `updated` | `YYYY-MM-DD`, never before `added`. Written only by an edit on `/admin.html` that adds photographs, never by hand: it puts the place back at the front of **New on the map** as *Updated* | error |
 | `visited` | `YYYY-MM`; absent warns only when there is a reel to date it from | error / warning |
-| `closed` | `false`, `true`, or `"temporary"` — a door that should open again, Google's word, raised from the admin page's Google tab | error |
+| `closed` | `false`, `true`, or `"temporary"` — a door that should open again, Google's word, raised from the admin page's Google tab. The iPhone app reads these three and no others: a fourth word is taught to `Place.swift` first — **What the app reads** in `CLAUDE.md` | error |
 
 The taxonomy is checked too: every type needs a label in all eleven languages,
 and no type may claim `discount` or `saved`. A `photos/` folder no place
