@@ -25,13 +25,18 @@
  *             it found the one, which on a short way is most of the time.
  *             `steps` is where that way turns — see THE TURNS below.
  *
- *   bus  → { "trips": [ { "seconds": 1320,
+ *   bus  → { "trips": [ { "seconds": 1320, "leave": "14:01",
  *                   "legs": [ { "line": [...] },
  *                             { "name": "17", "color": "0064B0",
  *                               "from": "Vabaduse väljak", "at": "14:09",
  *                               "line": [...] }, … ] }, … ] }
  *
  *             A leg that is a ride carries the line's name; a walk does not.
+ *             `leave` is when to set off from the point asked from: the
+ *             planner starts the walk so that it reaches the stop as the
+ *             ride does, so `seconds` is counted from then and has no wait
+ *             in it. A journey that starts on board leaves at its first
+ *             ride's `at`.
  *
  * What draws the line on the map when the arrow in a place's top strip is
  * pressed — see paintDirections() and showRoute() in assets/app.js. The bar
@@ -1220,7 +1225,7 @@ function way(route) {
 
 async function transit(from, to) {
   const query = '{ plan(from: {lat: ' + from.lat + ', lon: ' + from.lng + '}, ' +
-    'to: {lat: ' + to.lat + ', lon: ' + to.lng + '}, numItineraries: ' + (TRIPS + 2) + ') { itineraries { duration ' +
+    'to: {lat: ' + to.lat + ', lon: ' + to.lng + '}, numItineraries: ' + (TRIPS + 2) + ') { itineraries { startTime duration ' +
     'legs { startTime transitLeg ' +
     'route { shortName color } from { name } legGeometry { points } } } } }';
 
@@ -1257,6 +1262,7 @@ async function transit(from, to) {
 
   const trips = rides.map((it) => ({
     seconds: Math.round(Number(it.duration)),
+    leave: CLOCK.format(new Date(Number(it.startTime))),
     legs: it.legs.map((l) => {
       const path = l.legGeometry && l.legGeometry.points ? decode(l.legGeometry.points) : [];
       const leg = { line: path.length >= 2 ? thin(path, MAX_POINTS / it.legs.length) : [] };

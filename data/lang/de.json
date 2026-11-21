@@ -1259,6 +1259,7 @@
   "routeWays": "Wege dorthin",
   "routeCar": "{min} Min. mit dem Auto · {dist}",
   "routeBus": "{lines} um {time} ab {stop} · {min} Min. insgesamt",
+  "routeBusLeave": "Los um {leave}: zu Fuß zur Haltestelle {stop}, {lines} um {time} · {min} Min. insgesamt",
   "routeNoBus": "Gerade kein Bus und keine Tram gefunden.",
   "routeNoCar": "Keine Autoroute gefunden.",
   "rideRecord": "Fahrt aufzeichnen",

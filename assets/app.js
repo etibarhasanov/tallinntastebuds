@@ -2687,9 +2687,18 @@
   }
 
   /* A bus journey: the walks dashed in a walk's green, each ride solid in the
-     bus's amber, and the line in the bar saying which to take, when and
-     from where. Under it, the journeys on offer as small buttons, the one
-     drawn pressed — pressing another draws that one instead. */
+     bus's amber, and the line in the bar saying when to set off from here,
+     which to take, when and from where. Under it, the journeys on offer as
+     small buttons, the one drawn pressed — pressing another draws that one
+     instead.
+
+     When to set off is `leave`, the planner's own: it starts the walk so it
+     reaches the stop as the bus does, and the minutes in all count from
+     then. Until 2026-11-21 the line said only when the bus went, so
+     somebody reading "104A at 19:12" at 18:48 could not tell that the walk
+     to the stop was twenty minutes and they had four to go. A journey that
+     starts on board leaves when its first ride does, and an answer from
+     before the field — a minute's cache — has none: both read as before. */
   function drawTrip(n) {
     var trip = routeTrips[n];
     clearRouteLine();
@@ -2700,7 +2709,9 @@
     });
     var rides = tripRides(trip);
     var first = rides[0];
-    dom.routeSay.textContent = t('routeBus', {
+    var walkFirst = trip.leave && trip.leave !== first.at;
+    dom.routeSay.textContent = t(walkFirst ? 'routeBusLeave' : 'routeBus', {
+      leave: trip.leave,
       lines: tripLines(rides),
       time: first.at,
       stop: first.from,

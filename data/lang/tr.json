@@ -1259,6 +1259,7 @@
   "routeWays": "Yollar",
   "routeCar": "{min} dk arabayla · {dist}",
   "routeBus": "{lines} {time}'de {stop} durağından · toplam {min} dk",
+  "routeBusLeave": "Çıkış saati {leave}: {stop} durağına yürüyün, {lines} kalkışı {time} · toplam {min} dk",
   "routeNoBus": "Şu anda otobüs veya tramvay bulunamadı.",
   "routeNoCar": "Araç rotası bulunamadı.",
   "rideRecord": "Sürüşü kaydet",

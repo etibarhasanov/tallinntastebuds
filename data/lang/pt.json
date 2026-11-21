@@ -1259,6 +1259,7 @@
   "routeWays": "Caminhos",
   "routeCar": "{min} min de carro · {dist}",
   "routeBus": "{lines} às {time} de {stop} · {min} min no total",
+  "routeBusLeave": "Saia às {leave}: vá a pé até {stop}, {lines} às {time} · {min} min no total",
   "routeNoBus": "Nenhum autocarro ou elétrico encontrado agora.",
   "routeNoCar": "Não foi possível encontrar um percurso de carro.",
   "rideRecord": "Gravar um passeio",

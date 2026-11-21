@@ -1259,6 +1259,7 @@
   "routeWays": "Yollar",
   "routeCar": "{min} dəq maşınla · {dist}",
   "routeBus": "{lines} — {time}, {stop} dayanacağından · cəmi {min} dəq",
+  "routeBusLeave": "{leave} çıxın: {stop} dayanacağına piyada gedin, {lines} — {time} · cəmi {min} dəq",
   "routeNoBus": "Hazırda avtobus və ya tramvay tapılmadı.",
   "routeNoCar": "Maşın marşrutu tapılmadı.",
   "rideRecord": "Gedişi yaz",

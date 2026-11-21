@@ -1259,6 +1259,7 @@
   "routeWays": "Reitit perille",
   "routeCar": "{min} min autolla · {dist}",
   "routeBus": "{lines} klo {time} pysäkiltä {stop} · yhteensä {min} min",
+  "routeBusLeave": "Lähde klo {leave}: kävele pysäkille {stop}, {lines} klo {time} · yhteensä {min} min",
   "routeNoBus": "Bussia tai raitiovaunua ei löytynyt juuri nyt.",
   "routeNoCar": "Ajoreittiä ei löytynyt.",
   "rideRecord": "Tallenna ajo",

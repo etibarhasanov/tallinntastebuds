@@ -3174,8 +3174,14 @@ row slides sideways rather than pushing the cross off the bar.
 - **Bus** is peatus.ee, the national journey planner the Transport
   Administration runs over every operator's timetable — Tallinn's buses, trams
   and trolleybuses, and the trains and ferries besides. It is asked "from here,
-  leaving now" and the bar says which to take, when and from where: *17 at
-  14:05 from Vabaduse väljak · 22 min in all*. The walks to and from the stops
+  leaving now" and the bar says when to set off, then which to take, when and
+  from where: *Leave at 13:58: walk to Vabaduse väljak, 17 at 14:05 · 22 min
+  in all*. The planner starts the walk so that it reaches the stop as the bus
+  does, so `leave` on each journey is when to go and the minutes in all count
+  from then; until 2026-11-21 the bar threw that time away and said only when
+  the bus went, which left the walk to the stop for the visitor to guess. A
+  journey that starts at the stop says *17 at 14:05 from Vabaduse väljak · 22
+  min in all*, as the bar always did. The walks to and from the stops
   are drawn dashed in a walk's green and each ride solid in the bus's amber,
   and under the sentence the next journeys sit as small buttons —
   *14:05 · 17*, *14:12 · 3 → 17* — pressing one draws that one instead. A
