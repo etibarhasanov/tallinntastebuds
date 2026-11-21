@@ -12,7 +12,7 @@ row that is `n + 1`'d rather than a log that is replayed. That is the whole
 design, and it is why the two halves are so different to change: the
 **write** half is one open route every page knocks on, hardened against
 whatever a request says; the **read** half is the owner's alone, cached
-at the edge — five minutes, and the UTC day for `/admin/stats` — and drawn in the reading language with the words
+at the edge for the UTC day — `ownersDay()` in `_lib.js`, the line under each page's chips saying when — and drawn in the reading language with the words
 fetched in the same request as the numbers.
 
 This skill is the checklist for changing either half. It is not the
@@ -186,8 +186,8 @@ validator passes and the page draws.
    `admin.html` is not one of them.
 9. **The words ride with the numbers.** Every admin route answers through
    `wordsFor()` so the page makes one request on the way in; the edge
-   cache is keyed on the route, the language and the range alone, and
-   `/admin/stats` on the day as well, since it is held until midnight —
+   cache is keyed on the route, the language, the range and the day alone,
+   since each answer is held until midnight UTC —
    `statsKey()`, `visitorsKey()`, `foundKey()`, `flowsKey()` — never the
    rest of the address; the browser is told `private, no-store` whatever
    the colo holds; and `/api/admin/live` is `no-store` outright. When an
@@ -329,8 +329,9 @@ Two things are this area's own:
   day = date('now') ORDER BY kind, n DESC`, through `wrangler d1 execute
   … --local` or the Cloudflare MCP `d1_database_query` for the remote
   preview. Then open `/admin/visitors` as the owner and find the same rows
-  drawn. The edge cache is five minutes, so a figure that does not move is
-  usually the colo, not the count: `?days=1` and a different language are
+  drawn. The edge cache is the UTC day — the line under the chips says when
+  the page was counted — so a figure that does not move is the colo, not the
+  count, until midnight: `?days=1` and a different language are
   different keys.
 - **Clear `ttb.seen` and `ttb.since`** from `localStorage` to be a new
   visitor again, and `ttb.step` from `sessionStorage` to arrive with no
@@ -436,7 +437,7 @@ particulars apply, and this area adds:
   `visitor_counts`, and had it been batched with the day's facts a database
   without it would have lost the day.
 - **A colo's old answer.** A route that gains a field the page cannot draw
-  without is still answered for five minutes from the colo's copy of the
+  without is still answered for the rest of the day from the colo's copy of the
   old shape, by the page that came with the deploy. `SHAPE` in each admin
   route is what keeps the two apart; move it when the shape moves.
 - **The owner's directory presses ranked as the city's.** `venue` was a

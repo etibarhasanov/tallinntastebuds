@@ -1161,8 +1161,10 @@ function paired(one, two, a, b) {
  * account. Now a run reads today alone, a few thousand rows by the evening,
  * and at most once in TODAY_KEPT per colo however many chips are pressed:
  * the day's worst, the owner's pages held open all day, 720 runs of today's
- * rows, and in practice a dozen. TODAY_KEPT is short because the answers
- * are already five minutes old at most and this adds to that.
+ * rows, and in practice a dozen. Since 2026-11-21 the answers themselves
+ * are held the UTC day — ownersDay() in ./_lib.js — so a run is the first
+ * open of a range, chip or language that day, and TODAY_KEPT is what lets
+ * those first opens, minutes apart, share one read of today.
  *
  * A day not in the colo yet is read with the others missing, in one range
  * from the oldest of them to the newest — on a page opened for the first

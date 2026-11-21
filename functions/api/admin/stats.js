@@ -112,7 +112,8 @@
  */
 
 import {
-  json, wrongDatabase, mapPlaces, venuesByIds, dataFile, wordsFor, privately
+  json, wrongDatabase, mapPlaces, venuesByIds, dataFile, wordsFor, privately,
+  OWNERS_TTL, ownersDay
 } from '../_lib.js';
 /* The kinds, the pills and the deal chip are the counting side's, so the
    ranking reads the table with the same words it was written with. */
@@ -122,16 +123,6 @@ import { listCountries } from '../_visits.js';
 import { askedDevice } from '../_visitors.js';
 import { AUTHOR } from '../_posts.js';
 import { readsByTable, DAY_READS, BRAKE } from '../_meter.js';
-
-/* A day in the colo — ONCE A DAY in the header. The key carries the date,
- * so this only has to outlast it; nothing purges it.
- *
- * It is the only thing between this route and the database, so it is also the
- * cost control: however often /admin/stats is opened, each colo asks D1 once
- * a day per language and device view and no more. Nothing reaches it before
- * the owner check in functions/_middleware.js, so holding it never hands the
- * answer to anybody else. */
-const TTL = 86400;
 
 /* What the answer looks like, in the cache key, so a deploy that changes it
    is not handed a copy of the old shape for the rest of the day — rule 9 of
@@ -208,7 +199,12 @@ export async function onRequestGet(context) {
   };
 
   const cache = caches.default;
-  const key = statsKey(request, words.lang, device, day);
+  /* A day in the colo — ownersDay() in ../_lib.js and ONCE A DAY in the
+     header. It is the only thing between this route and the database, so it
+     is also the cost control; nothing reaches it before the owner check in
+     functions/_middleware.js, so holding it never hands the answer to
+     anybody else. */
+  const key = statsKey(request, words.lang, device);
   const hit = await cache.match(key);
   if (hit) return withReads(await hit.json());
 
@@ -316,7 +312,7 @@ export async function onRequestGet(context) {
   const held = Object.fromEntries(kinds.map((k, i) => [k, counts[i]]));
 
   const body = {
-    ready: true, opens: opens, held: held,
+    ready: true, asOf: new Date().toISOString(), opens: opens, held: held,
     map: map, venues: venues,
     filters: await ranked(context, words, countOf),
     rail: railed(words, countOf),
@@ -324,7 +320,7 @@ export async function onRequestGet(context) {
     posts: await read(env, posts, words.lang),
     ...words
   };
-  context.waitUntil(cache.put(key, json(body, 200, TTL)));
+  context.waitUntil(cache.put(key, json(body, 200, OWNERS_TTL)));
   return withReads(body);
 }
 
@@ -601,11 +597,10 @@ async function read(env, most, lang) {
    answers under however many orders browsers happen to send. Thirty-three
    keys per colo a day at the most, one per language the site speaks and
    device view; the day is what makes each a day's — ONCE A DAY. */
-function statsKey(request, lang, device, day) {
+function statsKey(request, lang, device) {
   const url = new URL('/api/admin/stats', request.url);
   url.searchParams.set('lang', lang);
   if (device) url.searchParams.set('device', device);
-  url.searchParams.set('day', day);
   url.searchParams.set('shape', SHAPE);
-  return new Request(url.toString());
+  return ownersDay(url);
 }

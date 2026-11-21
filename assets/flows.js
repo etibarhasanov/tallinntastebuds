@@ -694,7 +694,7 @@
     if (!d.ready || !d.who || !d.who[state.who]) { say('flowsNotYet'); return; }
     var who = d.who[state.who];
     var any = Object.keys(who.steps).some(function (id) { return who.steps[id] > 0; });
-    if (any) countedLine(who, d.since); else say('flowsNothing');
+    if (any) countedLine(who, d.since, d.asOf); else say('flowsNothing');
     badges(who);
     arrowNumbers(who);
     stepsCard(who, d.counted);
@@ -702,7 +702,7 @@
     if (state.picked) showStep(state.picked.getAttribute('data-step'), true);
   }
 
-  function countedLine(who, since) {
+  function countedLine(who, since, asOf) {
     clear(nodes.counted);
     nodes.counted.classList.remove('is-error');
     nodes.counted.appendChild(el('b', { textContent: t('flowsViews', { n: num(who.views) }) }));
@@ -712,6 +712,11 @@
     nodes.counted.appendChild(document.createTextNode(t('flowsOnce') + (since ? ' ' + t('visitorsSince', { date: dateLabel(since) }) : '')));
     nodes.counted.appendChild(el('br'));
     nodes.counted.appendChild(document.createTextNode(t('flowsMarks')));
+    var counted = TTBCounted.words(asOf, state.lang);
+    if (counted) {
+      nodes.counted.appendChild(el('br'));
+      nodes.counted.appendChild(document.createTextNode(t(counted.key, counted.vars)));
+    }
     if (state.device) {
       nodes.counted.appendChild(el('br'));
       nodes.counted.appendChild(document.createTextNode(t('devicesNote')));

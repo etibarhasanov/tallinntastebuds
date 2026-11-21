@@ -84,6 +84,7 @@
     ui: {},
     device: '',     // one of DEVICE_IDS
     ready: false,   // whether the numbers came back at all
+    asOf: '',       // when they were counted — assets/counted.js
     opens: 0,
     held: null,     // what the site holds, nine counts — holdings() below
     reads: null,    // { today, limit, brake, tables: [{ name, n }] } — readsCard() below
@@ -425,8 +426,10 @@
     var opened = !!(state.map[0] && state.map[0].n);
 
     var stack = el('div', { className: 'lists-stack' });
+    var counted = TTBCounted.words(state.asOf, state.lang);
     stack.appendChild(card([
       devices(),
+      counted ? el('p', { className: 'ins-note', textContent: t(counted.key, counted.vars) }) : null,
       state.device ? el('p', { className: 'ins-note', textContent: t('devicesNote') }) : null
     ]));
     if (state.reads) stack.appendChild(readsCard());
@@ -539,6 +542,7 @@
         state.lang = out.lang || DEFAULT_LANG;
         state.ui = out.ui;
         state.ready = !!out.ready;
+        state.asOf = out.asOf || '';
         state.opens = out.opens || 0;
         state.held = out.held || null;
         state.reads = out.reads || null;

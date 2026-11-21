@@ -3,8 +3,8 @@
  *
  *   GET ?days=&lang=&device=
  *                      one range of what ../_visitors.js counts under HOW
- *                      THEY FOUND IT, the page's words beside it, and five
- *                      minutes of edge cache on the three. What /admin/found
+ *                      THEY FOUND IT, the page's words beside it, and the
+ *                      UTC day of edge cache on the three. What /admin/found
  *                      draws. `device` as in ./visitors.js — BY DEVICE in
  *                      ../_visitors.js.
  *
@@ -17,8 +17,8 @@
  *
  * It is ./visitors.js's shape on purpose, and behind the same lock: the words
  * come back with the numbers, so the page makes one request on the way in; the
- * colo holds each answer for five minutes, keyed on the range, the device and the
- * language alone; and the browser is told `private, no-store` whatever the
+ * colo holds each answer for the UTC day, keyed on the range, the device, the
+ * language and the day alone; and the browser is told `private, no-store` whatever the
  * colo's copy says. functions/_middleware.js answers anybody but the owner
  * 403 before this file is reached.
  *
@@ -29,11 +29,8 @@
  * The page says the numbers are not in yet.
  */
 
-import { json, wrongDatabase, wordsFor, privately } from '../_lib.js';
+import { json, wrongDatabase, wordsFor, privately, OWNERS_TTL, ownersDay } from '../_lib.js';
 import { SPANS, readFound, askedDevice } from '../_visitors.js';
-
-/* Five minutes in the colo — TTL in ./visitors.js. */
-const TTL = 300;
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -56,14 +53,15 @@ export async function onRequestGet(context) {
   const found = await readFound(env, span, device, request.url);
   if (!found) return json(empty, 200);
 
-  const res = json({ ready: true, ...found, device: device, lang: lang, ui: ui }, 200, TTL);
+  /* The day in the colo — ownersDay() in ../_lib.js. */
+  const res = json({ ready: true, asOf: new Date().toISOString(), ...found, device: device, lang: lang, ui: ui }, 200, OWNERS_TTL);
   context.waitUntil(cache.put(key, res.clone()));
   return privately(res);
 }
 
 /* The route, the language, the range and the device, and never the rest of
-   the address — visitorsKey() in ./visitors.js, and SHAPE the same answer's
-   version. */
+   the address — visitorsKey() in ./visitors.js — the day, ownersDay(), and
+   SHAPE the same answer's version. */
 const SHAPE = '2';
 
 function foundKey(request, lang, span, device) {
@@ -72,5 +70,5 @@ function foundKey(request, lang, span, device) {
   url.searchParams.set('days', String(span));
   url.searchParams.set('device', device || 'all');
   url.searchParams.set('shape', SHAPE);
-  return new Request(url.toString());
+  return ownersDay(url);
 }

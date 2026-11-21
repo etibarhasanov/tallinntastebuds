@@ -1217,6 +1217,8 @@
   "numbersGoogle": "Diretório do Google",
   "numbersAdmin": "Admin",
   "numbersFlows": "Quem usa o site",
+  "numbersCountedToday": "Contado hoje às {time}, hora de Tallinn. Volta a ser contado amanhã depois das {next}.",
+  "numbersCountedOn": "Contado a {date} às {time}, hora de Tallinn. Volta a ser contado a {nextDate} depois das {next}.",
   "foundLead": "Contado neste site, sem cookies. Os motores de busca nunca passam as palavras que alguém escreveu, por isso isto é o que chega: que motor, a página onde chegaram, ligações de outros sites, as tuas próprias ligações e o que se procurou aqui.",
   "foundSkip": "Saltar para os números",
   "foundFromSearch": "Da pesquisa",
