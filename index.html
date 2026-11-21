@@ -133,7 +133,7 @@
        this door's picture, not a list's own marker, and nothing in
        assets/pins.js has an opinion about it.
 
-       Hidden until /api/account says the database behind the lists is
+       Hidden until /api/v1/account says the database behind the lists is
        bound — a door onto "Lists are switched off on this copy of the site"
        is a button that can only disappoint. -->
   <a class="rail-btn" id="btn-lists" href="/lists" data-track="lists_all"
@@ -247,7 +247,7 @@
      already showing — seventy-six places somebody has been to and written up
      — and it is the right field for "which of these was the ramen one". This
      one answers "is Riva on here at all" and "where is pizza near me", over
-     the eleven hundred Google venues behind /api/places as well as the map's
+     the eleven hundred Google venues behind /api/v1/find as well as the map's
      own, and what it finds is mostly somewhere with no write-up. One field
      could not be both without lying about one of them: a column search that
      quietly returned a thousand places nobody has visited would stop being
@@ -725,7 +725,7 @@
      shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
-<script src="assets/track.js?v=2cdf82a4" defer></script>
+<script src="assets/track.js?v=34c2e65a" defer></script>
 <!-- A swipe to the right is Back, from wherever the thumb lands rather than
      from the edge of the glass alone. After track.js, since it reports the
      press; before the page's own script and deferred like it. -->
@@ -733,7 +733,7 @@
 <!-- Shared with deal.html, verify.html and staff.html. The map uses only the
      lookup and date helpers from it, to work out whether a place has a
      discount worth showing; with no deals set up that answer is always no. -->
-<script src="assets/pass.js?v=371c4551" defer></script>
+<script src="assets/pass.js?v=f73fbcc1" defer></script>
 <!-- The basemap, shared with the lists picker and the admin one. Before
      app.js and deferred like it: deferred scripts run in document order, so
      the global is there by the time the map is drawn. -->
@@ -745,8 +745,8 @@
 <!-- The surface above: every page a visitor walks to from here opens in a
      frame over the map, so this document, and the radio in it, stay. Before
      app.js, which mounts it, and deferred like it. -->
-<script src="assets/shell.js?v=9c8ad6ea" defer></script>
-<!-- Reading a typed sentence as the wish /api/ask narrows on — which kinds
+<script src="assets/shell.js?v=d6805261" defer></script>
+<!-- Reading a typed sentence as the wish /api/v1/ask narrows on — which kinds
      of place, cheap or fancy, open now, near what — before the model sees a
      line of either list. It names no place itself. Before app.js and
      deferred like it, for the same reason as the basemap above. -->
@@ -775,11 +775,11 @@
 <!-- A list read as a walk, which the map can follow: TTBWalk, the same
      global the list's own page hands its list to. Before the map's script,
      which asks it. -->
-<script src="assets/walk.js?v=4809fdb9" defer></script>
+<script src="assets/walk.js?v=1b027293" defer></script>
 <!-- Discover, the page the bare address opens on in front of the map. Before the
      page's own script and deferred like it, so the global is in place when
      the map mounts it. -->
-<script src="assets/discover.js?v=713271b6" defer></script>
-<script src="assets/app.lean.js?v=50339631" defer></script>
+<script src="assets/discover.js?v=3688a4c7" defer></script>
+<script src="assets/app.lean.js?v=693c555b" defer></script>
 </body>
 </html>

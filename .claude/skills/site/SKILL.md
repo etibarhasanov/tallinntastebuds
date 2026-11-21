@@ -103,7 +103,7 @@ that block; `pass.js` carries it without the `theme-color` line, so the
 three pass pages keep light browser chrome under the dark style.
 `flashcard.js` carries the style half and a language half of its own shape: it
 does not fetch `data/ui.json` at all, but sends its candidates to
-`/api/flashcard` and prints from the one block that comes back — **One request
+`/api/v1/flashcard` and prints from the one block that comes back — **One request
 on the way in** under **Flashcards** in `docs/handbook.md` says why, and
 `assets/flashcard-first.js` is why that ask leaves from the head before the
 page's own scripts have arrived: `boot()` takes the early answer only when the

@@ -11,12 +11,12 @@
  * bar gets the contact half of a venue somebody has just looked up, and the
  * one row `?map=` names.
  *
- * WHY THIS IS NOT /api/places
+ * WHY THIS IS NOT /api/v1/find
  *
  * They read the same table and answer different questions, which is why there
  * are two of them rather than one with a flag on it:
  *
- *   /api/places   the roll a list is built from, and the one the map's find
+ *   /api/v1/find  the roll a list is built from, and the one the map's find
  *                 bar searches. The map's own places merged over the export,
  *                 Google's row dropped wherever it is a place I have already
  *                 been to, and stripped to what a picker row and a search
@@ -57,9 +57,9 @@
  * those. It is not the filtered endpoint the paragraph above argues against:
  * nothing searches with it, because a search that has to reach the database
  * cannot fold Põhjala down to pohjala on the way — see the find bar in
- * assets/app.js, which folds the roll behind /api/places in the browser for
+ * assets/app.js, which folds the roll behind /api/v1/find in the browser for
  * exactly that reason. This is the step after the search, when one venue has
- * been picked and the map wants the half /api/places leaves behind: the phone,
+ * been picked and the map wants the half /api/v1/find leaves behind: the phone,
  * the website and the week.
  *
  * It answers rows in the shape above and not a second one — the same roll(),
@@ -369,7 +369,7 @@ function entry(row) {
      the most interesting thing a row can say: it is what turns "Google rates
      this 4.6" into a link to somewhere I have actually eaten. */
   if (row.map_id) out.mapId = row.map_id;
-  /* Kept in the answer rather than filtered out of it, unlike /api/places,
+  /* Kept in the answer rather than filtered out of it, unlike /api/v1/find,
      which is a picker and should not offer somewhere shut. A directory that
      silently omitted the sixty-five places Google says are temporarily closed
      would have somebody walking to one to find out. */

@@ -150,7 +150,7 @@
  * site paying for its front door on each opening.
  *
  * Now the rendered page is put in the Cache API — caches.default, the same
- * per-colo cache /api/saves keeps its counts in — under the page's own
+ * per-colo cache /api/v1/saves keeps its counts in — under the page's own
  * address with nothing else on it: the language and the place, which are
  * the two things the page is rendered from, and the deployment, which is
  * the third. ?type=, ?style=, ?list= and the ?from= a shared link carries

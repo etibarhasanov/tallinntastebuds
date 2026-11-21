@@ -61,7 +61,7 @@ export function ownersDay(url) {
 /* A hash of the answer itself, so the tag changes when and only when the
    answer does. No version column to keep in step with anything. Weak,
    because what leaves the colo is compressed on the way out and a strong tag
-   would be claiming the bytes are the bytes. /api/saves tags its counts with
+   would be claiming the bytes are the bytes. /api/v1/saves tags its counts with
    it and functions/index.js the map; it lived in saves.js until the second. */
 export async function weakTag(body) {
   const digest = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(body));
@@ -429,8 +429,8 @@ export async function wrongDatabase(env) {
  * to the map is all it takes for saving to work on it.
  *
  * Two shapes of the same fetch, because two callers want different halves of
- * it and neither should cost a second request. /api/saves and /api/lists ask
- * only "is this a real id", which is the Set; /api/ask needs the write-ups,
+ * it and neither should cost a second request. /api/v1/saves and /api/v1/me/lists ask
+ * only "is this a real id", which is the Set; /api/v1/ask needs the write-ups,
  * the types and the prices to put in front of a model, which is the array.
  * The array is what is read, and the Set is built from it once beside it.
  */
@@ -468,10 +468,10 @@ export async function knownPlaces(context) {
  * that records one now is told `malformed` and lists it as not kept.
  *
  * It lives here rather than beside any of its users because there are
- * several: /api/ask, /mcp and the public API refuse a point to measure from
- * that is outside it, /api/geocode asks Photon to look only inside it when
+ * several: /api/v1/ask, /mcp and the public API refuse a point to measure from
+ * that is outside it, /api/v1/geocode asks Photon to look only inside it when
  * it is not told where the asker is, and it is the first of THE FOUR CITIES
- * below, which /api/rides holds every point of a ride to.
+ * below, which /api/v1/rides holds every point of a ride to.
  * Copies would be drifting copies, and the drift would show up as an address
  * the geocoder was happy to find and the save then refused.
  */
@@ -500,12 +500,12 @@ export function nearTallinn(lat, lng) {
  * worth a polygon.
  *
  * No two boxes touch, so a point is in one city or in none, and cityOf()
- * says which. THE MAP IS STILL TALLINN'S: nearTallinn() is what /api/ask,
+ * says which. THE MAP IS STILL TALLINN'S: nearTallinn() is what /api/v1/ask,
  * /mcp, the public API and the places roll measure "near" against, because
  * the places are Tallinn's.
  *
  * THE CITIES ARE WHERE A RIDE IS COUNTED, AND ONLY THAT. nearCity() is
- * /api/rides' alone: a ride is some 320 rows written into ride_sections
+ * /api/v1/rides' alone: a ride is some 320 rows written into ride_sections
  * down streets nobody has ridden, out of 100,000 a day, and four cities
  * fill their squares where a country would not. Finding a way and finding
  * an address write nothing, so those are held to the whole country —
@@ -539,7 +539,7 @@ export function nearCity(lat, lng) {
 
 /* ------------------------------------------------------------------ Estonia
  * Where a way may be asked for and an address searched for, since
- * 2026-11-20: /api/route, /api/geocode with a `near`, a pin put on a list
+ * 2026-11-20: /api/v1/route, /api/v1/geocode with a `near`, a pin put on a list
  * and a walk's check-in. None of them writes a row for being asked, which
  * is why they may have the country when a counted ride may not.
  *
@@ -559,7 +559,7 @@ export function inEstonia(lat, lng) {
 }
 
 /* Kilometres between two points as the crow flies, which is what a visitor
-   is told they are: a rail yard or the bay can double the walk. /api/ask
+   is told they are: a rail yard or the bay can double the walk. /api/v1/ask
    measures a question's "near" with it and /mcp orders a search by it. */
 export function km(a, b) {
   const rad = Math.PI / 180;
@@ -573,11 +573,11 @@ export function km(a, b) {
 /* ---------------------------------------------------------------- words
  * Lowercased and with the accents taken off, and nothing else: "Põhja Konn"
  * and "pohja konn" are one string, "Пельменная" keeps every letter. It is
- * not fold() in /api/places, which strips to a-z0-9 to ask whether two
+ * not fold() in /api/v1/find, which strips to a-z0-9 to ask whether two
  * names are one place; this has to leave words as words so a question can
  * land on one. The map's find bar folds the same way (fold() in
  * assets/app.js), and a Function cannot import from assets/, so this is the
- * server's copy: /api/ask reads a question through it and /mcp a search.
+ * server's copy: /api/v1/ask reads a question through it and /mcp a search.
  */
 export function foldWords(value) {
   return String(value == null ? '' : value)
@@ -593,7 +593,7 @@ export function foldWords(value) {
  * from. Same five-minute cache per isolate, same reason — it changes when a
  * deploy changes it and not otherwise.
  *
- * A Map of whole entries rather than a Set of ids, because /api/lists answers
+ * A Map of whole entries rather than a Set of ids, because /api/v1/me/lists answers
  * with the address and the pin as well as the name: a shared list has to draw
  * completely for somebody who has never been here, and making that browser
  * fetch the entire catalogue to render ten rows would be a hundred kilobytes
@@ -688,7 +688,7 @@ export function languageIndex(context) {
  * The page's strings in one language, and which language that is.
  *
  * Five routes answer with the words the page will print rather than leaving
- * it to fetch them for itself: /api/flashcard, where the decks and the
+ * it to fetch them for itself: /api/v1/flashcard, where the decks and the
  * strings arrive together — see THE WORDS ON THE PAGE COME WITH THE DECKS in
  * its header — /api/chess, and the three under /api/admin/, each one request
  * on the way in for the same reason. The whole block goes rather than a list
@@ -903,7 +903,7 @@ const VENUE_TYPES = [
  * ranked, and none ever will be — and this is not one: it is Google's number,
  * on Google's place, with Google's name on it, which is the only shape in
  * which a number like that can be honest here. The one exception is the find
- * bar's order, which /api/places lends a place of mine its linked row's
+ * bar's order, which /api/v1/find lends a place of mine its linked row's
  * numbers for and never prints — **The find bar's order** in docs/handbook.md.
  *
  * The contact half — the phone, the site, the week of opening hours and the
@@ -952,7 +952,7 @@ export function venueEntry(row) {
        Google Maps that is not somewhere to eat or drink — a museum — so the
        map draws it the plain pin and not a fork. Absent on `eat`, and
        wherever the row was read without the column, which is every reader
-       but the two that offer such a row: /api/places and /api/lookup. */
+       but the two that offer such a row: /api/v1/find and /api/v1/lookup. */
     ...(row.kind && row.kind !== 'eat' ? { kind: row.kind } : {}),
     /* Not "is this row from the table" — the id already says that. It is
        "whose description this is", and it travels with the description so
@@ -997,7 +997,7 @@ export async function eatOnly(env) {
 /* ---------------------------------------------------------- Google's rows
  * google_venues, kept in the isolate once, for everything that reads it whole.
  *
- * Four things read the table whole: the roll /api/places searches, the two
+ * Four things read the table whole: the roll /api/v1/find searches, the two
  * slices the chat picks from, and the one /mcp dresses a place with. Each
  * used to keep a copy of its own and read it again on a clock — five
  * minutes for the roll and the chat's thousand rows, one minute for the
@@ -1202,7 +1202,7 @@ export async function venuesByIds(env, ids) {
  * the site to read, the week as seven days and the Google listing all three
  * came off. Kept apart from venueEntry() because these four columns are
  * selected by the two callers that draw a card — venuesByIds() above for a
- * place on somebody's list, and /api/ask for a place it is recommending —
+ * place on somebody's list, and /api/v1/ask for a place it is recommending —
  * and by nothing that draws a row. A place off the export has no write-up
  * behind its name, and until this travelled the card the map drew for one
  * was a name, an address and a Directions button, while the row it came from
@@ -1376,7 +1376,7 @@ export async function inPages(page, cursor) {
    (owner, rowid) underneath: rowid is the order the rows went in, and so the
    order of created_at, since a save is written once with the time it was
    made and a claim moves a row's owner without making a new one. Read by
-   GET /api/account and every sign-in's answer, by /api/apple, by deleting
+   GET /api/v1/account and every sign-in's answer, by /api/v1/apple, by deleting
    an account and by claimDeviceSaves() below. PAGE rows read a page; the
    most anybody had saved on 2026-11-19 was eight, one page. */
 export async function savedBy(env, owner) {
@@ -1393,7 +1393,7 @@ export async function savedBy(env, owner) {
  * Move a device's saves onto an account.
  *
  * Two routes do this and both do it at the same moment — the one where
- * somebody stops being a browser and starts being an account. /api/account
+ * somebody stops being a browser and starts being an account. /api/v1/account
  * does it on a sign-up and a sign-in; /api/google does it when the round trip
  * comes back as somebody this site already knows.
  *
@@ -1435,7 +1435,7 @@ export async function claimDeviceSaves(env, userId, clientId) {
 }
 
 export function countsKey(request) {
-  return new Request(new URL('/api/saves', request.url).toString());
+  return new Request(new URL('/api/v1/saves', request.url).toString());
 }
 
 /* Today in Tallinn, 'YYYY-MM-DD' — the day the restaurants' tills are on,

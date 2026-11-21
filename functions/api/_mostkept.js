@@ -5,7 +5,7 @@
  * Underscore-prefixed, so this is a module and never a route. Like _lists.js
  * beside it, it holds one query two files both need:
  *
- *   functions/api/lists.js       answers GET /api/lists?all=1 with it
+ *   functions/api/lists.js       answers GET /api/v1/me/lists?all=1 with it
  *   functions/lists/index.js     seeds its first page into /lists, so the
  *                                page draws without a second round trip
  *
@@ -245,7 +245,7 @@ export async function mostKept(context, opts) {
      SHELF of them each, a title and three names, and never draw a dot. Asked
      for as a page they read twenty lists' first ten items and looked up
      every dot's place, and threw away all but eight rows and every dot — a
-     refresh of /api/discover ran the item read thirty times for sixteen
+     refresh of /api/v1/discover ran the item read thirty times for sixteen
      cards. A shelf reads `shelf` lists and the first TASTE items of each,
      and skips pins() altogether. A whole number between one and PAGE, or it
      is a page as before. */

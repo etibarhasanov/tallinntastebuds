@@ -1,15 +1,15 @@
 /**
  * Tallinn Tastebuds — the roll a list is built from.
  *
- * GET /api/places            the whole roll
- * GET /api/places?q=<words>    the twenty of it the words reach best, from
+ * GET /api/v1/find            the whole roll
+ * GET /api/v1/find?q=<words>   the twenty of it the words reach best, from
  *                              two letters — the one search of the city, for
  *                              the app, the blog editor's picker and anything
  *                              else that wants a place found; see search()
  *     &near=<lat>,<lng>        nearest first, and `distance` in metres a row
  *     &bbox=<s>,<w>,<n>,<e>    only that part of the map
  *     &limit=<n>               up to sixty rather than twenty
- * GET /api/places?ids=a,b,…    just those places — the cards in a post
+ * GET /api/v1/find?ids=a,b,…   just those places — the cards in a post
  *
  * One answer, two sources, and two things ask for it whole — the picker on
  * the lists page, and the find bar across the top of the map:
@@ -38,7 +38,7 @@
  *
  * WHY IT IS CACHED WHEN NOTHING ELSE ON THIS FEATURE IS
  *
- * A list is read by its owner in the middle of writing it, so /api/lists
+ * A list is read by its owner in the middle of writing it, so /api/v1/me/lists
  * answers no-store. This is the opposite kind of thing: it changes when a
  * deploy or a sync changes it, it is the same for everybody, and it is the
  * one big answer on the page. Five minutes.

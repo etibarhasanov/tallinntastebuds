@@ -4,7 +4,7 @@
  * Underscore-prefixed, so this is a module and never a route. It holds the one
  * thing two files both need: the shape of a profile as the page wants it.
  *
- *   functions/api/profile.js   answers GET /api/profile?name=<name> with it
+ *   functions/api/profile.js   answers GET /api/v1/profile?name=<name> with it
  *   functions/u/[name].js      seeds it into the page /u/<name> serves
  *
  * The same arrangement functions/api/_lists.js has, for the same reason, and
@@ -135,7 +135,7 @@ export const NETWORKS = [
 
 /* One handle, or '' — which is both "they left it empty" and "that is not a
    handle". The caller tells the two apart by what it was given: POST
-   /api/account refuses a field somebody filled in that comes back empty, and
+   /api/v1/account refuses a field somebody filled in that comes back empty, and
    reading a stored row drops it silently, because a value this site would no
    longer accept is a value it should stop printing.
 

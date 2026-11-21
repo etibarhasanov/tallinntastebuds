@@ -1,5 +1,5 @@
 /**
- * Tallinn Tastebuds — /api/lookup, asking Google Maps for what nothing here
+ * Tallinn Tastebuds — /api/v1/lookup, asking Google Maps for what nothing here
  * knows, and keeping the answer.
  *
  *   GET   { ready: true }       whether the button can be offered at all
@@ -27,7 +27,7 @@
  * WHY THE ANSWER IS KEPT
  *
  * Every place Google answers with is written into google_venues, so the next
- * person to type the same word finds it in the roll /api/places already sends
+ * person to type the same word finds it in the roll /api/v1/find already sends
  * and never sees the button — one call to Google per place, not per visitor.
  * A row that is already there, from the export or an earlier lookup, keeps
  * everything but one column, hidden ones included, so this cannot undo a
@@ -70,7 +70,7 @@
  *
  * The same words asked twice in a day are answered out of the colo's cache
  * rather than from Google: a second press of the button, or a second person
- * the five-minute cache on /api/places has not caught up with yet.
+ * the five-minute cache on /api/v1/find has not caught up with yet.
  */
 
 import { json, wrongDatabase, venueEntry, venuesChanged } from './_lib.js';

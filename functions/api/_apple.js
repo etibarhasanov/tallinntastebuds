@@ -89,7 +89,7 @@ function appIds(env) {
   return set.length ? set : APP_IDS;
 }
 
-/* Whether /api/apple can answer, which /api/account reports as `appApple`
+/* Whether /api/v1/apple can answer, which /api/v1/account reports as `appApple`
    and the app draws its button by. It needs nothing but accounts themselves —
    see NO SECRET — so this is true wherever it is asked, and it is a function
    all the same: the day it does need something, the app's button follows

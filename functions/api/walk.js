@@ -8,7 +8,7 @@
  * It may take an afternoon or a month. Nothing is bought and nobody at the
  * place is asked anything.
  *
- * GET  /api/walk?list=<id>
+ * GET  /api/v1/walk?list=<id>
  *
  *   { ready, user, admin, radius,
  *     walk:   null | { started, finished, mode, note, order: [place, …] },
@@ -23,13 +23,13 @@
  *   the two tables applied yet, and the page then draws the route and no
  *   way to start — see WHEN THE TABLES ARE NOT THERE.
  *
- * GET  /api/walk?list=<id>&who=<name>
+ * GET  /api/v1/walk?list=<id>&who=<name>
  *
  *   { ready, who, checks: [ { place, at } ] }
  *
  *   One finisher's own walk, leg by leg — HOW SOMEBODY ELSE WALKED IT.
  *
- * GET  /api/walk?mine=1
+ * GET  /api/v1/walk?mine=1
  *
  *   { ready, mine: null | { id, title, pin, checked, total },
  *     walks: [ the same shape … ] }
@@ -41,7 +41,7 @@
  *   first of them, as it was before there were several. Empty signed out,
  *   with nothing going, or where a list has since gone private or away.
  *
- * POST /api/walk   { action, list, … }      a session, every one
+ * POST /api/v1/walk  { action, list, … }   a session, every one
  *
  *   start   { order?, mode? }    begins the walk; pressing it twice is one walk
  *   mode    { mode }             `foot`, `bike`, `car` or `mixed`, asked once
@@ -66,7 +66,7 @@
  * A check sends the phone's coordinates, and this compares them with the
  * coordinates of the places left and stores which place and when. The
  * coordinates themselves are in no table, no log line and no count — the
- * same promise /api/route makes, kept the same way. What is stored is what
+ * same promise /api/v1/route makes, kept the same way. What is stored is what
  * the board then shows: that this account stood at this door at this time.
  *
  * HOW SOMEBODY ELSE WALKED IT

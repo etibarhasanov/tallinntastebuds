@@ -214,7 +214,7 @@ export async function onRequestGet(context) {
   };
   if (!env.DB) return json(empty, 200);
   /* A deployment holding the other environment's database answers as though it
-     had no database at all — the same rule /api/saves follows, and for the
+     had no database at all — the same rule /api/v1/saves follows, and for the
      same reason: a preview showing the live numbers is the same mistake as
      writing to them. */
   if (await wrongDatabase(env)) return json(empty, 200);

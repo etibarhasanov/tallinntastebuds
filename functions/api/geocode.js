@@ -1,11 +1,11 @@
 /**
  * Tallinn Tastebuds — turning a typed address into a point.
  *
- * GET /api/geocode?q=Tellisk
+ * GET /api/v1/geocode?q=Tellisk
  *   → { "results": [ { "lat": 59.4389, "lng": 24.7291,
  *                      "label": "Telliskivi 60a", "where": "Tallinn" }, … ] }
  *
- * GET /api/geocode?q=Riia&near=58.38,26.72
+ * GET /api/v1/geocode?q=Riia&near=58.38,26.72
  *   the same, anywhere in Estonia, what is nearest that point first.
  *   Rattatee sends where its rider is. With no `near`, or one outside
  *   Estonia, the search is Tallinn's, as it was for everybody before
@@ -48,7 +48,7 @@
  * Caching, mostly: a worker can put an answer in Cloudflare's cache and a
  * page cannot, and prefix queries are the case where that matters most. It
  * also means the answers are bounded and reshaped before they are handed
- * over — a point outside the box /api/lists will accept is dropped here, so a
+ * over — a point outside the box /api/v1/me/lists will accept is dropped here, so a
  * suggestion can never put the pin somewhere the save would then reject, and
  * the page is handed four fields rather than a GeoJSON document.
  *
@@ -197,7 +197,7 @@ function shape(feature, around) {
 }
 
 /* The lookup, whole: the query tidied, Photon asked, the answer shaped and
-   the doubles dropped. The route below and /api/ask both call this, so what
+   the doubles dropped. The route below and /api/v1/ask both call this, so what
    either sends upstream is the same string for the same words — which is
    also what makes the day-long cache in ask() land for both. Answers one of
    { short }, { busy }, { failed } or { results }, and throws only when the

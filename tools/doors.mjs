@@ -22,7 +22,7 @@
  * A ride is cut into stretches of CHUNK metres, twice, the second time
  * starting half a stretch along so a door that straddles a cut in one pass
  * sits inside a stretch of the other. Each stretch's two ends are put to
- * /api/route by bike. Where the router's way is longer than the ridden one
+ * /api/v1/route by bike. Where the router's way is longer than the ridden one
  * by GAIN metres and by RATIO, the rider went a way the router does not
  * know: a gap in a fence, a level crossing, a path nobody has drawn.
  *
@@ -71,7 +71,7 @@
  *
  * AND THE DOORS IT ALREADY HAD
  *
- * /api/rides answers the newest forty rides of a box, and a ride can be
+ * /api/v1/rides answers the newest forty rides of a box, and a ride can be
  * deleted by its rider. A door found last month is no less a door for its
  * ride having gone, so the doors already in data/doors.json are kept and
  * the new ones joined to them, one door for two that are the same. A door
@@ -92,11 +92,11 @@
  *
  * WHAT IT ASKS, AND HOW OFTEN
  *
- * The rides come from GET /api/rides?bbox=, the same public answer the
+ * The rides come from GET /api/v1/rides?bbox=, the same public answer the
  * iPhone app reads: the lines with their first and last 200 m already off,
  * and nobody's name. That route answers its newest forty for a box, so the
  * city is asked for in TILES by TILES boxes rather than one. The router is
- * asked through /api/route, a request every PAUSE milliseconds — it is free
+ * asked through /api/v1/route, a request every PAUSE milliseconds — it is free
  * public infrastructure behind that route, and a day's cache in front of it
  * means running this twice costs the second run next to nothing.
  */
@@ -175,8 +175,8 @@ async function rides() {
   for (let i = 0; i < TILES; i++) {
     for (let j = 0; j < TILES; j++) {
       const box = [CITY.south + i * dLat, CITY.west + j * dLng, CITY.south + (i + 1) * dLat, CITY.west + (j + 1) * dLng];
-      const res = await fetch(SITE + '/api/rides?bbox=' + box.map((v) => v.toFixed(2)).join(','));
-      if (!res.ok) throw new Error('/api/rides answered ' + res.status);
+      const res = await fetch(SITE + '/api/v1/rides?bbox=' + box.map((v) => v.toFixed(2)).join(','));
+      if (!res.ok) throw new Error('/api/v1/rides answered ' + res.status);
       for (const ride of (await res.json()).rides || []) seen.set(ride.id, ride.line);
     }
   }
@@ -196,7 +196,7 @@ async function routed(a, b) {
   for (let attempt = 0; attempt < 3 && !found; attempt++) {
     await sleep(PAUSE);
     try {
-      const res = await fetch(SITE + '/api/route?mode=bike&from=' + a[0].toFixed(4) + ',' + a[1].toFixed(4) +
+      const res = await fetch(SITE + '/api/v1/route?mode=bike&from=' + a[0].toFixed(4) + ',' + a[1].toFixed(4) +
         '&to=' + b[0] + ',' + b[1]);
       if (res.status === 404) break;
       if (!res.ok) continue;

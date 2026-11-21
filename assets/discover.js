@@ -16,10 +16,10 @@
  *
  * FOUR SHELVES AND A CARD, IN THIS ORDER ON A PHONE
  *
- *   New lists            newest public lists                 /api/discover
- *   Overlooked places    the five opened least on the map    /api/discover
- *   Play                 the game, and routes to swipe       /api/discover
- *   Popular lists        most opened lists                   /api/discover
+ *   New lists            newest public lists                 /api/v1/discover
+ *   Overlooked places    the five opened least on the map    /api/v1/discover
+ *   Play                 the game, and routes to swipe       /api/v1/discover
+ *   Popular lists        most opened lists                   /api/v1/discover
  *   New on the map       the newest places, or new photos    data/map.json
  *
  * Three of them wait on the one route and the fourth on nothing, which is why
@@ -297,14 +297,14 @@ window.TTBDiscover = (function () {
    * One route shows at a time, with the edge of the next one under the
    * card's right side, and a swipe sideways moves to it — the owner's ask of
    * 2026-11-13, so that the card is a way to find a list to go round and not
-   * only the one /api/discover happened to pick. The words above the rule
+   * only the one /api/v1/discover happened to pick. The words above the rule
    * stay put; only the row under it moves. The dots under the row say how
    * many there are and which is showing, and are buttons, so a mouse and a
    * keyboard get there too.
    *
    * The deck is the reader's own walks still going first — their list, how
    * far round they are, and Keep going — the one they last moved on leading,
-   * and then the routes /api/discover offers everybody: the lists most people
+   * and then the routes /api/v1/discover offers everybody: the lists most people
    * have finished, with the fastest time, and then lists to be the first on.
    * A list that is in both is the reader's own. Each row is a link to that
    * list's Route view, which is where a walk is started and where signing in
@@ -539,7 +539,7 @@ window.TTBDiscover = (function () {
   }
 
   function load() {
-    fetch('/api/discover', { credentials: 'same-origin' }).then(function (res) {
+    fetch('/api/v1/discover', { credentials: 'same-origin' }).then(function (res) {
       if (!res.ok) throw new Error('discover: HTTP ' + res.status);
       return res.json();
     }).then(function (answer) {
@@ -549,7 +549,7 @@ window.TTBDiscover = (function () {
     }).then(draw);
   }
 
-  /* Whether somebody is signed in, told by the map each time /api/account
+  /* Whether somebody is signed in, told by the map each time /api/v1/account
      answers — on the way in, and again whenever a page over the map closes,
      which is when a walk may have moved. Signed in, the walks they have going
      are asked for and lead the Play card; signed out, or with the route not
@@ -559,7 +559,7 @@ window.TTBDiscover = (function () {
       if (mine.length) { mine = []; if (up()) draw(); }
       return;
     }
-    fetch('/api/walk?mine=1', { credentials: 'same-origin' }).then(function (res) {
+    fetch('/api/v1/walk?mine=1', { credentials: 'same-origin' }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(function (answer) {
       mine = (answer && (answer.walks || (answer.mine ? [answer.mine] : []))) || [];

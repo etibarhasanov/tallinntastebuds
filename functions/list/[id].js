@@ -23,7 +23,7 @@
  * WHAT HAPPENS WHEN IT CANNOT
  *
  * Every failure ends the same way: the untouched page, and the script fetches
- * the list over /api/lists like it would have anyway. No database bound, the
+ * the list over /api/v1/me/lists like it would have anyway. No database bound, the
  * wrong database, an id that is not a list, somebody else's private list — all
  * of them are the plain shell, and the page says the honest thing once the
  * script has asked. This route is an improvement on the load, never a
@@ -162,7 +162,7 @@ export async function onRequest(context) {
     list = await readList(context, id, user);
   } catch (e) {
     /* The database being unreachable is not this page's failure to report:
-       the script will ask /api/lists in a moment and say whatever is true
+       the script will ask /api/v1/me/lists in a moment and say whatever is true
        then. */
     return page(html, 200);
   }

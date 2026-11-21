@@ -10,7 +10,7 @@
  * stretch they push through are told apart by the clock alone. **What the
  * rides say about a street** in docs/handbook.md.
  *
- * One thing reads it: /api/route, which by bike weighs the ways its routers
+ * One thing reads it: /api/v1/route, which by bike weighs the ways its routers
  * offer by the squares under them and puts the one riders made the most of
  * first — riddenShare() at the foot of this file, RIDDEN in ./route.js.
  * Nothing answers a square to anybody.

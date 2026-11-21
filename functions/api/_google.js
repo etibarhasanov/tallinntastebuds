@@ -281,7 +281,7 @@ export async function sealFlow(secret, payload) {
  * of a verifier it made and kept — and the trip ends not on a page of this
  * site but at APP_BACK, an address only the app that opened the sheet is
  * given, carrying a ticket: who signed in and the challenge, sealed like the
- * flow. The app then asks /api/account for the session with the ticket and
+ * flow. The app then asks /api/v1/account for the session with the ticket and
  * the verifier (`action: ticket`), and is answered the way a password is.
  *
  * The verifier is what makes the ticket worth nothing to anybody else. A

@@ -2,11 +2,14 @@
  * Tallinn Tastebuds — the way from here to a place: on foot, by bike, by bus
  * or by car.
  *
- * GET /api/route?from=59.4370,24.7536&to=59.4389,24.7291[&mode=foot|bike|car|bus][&heading=250]
+ * GET /api/v1/route?from=59.4370,24.7536&to=59.4389,24.7291[&mode=foot|bike|car|bus][&heading=250]
  *
  *   mode is foot when it is left out. heading is the way the asker is
  *   already moving, in degrees from north — SETTING OFF THE WAY THEY ARE
  *   GOING below.
+ *
+ *   Every answer, refusals included, says `"version": 1` and carries an
+ *   `API-Version: 1` header — A VERSION ON EVERY ANSWER below.
  *
  *   foot, bike, car → { "meters": 1830, "seconds": 1320,
  *                 "line": [ [59.4370, 24.7536], … ],
@@ -75,8 +78,8 @@
  * reach a point it was asked through — SETTLING below.
  *
  * And by bike a way can be a train: ride to a station, an Elron train with
- * the bike on it, ride on. Those are `trains`, answered beside the ways by
- * /api/v1/route only, never here — TRAINS below says why.
+ * the bike on it, ride on. Those are `trains`, answered beside the ways —
+ * TRAINS below.
  *
  * SETTING OFF THE WAY THEY ARE GOING
  *
@@ -143,7 +146,7 @@
  *
  * WHY A ROUTE HERE AND NOT A FETCH FROM THE BROWSER
  *
- * The same reasons /api/geocode is one. The upstreams are free public
+ * The same reasons /api/v1/geocode is one. The upstreams are free public
  * infrastructure and a worker can keep an answer in Cloudflare's cache where a
  * page cannot. Both ends are held to Tallinn's box and rounded before they go
  * upstream: the start to four decimals, about eleven metres, and the end to
@@ -174,10 +177,23 @@
  * Nothing waits on it. The page keeps the panel it had, says there is no
  * route for that mode, and the other three tabs and the Google link in the same
  * bar are still there.
+ *
+ * A VERSION ON EVERY ANSWER
+ *
+ * The map page and both apps once asked /api/v1/route first and /api/route
+ * where it did not answer, and told the two apart by `version`: the old
+ * address answered the same ways with no trains, because an installed app
+ * that read `others` alone could not have drawn or spoken one. The old
+ * address went on 2026-11-21 — functions/_middleware.js answers it with a
+ * 410 — so every answer is this one, called by the v1 catch-all,
+ * ./v1/[[path]].js. An installed build still takes an answer without
+ * `version` to mean an older deployment and asks the old address, so the
+ * field stays on every answer, refusals included.
  */
 
 import { json, inEstonia, km, dataFile, wrongDatabase } from './_lib.js';
 import { riddenShare } from './_sections.js';
+import { VERSION } from '../_public.js';
 
 const OSRM = {
   foot: 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/',
@@ -187,7 +203,7 @@ const OSRM = {
 
 const PEATUS = 'https://api.peatus.ee/routing/v1/routers/estonia/index/graphql';
 
-/* Sent so the service can see who is asking, the way /api/geocode does. */
+/* Sent so the service can see who is asking, the way /api/v1/geocode does. */
 const AGENT = 'TallinnTastebuds/1.0 (+https://tallinntastebuds.ee)';
 
 /* A day for a walk, a ride or a drive: streets do not move, and the same two rounded
@@ -273,11 +289,11 @@ function bearings(heading, points) {
   return heading === null ? '' : '&bearings=' + heading + ',' + HEADING_RANGE + ';'.repeat(points - 1);
 }
 
-async function street(context, mode, from, to, withTrains, heading) {
+async function street(context, mode, from, to, heading) {
   /* Asked at once, beside the router, so the train costs no time of its
      own; read only once the bike ways are known, since a train is offered
      only where it beats them. TRAINS below. */
-  const asked = withTrains && mode === 'bike' ? departures(from, to) : null;
+  const asked = mode === 'bike' ? departures(from, to) : null;
   const url = OSRM[mode] + from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat +
     '?overview=full&geometries=geojson&steps=true&alternatives=';
 
@@ -1192,7 +1208,7 @@ function way(route) {
     ? route.geometry.coordinates : null;
   if (!coords || coords.length < 2) return null;
   /* GeoJSON is [lon, lat]; this is the second place that flips it, as
-     /api/geocode's shape() is the first. */
+     /api/v1/geocode's shape() is the first. */
   const line = coords.map((c) => [c[1], c[0]]);
   return {
     meters: Math.round(Number(route.distance)),
@@ -1260,8 +1276,7 @@ async function transit(from, to) {
 /* ----------------------------------------------------------------- trains
  * A bike goes on an Elron train, and from the right corner of the city the
  * train is quicker: ride to Ülemiste, ride the RE33 two stops, ride on. The
- * owner did exactly that on 2026-11-17 and saved the ride. So by bike, and
- * only where it is asked for — /api/v1/route, through `withTrains` — the
+ * owner did exactly that on 2026-11-17 and saved the ride. So by bike the
  * answer carries `trains` beside the ways:
  *
  *   "trains": [ { "seconds": 960, "meters": 5120, "leave": "14:01",
@@ -1284,10 +1299,6 @@ async function transit(from, to) {
  * same four fields a way has, and its last step `arrive` — at the station
  * for the first, at the door for the last; a leg of no length, from a door
  * on the platform, is left out.
- *
- * Not in /api/route, and that is the reason for a version: both apps read
- * the bike ways out of that answer and nothing else, and a train is not a
- * way they can draw or speak. /api/route answers them exactly as before.
  *
  * Where it comes from: peatus.ee is asked once for bike and rail together —
  * the planner carries the bike on board — and says which station, which
@@ -1431,9 +1442,9 @@ async function ride(a, b) {
   return { meters: way.meters, seconds: way.seconds, line: thin(way.line, MAX_POINTS / 3), steps: way.steps };
 }
 
-/* The route, asked by /api/route and by /api/v1/route, which differ in
-   one thing: whether a bike way comes with its trains. */
-export function answerRoute(context, q, withTrains) {
+/* The answer before `version` goes on it: every refusal here is a return of
+   its own, and onRequestGet() below puts the version on whichever came. */
+function unversioned(context, q) {
   const from = point(q.get('from'), 4);
   const to = point(q.get('to'), 5);
   if (!from || !to) return json({ error: 'bad-points' }, 400);
@@ -1446,9 +1457,15 @@ export function answerRoute(context, q, withTrains) {
   const heading = Number.isFinite(degrees)
     ? (Math.round(degrees / HEADING_STEP) * HEADING_STEP % 360 + 360) % 360
     : null;
-  return street(context, mode, from, to, withTrains, heading);
+  return street(context, mode, from, to, heading);
 }
 
-export function onRequestGet(context) {
-  return answerRoute(context, new URL(context.request.url).searchParams, false);
+/* The answer with `version` first in it — A VERSION ON EVERY ANSWER. */
+export async function onRequestGet(context) {
+  const res = await unversioned(context, new URL(context.request.url).searchParams);
+  let body;
+  try { body = await res.json(); } catch (e) { body = { error: 'upstream' }; }
+  const out = new Response(JSON.stringify(Object.assign({ version: VERSION }, body)), res);
+  out.headers.set('API-Version', String(VERSION));
+  return out;
 }

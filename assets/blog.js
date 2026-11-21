@@ -28,7 +28,7 @@
  * A public list goes into a post as its places, side by side, to swipe
  * through: a member's post carries it as a block of its own, and one of the
  * house's as a paragraph that is nothing but a link to it. Each is read from
- * /api/lists when the post is, and drawn by listBlock() — **A list inside a
+ * /api/v1/me/lists when the post is, and drawn by listBlock() — **A list inside a
  * post** under **The blog** in docs/handbook.md.
  * Two states, the index and one post, decided by ?post=<id> and built into
  * the one <main> in blog.html, which is how lists.html and account.html are
@@ -101,11 +101,11 @@
      on it: an answer that does not come is a blog of the house's notes, which
      is what it always was. The places a post's cards name are read out of
      the map's own file the first time a post has one, and the Google venues
-     the map does not have out of /api/places by id, only those. */
+     the map does not have out of /api/v1/find by id, only those. */
   var MEMBERS_API = '/api/posts';
   var MAP_URL = '/data/map.json';
-  var CITY_URL = '/api/places';
-  var LISTS_API = '/api/lists?id=';
+  var CITY_URL = '/api/v1/find';
+  var LISTS_API = '/api/v1/me/lists?id=';
 
   /* Where the clips are, and what the four files for one post are called.
      The id is the whole of the name: a post and its pictures cannot drift

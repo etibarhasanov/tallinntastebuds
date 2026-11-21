@@ -85,7 +85,7 @@
   /* Signing up — SIGNING UP in functions/api/_visitors.js. The three views
      of the sheet, which are the table's columns; what put the sheet up, by
      the door in account_from_<door>; and the refusals by the word
-     /api/account answered, the four that are the site's own fault sharing
+     /api/v1/account answered, the four that are the site's own fault sharing
      one line, since the owner's question about them is the same. A word
      not here is drawn as itself. 'google' was the step that named a Google
      account, which no sheet draws since November 2026 — the account is made

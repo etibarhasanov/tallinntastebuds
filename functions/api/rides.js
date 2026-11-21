@@ -13,7 +13,7 @@
  * asks it and an installed app is a promise. **Recorded rides** in
  * docs/handbook.md is the reasoning.
  *
- * GET  /api/rides?bbox=<south>,<west>,<north>,<east>
+ * GET  /api/v1/rides?bbox=<south>,<west>,<north>,<east>
  *
  *   { ready, rides: [ { id, meters, seconds, line: [ [lat, lng], … ] } ] }
  *
@@ -24,7 +24,7 @@
  *   `ready: false` and no rides where the table is not applied — WHEN THE
  *   TABLE IS NOT THERE.
  *
- * GET  /api/rides?mine=1, or /api/rides with nothing asked
+ * GET  /api/v1/rides?mine=1, or /api/v1/rides with nothing asked
  *
  *   { ready, user, rides: [ { id, name, meters, seconds, at, timed } ] }
  *
@@ -34,22 +34,22 @@
  *   gave it, and it carries no line: the card is a list. `timed` says
  *   whether the ride has a track, so the list can tell which rides will
  *   have speeds when opened. Never cached. Signed out it is empty. One ride
- *   whole, with what it says about itself, is GET /api/rides/<id> in
+ *   whole, with what it says about itself, is GET /api/v1/rides/<id> in
  *   ./rides/[id].js.
  *
- * GET  /api/rides?mine=1&lines=1
+ * GET  /api/v1/rides?mine=1&lines=1
  *
  *   The same answer with a `line` on every ride, [lat, lng] pairs thinned to
  *   a point every THIN metres or so, for Where you rode on the iPhone app's
  *   Your rides: every ride of a range drawn on one map. Thinned because the
  *   map is the size of a card and two hundred whole lines are megabytes; a
- *   ride whole is still GET /api/rides/<id>. Only with `lines=1`, so the
+ *   ride whole is still GET /api/v1/rides/<id>. Only with `lines=1`, so the
  *   list an installed app and the account page ask for is the size it was.
  *
- * POST /api/rides   { action: 'save', name, seconds, line }    a session
- * POST /api/rides   { action: 'save', anon: true, … }           nobody
- * POST /api/rides   { action: 'rename', id, name }             its rider
- * POST /api/rides   { action: 'drop', id }                     its rider
+ * POST /api/v1/rides  { action: 'save', name, seconds, line }  a session
+ * POST /api/v1/rides  { action: 'save', anon: true, … }         nobody
+ * POST /api/v1/rides  { action: 'rename', id, name }           its rider
+ * POST /api/v1/rides  { action: 'drop', id }                   its rider
  *
  *   { ride: { id, meters, seconds } }     kept, with a session
  *   { counted: true }                     counted and not kept, with none
@@ -66,7 +66,7 @@
  *
  *   `rename` answers { ride: { id, name } } and `drop` { ok: true }; both
  *   take a session and touch only a ride filed under it, and anything else
- *   is 404 not-found, the answer GET /api/rides/<id> gives. A dropped ride
+ *   is 404 not-found, the answer GET /api/v1/rides/<id> gives. A dropped ride
  *   is gone from under the Bike tab too.
  *
  *   A ride that was paused and went on somewhere else is kept as the runs

@@ -45,7 +45,7 @@
     stylePinned: false,
     lastPick: null,
     active: [],          // selected type ids, OR semantics; empty means "All"
-    saves: {},           // place id -> how many people, from /api/saves
+    saves: {},           // place id -> how many people, from /api/v1/saves
     saved: [],           // the places this browser (or account) has saved
     list: null,          // { id, title, by, items: [...] }, or null
     listPlaces: [],
@@ -1333,7 +1333,7 @@
   }
 
   function loadSaves() {
-    return fetch('/api/saves', { headers: { accept: 'application/json' } })
+    return fetch('/api/v1/saves', { headers: { accept: 'application/json' } })
       .then(function (res) { return res.ok ? res.json() : {}; })
       .then(function (counts) {
         state.saves = counts && typeof counts === 'object' ? counts : {};
@@ -1503,15 +1503,7 @@
       routeAsked = Date.now();
       var ask = '?mode=' + mode + '&from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng;
       return fetch('/api/v1/route' + ask)
-        .then(function (res) {
-          if (res.ok || res.status === 400 || res.status === 404 || res.status === 422) {
-            return res.json().then(function (body) { return body && body.version ? body : Promise.reject(); });
-          }
-          return Promise.reject();
-        })
-        .catch(function () {
-          return fetch('/api/route' + ask).then(function (res) { return res.ok ? res.json() : null; });
-        })
+        .then(function (res) { return res.json(); })
         .then(function (way) {
           if (way && way.error) way = null;
           if (token !== routeToken) return;
@@ -1821,7 +1813,7 @@
 
     saveBusy = true;
     saveToken().then(function (token) {
-      return fetch('/api/saves', {
+      return fetch('/api/v1/saves', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
@@ -1867,7 +1859,7 @@
     applyFilters();
   }
 
-  var ACCOUNT_URL = '/api/account';
+  var ACCOUNT_URL = '/api/v1/account';
 
   var NUDGE_KEY = 'ttb.nudged';
   var NUDGE_QUIET = 14 * 24 * 3600 * 1000;
@@ -2248,7 +2240,7 @@
 
     function lookUp(q) {
       var mine = ++whereInflight;
-      getJSON('/api/geocode?q=' + encodeURIComponent(q)).then(function (a) {
+      getJSON('/api/v1/geocode?q=' + encodeURIComponent(q)).then(function (a) {
         return a && Array.isArray(a.results) ? a.results : [];
       }, function (err) {
         return /HTTP 429/.test(err && err.message) ? null : [];
@@ -3485,7 +3477,7 @@
     }, ROLLED_MS);
   }
 
-  var ASK_URL = '/api/ask';
+  var ASK_URL = '/api/v1/ask';
 
   var cuisinesLoading = null;
   var cuisinesKnown = [];
@@ -5107,7 +5099,7 @@
     if (findAsking) return findAsking;
     findAsking = loadCuisines().then(function (cuisines) {
       findCuisines = cuisines;
-      return getJSON('/api/places');
+      return getJSON('/api/v1/find');
     }).then(function (answer) {
       var rows = [];
       var list = Array.isArray(answer) ? answer : (answer && answer.places) || [];
@@ -5685,7 +5677,7 @@
   function findCanLookAsk() {
     if (findCanLookAsked) return;
     findCanLookAsked = true;
-    getJSON('/api/lookup').then(function (answer) {
+    getJSON('/api/v1/lookup').then(function (answer) {
       findCanLook = !!(answer && answer.ready);
     }).catch(function () {
       findCanLook = false;
@@ -5701,7 +5693,7 @@
     var looked = findLooked = { q: typed, state: 'asking', rows: [] };
     renderFound();
 
-    fetch('/api/lookup', {
+    fetch('/api/v1/lookup', {
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'content-type': 'application/json' },
@@ -6385,7 +6377,7 @@
       list.keeps = Math.max(0, (list.keeps || 0) + (want ? 1 : -1));
       paint();
 
-      fetch('/api/lists', {
+      fetch('/api/v1/me/lists', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ action: want ? 'keep' : 'unkeep', id: list.id })
@@ -7125,7 +7117,7 @@
 
   function loadList(id) {
     if (!id) return Promise.resolve(null);
-    return fetch('/api/lists?id=' + encodeURIComponent(id), { headers: { accept: 'application/json' } })
+    return fetch('/api/v1/me/lists?id=' + encodeURIComponent(id), { headers: { accept: 'application/json' } })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (out) {
         return out && out.list && out.list.items ? out.list : null;

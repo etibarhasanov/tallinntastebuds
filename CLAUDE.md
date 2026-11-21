@@ -7,7 +7,7 @@ who comes to the site and what they do, a page of how they found it, a page of l
 through which an AI assistant reads the places and the public lists, a public API at `/api/v1` with the map to put
 on another site at `/embed`, and — on a subdomain of its own — a deck of Estonian
 flashcards, with a door of its own at its `/mcp` for the words and the grammar.
-Static files, fifty-five Cloudflare Functions, two D1 databases (preview and
+Static files, fifty-four Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -67,7 +67,7 @@ does not have to:
   `/admin/stats` opens on the day's reads so far, by table, out of
   `read_meter` (`functions/api/_meter.js`), and past seven in ten of the five
   million the flag counter stops reading first.
-- **The chat costs nothing and is easy to exhaust.** `/api/ask` runs on
+- **The chat costs nothing and is easy to exhaust.** `/api/v1/ask` runs on
   Workers AI's free daily allowance, and `pages dev` spends from the same
   pot as the live site, since that one binding runs remotely even there.
   Driving the chat for an afternoon puts the live site out of model until
@@ -438,14 +438,14 @@ the step that gets skipped is always the one nobody re-read.
 
 ## What the app reads
 
-**Every route below answers at two addresses**: its old one under `/api/`,
-and its v1 one under `/api/v1/` — the same name, except `/api/places`, which
-is `/api/v1/find`, and `/api/lists`, which is `/api/v1/me/lists`. The apps
-are moving to the v1 addresses, a build at a time; the old ones stay, and
-the promise below holds at both, until **The old addresses go when the
-phones have moved** in `docs/handbook.md` says they can come out. A route
-the apps start reading joins `APPS` in `functions/api/v1/[[path]].js` and
-`apps` in `data/api-v1.json` the same day. The public half of `/api/v1` —
+**Every route below answers under `/api/v1/` and nowhere else**, but
+`/api/google`, where Google's sign-in comes back to. The three apps' builds
+moved there on 2026-11-18, and the old addresses under `/api/` came out on
+2026-11-21 and answer a 410 naming the new one — `/api/places` is
+`/api/v1/find` and `/api/lists` is `/api/v1/me/lists`, every other the same
+name; **The apps' routes, at their v1 addresses** in `docs/handbook.md`. A
+route the apps start reading joins `APPS` in `functions/api/v1/[[path]].js`
+and `apps` in `data/api-v1.json` the same day. The public half of `/api/v1` —
 places, lists and types for anybody's code — is a promise of its own,
 frozen in `data/api-v1.json` and held by `node tools/apicheck.mjs --check`.
 
@@ -458,10 +458,10 @@ its models are in `TallinnTasteBuds/Models/`.
 
 - Files: `data/map.json`, `data/taxonomy.json`, `data/lang/index.json`,
   `data/lang/<code>.json`, `data/deals.json`, and `photos/<place>/<file>`.
-- Routes: `GET/POST /api/account`, `GET/POST /api/lists`, `/api/saves`,
-  `GET /api/profile?name=`, `GET /api/pass?r=`, `GET /api/route`, and
-  `GET /api/places?q=`, whose rows keep `id`, `name`, `address` and `map`,
-  and `GET /api/lookup` with `POST /api/lookup`, from the list picker's
+- Routes: `GET/POST /api/v1/account`, `GET/POST /api/v1/me/lists`, `/api/v1/saves`,
+  `GET /api/v1/profile?name=`, `GET /api/v1/pass?r=`, `GET /api/v1/route`, and
+  `GET /api/v1/find?q=`, whose rows keep `id`, `name`, `address` and `map`,
+  and `GET /api/v1/lookup` with `POST /api/v1/lookup`, from the list picker's
   **Look for it on Google Maps**: `ready`, then `{ q }` answered by `ok`,
   `why` and `places` in those same rows. The app hides the button on
   `why: 'no-key'` and says it is resting on any other refusal. The map's
@@ -470,41 +470,41 @@ its models are in `TallinnTasteBuds/Models/`.
   account saves:
   - `data/map.json`'s `links` (`href`, `text` as a string or by language),
     `added` and `updated`, which New on the map orders by.
-  - `GET /api/discover`: `fresh` and `popular` in the directory's list rows,
+  - `GET /api/v1/discover`: `fresh` and `popular` in the directory's list rows,
     `quiet` as place ids, and `routes` with `id`, `title`, `pin`, `places`,
     `finished`, `best` and `mode`.
-  - `GET /api/walk?list=` and `?mine=1`, and `POST /api/walk` with `start`
+  - `GET /api/v1/walk?list=` and `?mine=1`, and `POST /api/v1/walk` with `start`
     (`order`), `check` (`lat`, `lng`), `note` (`place`, `note`), `mode`,
     `order` and `again`: the answer's `ready`, `user`, `radius`, `walk`
     (`started`, `finished`, `mode`, `note`, `order`), `checks`, `board`,
     `notes` and `checked`; `mine`'s `walks` with `id`, `title`, `pin`,
     `checked` and `total`; and the error `far` with `place` and `meters`.
-  - `GET /api/rides?bbox=` (`rides`, each a `line`) and `POST /api/rides`
+  - `GET /api/v1/rides?bbox=` (`rides`, each a `line`) and `POST /api/v1/rides`
     with `save`, `name`, `seconds` and `line`, and the errors `signed-out`,
     `often`, `fast` and `short`.
-  - `GET /api/route` with `mode=bike`.
-  - `POST /api/ask` with `q`, `lang`, `wish`, `here` and `history`, reading
+  - `GET /api/v1/route` with `mode=bike`.
+  - `POST /api/v1/ask` with `q`, `lang`, `wish`, `here` and `history`, reading
     `ok`, `source` (`resting` included), `say`, `picks` (`id`, `why`, `far`),
     `venues` and `at` (`here`, `label`, `where`).
-  - `POST /api/saves` with `place` and `on`, signed in. The app cannot show a
+  - `POST /api/v1/saves` with `place` and `on`, signed in. The app cannot show a
     Turnstile challenge: switching Turnstile on refuses its saves with
     `challenge`, and they then stay on the phone. A place on the phone the
     account lacks is offered to it on sign-in, and since 2026-11-18 at most
     once a day per place — before, on every foreground, for ever.
-  - `POST /api/account` with `password-change`, `username-change` (answered
+  - `POST /api/v1/account` with `password-change`, `username-change` (answered
     with `user`), `display`, `about` and `links`, and the errors `current`,
     `same`, `same-name`, `taken` and `bad-link` with `network`.
-- Added on 2026-11-18, with Your rides: `GET /api/rides` with no query,
+- Added on 2026-11-18, with Your rides: `GET /api/v1/rides` with no query,
   the same answer as `?mine=1` — `rides` with `id`, `name`, `meters`,
-  `seconds`, `at` and `timed`; `GET /api/rides/<id>`, reading `ride` with
+  `seconds`, `at` and `timed`; `GET /api/v1/rides/<id>`, reading `ride` with
   `id`, `name`, `meters`, `seconds`, `at`, `line` and `insight` (`average`,
   `timed`, `top`, `stopped`, `fastest` with `km` and `seconds`, `splits`
   with `km`, `meters` and `seconds`, and `speed` with `at` and `kmh`), and
-  the errors `signed-out` and `not-found`; and `POST /api/rides` with
+  the errors `signed-out` and `not-found`; and `POST /api/v1/rides` with
   `rename` (`id`, `name`, answered `ride`) and `drop` (`id`, answered
   `ok`), refused with `not-found`. Its recorder sends `[lat, lng, t, acc]`
   points from then on, as the website's does.
-- Added on 2026-11-18, with Where you rode: `GET /api/rides?mine=1&lines=1`,
+- Added on 2026-11-18, with Where you rode: `GET /api/v1/rides?mine=1&lines=1`,
   the same answer with `line` on each ride, `[lat, lng]` pairs thinned by
   the site, which the app draws together on one map.
 - `data/map.json`'s `closed`, written down on 2026-11-21 after it went
@@ -516,19 +516,19 @@ its models are in `TallinnTasteBuds/Models/`.
   renamed field: the builds that learnt `"temporary"` read any other word as
   shut for good, and the app's weekly snapshot stops on one it does not
   know, so the app learns a new word before the site writes it.
-- Added on 2026-11-18, with the train by bike: `GET /api/v1/route`, asked
-  first with the same query as `/api/route` and answering the same fields
-  beside `version`, and by bike `trains`, each `seconds`, `meters`, `leave`
-  and `legs` — `kind` (`bike` or `train`) and `line`, and the train's
-  `name`, `from`, `to` and `at`. An answer without `version` is asked again
-  of `/api/route`, so `version` is the promise that `/api/v1/` answers.
-- Signing in, which is three promises of its own. `GET /api/account` answers
+- Added on 2026-11-18, with the train by bike: `GET /api/v1/route`,
+  answering the same fields beside `version`, and by bike `trains`, each
+  `seconds`, `meters`, `leave` and `legs` — `kind` (`bike` or `train`) and
+  `line`, and the train's `name`, `from`, `to` and `at`. The app asks it
+  first and asks the old `/api/route` again on an answer without `version`,
+  so `version` is on every answer, refusals included.
+- Signing in, which is three promises of its own. `GET /api/v1/account` answers
   `appGoogle` and `appApple`, and the app draws a button only where its flag
   is true — so taking one away hides a button, and renaming one hides it for
   good on every phone that has the app. `GET /api/google?app=<challenge>`
   ends at `tallinntastebuds://signin` with `google=` and `ticket=`, and
-  `POST /api/account` with `action: "ticket"`, `ticket` and `verifier`
-  answers `{ user, saved }`. `POST /api/apple` takes `{ token, nonce }` and
+  `POST /api/v1/account` with `action: "ticket"`, `ticket` and `verifier`
+  answers `{ user, saved }`. `POST /api/v1/apple` takes `{ token, nonce }` and
   answers the same. The address, the parameter names and the two error
   words the app has sentences for — `ticket` and `apple` — are all part of
   it. **The iPhone app signs in through these too** in `docs/handbook.md`.
@@ -549,14 +549,14 @@ backend either: the same accounts, the same cookie, the same rule — **add a
 field, never rename or remove one** — and its models are in
 `Kohuke/Models/Flash.swift`.
 
-- `GET /api/flashcard?lang=` and `?lang=&deck=<id>`, each with `ui=` —
+- `GET /api/v1/flashcard?lang=` and `?lang=&deck=<id>`, each with `ui=` —
   the key prefixes of the strings the app prints on the shelf, and nothing
   after the `=` for a deck, which carries none. Then, whole: `ready`, `user`,
   `words`, `gates`, `level`, `days`, `langs`, `ui`, and `decks`, `lessons`, `songs`,
   `talks`, or one `deck`, `lesson`, `song` or `talk` — every field
   `deckAnswer()`, `lessonAnswer()`, `songAnswer()` and `talkAnswer()` send,
   the kinds of block a lesson's `body` is made of, and `error: "not-found"`.
-- `POST /api/flashcard`, every action by name with the fields it reads:
+- `POST /api/v1/flashcard`, every action by name with the fields it reads:
   `knew` and `again` (`deck`, `card`, `day`), `reset`, `report` (`lang`),
   and `deck`, `rename`, `drop`, `card`, `editcard`, `uncard`, each answering
   `{ deck }`. `placed` (`answers`, [{ id, said }]) answers `{ placed }` and
@@ -586,8 +586,8 @@ field, never rename or remove one** — and its models are in
   one of the four does to a file is a change there too, and a phone keeps
   the old one for months — so the new thing goes in the file, where both
   read it, rather than in the Function alone.
-- `GET /api/say?take=&text=`, answering a WAV.
-- Signing in, as above, with two things of its own: `/api/apple` has to
+- `GET /api/v1/say?take=&text=`, answering a WAV.
+- Signing in, as above, with two things of its own: `/api/v1/apple` has to
   accept its bundle id — `APP_IDS` in `functions/api/_apple.js` — and the
   Google trip still ends at `tallinntastebuds://signin`, which Kohuke
   listens for under that name.
@@ -605,11 +605,11 @@ Read out of Kohuke on 2026-11-11, the day it was written, and the files on
 **And a third records rides.** Rattatee (`etibarhasanov/rattatee`, SwiftUI,
 bundle id `ee.tallinntastebuds.rattatee`) records a bike ride with the screen
 locked and the phone in a pocket, which a web page cannot, and saves it
-through `/api/rides`. It is the recorder: the website has none. No backend, the same
+through `/api/v1/rides`. It is the recorder: the website has none. No backend, the same
 accounts, the same cookie, the same rule — **add a field, never rename or
 remove one** — and its door is `Rattatee/Core/API.swift`.
 
-- `POST /api/rides` with `action: "save"`, `anon: true`, `name`, `seconds`
+- `POST /api/v1/rides` with `action: "save"`, `anon: true`, `name`, `seconds`
   and `line`, signed in or not — it asks nobody to sign in, and `anon` is
   what lets a save with no session through — whose points it sends as
   `[lat, lng, t, acc]` — whole seconds since the ride began and whole
@@ -635,14 +635,14 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   network change. A new refusal that sending again cannot change has to be
   one of the three final words, or an installed app will send that ride for
   ever, if slowly.
-- Its search for somewhere to ride to, Where to?: `GET /api/places?q=` with
+- Its search for somewhere to ride to, Where to?: `GET /api/v1/find?q=` with
   `near` and `limit`, reading `id`, `name`, `address`, `category`, `lat`,
-  `lng` and `map`; `GET /api/geocode?q=` — which since 2026-11-20 takes
+  `lng` and `map`; `GET /api/v1/geocode?q=` — which since 2026-11-20 takes
   `near=lat,lng` too and searches all of Estonia, nearest that point
   first, and Tallinn without it — reading `results` with `label`,
-  `where`, `lat` and `lng`; `GET /api/lookup` and `POST /api/lookup` as the
+  `where`, `lat` and `lng`; `GET /api/v1/lookup` and `POST /api/v1/lookup` as the
   map app does, the button offered from five letters, hidden on `why:
-  'no-key'` and resting on any other refusal; and `GET /api/route` with
+  'no-key'` and resting on any other refusal; and `GET /api/v1/route` with
   `from`, `to` and `mode=bike`, reading `meters`, `seconds` and `line`,
   and `others` — up to two more ways, each in those same three fields —
   for the choice on its card. And, for the turn it shows and says while
@@ -652,12 +652,12 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `roundabout`, `arrive`, and `tunnel` where the way goes into one — are a
   recording each in the app, so a new word
   is one an installed app stays silent at.
-  And `GET /api/places` with no query, the whole roll, kept on the phone a
+  And `GET /api/v1/find` with no query, the whole roll, kept on the phone a
   week at a time so Where to? opens on the nearest places: `id`, `name`,
   `lat`, `lng` and `map` of each row.
 - Its way by train, from 2026-11-18: `GET /api/v1/route` asked first with
   `from`, `to` and `mode=bike`, an answer without `version` asked again of
-  `/api/route`; and of `trains`, `seconds`, `meters`, `leave` and `legs`, a
+  the old `/api/route`, so `version` stays on every answer; and of `trains`, `seconds`, `meters`, `leave` and `legs`, a
   ride's `kind: "bike"`, `line` and `steps` in the words above, and the
   train's `kind: "train"`, `line`, `name`, `from`, `to` and `at`. A train's
   first ride ends in `arrive` at the station, which the app turns into the
@@ -666,8 +666,8 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `heading` beside them, whole degrees from north, the way the rider is
   going — answered in the same fields, the way setting off that way. An
   answer that ignored it would be read just the same.
-- Its lists, signed in: `GET /api/lists`, reading `lists` with `id`, `title`
-  and `n`; and `POST /api/lists` with `create` (`title`, answered `id` and
+- Its lists, signed in: `GET /api/v1/me/lists`, reading `lists` with `id`, `title`
+  and `n`; and `POST /api/v1/me/lists` with `create` (`title`, answered `id` and
   `title`), `place` (`name`, `address`, `lat`, `lng`, answered `place.id`)
   for a place tapped on the map that the roll does not have, and `add` (`id`,
   `place`). The error words it has sentences for are `signed-out`, `full`,
@@ -679,11 +679,11 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `[lat, lng]` pairs, which it draws over the phone's own line. It reads
   nothing of `insight`, working the same sums out of the phone's points, and
   `signed-out` and `not-found` just draw nothing.
-- `GET /api/account` for `user`, `appGoogle` and `appApple`, and `POST
-  /api/account` with `create` and `login` (`username`, `password`, answered
+- `GET /api/v1/account` for `user`, `appGoogle` and `appApple`, and `POST
+  /api/v1/account` with `create` and `login` (`username`, `password`, answered
   `user`, refused with `taken`, `username`, `password`, `no-match` and
   `slow-down`), `ticket`, `logout` and `delete` (`current`, `username`).
-- Signing in, as above: `/api/apple` has to accept its bundle id — `APP_IDS`
+- Signing in, as above: `/api/v1/apple` has to accept its bundle id — `APP_IDS`
   in `functions/api/_apple.js` — and the Google trip ends at
   `tallinntastebuds://signin`, which it listens for under that name.
 - Numbers it restates, to be changed in both places: its 700 m, which is

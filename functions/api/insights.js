@@ -18,12 +18,12 @@
  * a page, but they are its owner's, and a route that took a name would be a
  * way of reading how popular somebody else is. Signed out is an answer
  * rather than an error — `user: null`, 200 — so the page can offer the
- * sign-in rather than print a failure, the way GET /api/account does.
+ * sign-in rather than print a failure, the way GET /api/v1/account does.
  *
  * WHAT A FAILURE LOOKS LIKE
  *
  * `ready: false` with no database, the other environment's, or no salt —
- * the three things /api/account reports the same way, since no account can
+ * the three things /api/v1/account reports the same way, since no account can
  * exist without them. `insights: null` where profile_counts has not been
  * applied yet, and the page says the numbers are not switched on here.
  * `lists` is read on its own and survives that: it comes out of lists,

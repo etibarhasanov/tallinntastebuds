@@ -341,7 +341,7 @@ Two things are this area's own:
   or every count answers false and every page says the numbers are not in
   yet — which is itself worth seeing once.
 - **The chat is the one thing not to drive here**: `countAsk()` is reached
-  only through `/api/ask`, which spends the shared daily allowance.
+  only through `/api/v1/ask`, which spends the shared daily allowance.
 
 **Reading production** to check a count landed or to decide what to build
 is free and needs no yes: `d1_database_query` on `tallinntastebuds`, reads

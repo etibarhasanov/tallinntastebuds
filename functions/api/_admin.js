@@ -83,7 +83,7 @@ export async function adminUser(request, env) {
  * assets/analytics.js and records in the browser, before anything
  * has asked who is signed in; and a browser the owner has signed out of is,
  * to the server, anybody. The owner asked to be out of all of it, so the
- * browser is told: `ttb_owner=1`, set beside the answer to GET /api/account
+ * browser is told: `ttb_owner=1`, set beside the answer to GET /api/v1/account
  * when the session is the owner's, and on every page under /admin/.
  * assets/analytics.js then does not load it, and assets/track.js, app.js
  * and lists.js send nothing to /api/stats.

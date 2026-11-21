@@ -1,7 +1,7 @@
 /**
  * Tallinn Tastebuds — who may hold a discount pass, and what it pays.
  *
- * GET /api/pass?r=<place id>, and it answers two questions in one request.
+ * GET /api/v1/pass?r=<place id>, and it answers two questions in one request.
  * Whether the person asking is signed in, which every discount now requires:
  * a request with no session gets 401 and deal.html offers the sign-in sheet
  * instead of a code. And what this account drew for this place in this hour,

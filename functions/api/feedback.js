@@ -18,7 +18,7 @@
  * this is not a list.
  *
  * So a heart is one row per (feedback, owner) and is as honest as an account
- * is, which is the same caveat /api/saves carries about its own numbers:
+ * is, which is the same caveat /api/v1/saves carries about its own numbers:
  * nobody runs a number up by pressing twice, and anybody willing to clear
  * their storage ten times can add ten. Nothing here is ranked against
  * anything outside this page, so what that buys is a bigger number and not a
@@ -110,7 +110,7 @@ const FRESH_MS = 10 * 60 * 1000;
 
 /* A UUID and nothing else. The device id stands in for an account on this
    page — it owns rows and hearts — so its shape is checked before it is
-   allowed anywhere near a table, the way /api/saves checks it. */
+   allowed anywhere near a table, the way /api/v1/saves checks it. */
 const CLIENT_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 /* Who is acting: the account if there is a session, otherwise this browser.
@@ -239,10 +239,10 @@ export async function onRequestGet(context) {
   return json({
     ready: true,
     /* Who the page is drawing for, so it can put a name on the composer's
-       own choice without a second request to /api/account. */
+       own choice without a second request to /api/v1/account. */
     me: user ? user.username : null,
     /* Whether Continue with Google can be offered here at all — the same
-       question `/api/account` answers for the map's sheet, and asked for the
+       question `/api/v1/account` answers for the map's sheet, and asked for the
        same reason: on a deployment with no Google client set the button would
        lead somewhere that can only send them back saying it failed. */
     google: googleReady(env),

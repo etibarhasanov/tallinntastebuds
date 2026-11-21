@@ -88,7 +88,7 @@
  * no sign-in here. The assistant is told to send the learner to the deck's
  * own page to keep score.
  *
- * No voice — /api/say answers a browser, and an assistant has no speaker —
+ * No voice — /api/v1/say answers a browser, and an assistant has no speaker —
  * and nothing counted: a call is not a visit, as next door.
  */
 

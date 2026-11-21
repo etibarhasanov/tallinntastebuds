@@ -90,7 +90,7 @@
  * WHAT HAPPENS WHEN IT CANNOT
  *
  * Every failure ends the same way as it does for a list: the untouched page,
- * and the script asks /api/profile like it would have anyway. This route is
+ * and the script asks /api/v1/profile like it would have anyway. This route is
  * an improvement on the load, never a requirement for it.
  */
 
@@ -319,7 +319,7 @@ export async function onRequest(context) {
     profile = await readProfile(context, name);
   } catch (e) {
     /* The database being unreachable is not this page's failure to report:
-       the script will ask /api/profile in a moment and say whatever is true
+       the script will ask /api/v1/profile in a moment and say whatever is true
        then. */
     return page(html, 200);
   }

@@ -1,7 +1,7 @@
 /**
  * Tallinn Tastebuds — one search of the city, for whoever asks.
  *
- * What GET /api/places?q= answers with: the roll ./places.js merges, searched
+ * What GET /api/v1/find?q= answers with: the roll ./places.js merges, searched
  * here, on the server, by the rules the map's find bar searches it by in the
  * browser. Written so that the iOS app, the lists picker and the blog editor
  * get the find bar's answer rather than a weaker one of their own, and so

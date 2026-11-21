@@ -57,7 +57,7 @@
  *
  * WHAT HAPPENS WHEN IT CANNOT
  *
- * The untouched page, and assets/flashcard.js asks /api/flashcard as it would
+ * The untouched page, and assets/flashcard.js asks /api/v1/flashcard as it would
  * have anyway. A missing data file, a malformed one, a deck id that is nobody's
  * — all of them are the plain shell with the page's own head, and a
  * data/ui.json that cannot be read is the head in English rather than no head

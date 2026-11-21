@@ -2,7 +2,7 @@
  * Tallinn Tastebuds — the lists.
  *
  * The map is mine. A list is somebody else's: a name they chose, places they
- * picked off the roll behind /api/places — my map and the Google export in
+ * picked off the roll behind /api/v1/find — my map and the Google export in
  * google_venues — and a sentence about each one. "Top ten burgers." "Where to
  * take your parents." It carries their username and it has a link they can
  * send to a friend.
@@ -191,8 +191,8 @@ function words(value, max) {
 }
 
 /* ------------------------------------------------------------------- read
- * GET /api/lists            the signed-in person's own lists
- * GET /api/lists?id=<id>    one list, for anybody holding the link
+ * GET /api/v1/me/lists          the signed-in person's own lists
+ * GET /api/v1/me/lists?id=<id>  one list, for anybody holding the link
  */
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -560,7 +560,7 @@ async function addPlace(context, body, user) {
  *
  * HOW HONEST THE COUNT IS
  *
- * As honest as an account is, which is the same answer /api/saves gives about
+ * As honest as an account is, which is the same answer /api/v1/saves gives about
  * its own numbers and worth being plain about. One row per (list, account),
  * so nobody inflates a count by pressing twice; anybody willing to make ten
  * accounts can add ten. Nothing on this site sorts or ranks by it, so what
@@ -767,7 +767,7 @@ async function add(context, body, id) {
      no such place" would send somebody looking for a typo. */
   if (!known && !asked) return json({ error: 'places' }, 503);
 
-  /* Nowhere real. The same refusal /api/saves gives, and for the same reason:
+  /* Nowhere real. The same refusal /api/v1/saves gives, and for the same reason:
      nothing gets to put a row in here for a place that does not exist. */
   if (!known) return json({ error: 'place' }, 400);
 
