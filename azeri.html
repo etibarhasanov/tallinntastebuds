@@ -3,13 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- functions/azeri.js swaps what is between these two markers for the
+     head of the address that was asked for — the language, the canonical,
+     the card a link unfurls as and, at the home, the questions as an
+     FAQPage. What stands here is what the file says when that Function
+     cannot read it. The corner is open to anybody and meant to be found,
+     so nothing here keeps it out of an index any more; it was for members,
+     and said noindex, until 2026-11-21. -->
+<!--PAGE-HEAD-->
 <title>An Azerbaijani corner in Estonia | Tallinn Tastebuds</title>
+<!--/PAGE-HEAD-->
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
-<!-- Open to anybody, and linked from nowhere: the address is given to
-     somebody rather than found, so it is not indexed or followed, and
-     _headers says the same for anything that does not read the markup. -->
-<meta name="robots" content="noindex, nofollow">
 <!-- Analytics: Microsoft Clarity, from one file rather than a snippet
      pasted into every head. assets/analytics.js holds the id and the
      consentv2 signal Clarity needs, and its head carries the reasoning of the
@@ -28,11 +33,11 @@
      — the tabs, the chips, the rows — from its own. -->
 <link rel="stylesheet" href="/assets/styles.lean.css?v=4f81ed66">
 <link rel="stylesheet" href="/assets/lists.lean.css?v=e7381579">
-<link rel="stylesheet" href="/assets/azeri.css?v=3c94326c">
+<link rel="stylesheet" href="/assets/azeri.css?v=a3267a89">
 </head>
 <body class="lists-body azeri-body">
 
-<a class="skip-link" href="#main" data-i18n="azeriSkip">Skip to the films</a>
+<a class="skip-link" href="#main" data-i18n="azeriSkipTopics">Skip to the topics</a>
 
 <header class="lists-brand">
   <a class="lists-home" href="/" data-track="home" data-i18n-aria-label="backToMap" aria-label="Back to the map">
@@ -58,23 +63,27 @@
        the tabs come straight under it; this says it once more for a screen
        reader, which looks for the page's heading. -->
   <h1 class="azeri-said" data-i18n="azeriCorner">Azerbaijani Corner</h1>
-  <!-- The tabs: the country's films, a guide to living in Estonia for
-       somebody arriving from there, and the Azerbaijani places here on a
-       map. Each is an address, so they are links — one opens in a new tab,
-       and is what gets copied — but a press is caught by assets/azeri.js,
-       which draws the tab under them without loading the page again, and
-       says which one is on. -->
+  <!-- The tabs: the home, the country's films, a guide to living in
+       Estonia for somebody arriving from there, and the Azerbaijani places
+       here on a map. Each is an address, so they are links — one opens in a
+       new tab, and is what gets copied — but a press is caught by
+       assets/azeri.js, which draws the tab under them without loading the
+       page again, and says which one is on. -->
   <nav class="azeri-tabs" data-i18n-aria-label="azeriTitle" aria-label="An Azerbaijani corner in Estonia">
-    <a class="azeri-tab" href="/azeri" data-tab="films" data-track="azeri_films" data-i18n="azeriFilms">Azerbaijani films</a>
+    <a class="azeri-tab" href="/azeri" data-tab="home" data-track="azeri_home" data-i18n="azeriHome">Home</a>
+    <a class="azeri-tab" href="/azeri?tab=films" data-tab="films" data-track="azeri_films" data-i18n="azeriFilms">Azerbaijani films</a>
     <a class="azeri-tab" href="/azeri?tab=estonia" data-tab="estonia" data-track="azeri_estonia" data-i18n="azeriEstonia">Estonia</a>
     <a class="azeri-tab" href="/azeri?tab=study" data-tab="study" data-track="azeri_study" data-i18n="azeriStudy">Studying</a>
     <a class="azeri-tab" href="/azeri?tab=estonian" data-tab="estonian" data-track="azeri_estonian" data-i18n="azeriEstonian">Estonian</a>
     <a class="azeri-tab" href="/azeri?tab=food" data-tab="food" data-track="azeri_food" data-i18n="azeriPlaces">Azerbaijani places</a>
   </nav>
-  <!-- Everything under the tabs — the search, the chips and the films, the
-       topics of the guide, or the places' map — is built by assets/azeri.js
-       once the page's words are in, and /api/azeri has answered where the
-       tab asks it, so nothing from the state before is left standing. -->
+  <!-- Everything under the tabs — the home, the search, the chips and the
+       films, the topics of the guide, or the places' map — is built by
+       assets/azeri.js once the page's words are in, and /api/azeri has
+       answered where the tab asks it, so nothing from the state before is
+       left standing. At the home, functions/azeri.js writes the home into
+       it as text first, for the reader that runs no script; the script
+       empties it before it draws. -->
   <div id="shelf"></div>
 </main>
 
@@ -82,8 +91,9 @@
   <div class="noscript card">
     <p class="eyebrow">Tallinn Tastebuds</p>
     <h2>An Azerbaijani corner in Estonia</h2>
-    <p>This page is drawn by a script. The map itself works rather better
-      without one — <a href="/">it is over here</a>.</p>
+    <p>The films, the guide and the places are drawn by a script. The map
+      itself works rather better without one — <a href="/">it is over
+      here</a>.</p>
   </div>
 </noscript>
 
@@ -97,6 +107,6 @@
 <script src="/assets/back.js?v=9d9a7dd8" defer></script>
 <!-- The language switch, a global for the page's own script to use. -->
 <script src="/assets/language.js?v=fcaf98e0" defer></script>
-<script src="/assets/azeri.js?v=265f59b8" defer></script>
+<script src="/assets/azeri.js?v=973cf5d5" defer></script>
 </body>
 </html>

@@ -2,10 +2,10 @@
  *
  * The page is the lists page's shape — its ground, its header, its cards,
  * the tokens of every style — and this file is only what the corner needs
- * on top of that: the tabs, the search and its chips, the switches, the
- * rows with their pictures and play buttons, an opened film and the
- * picture that turns into its player, the topics of the guide and an
- * opened one, and the places' map. Each was drawn as a mockup first and
+ * on top of that: the tabs, the home's rows, the search and its chips, the
+ * switches, the rows with their pictures and play buttons, an opened film
+ * and the picture that turns into its player, the topics of the guide and
+ * an opened one, and the places' map. Each was drawn as a mockup first and
  * the owner said yes to that; every colour here is a token, so the swatch
  * on the map recolours the page with nothing in this file to change.
  */
@@ -55,13 +55,14 @@
   clip-path: inset(50%);
 }
 
-/* The tabs of the corner: the films, the three of the guide and the places,
-   straight under the corner's name. Five do not fit a 390px phone in one
-   line — in Russian, the longest, they come to 386px of the row's 358 — and
-   a row that scrolled sideways, even a size smaller, left the last of them
-   past the edge with nothing to say it was there. So the row wraps: on a
-   phone it is two lines in each of the page's four languages, and every tab
-   is in sight. The on tab's line is under its own word, wherever that word
+/* The tabs of the corner: the home, the films, the three of the guide and
+   the places, straight under the corner's name. Five already did not fit a
+   390px phone in one line — in Russian, the longest, they came to 386px of
+   the row's 358 — and a row that scrolled sideways, even a size smaller,
+   left the last of them past the edge with nothing to say it was there. So
+   the row wraps: with the home's six, on a phone it is two lines in
+   Azerbaijani, English and Estonian and three in Russian, and every tab is
+   in sight. The on tab's line is under its own word, wherever that word
    wrapped to. */
 .azeri-tabs {
   display: flex;
@@ -371,6 +372,18 @@
 .azeri-flash .lists-say { margin-bottom: 14px; }
 .azeri-ways { margin: 0 0 8px; }
 
+/* ------------------------------------------------------------- the home */
+
+/* The sentence saying who the corner is for, at a line length worth
+   reading on a desktop, and the other tabs as rows in a card: the rows'
+   own hairlines between them and none at the card's edges, which the card
+   draws already. */
+.azeri-home-say { max-width: 62ch; }
+.azeri-home-menu { padding: 2px 16px; margin-bottom: 20px; }
+.azeri-home-menu .azeri-menu { margin: 0; }
+.azeri-home-menu .menu-item:first-child .menu-row { border-top: 0; }
+.azeri-home-menu .menu-item:last-child .menu-row { border-bottom: 0; }
+
 /* ----------------------------------------------------------- the places */
 
 /* The list on /embed's map, in a card the frame fills to its edges, and
@@ -506,6 +519,7 @@
      beside them. The same nodes — a topic's own box is taken away, so its
      row and its article can sit in the two columns. */
   .azeri-flash { max-width: 560px; }
+  .azeri-home-menu { max-width: 560px; }
   .azeri-rung { grid-template-columns: 170px minmax(0, 1fr); }
   .azeri-ladder { font-size: 14px; }
   .azeri-list.is-guide {

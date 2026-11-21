@@ -1,0 +1,149 @@
+{
+  "tab": "home",
+  "checked": "2026-11",
+  "say": {"az": "Estoniyada yaşayan və ya bura köçməyə hazırlaşan azərbaycanlılar üçün: ölkənin filmləri bir yerdə, və icma söhbətlərində hər həftə yeni gələnlərə verilən cavablar, bir dəfə yazılı şəkildə.", "en": "For Azerbaijanis who live in Estonia or are about to move here: the country’s films in one place, and what the community’s chats answer every week for somebody new, written down once.", "ru": "Для азербайджанцев, которые живут в Эстонии или собираются сюда переехать: фильмы страны в одном месте и ответы, которые каждую неделю дают новичкам в чатах общины, записанные один раз.", "et": "Eestis elavatele või siia kolida plaanivatele aserbaidžaanlastele: kodumaa filmid ühes kohas ja vastused, mida kogukonna vestlustes iga nädal uustulnukatele antakse, üks kord kirja pandud."},
+  "sections": [
+    {
+      "tab": "films",
+      "why": {"az": "1898-ci ildən bəri Azərbaycan kinosu, və elə burada baxıla bilən filmlər.", "en": "Azerbaijan’s cinema since 1898, and the films that play right here.", "ru": "Кино Азербайджана с 1898 года и фильмы, которые можно смотреть прямо здесь.", "et": "Aserbaidžaani kino aastast 1898 ja filmid, mida saab vaadata otse siin."}
+    },
+    {
+      "tab": "estonia",
+      "why": {"az": "Gələndən sonra nəyi həll etməli, qarşıya çıxdığı ardıcıllıqla.", "en": "What to sort out after arriving, in the order it comes up.", "ru": "Что уладить после приезда, в том порядке, в каком это понадобится.", "et": "Mida pärast saabumist korda ajada, selles järjekorras, nagu see ette tuleb."}
+    },
+    {
+      "tab": "study",
+      "why": {"az": "Universitet seçməkdən ondan sonrakı ilk işə qədər.", "en": "From choosing a university to the first job after it.", "ru": "От выбора университета до первой работы после него.", "et": "Ülikooli valikust kuni esimese tööni pärast seda."}
+    },
+    {
+      "tab": "estonian",
+      "why": {"az": "Eston dili Azərbaycan dilinin yanında, və onu harada öyrənmək.", "en": "The language set beside Azerbaijani, and where to learn it.", "ru": "Эстонский рядом с азербайджанским, и где его учить.", "et": "Eesti keel aserbaidžaani keele kõrval ja kus seda õppida."}
+    },
+    {
+      "tab": "food",
+      "why": {"az": "Tallinndə Azərbaycan yeməyini harada yemək, xəritədə.", "en": "Where to eat Azerbaijani food in Tallinn, on a map.", "ru": "Где поесть азербайджанскую еду в Таллинне, на карте.", "et": "Kus Tallinnas Aserbaidžaani toitu süüa, kaardil."}
+    }
+  ],
+  "topics": [
+    {
+      "id": "first-steps",
+      "name": {"az": "Gələndə ilk növbədə nəyi həll etməliyəm?", "en": "What do I sort out first when I arrive?", "ru": "Что уладить в первую очередь после приезда?", "et": "Mida esimesena korda ajada, kui kohale jõuan?"},
+      "body": [
+        {"p": {"az": "Əvvəlcə şəxsi kod və ünvan, çünki bank, həkim və hər müqavilə bunları soruşur. İlk otuz gün ardıcıllıqla yazılıb.", "en": "Your personal code and your address come first, because the bank, the doctor and every contract ask for them. The first thirty days are written out in order.", "ru": "Сначала личный код и адрес: их спрашивают банк, врач и любой договор. Первые тридцать дней расписаны по порядку.", "et": "Kõigepealt isikukood ja aadress, sest pank, arst ja iga leping küsivad neid. Esimesed kolmkümmend päeva on järjekorras kirja pandud."}}
+      ],
+      "links": [
+        {"name": {"az": "İlk 30 gün", "en": "The first 30 days", "ru": "Первые 30 дней", "et": "Esimesed 30 päeva"}, "url": "/azeri?tab=estonia&topic=first-days"}
+      ]
+    },
+    {
+      "id": "flat",
+      "name": {"az": "Maklersiz mənzili necə tapım?", "en": "How do I find a flat without a broker?", "ru": "Как найти квартиру без маклера?", "et": "Kuidas leida korterit ilma maaklerita?"},
+      "body": [
+        {"p": {"az": "Bəzi sahiblər mənzillərini özləri kirayə verir, bələdçinin adını çəkdiyi iki Facebook qrupunda. Ən çox mənzil KV.ee və City24-dədir, onların çoxu makler vasitəsilə.", "en": "Some owners let their flats themselves, in two Facebook groups the guide names. KV.ee and City24 have the most flats, many of them through a broker.", "ru": "Некоторые владельцы сдают квартиры сами, в двух группах Facebook, которые названы в путеводителе. Больше всего квартир на KV.ee и City24, многие из них через маклера.", "et": "Mõned omanikud üürivad oma korterit ise, kahes Facebooki grupis, mis on juhendis nimetatud. Kõige rohkem kortereid on KV.ee-s ja City24-s, paljud neist maakleri kaudu."}}
+      ],
+      "links": [
+        {"name": {"az": "Mənzil", "en": "Somewhere to live", "ru": "Жильё", "et": "Eluase"}, "url": "/azeri?tab=estonia&topic=housing"}
+      ]
+    },
+    {
+      "id": "in-english",
+      "name": {"az": "Estoniyada ingilis dilində oxumaq olar?", "en": "Can I study in Estonia in English?", "ru": "Можно ли учиться в Эстонии на английском?", "et": "Kas Eestis saab õppida inglise keeles?"},
+      "body": [
+        {"p": {"az": "Bəli: dövlət universitetlərində ingilis dilində bakalavr, magistr və doktorantura proqramları var. Qəbul altı addımdır, proqram seçməkdən vizaya qədər.", "en": "Yes: the public universities teach bachelor’s, master’s and doctoral programmes in English. Getting in is six steps, from picking a programme to the visa.", "ru": "Да: государственные университеты ведут на английском программы бакалавриата, магистратуры и докторантуры. Поступление — это шесть шагов, от выбора программы до визы.", "et": "Jah: avalik-õiguslikes ülikoolides on bakalaureuse-, magistri- ja doktoriõppe kavasid inglise keeles. Sisseastumine on kuus sammu, õppekava valikust viisani."}}
+      ],
+      "links": [
+        {"name": {"az": "Qəbul, addım-addım", "en": "Getting in, step by step", "ru": "Поступление, шаг за шагом", "et": "Sisseastumine samm-sammult"}, "url": "/azeri?tab=study&topic=admission"}
+      ]
+    },
+    {
+      "id": "work-and-study",
+      "name": {"az": "Oxuyarkən işləyə bilərəm?", "en": "Can I work while I study?", "ru": "Можно ли работать во время учёбы?", "et": "Kas tohin õpingute ajal töötada?"},
+      "body": [
+        {"p": {"az": "Bəli, ayrıca icazə olmadan, iş təhsilə mane olmadığı müddətcə.", "en": "Yes, without a separate permit, as long as the work does not get in the way of the studies.", "ru": "Да, без отдельного разрешения, пока работа не мешает учёбе.", "et": "Jah, ilma eraldi loata, kui töö õpinguid ei sega."}}
+      ],
+      "links": [
+        {"name": {"az": "Oxuyarkən iş", "en": "Working while studying", "ru": "Работа во время учёбы", "et": "Töötamine õpingute ajal"}, "url": "/azeri?tab=study&topic=work"}
+      ]
+    },
+    {
+      "id": "diploma",
+      "name": {"az": "Azərbaycan diplomum burada tanınır?", "en": "Is my Azerbaijani diploma recognised here?", "ru": "Признают ли здесь мой азербайджанский диплом?", "et": "Kas minu Aserbaidžaani diplomit tunnustatakse siin?"},
+      "body": [
+        {"p": {"az": "Onu Estoniyanın ENIC/NARIC Mərkəzi qiymətləndirir, tənzimlənən peşə üçün isə qərarı həmin peşənin qurumu verir.", "en": "The Estonian ENIC/NARIC Centre assesses it, and for a regulated profession the authority for that profession decides.", "ru": "Его оценивает эстонский центр ENIC/NARIC, а для регулируемой профессии решает ведомство этой профессии.", "et": "Seda hindab Eesti ENIC/NARIC keskus, reguleeritud kutse puhul otsustab selle kutse eest vastutav asutus."}}
+      ],
+      "links": [
+        {"name": {"az": "Diplom tanınması", "en": "Having a degree recognised", "ru": "Признание диплома", "et": "Diplomi tunnustamine"}, "url": "/azeri?tab=study&topic=recognition"}
+      ]
+    },
+    {
+      "id": "free-estonian",
+      "name": {"az": "Eston dilini harada pulsuz öyrənə bilərəm?", "en": "Where can I learn Estonian for free?", "ru": "Где выучить эстонский бесплатно?", "et": "Kus saab eesti keelt tasuta õppida?"},
+      "body": [
+        {"p": {"az": "Dövlətin uyğunlaşma proqramı və iki onlayn kurs pulsuzdur. Bələdçi öyrənmək üçün beş yeri, hər birinin əhatə etdiyi səviyyələrlə sadalayır.", "en": "The state’s welcome programme and two courses online are free. The guide lists five places to learn, with the levels each covers.", "ru": "Государственная программа адаптации и два онлайн-курса бесплатны. В путеводителе пять мест для учёбы и уровни, которые охватывает каждое.", "et": "Riigi kohanemisprogramm ja kaks veebikursust on tasuta. Juhend loetleb viis õppimise kohta koos tasemetega, mida igaüks katab."}}
+      ],
+      "links": [
+        {"name": {"az": "Hansı səviyyə, harada", "en": "Which level, and where", "ru": "Какой уровень и где", "et": "Milline tase ja kus"}, "url": "/azeri?tab=estonian&topic=levels"}
+      ]
+    },
+    {
+      "id": "is-it-hard",
+      "name": {"az": "Azərbaycan dilində danışan üçün eston dili çətindir?", "en": "Is Estonian hard for somebody who speaks Azerbaijani?", "ru": "Труден ли эстонский для того, кто говорит по-азербайджански?", "et": "Kas eesti keel on aserbaidžaani keele kõnelejale raske?"},
+      "body": [
+        {"p": {"az": "Göründüyü qədər yox: sonluqları Azərbaycan dilindəkilər kimi işləyir, maja, majas, majast və ev, evdə, evdən.", "en": "Less than it looks: its endings work much like Azerbaijani’s, maja, majas, majast beside ev, evdə, evdən.", "ru": "Меньше, чем кажется: окончания работают почти как в азербайджанском, maja, majas, majast рядом с ev, evdə, evdən.", "et": "Vähem, kui paistab: käändelõpud töötavad suuresti nagu aserbaidžaani keeles, maja, majas, majast kõrvuti ev, evdə, evdən."}}
+      ],
+      "links": [
+        {"name": {"az": "Eston dili, qısaca", "en": "Estonian, in short", "ru": "Эстонский язык вкратце", "et": "Eesti keel lühidalt"}, "url": "/azeri?tab=estonian&topic=language"}
+      ]
+    },
+    {
+      "id": "citizenship",
+      "name": {"az": "Vətəndaşlıq üçün eston dilinin hansı səviyyəsi lazımdır?", "en": "What level of Estonian does citizenship ask for?", "ru": "Какой уровень эстонского нужен для гражданства?", "et": "Millist eesti keele taset kodakondsus nõuab?"},
+      "body": [
+        {"p": {"az": "B1, və konstitusiya ilə Vətəndaşlıq Qanunu üzrə ikinci imtahan. Dövlət imtahanı pulsuzdur.", "en": "B1, and a second exam on the constitution and the Citizenship Act. The state’s exam is free.", "ru": "B1 и второй экзамен, на знание конституции и Закона о гражданстве. Государственный экзамен бесплатный.", "et": "B1 ning teine eksam põhiseaduse ja kodakondsuse seaduse tundmise kohta. Riigieksam on tasuta."}}
+      ],
+      "links": [
+        {"name": {"az": "Hansı səviyyə, harada", "en": "Which level, and where", "ru": "Какой уровень и где", "et": "Milline tase ja kus"}, "url": "/azeri?tab=estonian&topic=levels"}
+      ]
+    },
+    {
+      "id": "food",
+      "name": {"az": "Tallinndə Azərbaycan yeməyini harada yemək olar?", "en": "Where can I eat Azerbaijani food in Tallinn?", "ru": "Где поесть азербайджанскую еду в Таллинне?", "et": "Kus saab Tallinnas Aserbaidžaani toitu süüa?"},
+      "body": [
+        {"p": {"az": "Xəritədə, Azərbaycan məkanları bölməsində, hər məkan haqqında bir cümlə ilə.", "en": "On a map, under Azerbaijani places, each place with a sentence about it.", "ru": "На карте, во вкладке «Азербайджанские места», о каждом месте по предложению.", "et": "Kaardil, vahekaardil „Aserbaidžaani kohad“, iga koha kohta üks lause."}}
+      ],
+      "links": [
+        {"name": {"az": "Azərbaycan məkanları", "en": "Azerbaijani places", "ru": "Азербайджанские места", "et": "Aserbaidžaani kohad"}, "url": "/azeri?tab=food"}
+      ]
+    },
+    {
+      "id": "films",
+      "name": {"az": "Azərbaycan filmlərinə harada baxmaq olar?", "en": "Where can I watch Azerbaijani films?", "ru": "Где посмотреть азербайджанские фильмы?", "et": "Kus saab vaadata Aserbaidžaani filme?"},
+      "body": [
+        {"p": {"az": "Azərbaycan filmləri bölməsində, ən çox baxılanlar əvvəldə, çoxu studiyanın öz kanalından elə səhifədə oynayır. Bir açar rus dilində versiyası olanları göstərir.", "en": "Under Azerbaijani films, the most watched first, and many play right in the page from the studio’s own channel. A switch shows the ones with a Russian version.", "ru": "Во вкладке «Азербайджанские фильмы», самые просматриваемые первыми, и многие играют прямо на странице, с канала самой студии. Переключатель показывает те, у которых есть русская версия.", "et": "Vahekaardil „Aserbaidžaani filmid“, enim vaadatud eespool, ja paljud mängivad otse lehel stuudio enda kanalilt. Lüliti näitab neid, millel on venekeelne versioon."}}
+      ],
+      "links": [
+        {"name": {"az": "Azərbaycan filmləri", "en": "Azerbaijani films", "ru": "Азербайджанские фильмы", "et": "Aserbaidžaani filmid"}, "url": "/azeri?tab=films"}
+      ]
+    },
+    {
+      "id": "official",
+      "name": {"az": "Bu rəsmi məsləhətdir?", "en": "Is this official advice?", "ru": "Это официальная консультация?", "et": "Kas see on ametlik nõuanne?"},
+      "body": [
+        {"p": {"az": "Xeyr: bunu bura köçənlər yazıb, hər mövzu isə son sözü deyən quruma link verir. Hər mövzuda son yoxlandığı ay yazılıb.", "en": "No: people who moved here wrote it, and every topic links the office whose word is final. Each topic says the month it was last checked.", "ru": "Нет: это написали те, кто сюда переехал, и каждая тема ссылается на ведомство, за которым последнее слово. В каждой теме указан месяц последней проверки.", "et": "Ei: selle kirjutasid siia kolinud inimesed ja iga teema viitab asutusele, kellel on viimane sõna. Igas teemas on kirjas kuu, millal seda viimati kontrolliti."}}
+      ],
+      "links": [
+        {"name": {"az": "Faydalı linklər", "en": "Useful links", "ru": "Полезные ссылки", "et": "Kasulikud lingid"}, "url": "/azeri?tab=estonia&topic=links"}
+      ]
+    },
+    {
+      "id": "tell-us",
+      "name": {"az": "Nəsə səhvdir və ya çatışmır. Harada deyim?", "en": "Something is wrong or missing. Where do I say?", "ru": "Что-то неверно или чего-то не хватает. Где сказать?", "et": "Midagi on valesti või puudu. Kus sellest öelda?"},
+      "body": [
+        {"p": {"az": "Rəy səhifəsində. Bunu yenicə yaşamış birinin düzəlişi ən faydalısıdır.", "en": "On the feedback page. A correction from somebody who has just been through it is the most useful kind.", "ru": "На странице отзывов. Самая полезная поправка — от того, кто только что через это прошёл.", "et": "Tagasiside lehel. Kõige kasulikum parandus tuleb inimeselt, kes on selle just läbi teinud."}}
+      ],
+      "links": [
+        {"name": {"az": "Rəy", "en": "Feedback", "ru": "Отзывы", "et": "Tagasiside"}, "url": "/feedback"}
+      ]
+    }
+  ]
+}

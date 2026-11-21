@@ -1487,6 +1487,7 @@
   "azeriTitle": "Azerbaidžanilainen nurkkaus Virossa",
   "azeriCorner": "Azerbaidžanilainen nurkkaus",
   "azeriBy": "Tallinn Tastebudsilta",
+  "azeriHome": "Etusivu",
   "azeriFilms": "Azerbaidžanilaiset elokuvat",
   "azeriSearch": "Hae elokuvia, ohjaajia, näyttelijöitä",
   "azeriShelfFeature": "Pitkät elokuvat",
@@ -1547,6 +1548,8 @@
   "azeriFlashSay": "Sanapakkoja, kielioppitunteja, keskusteluja ja lauluja.",
   "azeriFlashOpen": "Avaa sanakortit",
   "azeriWays": "Kieli ja missä muualla sitä voi opiskella",
+  "azeriInCorner": "Tässä nurkassa",
+  "azeriQuestions": "Usein kysyttyä",
   "azeriGoTo": "Siirry sivulle {site}"
  },
  "blurbs": {

@@ -1,8 +1,8 @@
 /**
  * Tallinn Tastebuds — serving a page of this site with a head of its own.
  *
- * Underscore-prefixed, so this is a module and never a route. Seven Functions
- * hand back one of five static pages with different tags written into it:
+ * Underscore-prefixed, so this is a module and never a route. Eight Functions
+ * hand back one of six static pages with different tags written into it:
  *
  *   functions/index.js        index.html, in the language its address names
  *                             and standing on the place it names, so a search
@@ -20,6 +20,11 @@
  *   functions/blog.js         blog.html: one post, written into the page as
  *                             text, so a search for where to eat finds the
  *                             post that answers it
+ *   functions/privacy.js      privacy.html: the policy, written into the page
+ *                             in the language its address names
+ *   functions/azeri.js        azeri.html: the Azerbaijani corner, its home
+ *                             and its questions written into the page in the
+ *                             language its address names
  *
  * The map writes its own tags rather than taking head(): it spells one title
  * for every caller and hands every caller the mark as its picture, and
@@ -164,7 +169,10 @@ export const EMPTY = {
      two pages that happen to agree today are two pages that may not. */
   'flashcard.html': '<main class="lists-main" id="main" tabindex="-1"></main>',
   'blog.html': '<main class="lists-main" id="main" tabindex="-1"></main>',
-  'privacy.html': '<main class="lists-main" id="main" tabindex="-1"></main>'
+  'privacy.html': '<main class="lists-main" id="main" tabindex="-1"></main>',
+  /* The corner keeps its tabs in <main> and writes only under them, so what
+     ships empty is the shelf under the tabs. */
+  'azeri.html': '<div id="shelf"></div>'
 };
 
 export const SITE = 'https://tallinntastebuds.ee';

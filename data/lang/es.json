@@ -1487,6 +1487,7 @@
   "azeriTitle": "Un rincón azerbaiyano en Estonia",
   "azeriCorner": "Rincón azerbaiyano",
   "azeriBy": "por Tallinn Tastebuds",
+  "azeriHome": "Inicio",
   "azeriFilms": "Películas azerbaiyanas",
   "azeriSearch": "Buscar películas, directores, actores",
   "azeriShelfFeature": "Largometrajes",
@@ -1547,6 +1548,8 @@
   "azeriFlashSay": "Mazos de palabras, lecciones de gramática, conversaciones y canciones.",
   "azeriFlashOpen": "Abrir las tarjetas",
   "azeriWays": "La lengua, y dónde más aprenderla",
+  "azeriInCorner": "En este rincón",
+  "azeriQuestions": "Preguntas frecuentes",
   "azeriGoTo": "Ir a {site}"
  },
  "blurbs": {

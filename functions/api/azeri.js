@@ -1,12 +1,13 @@
 /**
  * Tallinn Tastebuds — /api/azeri, what the Azerbaijan corner is read from.
  *
- * /azeri is a page for anybody, account or not, linked from nowhere:
- * Azerbaijan's films, beside them a guide to living in Estonia for somebody
- * arriving from there, and the Azerbaijani food in Tallinn on a map. The
- * films are the 2,615 of the Azerbaijani Wikipedia's list, collected by
- * tools/azfilms.mjs into azeri/data/. The guide is three files written by
- * hand under azeri/data/guide/ — estonia.json, study.json and
+ * /azeri is a page for anybody, account or not: a home that says what is in
+ * it and answers the questions people ask, Azerbaijan's films, beside them a
+ * guide to living in Estonia for somebody arriving from there, and the
+ * Azerbaijani food in Tallinn on a map. The films are the 2,615 of the
+ * Azerbaijani Wikipedia's list, collected by tools/azfilms.mjs into
+ * azeri/data/. The home and the guide are four files written by hand under
+ * azeri/data/guide/ — home.json, estonia.json, study.json and
  * estonian.json, one to a tab — and every sentence in them is an object
  * keyed by language, az, en, ru and et, as a deck's is. The food is a list
  * of the site's, which the page draws through /embed and asks nothing here
@@ -17,7 +18,10 @@
  * It was the members' corner until 2026-11-21, and this route was its door:
  * a session or 401. The owner opened it that day — reading and watching are
  * for everybody, and an account is for writing something — so it asks
- * nobody who they are, and a film plays for anybody who presses Watch.
+ * nobody who they are, and a film plays for anybody who presses Watch. With
+ * nobody's session in it, every answer is the same for everybody and may be
+ * kept: five minutes, in the browser and any cache between, which is the
+ * five minutes dataFile() keeps the files for anyway.
  *
  * WHY A ROUTE AND NOT THE FILE
  *
@@ -79,15 +83,16 @@
  *
  *   GET /api/azeri?tab=estonia&lang=az
  *
- *   tab     estonia, study or estonian: a tab of the guide. Anything else,
- *           or nothing, is the films above.
+ *   tab     home, estonia, study or estonian: the home or a tab of the
+ *           guide. Anything else, or nothing, is the films above.
  *   lang    az, en, ru or et, the four the guide is written in; anything
  *           else is English.
  *
  *   { tab, checked, topics: [ { id, name, covers, level, url, body, links } ] }
  *
  * `checked` is the month the tab was last read against its sources,
- * `2026-11`. Every topic opens in the page, and its `body` is blocks, each
+ * `2026-11`. A topic's `links` are { name, url }, the offices it sends a
+ * reader to. Every topic opens in the page, and its `body` is blocks, each
  * one kind under one key:
  *
  *   p       a paragraph.
@@ -109,6 +114,19 @@
  * way's own site, the topic's one button. Both are left out where a topic
  * has none. Every string is in the language asked for.
  *
+ * The home is the same answer with two things more, and its topics are the
+ * questions people ask:
+ *
+ *   { tab: 'home', checked, say, sections: [ { tab, why } ], topics }
+ *
+ * `say` is the sentence under the tabs, saying who the corner is for, and
+ * `sections` the other tabs in order, each with the line saying what is in
+ * it — its name is the tab's own, which the page already has. A question has
+ * no `covers`, and its `links` are one address on this site, mostly a tab
+ * and a topic of the corner, `/azeri?tab=estonia&topic=housing`, where the
+ * answer is written out at length. functions/azeri.js reads the same file
+ * to write the home into the page as text.
+ *
  * A file that cannot be read is 503 `unavailable`. The order is the
  * index's, which tools/azfilms.mjs writes: the most watched on the studio's
  * YouTube channel first, then the newest, the films with no year last,
@@ -123,7 +141,10 @@ const PAGE = 20;
 const MAX_Q = 80;
 const SHELVES = ['feature', 'animation', 'documentary', 'series'];
 const GUIDE = '/azeri/data/guide/';
-const TABS = ['estonia', 'study', 'estonian'];
+/* How long an answer may be kept, in seconds: what dataFile() keeps the
+   files for, since nothing in an answer changes faster than they do. */
+const KEEP = 300;
+const TABS = ['home', 'estonia', 'study', 'estonian'];
 const GUIDE_LANGS = ['az', 'en', 'ru', 'et'];
 
 /* The same fold tools/azfilms.mjs gave every film's words: foldWords()
@@ -134,10 +155,10 @@ function fold(value) {
   return foldWords(value).replace(/ə/g, 'e').replace(/ı/g, 'i').trim();
 }
 
-/* A tab of the guide in one language. The file holds all four, and `say`
-   takes the one asked for out of every string in it: a name that is the
-   same in each — TalTech, eesti.ee — is written once, as a string, and
-   passes through. tools/validate.mjs holds every object to all four, so
+/* A tab of the guide in one language, or the home. The file holds all four,
+   and `say` takes the one asked for out of every string in it: a name that
+   is the same in each — TalTech, eesti.ee — is written once, as a string,
+   and passes through. tools/validate.mjs holds every object to all four, so
    the English is a fallback nothing should reach. */
 function guideIn(file, lang) {
   const say = (text) => (typeof text === 'string' ? text : text[lang] || text.en);
@@ -161,14 +182,16 @@ function guideIn(file, lang) {
   return {
     tab: file.tab,
     checked: file.checked,
+    ...(file.say ? { say: say(file.say) } : {}),
+    ...(file.sections ? { sections: file.sections.map((s) => ({ tab: s.tab, why: say(s.why) })) } : {}),
     topics: file.topics.map((topic) => ({
       id: topic.id,
       name: say(topic.name),
-      covers: say(topic.covers),
+      ...(topic.covers ? { covers: say(topic.covers) } : {}),
       ...(topic.level ? { level: say(topic.level) } : {}),
       ...(topic.url ? { url: topic.url } : {}),
       body: topic.body.map(block),
-      links: topic.links
+      links: topic.links.map((l) => ({ name: say(l.name), url: l.url }))
     }))
   };
 }
@@ -179,7 +202,7 @@ export async function onRequestGet(context) {
   if (TABS.includes(tab)) {
     const asked = url.searchParams.get('lang');
     try {
-      return json(guideIn(await dataFile(context, GUIDE + tab + '.json'), GUIDE_LANGS.includes(asked) ? asked : 'en'));
+      return json(guideIn(await dataFile(context, GUIDE + tab + '.json'), GUIDE_LANGS.includes(asked) ? asked : 'en'), 200, KEEP);
     } catch (e) {
       return json({ error: 'unavailable' }, 503);
     }
@@ -222,7 +245,7 @@ export async function onRequestGet(context) {
     for (const n of wanted) chunks.set(n, await dataFile(context, CHUNKS + n + '.json'));
     const films = page.map((f) => chunks.get(Math.floor(f.at / index.chunk))[f.at % index.chunk]);
 
-    return json({ films, page: number, pages, total: found.length, counts, source: index.source });
+    return json({ films, page: number, pages, total: found.length, counts, source: index.source }, 200, KEEP);
   } catch (e) {
     return json({ error: 'unavailable' }, 503);
   }

@@ -1487,6 +1487,7 @@
   "azeriTitle": "Азербайджанський куточок в Естонії",
   "azeriCorner": "Азербайджанський куточок",
   "azeriBy": "від Tallinn Tastebuds",
+  "azeriHome": "Головна",
   "azeriFilms": "Азербайджанські фільми",
   "azeriSearch": "Шукати фільми, режисерів, акторів",
   "azeriShelfFeature": "Художні",
@@ -1547,6 +1548,8 @@
   "azeriFlashSay": "Набори слів, уроки граматики, діалоги й пісні.",
   "azeriFlashOpen": "Відкрити картки",
   "azeriWays": "Мова і де ще її вчити",
+  "azeriInCorner": "У цьому куточку",
+  "azeriQuestions": "Часті запитання",
   "azeriGoTo": "Перейти на {site}"
  },
  "blurbs": {

@@ -1487,6 +1487,7 @@
   "azeriTitle": "Eine aserbaidschanische Ecke in Estland",
   "azeriCorner": "Aserbaidschanische Ecke",
   "azeriBy": "von Tallinn Tastebuds",
+  "azeriHome": "Start",
   "azeriFilms": "Aserbaidschanische Filme",
   "azeriSearch": "Filme, Regie, Darsteller suchen",
   "azeriShelfFeature": "Spielfilme",
@@ -1547,6 +1548,8 @@
   "azeriFlashSay": "Wortstapel, Grammatiklektionen, Gespräche und Lieder.",
   "azeriFlashOpen": "Karteikarten öffnen",
   "azeriWays": "Die Sprache, und wo man sie sonst lernt",
+  "azeriInCorner": "In dieser Ecke",
+  "azeriQuestions": "Häufige Fragen",
   "azeriGoTo": "Zu {site}"
  },
  "blurbs": {
