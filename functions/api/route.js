@@ -1164,7 +1164,13 @@ function turns(route) {
         if (turn === 'roundabout' && Number.isInteger(m.exit) && m.exit > 0) step.exit = m.exit;
         out.push(step);
       }
-      for (const i of s && Array.isArray(s.intersections) ? s.intersections : []) {
+      /* An arrival's one intersection is where the way stops, and a tunnel
+         there is nothing to go into: a way across town that ended under
+         one said `arrive` and then `tunnel`, at the same metre, where
+         `arrive` is always the last. At a point a way was asked through,
+         the next leg's start has the same intersection and says it. */
+      const crossed = m.type === 'arrive' || !Array.isArray(s && s.intersections) ? [] : s.intersections;
+      for (const i of crossed) {
         if (!Array.isArray(i.classes) || !i.classes.includes('tunnel') || !Array.isArray(i.location)) continue;
         const along = meters + into(s, i.location);
         if (along - tunnel > TUNNEL_GAP) {
