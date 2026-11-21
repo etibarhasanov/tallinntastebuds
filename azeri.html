@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Azerbaijan | Tallinn Tastebuds</title>
+<title>An Azerbaijani corner in Estonia | Tallinn Tastebuds</title>
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 <!-- For members, and linked from nowhere: not indexed, not followed, and
@@ -29,7 +29,7 @@
      — the tabs, the chips, the rows — from its own. -->
 <link rel="stylesheet" href="/assets/styles.lean.css?v=4f81ed66">
 <link rel="stylesheet" href="/assets/lists.lean.css?v=e7381579">
-<link rel="stylesheet" href="/assets/azeri.css?v=a77ae385">
+<link rel="stylesheet" href="/assets/azeri.css?v=83ef8062">
 </head>
 <body class="lists-body azeri-body">
 
@@ -57,20 +57,23 @@
 <main class="lists-main" id="main" tabindex="-1">
   <div class="azeri-head">
     <p class="eyebrow" data-i18n="azeriEyebrow">For members</p>
-    <h1 class="lists-title" data-i18n="azeriTitle">Azerbaijan</h1>
-    <p class="lists-say" data-i18n="azeriLead">A corner about Azerbaijan, and about living in Estonia.</p>
+    <h1 class="lists-title" data-i18n="azeriTitle">An Azerbaijani corner in Estonia</h1>
+    <p class="lists-say" data-i18n="azeriLead">For Azerbaijanis living in Estonia: the films and the food of home, and a guide to life here.</p>
   </div>
-  <!-- The tabs: the country's films, and a guide to living in Estonia for
-       somebody arriving from there. Each is an address, so they are links;
-       which one is on is said by assets/azeri.js, from the address. -->
-  <nav class="azeri-tabs" data-i18n-aria-label="azeriTitle" aria-label="Azerbaijan">
+  <!-- The tabs: the country's films, a guide to living in Estonia for
+       somebody arriving from there, and its food here on a map. Each is an
+       address, so they are links; which one is on is said by
+       assets/azeri.js, from the address. -->
+  <nav class="azeri-tabs" data-i18n-aria-label="azeriTitle" aria-label="An Azerbaijani corner in Estonia">
     <a class="azeri-tab" href="/azeri" data-tab="films" data-track="azeri_films" data-i18n="azeriFilms">Films</a>
     <a class="azeri-tab" href="/azeri?tab=estonia" data-tab="estonia" data-track="azeri_estonia" data-i18n="azeriEstonia">Estonia</a>
     <a class="azeri-tab" href="/azeri?tab=study" data-tab="study" data-track="azeri_study" data-i18n="azeriStudy">Studying</a>
     <a class="azeri-tab" href="/azeri?tab=estonian" data-tab="estonian" data-track="azeri_estonian" data-i18n="azeriEstonian">Estonian</a>
+    <a class="azeri-tab" href="/azeri?tab=food" data-tab="food" data-track="azeri_food" data-i18n="azeriFood">Food</a>
   </nav>
   <!-- Everything under the tabs — the door when nobody is signed in, the
-       search, the chips and the films, or the topics of the guide — is built
+       search, the chips and the films, the topics of the guide, or the food's
+       map — is built
        by assets/azeri.js once /api/azeri and the page's words have both
        answered, so nothing from the state before is left standing. -->
   <div id="shelf"></div>
@@ -79,7 +82,7 @@
 <noscript>
   <div class="noscript card">
     <p class="eyebrow">Tallinn Tastebuds</p>
-    <h2>Azerbaijan</h2>
+    <h2>An Azerbaijani corner in Estonia</h2>
     <p>This page is drawn by a script. The map itself works rather better
       without one — <a href="/">it is over here</a>.</p>
   </div>
@@ -95,6 +98,6 @@
 <script src="/assets/back.js?v=9d9a7dd8" defer></script>
 <!-- The language switch, a global for the page's own script to use. -->
 <script src="/assets/language.js?v=fcaf98e0" defer></script>
-<script src="/assets/azeri.js?v=93c32962" defer></script>
+<script src="/assets/azeri.js?v=8b649927" defer></script>
 </body>
 </html>

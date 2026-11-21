@@ -2,13 +2,15 @@
  * Tallinn Tastebuds — /api/azeri, what the Azerbaijan corner is read from.
  *
  * /azeri is a page for members only, linked from nowhere: Azerbaijan's
- * films, and beside them a guide to living in Estonia for somebody arriving
- * from there. The films are the 2,615 of the Azerbaijani Wikipedia's list,
- * collected by tools/azfilms.mjs into azeri/data/. The guide is three files
- * written by hand under azeri/data/guide/ — estonia.json, study.json and
- * estonian.json, one to a tab — and every sentence in them is an object
- * keyed by language, az, en, ru and et, as a deck's is. This route is the
- * only way to read any of it.
+ * films, beside them a guide to living in Estonia for somebody arriving
+ * from there, and the Azerbaijani food in Tallinn on a map. The films are
+ * the 2,615 of the Azerbaijani Wikipedia's list, collected by
+ * tools/azfilms.mjs into azeri/data/. The guide is three files written by
+ * hand under azeri/data/guide/ — estonia.json, study.json and estonian.json,
+ * one to a tab — and every sentence in them is an object keyed by language,
+ * az, en, ru and et, as a deck's is. The food is a list in the database,
+ * FOOD_LIST, which the page draws through /embed. This route is the only
+ * way to read the files, and the door to all of it.
  *
  * WHY A ROUTE AND NOT THE FILE
  *
@@ -31,7 +33,12 @@
  * films. A tab of the guide is the same one read, once: the whole tab comes
  * in one answer, and opening a topic asks for nothing. A thousand members
  * opening all three tabs every day is 3,000 reads, 12,000 rows at the very
- * worst, and it does not grow with the topics, which are a file.
+ * worst, and it does not grow with the topics, which are a file. The food
+ * tab is that one read too, and nothing here reads the list: the map is
+ * /embed, which reads /api/v1/lists/<id> — one list's row and its places,
+ * the same read whoever asks — and that answer is kept five minutes in each
+ * colo, so a colo reads the list at most 288 times a day however many
+ * members open the tab.
  *
  * And the CPU, which on the free plan is ten milliseconds a request. The
  * whole shelf as one file was 1.7 MB, and a cold isolate spent four to ten
@@ -71,8 +78,8 @@
  *
  *   GET /api/azeri?tab=estonia&lang=az
  *
- *   tab     estonia, study or estonian: a tab of the guide. Anything else,
- *           or nothing, is the films above.
+ *   tab     estonia, study or estonian: a tab of the guide; food is below.
+ *           Anything else, or nothing, is the films above.
  *   lang    az, en, ru or et, the four the guide is written in; anything
  *           else is English.
  *
@@ -101,6 +108,14 @@
  * way's own site, the topic's one button. Both are left out where a topic
  * has none. Every string is in the language asked for.
  *
+ *   GET /api/azeri?tab=food
+ *
+ *   { tab: 'food', list }
+ *
+ * `list` is the id of the public list the tab draws on a map, FOOD_LIST.
+ * The page could carry the id itself; it asks so that the tab has the same
+ * door as the others, and so the list it draws is named in one place.
+ *
  * Signed out it is 401 `signed-out` and nothing else, so the page draws its
  * door; without a database, 503 `no-database`, the same as every route that
  * needs a session. The order is the index's, which tools/azfilms.mjs
@@ -118,6 +133,11 @@ const SHELVES = ['feature', 'animation', 'documentary', 'series'];
 const GUIDE = '/azeri/data/guide/';
 const TABS = ['estonia', 'study', 'estonian'];
 const GUIDE_LANGS = ['az', 'en', 'ru', 'et'];
+/* "Azerbaijani food in Tallinn", by tallinntastebuds: the restaurants, the
+   market and the two chains, each with a sentence. A list rather than a
+   file here, so it is changed on the list's own page, signed in as its
+   owner, and the tab follows without a deploy. */
+const FOOD_LIST = 'azerbaijani-food-in-tallinn-9srkxf';
 
 /* The same fold tools/azfilms.mjs gave every film's words: foldWords()
    leaves ə and ı as they are, since neither has a base letter NFD can take
@@ -173,6 +193,7 @@ export async function onRequestGet(context) {
 
   const url = new URL(request.url);
   const tab = url.searchParams.get('tab');
+  if (tab === 'food') return json({ tab, list: FOOD_LIST });
   if (TABS.includes(tab)) {
     const asked = url.searchParams.get('lang');
     try {

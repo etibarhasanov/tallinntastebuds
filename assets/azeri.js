@@ -1,12 +1,13 @@
 /* Tallinn Tastebuds — /azeri, the members' corner about Azerbaijan.
  *
  * WHAT IT IS. A page for people with an account, linked from nowhere on the
- * site, and four tabs on it. Films is the country's cinema: the 2,615 of the
+ * site, and five tabs on it. Films is the country's cinema: the 2,615 of the
  * Azerbaijani Wikipedia's list, which tools/azfilms.mjs collects and
  * /api/azeri hands out twenty at a time. Estonia, Studying and Estonian are
  * a guide for somebody arriving here from there — what to sort out and in
  * what order, how to get into a university, and where to learn the
- * language. **Azerbaijan, for members** in docs/handbook.md.
+ * language. Food is where to eat it here, on a map. **Azerbaijan, for
+ * members** in docs/handbook.md.
  *
  * FOUR LANGUAGES, NOT ELEVEN. The page's words are in data/ui.json in all
  * eleven, like every other page's, because the validator holds every key to
@@ -73,6 +74,14 @@
  * row, so taking the row away is taking the sound away. A link that is not
  * YouTube's opens where it lives.
  *
+ * THE FOOD. A list of the site's, "Azerbaijani food in Tallinn", drawn on a
+ * map by /embed in a frame — the map any other site can put on its page,
+ * in the reader's language, with its own loading, error and empty states,
+ * and a card with the list's sentence when a pin is pressed. The route
+ * answers the list's id behind the same door as the other tabs, and the
+ * tab asks nothing else: the list is edited on its own page and the map
+ * follows. Under the frame, the whole list, every sentence in order.
+ *
  * WIDE, IT IS A WALL OF FILMS. On a phone the shelf is a list, a line or
  * two a film. From 900px it is a grid of cards, each under the picture
  * YouTube keeps for its video — or under its year, where there is no video
@@ -89,7 +98,7 @@
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var LANGS = ['az', 'en', 'ru', 'et'];
-  var TABS = ['films', 'estonia', 'study', 'estonian'];
+  var TABS = ['films', 'estonia', 'study', 'estonian', 'food'];
   var SAY_KEYS = { estonia: 'azeriEstoniaSay', study: 'azeriStudySay' };
   /* The flashcards, at the address the map's own door to them has: this
      host's /flashcard, which answers wherever the site does. The button
@@ -124,6 +133,7 @@
     names: {},
     tab: 'films',    // which of TABS the address names
     guide: null,     // a tab of the guide, as the route answered it
+    food: null,      // the food tab, as the route answered it: the list's id
     topic: null,     // the id of the topic opened, if one is
     kind: 'feature',
     q: '',
@@ -229,14 +239,24 @@
   }
 
   /* The tabs are links in the markup, which cannot know which of them it
-     was served for: this says so on the one that is on. */
+     was served for: this says so on the one that is on, and on a phone too
+     narrow for all five, where the row scrolls sideways, brings it into
+     view — Food, the last, would otherwise be the one tab out of sight
+     while it is the one being read. Sideways only: the page itself does not
+     move. */
   function markTab() {
     var tabs = document.querySelectorAll('.azeri-tab');
     for (var i = 0; i < tabs.length; i++) {
       var on = tabs[i].getAttribute('data-tab') === state.tab;
       tabs[i].className = 'azeri-tab' + (on ? ' is-on' : '');
-      if (on) tabs[i].setAttribute('aria-current', 'page');
-      else tabs[i].removeAttribute('aria-current');
+      if (on) {
+        tabs[i].setAttribute('aria-current', 'page');
+        var row = tabs[i].parentNode;
+        var past = tabs[i].getBoundingClientRect().right - row.getBoundingClientRect().right;
+        if (past > 0) row.scrollLeft += past;
+      } else {
+        tabs[i].removeAttribute('aria-current');
+      }
     }
   }
 
@@ -256,9 +276,13 @@
     each('data-i18n', function (n, k) { n.textContent = t(k); });
     each('data-i18n-aria-label', function (n, k) { n.setAttribute('aria-label', t(k)); });
     /* The skip link is written for the films; under a tab of the guide it
-       leads to topics. */
-    if (state.tab !== 'films') document.querySelector('.skip-link').textContent = t('azeriSkipTopics');
+       leads to topics, and under the food to the map. */
+    if (state.tab !== 'films') document.querySelector('.skip-link').textContent = t(state.tab === 'food' ? 'azeriSkipMap' : 'azeriSkipTopics');
     document.title = t('azeriTitle') + ' | Tallinn Tastebuds';
+    /* The tabs are as wide as their words now, so the one that is on is
+       brought into view again by what they are, not what the markup's
+       English was. */
+    markTab();
   }
 
   function drawSwitch() {
@@ -276,9 +300,10 @@
     loadWords(code).then(function () {
       applyStaticStrings();
       drawSwitch();
-      /* The films carry both of their languages; a tab of the guide was
-         answered in one, so it is asked for again. */
-      if (state.tab === 'films') draw();
+      /* The films carry both of their languages and the food's map is
+         asked for in the new one when it is drawn again; a tab of the
+         guide was answered in one, so it is asked for again. */
+      if (state.tab === 'films' || state.tab === 'food') draw();
       else askGuide();
     }).catch(function () { /* the page stays in the language it has */ });
   }
@@ -349,6 +374,11 @@
     });
   }
 
+  /* The food: which list the map draws, and the door if nobody is in. */
+  function askFood() {
+    send(API + '?tab=food', function (out) { state.food = out; });
+  }
+
   /* The topic open on arrival: the one the address names, and on a wide
      screen the first where it names none, since there the opened topic
      stands beside the list and an empty half would be the first thing
@@ -394,6 +424,7 @@
     var host = document.getElementById('shelf');
     while (host.firstChild) host.removeChild(host.firstChild);
     if (state.door) { host.appendChild(door()); return; }
+    if (state.tab === 'food') { drawFood(host); return; }
     if (state.tab !== 'films') { drawGuide(host); return; }
     host.appendChild(tools());
     var list = el('div', { className: 'azeri-list card' });
@@ -734,6 +765,33 @@
     if (state.guide) host.appendChild(el('p', { className: 'azeri-credit', text: t('azeriGuideCredit') }));
   }
 
+  /* ---------------------------------------------------------------- food */
+
+  /* The food tab: what it is, the list on /embed's map in the language the
+     page is read in, and the list itself under it. While the route has not
+     answered there is the shelf's skeleton; when it could not, the guide's
+     line saying so. Which style the map wears it reads for itself, from the
+     same storage on the same host. */
+  function drawFood(host) {
+    host.appendChild(el('p', { className: 'lists-say', text: t('azeriFoodSay') }));
+    if (!state.food) {
+      host.appendChild(el('div', { className: 'azeri-list card' }, [
+        state.loading ? skeleton() : el('p', { className: 'azeri-note', role: 'status', text: t('azeriGuideError') })
+      ]));
+      return;
+    }
+    var list = encodeURIComponent(state.food.list);
+    host.appendChild(el('div', { className: 'card azeri-map' }, [
+      el('iframe', { src: '/embed?list=' + list + '&lang=' + state.lang, title: t('azeriFoodMap') })
+    ]));
+    var all = el('a', { className: 'go', href: '/list/' + list, text: t('azeriFoodOpen') });
+    all.addEventListener('click', function () { track('azeri_list'); });
+    host.appendChild(el('div', { className: 'azeri-map-foot' }, [
+      el('span', { className: 'azeri-meta', text: t('azeriFoodBy') }),
+      all
+    ]));
+  }
+
   /* An address in the flashcards, in the reader's language where it is one
      of the three they speak; any other address as it is. */
   function inFlashcards(url) {
@@ -938,6 +996,7 @@
      false — so an answer that beats them waits to be drawn with them. */
   state.lang = pickLanguage();
   if (state.tab === 'films') ask(1);
+  else if (state.tab === 'food') askFood();
   else askGuide();
   Promise.all([
     getJSON(LANGS_URL).then(function (names) { state.names = names; }).catch(function () {}),
