@@ -17087,6 +17087,17 @@ over the name and the byline run together as one line, which came to five
 lines beside the mark on a desktop. The two are `azeriCorner` and `azeriBy`,
 and the mark still goes back to the map.
 
+And it shows no English first. The markup is written in English and the
+words come after it, out of `data/lang/<code>.json`, so for the length of
+that fetch every load — and every tab is a load — was an English page that
+turned Azerbaijani in front of the reader. Now the name, the heading and the
+tabs keep their room unseen until the words are in, or have failed and the
+markup's English is all there is, which is what the lists and the account
+page already do with a `<main>` that ships empty. The first ask to
+`/api/azeri` goes out beside the words rather than after them, since the
+language is known before either has come back, and the shelf is drawn once
+both have.
+
 The films are written in two of the four. A summary is the wiki's
 Azerbaijani or the English made from it, so somebody reading in Russian or
 Estonian is shown the English, as nearer to them than the Azerbaijani, under

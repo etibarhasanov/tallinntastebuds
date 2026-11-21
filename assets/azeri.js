@@ -16,6 +16,14 @@
  * choosing Azerbaijani here does not turn the map into Azerbaijani for
  * somebody who reads it in Russian.
  *
+ * NO ENGLISH FIRST. The markup is written in English and this file turns it
+ * into the reader's language once data/lang/<code>.json has come, and for a
+ * moment on every load — every tab is one — that was an English page turning
+ * Azerbaijani in front of somebody. So the name beside the mark, the heading
+ * and the tabs are kept unseen by assets/azeri.css until the boot at the
+ * bottom marks the body ready, the shelf is not drawn before then either,
+ * and the first ask to the route goes out beside the words, not after them.
+ *
  * A TAB IS AN ADDRESS. /azeri is the films and /azeri?tab=estonia a tab of
  * the guide: the tabs are links, the page loads again under the one that
  * was pressed, and Back goes where it should with nothing here keeping
@@ -130,7 +138,8 @@
     asking: 0,       // which ask is the latest, so an older answer is dropped
     loading: false,  // the first page of a new ask is on its way
     failed: false,   // the last ask did not come back
-    door: false      // nobody is signed in
+    door: false,     // nobody is signed in
+    ready: false     // the words are in, or are not coming: nothing is drawn before
   };
   var searchTimer = null;
 
@@ -381,6 +390,7 @@
   /* ------------------------------------------------------------- drawing */
 
   function draw() {
+    if (!state.ready) return;
     var host = document.getElementById('shelf');
     while (host.firstChild) host.removeChild(host.firstChild);
     if (state.door) { host.appendChild(door()); return; }
@@ -921,14 +931,24 @@
   applyStyle();
   state.tab = pickTab();
   markTab();
-  var lang = pickLanguage();
+  /* The language is known before anything has come back, so the first ask
+     goes out beside the words rather than after them, and the page waits
+     for the slower of the two instead of both end to end. Nothing is drawn
+     until the words are in — draw() stands back while state.ready is
+     false — so an answer that beats them waits to be drawn with them. */
+  state.lang = pickLanguage();
+  if (state.tab === 'films') ask(1);
+  else askGuide();
   Promise.all([
     getJSON(LANGS_URL).then(function (names) { state.names = names; }).catch(function () {}),
-    loadWords(lang).catch(function () {})
+    loadWords(state.lang).catch(function () {})
   ]).then(function () {
-    applyStaticStrings();
+    /* With no words at all the markup's English stands, rather than t()
+       writing every key over it. */
+    if (Object.keys(state.ui).length) applyStaticStrings();
     drawSwitch();
-    if (state.tab === 'films') ask(1);
-    else askGuide();
+    state.ready = true;
+    document.body.classList.add('is-ready');
+    draw();
   });
 })();

@@ -30,6 +30,18 @@
   .azeri-by { margin-top: 6px; font-size: 14px; overflow: visible; }
 }
 
+/* Nothing that is words is shown until the words are in. The markup is
+   written in English, and drawing it while data/lang/<code>.json is on its
+   way showed somebody reading in Azerbaijani an English page that turned
+   Azerbaijani a moment later, on every tab, since every tab is a load. So
+   the name, the heading and the tabs keep their room and stay unseen until
+   the boot at the bottom of assets/azeri.js marks the body ready — once the
+   words have come, or have failed to, and the markup's English is all
+   there is. The mark is not words and is drawn at once. */
+.azeri-body:not(.is-ready) .azeri-brand,
+.azeri-body:not(.is-ready) .azeri-head,
+.azeri-body:not(.is-ready) .azeri-tabs { visibility: hidden; }
+
 .azeri-head { margin-bottom: 6px; }
 
 /* The tabs of the corner: the films, and the three of the guide. Four fit
