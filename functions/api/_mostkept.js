@@ -148,10 +148,11 @@ const MAX_QUERY = 60;
    last row of the page before it.
  *
  * A cursor and not an OFFSET, because the thing being paged through moves.
- * Somebody keeps a list while page one is being read; it climbs past rows
- * already on the screen, and OFFSET 20 would then hand back one of them a
- * second time and skip whatever it displaced. A cursor asks "everything after
- * this row" and is right whatever happened in between.
+ * The week's counts are made, or somebody edits a list, while page one is
+ * being read; a list climbs past rows already on the screen, and OFFSET 20
+ * would then hand back one of them a second time and skip whatever it
+ * displaced. A cursor asks "everything after this row" and is right whatever
+ * happened in between.
  *
  * Three parts because the sort has three. The id is what makes it total: two
  * lists kept by the same number of people and last edited in the same
@@ -308,13 +309,15 @@ export async function mostKept(context, opts) {
 
   /* The lists themselves, and nothing about what is on them.
 
-     Every number this sorts and filters by is a column on `lists`, kept by
-     the write that changes it rather than worked out here: `items` by add(),
-     drop() in functions/api/lists.js, `keeps` by keep() there, and `opens`
-     by POST /api/stats,
-     copied off press_counts in the batch that bumps it. Each is set to a
-     recount of its own source, on that source's key, so none of them can
-     drift from the rows it counts.
+     Every number this sorts and filters by is a column on `lists`, kept
+     rather than worked out here: `items` by add() and drop() in
+     functions/api/lists.js, in the batch that changes it, and `keeps` and
+     `opens` once a week, from list_keeps and from the press_counts POST
+     /api/stats bumps — THE WEEK THE COUNTS ARE FROM in ./_lists.js. So Most
+     opened and Most saved are last Monday's order all week, which the owner
+     asked for, and Newest is now. Each is set to a recount of its own
+     source, on that source's key, so none of them can drift from the rows
+     it counts by more than the week.
 
      This statement used to work all three out: a GROUP BY over every row of
      list_keeps, a seek into press_counts per list, and an EXISTS … OFFSET 3

@@ -116,3 +116,6 @@ VALUES
   ('top-twenty-places-by-google-kwb7l5', 'ChIJi_xRHmGTkkYRPznLON0xqRE', 'MyShisha Estonia - Mere resto', 'Hookah Bar · 4.8 from 1,100 reviews on Google', 17, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-twenty-places-by-google-kwb7l5', 'ChIJwRoMF56UkkYRMzy7XcbCCS8', 'Whisper Sister', 'Cocktail Bar · 4.8 from 993 reviews on Google', 18, CAST(strftime('%s','now') AS INTEGER) * 1000),
   ('top-twenty-places-by-google-kwb7l5', 'ChIJu6VIH56UkkYREzP_cDka8o8', 'Vanalinna Rahva Raamat', 'Book Store · 4.8 from 969 reviews on Google', 19, CAST(strftime('%s','now') AS INTEGER) * 1000);
+
+INSERT INTO meta (key, value) VALUES ('lists_at', '1')
+ON CONFLICT(key) DO UPDATE SET value = CAST(value AS INTEGER) + 1;

@@ -926,16 +926,22 @@ CREATE TABLE IF NOT EXISTS lists (
   -- list and a look into list_items per list, 50 to 100 rows a page at 26
   -- lists, growing with lists times keeps times items.
   --
-  -- Each is set to a recount of its own source on that source's key, in the
-  -- batch that changes it, never nudged:
+  -- Each is set to a recount of its own source on that source's key, never
+  -- nudged:
   --
-  --   items  ITEMS_SQL in functions/api/lists.js, on add() and drop(); the
-  --          Google lists' load writes it with their places
-  --   keeps  KEEPS_SQL in functions/api/lists.js, on keep(). Deleting an
-  --          account leaves the lists it kept one high, on purpose: they
-  --          were kept, and nobody needs that number exact
-  --   opens  POST /api/stats, copied off press_counts' running total in the
-  --          batch that bumps it
+  --   items  ITEMS_SQL in functions/api/lists.js, on add() and drop(), in the
+  --          batch that changes it; the Google lists' load writes it with
+  --          their places
+  --   keeps  once a week, from list_keeps — listsMark() in
+  --          functions/api/_lists.js, on the first visit after Monday 00:00
+  --          UTC. A keep pressed today moves it next Monday
+  --   opens  the same, from press_counts' running total, which POST
+  --          /api/stats bumps on every open
+  --
+  -- The owner asked for the weekly two on 2026-11-21: an order on /lists that
+  -- holds still for a week, and copies of the lists that are not made again
+  -- whenever somebody opens one. Until then both were copied in the batch of
+  -- every keep and every open.
   --
   -- Added by hand, so SQLite appends them after pin:
   --
@@ -1644,8 +1650,21 @@ CREATE TABLE IF NOT EXISTS feedback_hearts (
 );
 
 
--- Which database this is. One row, written once, and the only thing in here
--- that is not the same in every copy of this schema.
+-- Which database this is: the row `environment`, written once by hand, and
+-- the only thing in here that is not the same in every copy of this schema.
+--
+-- The table holds a few more rows the code writes for itself, each a mark a
+-- reader keeps its copy of something under:
+--
+--   venues_at, venues_all_at   google_venues changed — googleTable() in
+--                              functions/api/_lib.js
+--   lists_at                   a list changed: a count every write to a list
+--                              adds one to — listsChanged() in
+--                              functions/api/_lists.js
+--   lists_week                 the Monday the lists' weekly counts were last
+--                              made — listsMark() there
+--   discover_week              that week's quiet places and finished walks,
+--                              as JSON — theWeek() in functions/api/discover.js
 --
 -- There are two of these databases — `tallinntastebuds` behind the live site
 -- and `tallinntastebuds-preview` behind every preview deployment — and the

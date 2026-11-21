@@ -317,7 +317,9 @@ export function page(html, status, indexable) {
  * same address in the same colo is a cache read rather than a fetch out of
  * the deployment, a database read and a render. The map did this first, and
  * the header of functions/index.js is the long version; this is the part the
- * five routes that keep a copy cannot each have their own of.
+ * routes that keep a copy cannot each have their own of — the five pages,
+ * and the two answers that keep one the same way, everybody's lists signed
+ * out (./api/lists.js) and Discover (./api/discover.js).
  *
  * THREE THINGS ARE ON EVERY KEY, AND A FOURTH IS NEVER
  *
@@ -339,14 +341,16 @@ export function page(html, status, indexable) {
  * The life of a copy is the route's to say, because it is the life of what
  * the page is rendered from. The map is rendered from files that change only
  * on a deploy, so its copy lives as long as the deployment and it says a day.
- * The lists pages and the blog are rendered from the database as well, which
- * changes without a deploy whenever somebody saves, so their copies live
- * PAGE_TTL, a minute: long enough that a crawler walking the directory and a
- * link opened by a hundred people in an hour cost one render each, short
- * enough that a list edited by its owner is what strangers see within the
- * minute. Nothing purges on a write — a purge reaches one colo, and the
- * minute is what the other colos would have had anyway — and that is a
- * boundary rather than an oversight.
+ * A list's page and the directory are rendered from the database as well, and
+ * file their copies under the lists mark beside the deployment — WHEN A LIST
+ * LAST CHANGED in ./api/_lists.js — which every write to a list moves, so a
+ * copy can live MARKED_TTL, a week, and still never be older than the last
+ * edit: the edit moved the key, and in every colo at once, which is what a
+ * purge never could. A profile and the blog are rendered from writes that
+ * move no mark, so their copies live PAGE_TTL, a minute: long enough that a
+ * crawler walking them and a link opened by a hundred people in an hour cost
+ * one render each, short enough that an edit is what strangers see within
+ * the minute.
  *
  * The browser is told REVALIDATE for the map, which _headers says too and
  * tools/validate.mjs holds the two to, and PRIVATELY for the pages: the same
@@ -369,6 +373,11 @@ export const PRIVATELY = 'private, max-age=0, must-revalidate';
 /* How long a colo keeps a page rendered from the database, in seconds — see
    HOW LONG above. */
 export const PAGE_TTL = 60;
+
+/* And one filed under the lists mark, which already changes the moment
+   anything on the page does and with the week at the latest — so the week
+   is all this has to say. */
+export const MARKED_TTL = 7 * 86400;
 
 /* One short string per list of files that changes when and only when a
    deployment changed one of them. Read once per isolate and held for its

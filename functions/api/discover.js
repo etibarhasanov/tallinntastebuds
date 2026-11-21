@@ -36,9 +36,10 @@
  * most opened first, and a shelf like that feeds itself: the eight on it are
  * the eight that get pressed, so they stay the eight. The owner turned it
  * round. A place on this shelf gets opened from it, passes the one behind
- * it, and the one behind takes its card — so the shelf walks up through the
- * map from the bottom, and what it shows is whatever nobody has looked at
- * lately rather than what everybody already has.
+ * it, and the one behind takes its card at the next week's making — so the
+ * shelf walks up through the map from the bottom, a week at a time, and what
+ * it shows is whatever nobody has looked at lately rather than what
+ * everybody already has.
  *
  * It is worked out here and not on the page for two reasons. A place nobody
  * has opened has no row in press_counts at all, and it is the quietest there
@@ -58,26 +59,50 @@
  * Any list can be walked — functions/api/walk.js is the game — and nothing on
  * the front page said so. `routes` are the lists the page's Play card offers,
  * swiped through one at a time, at most ROUTES: first the public lists most
- * people have finished, the latest finish breaking a tie, each with how many
- * finished it, the fastest of them in milliseconds and how that one went
- * round; then, to fill what is left, the most opened lists, with `finished`
- * nought, where the card invites rather than reports. `places` is the doors a
- * walk counts, the ones with a location, so the number on the card is the
- * number a walker has to reach, and a list with none is left out. Empty where
- * no list can be offered, and the card is then not drawn. `route` is the
- * first of them, which is all a page from before the swipe reads.
+ * people had finished by this week's making, the latest finish breaking a
+ * tie, each with how many finished it, the fastest of them in milliseconds
+ * and how that one went round; then, to fill what is left, the most opened
+ * lists, with `finished` nought, where the card invites rather than reports.
+ * `places` is the doors a walk counts, the ones with a location, so the
+ * number on the card is the number a walker has to reach, and a list with
+ * none is left out. Empty where no list can be offered, and the card is then
+ * not drawn. `route` is the first of them, which is all a page from before
+ * the swipe reads.
  *
  * They are the same for everybody, which is why they can live in this answer.
  * The reader's own walks, where they have some going, are per person and are
  * asked of /api/v1/walk?mine=1 by a signed-in page alone.
  *
+ * THE NUMBERS ARE THE WEEK'S
+ *
+ * Everything here that comes out of a count holds still from Monday to
+ * Monday, as the owner asked on 21 November 2026: Popular lists, which is
+ * lists.opens and so last Monday's — THE WEEK THE COUNTS ARE FROM in
+ * ./_lists.js — and the quiet places and the Play card's finishers, which
+ * are worked out on the first build of a week and kept for everybody in one
+ * row of `meta`, `discover_week`, with the week they are of. So the quiet
+ * shelf still walks up through the map from the bottom, a week at a time
+ * rather than five minutes at a time, and a place opened from it today
+ * stays on it until Monday. What a list says — its title, its pin, its
+ * places — and which lists are newest are never the week's: those are read
+ * on every build, and a build follows every edit.
+ *
+ * The week's quiet places are kept two deep, QUIET and as many again behind
+ * them, so a place that closes during the week leaves the shelf at the next
+ * deploy and the one behind it takes its card.
+ *
  * WHO MAY ASK, AND WHAT IT COSTS
  *
  * Anybody, signed in or not, and the answer is the same for all of them — it
- * reads no session, which is what lets it be kept: five minutes in the
- * browser and five in the colo, the way GET /api/v1/saves keeps its counts. A
- * list made a minute ago is on the shelf within five, and nothing here is
- * worth a purge.
+ * reads no session, which is what lets it be kept: in the colo under the
+ * lists mark and the deployment's copy of the map, until a list changes, the
+ * week turns or a deploy moves a place — WHEN A LIST LAST CHANGED in
+ * ./_lists.js — and in the browser only as long as it takes to ask again
+ * with the ETag it holds, a 304 where nothing moved. A list made a minute ago
+ * is on New lists at the next visit. Each visit reads one row of `meta`; a
+ * build reads the two shelves of lists, the week's row, and the lists the
+ * Play card offers; the week's first build reads press_counts and the
+ * finished walks besides, once.
  *
  * Without a database, or on the wrong one, the answer is three empty shelves
  * rather than an error: the page draws the map's own card, leaves the lists
@@ -86,17 +111,19 @@
  * lists, and the other way round.
  */
 
-import { json, mapPlaces, weakTag, withNotModified, wrongDatabase } from './_lib.js';
+import { json, mapPlaces, wrongDatabase } from './_lib.js';
 import { mostKept } from './_mostkept.js';
-import { readList } from './_lists.js';
+import { readList, listsMark } from './_lists.js';
+import { weekOf } from './_rank.js';
 import { doors } from './walk.js';
+import { REVALIDATE, MARKED_TTL, coloKey, deployStamp, fromColo, keepInColo } from '../_shell.js';
 
 /* How many lists a shelf carries. A shelf scrolls sideways, and past eight
    the door at its end — See all, to /lists — is the better way on. */
 const SHELF = 8;
 
 /* How many places the shelf of the least opened carries. Five is the owner's
-   number: few enough that each open moves the shelf. */
+   number: few enough that a week of opens moves the shelf. */
 const QUIET = 5;
 
 /* How many lists the Play card can be swiped through, before the reader's own
@@ -104,12 +131,21 @@ const QUIET = 5;
    countable at a glance, and /lists is the way on. */
 const ROUTES = 5;
 
-const TTL = 300;
+/* How long a browser keeps the three empty shelves a deployment with no
+   database answers — the one answer here not kept under the mark, since
+   there is no mark to keep it under. */
+const EMPTY_TTL = 300;
 
 const EMPTY = { fresh: [], popular: [], quiet: [], route: null, routes: [] };
 
-function discoverKey(request) {
-  return new Request(new URL('/api/v1/discover', request.url).toString());
+/* The row of meta the week's numbers are kept in — THE NUMBERS ARE THE
+   WEEK'S. */
+const WEEKLY = 'discover_week';
+
+/* The copy's address: the route, filed under the deployment's copy of the
+   map — a deploy that closes a place makes a new one — and the lists mark. */
+function discoverKey(request, stamp) {
+  return coloKey(new URL('/api/v1/discover', request.url).toString(), stamp);
 }
 
 /* A row of the directory, as a card on a shelf prints it. */
@@ -129,11 +165,12 @@ async function shelf(context, sort) {
   }
 }
 
-/* The places opened least — THE SHELF IS THE QUIET END. Every row of the kind
-   is read, because the bottom of the map is the roll less the rows and not a
-   query: Google's venues are counted under the same kind and are simply never
-   looked up. A count or a roll that cannot be read is an empty shelf, never a
-   map of noughts. */
+/* The places opened least — THE SHELF IS THE QUIET END — two deep, for the
+   week to keep. Every row of the kind is read, because the bottom of the map
+   is the roll less the rows and not a query: Google's venues are counted
+   under the same kind and are simply never looked up. Once a week now, which
+   is what makes that affordable. Null where a count or the roll cannot be
+   read, which is a week not kept rather than a map of noughts kept all week. */
 async function quiet(context) {
   try {
     const { results } = await context.env.DB
@@ -144,25 +181,23 @@ async function quiet(context) {
       .filter((place) => !place.closed)
       .map((place) => ({ id: place.id, n: n.get(place.id) || 0 }))
       .sort((a, b) => a.n - b.n || (a.id < b.id ? -1 : 1))
-      .slice(0, QUIET)
+      .slice(0, QUIET * 2)
       .map((place) => place.id);
   } catch (e) {
-    return [];
+    return null;
   }
 }
 
-/* The lists the Play card offers — THE ROUTES ARE LISTS TO GO ROUND. Two small
-   reads where somebody has finished something: which lists, most finishers
+/* The lists most people have finished walking, for the week to keep — THE
+   ROUTES ARE LISTS TO GO ROUND. Two small reads: which lists, most finishers
    first, and every finished walk of those lists, of which the fastest is
-   kept. `fallback` is the most opened lists' ids, which fill whatever is left
-   of ROUTES. Anything thrown — the two tables not applied yet among them — is
-   no finish to report, and the fallback stands alone. */
-async function routes(context, fallback) {
-  const { env } = context;
-  let top = [];
-  const best = new Map();
+   kept with how it went round. Each { id, n, best, mode }. Anything thrown
+   — the two tables not applied yet among them — is nobody having finished
+   anything this database knows of, and is not kept, so the week is made
+   again by the next build. */
+async function finishers(env) {
   try {
-    top = (await env.DB
+    const top = (await env.DB
       .prepare(
         'SELECT w.list_id AS id, COUNT(*) AS n FROM walks w ' +
         'JOIN lists l ON l.id = w.list_id ' +
@@ -171,6 +206,7 @@ async function routes(context, fallback) {
       )
       .bind(ROUTES)
       .all()).results;
+    const best = new Map();
     if (top.length) {
       const { results } = await env.DB
         .prepare(
@@ -182,26 +218,78 @@ async function routes(context, fallback) {
         .all();
       for (const row of results) if (!best.has(row.id)) best.set(row.id, row);
     }
-  } catch (e) { /* nobody has finished anything this database knows of */ }
+    return top.map((row) => {
+      const fastest = best.get(row.id);
+      return { id: row.id, n: row.n, best: fastest ? fastest.took : null, mode: fastest ? fastest.mode : '' };
+    });
+  } catch (e) {
+    return null;
+  }
+}
 
-  const finished = new Map(top.map((row) => [row.id, row.n]));
-  const ids = [...new Set([...top.map((row) => row.id), ...fallback])].slice(0, ROUTES);
+/* This week's quiet places and finishers: the row kept for the week where
+   there is one, and otherwise made and kept — one row of meta by its key on
+   every build, and the two reads above on the week's first. Made again,
+   rather than kept, where either could not be read, so a database that was
+   down for a moment on Monday morning is not an empty shelf until Sunday.
+   Two builds making the same week at once both write it, the same rows a
+   second apart. */
+async function theWeek(context) {
+  const { env } = context;
+  const week = weekOf(Date.now());
+  try {
+    const row = await env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind(WEEKLY).first();
+    const kept = row ? JSON.parse(row.value) : null;
+    if (kept && kept.week === week) return kept;
+  } catch (e) { /* made below */ }
+
+  const [places, finished] = await Promise.all([quiet(context), finishers(env)]);
+  const made = { week: week, quiet: places || [], finished: finished || [] };
+  if (places && finished) {
+    try {
+      await env.DB
+        .prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value')
+        .bind(WEEKLY, JSON.stringify(made))
+        .run();
+    } catch (e) { /* made again by the next build */ }
+  }
+  return made;
+}
+
+/* The week's quiet places that are still open, QUIET of them. The map's roll
+   is the deployment's, so a place closed since Monday is gone from it. */
+async function stillOpen(context, ids) {
+  try {
+    const open = new Set((await mapPlaces(context)).filter((place) => !place.closed).map((place) => place.id));
+    return ids.filter((id) => open.has(id)).slice(0, QUIET);
+  } catch (e) {
+    return [];
+  }
+}
+
+/* The lists the Play card offers: the week's finishers, then `fallback`, the
+   most opened lists' ids, to fill whatever is left of ROUTES — each read as
+   it is now, so a title renamed this morning is the new one, and one made
+   private or deleted since Monday drops out. */
+async function routes(context, finished, fallback) {
+  const byId = new Map(finished.map((row) => [row.id, row]));
+  const ids = [...new Set([...finished.map((row) => row.id), ...fallback])].slice(0, ROUTES);
   const lists = await Promise.all(ids.map((id) => readList(context, id, null).catch(() => null)));
   return lists
     .map((list) => {
       const places = list ? doors(list).length : 0;
       if (!places) return null;
-      const fastest = best.get(list.id);
+      const done = byId.get(list.id);
       return {
         id: list.id,
         title: list.title,
         pin: list.pin,
         places,
-        finished: finished.get(list.id) || 0,
-        best: fastest ? fastest.took : null,
+        finished: done ? done.n : 0,
+        best: done ? done.best : null,
         /* How the fastest went round, or '' where they never said — HOW
            THEY WENT ROUND in ./walk.js. */
-        mode: fastest && ['foot', 'bike', 'car', 'mixed'].includes(fastest.mode) ? fastest.mode : ''
+        mode: done && ['foot', 'bike', 'car', 'mixed'].includes(done.mode) ? done.mode : ''
       };
     })
     .filter(Boolean);
@@ -209,29 +297,30 @@ async function routes(context, fallback) {
 
 export async function onRequestGet(context) {
   const { env, request } = context;
-  if (!env.DB || await wrongDatabase(env)) return json(EMPTY, 200, TTL);
+  if (!env.DB || await wrongDatabase(env)) return json(EMPTY, 200, EMPTY_TTL);
 
-  const cache = caches.default;
-  const key = discoverKey(request);
-  const hit = await cache.match(key);
-  if (hit) return withNotModified(request, hit);
+  /* The copy this colo holds — WHO MAY ASK, AND WHAT IT COSTS. A stamp or a
+     mark that cannot be read is an answer made and not kept. */
+  let key = null;
+  try {
+    const [stamp, mark] = await Promise.all([deployStamp(context, ['/data/restaurants.json']), listsMark(env)]);
+    key = discoverKey(request, stamp + '.' + mark);
+    const hit = await fromColo(request, key, REVALIDATE);
+    if (hit) return hit;
+  } catch (e) {
+    key = null;
+  }
 
-  const [fresh, popular, places] = await Promise.all([
+  const [fresh, popular, week] = await Promise.all([
     shelf(context, 'new'),
     shelf(context, 'views'),
-    quiet(context)
+    theWeek(context)
+  ]);
+  const [places, play] = await Promise.all([
+    stillOpen(context, week.quiet),
+    routes(context, week.finished, popular.map((list) => list.id))
   ]);
 
-  const play = await routes(context, popular.map((list) => list.id));
-
-  const body = JSON.stringify({ fresh, popular, quiet: places, route: play[0] || null, routes: play });
-  const res = new Response(body, {
-    headers: {
-      'content-type': 'application/json; charset=utf-8',
-      'cache-control': 'public, max-age=' + TTL,
-      etag: await weakTag(body)
-    }
-  });
-  context.waitUntil(cache.put(key, res.clone()));
-  return withNotModified(request, res);
+  const res = json({ fresh, popular, quiet: places, route: play[0] || null, routes: play }, 200);
+  return key ? keepInColo(context, key, res, MARKED_TTL, REVALIDATE) : res;
 }

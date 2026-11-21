@@ -15,6 +15,7 @@
  *   matchPlaces()    the places a query's words land on, and how well
  *   publicLists()    every public list long enough to be offered, with its
  *                    places' names, in one read
+ *   keptLists()      the same, kept in the isolate until a list changes
  *   listRows()       one list's rows, each said where it opens on the map
  *
  * It was in ./mcp.js while that was the only door, and came out the day the
@@ -117,6 +118,7 @@ export function byName(a, b) {
  * grows with what people write, and READ_CAP is where it stops rather than
  * where it should ever arrive — the day it does, this wants the LIKE search
  * mostKept() in functions/api/_mostkept.js already runs, with its paging.
+ * Read through keptLists() below, once per isolate per edit.
  */
 const READ_CAP = 2000;
 
@@ -140,6 +142,18 @@ export async function publicLists(env) {
     lists.get(row.id).names.push(row.name);
   }
   return [...lists.values()].filter((l) => l.names.length >= MIN_ITEMS);
+}
+
+/* publicLists(), kept in the isolate under the lists mark — WHEN A LIST LAST
+   CHANGED in ./api/_lists.js — so both doors read every public list once
+   after each edit, rather than once every five minutes as they did until
+   21 November 2026, and never hand one out from before an edit. `mark` is
+   listsMark()'s answer, which the caller has already asked for its own key. */
+let kept = null;
+
+export async function keptLists(env, mark) {
+  if (!kept || kept.mark !== mark) kept = { mark: mark, lists: await publicLists(env) };
+  return kept.lists;
 }
 
 /* The public lists the words land on, best first and then by title — not by

@@ -422,6 +422,16 @@ export function build() {
     );
   }
 
+  /* And last, that the lists changed, so every copy of a list kept under the
+     mark — a list's page, /lists, Discover, the public API — is made again at
+     its next visit rather than at the next week. The same statement every
+     write in functions/api/lists.js puts in its batch: listsChanged() in
+     functions/api/_lists.js. */
+  out.push(
+    "INSERT INTO meta (key, value) VALUES ('lists_at', '1')\n" +
+    'ON CONFLICT(key) DO UPDATE SET value = CAST(value AS INTEGER) + 1;'
+  );
+
   return { sql: out.join('\n\n') + '\n', lists: ranked };
 }
 

@@ -56,15 +56,20 @@
  * And nothing here is cached for anybody signed in, indexable or not. See
  * page() in functions/_shell.js, which is where the response itself is
  * built. For everybody else — a crawler, a stranger opening a link — a copy
- * of a public list is kept in the colo under its address for PAGE_TTL, a
- * minute, stamped with the deployment: KEPT IN THE COLO in the same file is
- * the mechanism and the argument. A private list is served only to its
- * owner's session, which is never the visit a copy is kept from, so the
- * copy can only ever be of a page anybody could have opened.
+ * of a public list is kept in the colo under its address, stamped with the
+ * deployment and filed under the lists mark, for as long as nothing on it
+ * changes and a week at the most: KEPT IN THE COLO in the same file is the
+ * mechanism, and WHEN A LIST LAST CHANGED in functions/api/_lists.js is why
+ * a title renamed a second ago is never the old one here. This page is the
+ * one that also asks for Google's two marks, since it prints Google's hours,
+ * phone and rating on every row off Google's roll, and the refresh moves
+ * those without touching a list. A private list is served only to its
+ * owner's session, which is never the visit a copy is kept from, so the copy
+ * can only ever be of a page anybody could have opened.
  */
 
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
-import { readList, LIST_ID } from '../api/_lists.js';
+import { readList, LIST_ID, listsMark } from '../api/_lists.js';
 /* The page out of the deployment, the head, the head swap and the seeding are
    shared with the two other routes that serve this same document —
    functions/lists/index.js with everybody's lists in it, functions/u/[name].js
@@ -72,7 +77,7 @@ import { readList, LIST_ID } from '../api/_lists.js';
    three times. */
 import {
   canonical, esc, head, shell, sow, rehead, fill, unscripted, EMPTY, page,
-  PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
+  PRIVATELY, MARKED_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
 } from '../_shell.js';
 
 /* The line under the title in a preview card. Their own if they wrote one,
@@ -125,12 +130,14 @@ export async function onRequest(context) {
 
   /* The copy this colo holds for whoever is not signed in — see the header.
      Asked only for an id shaped like a list, so a stranger's typo is not a
-     key; a stamp that cannot be read is the page served the way it was
+     key, and only of the database this deployment should be holding; a
+     stamp or a mark that cannot be read is the page served the way it was
      before any copy was kept. */
   let key = null;
-  if (LIST_ID.test(id) && id !== DRAFT && !signedIn(request)) {
+  if (LIST_ID.test(id) && id !== DRAFT && !signedIn(request) && env.DB && !(await wrongDatabase(env))) {
     try {
-      key = coloKey(canonical(request, '/list/' + id), await deployStamp(context, ['/lists.html']));
+      const [stamp, mark] = await Promise.all([deployStamp(context, ['/lists.html']), listsMark(env, true)]);
+      key = coloKey(canonical(request, '/list/' + id), stamp + '.' + mark);
       const hit = await fromColo(request, key, PRIVATELY);
       if (hit) return hit;
     } catch (e) {
@@ -198,5 +205,5 @@ export async function onRequest(context) {
      but the header says the true thing rather than relying on that. Kept in
      the colo only where nobody was signed in, which is the same line. */
   const res = page(html, 200, list.public);
-  return key ? keepInColo(context, key, res, PAGE_TTL, PRIVATELY) : res;
+  return key ? keepInColo(context, key, res, MARKED_TTL, PRIVATELY) : res;
 }
