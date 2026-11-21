@@ -1259,6 +1259,7 @@
   "routeWays": "Itinéraires",
   "routeCar": "{min} min en voiture · {dist}",
   "routeBus": "{lines} à {time} depuis {stop} · {min} min en tout",
+  "routeBusLeave": "Partez à {leave} : à pied jusqu'à {stop}, {lines} à {time} · {min} min en tout",
   "routeNoBus": "Aucun bus ni tram trouvé pour l’instant.",
   "routeNoCar": "Aucun itinéraire en voiture trouvé.",
   "rideRecord": "Enregistrer une balade",

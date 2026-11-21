@@ -1259,6 +1259,7 @@
   "routeWays": "Caminos",
   "routeCar": "{min} min en coche · {dist}",
   "routeBus": "{lines} a las {time} desde {stop} · {min} min en total",
+  "routeBusLeave": "Sal a las {leave}: camina hasta {stop}, {lines} a las {time} · {min} min en total",
   "routeNoBus": "No se encontró autobús ni tranvía ahora mismo.",
   "routeNoCar": "No se encontró una ruta en coche.",
   "rideRecord": "Grabar un paseo",

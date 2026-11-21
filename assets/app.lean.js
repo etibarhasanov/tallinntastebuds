@@ -1636,7 +1636,9 @@
     });
     var rides = tripRides(trip);
     var first = rides[0];
-    dom.routeSay.textContent = t('routeBus', {
+    var walkFirst = trip.leave && trip.leave !== first.at;
+    dom.routeSay.textContent = t(walkFirst ? 'routeBusLeave' : 'routeBus', {
+      leave: trip.leave,
       lines: tripLines(rides),
       time: first.at,
       stop: first.from,

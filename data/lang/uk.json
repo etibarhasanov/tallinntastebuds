@@ -1259,6 +1259,7 @@
   "routeWays": "Шляхи",
   "routeCar": "{min} хв автом · {dist}",
   "routeBus": "{lines} о {time} від зупинки {stop} · загалом {min} хв",
+  "routeBusLeave": "Виходьте о {leave}: пішки до зупинки {stop}, {lines} о {time} · загалом {min} хв",
   "routeNoBus": "Зараз не знайдено ні автобуса, ні трамвая.",
   "routeNoCar": "Не вдалося знайти маршрут для авто.",
   "rideRecord": "Записати поїздку",

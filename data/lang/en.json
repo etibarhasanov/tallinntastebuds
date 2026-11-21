@@ -1259,6 +1259,7 @@
   "routeWays": "Ways there",
   "routeCar": "{min} min by car · {dist}",
   "routeBus": "{lines} at {time} from {stop} · {min} min in all",
+  "routeBusLeave": "Leave at {leave}: walk to {stop}, {lines} at {time} · {min} min in all",
   "routeNoBus": "No bus or tram found right now.",
   "routeNoCar": "Couldn't find a driving route.",
   "rideRecord": "Record a ride",
