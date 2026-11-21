@@ -2,14 +2,18 @@
 /**
  * Tallinn Tastebuds — the doors: where a saved ride is shorter than the map.
  *
- * Reads the saved rides and the bike router off the live site, finds every
- * stretch somebody cycled between two points the router can only join the
- * long way round, and writes data/doors.json. functions/api/route.js reads
- * that file and sends a bike route through a door where it is clearly
- * shorter. **Doors** in docs/handbook.md is the reasoning.
+ * Reads the saved rides off the live site, measures them with the site's
+ * own bike route run here, finds every stretch somebody cycled between two
+ * points the router can only join the long way round, and writes
+ * data/doors.json, and the rides it has looked at into
+ * data/doors-checked.json. functions/api/route.js reads the first and sends
+ * a bike route through a door where it is clearly shorter. **Doors** in
+ * docs/handbook.md is the reasoning.
  *
- *   node tools/doors.mjs           find the doors and rewrite data/doors.json
- *   node tools/doors.mjs --dry     find them and print them, write nothing
+ *   node tools/doors.mjs           look at the rides not looked at yet, and
+ *                                  write both files
+ *   node tools/doors.mjs --dry     the same, printing and writing nothing
+ *   node tools/doors.mjs --all     look at every ride again
  *
  * It is not one of the generators tools/generate.mjs runs, and the validator
  * does not hold the file to it: what it writes depends on the rides people
@@ -95,20 +99,48 @@
  * The rides come from GET /api/rides?bbox=, the same public answer the
  * iPhone app reads: the lines with their first and last 200 m already off,
  * and nobody's name. That route answers its newest forty for a box, so the
- * city is asked for in TILES by TILES boxes rather than one. The router is
- * asked through /api/route, a request every PAUSE milliseconds — it is free
- * public infrastructure behind that route, and a day's cache in front of it
- * means running this twice costs the second run next to nothing.
+ * city is asked for in TILES by TILES boxes rather than one: nine requests,
+ * and all a run asks of the live site.
+ *
+ * Each stretch is measured by functions/api/route.js itself — answerRoute(),
+ * imported and run here with no database — and not by asking /api/route.
+ * Until 2026-11-21 it asked the live site, and every stretch was a whole
+ * bike route there: the router, the doors, the streets kept off, and a
+ * lookup in ride_sections to weigh the ways, which a stretch of 200 m has
+ * no use for. Over the twenty-eight kept rides, a hundred kilometres, that
+ * was about a thousand routes in forty-six minutes and 1,074 lookups on
+ * production, and the owner saw them and it was stopped. Run here, a
+ * stretch is measured by the same code through the same doors — this
+ * checkout's data/doors.json — and reads nothing, since a route with no
+ * database weighs nothing. The router is asked from this machine, a
+ * stretch every PAUSE milliseconds and BUSY after it says it is busy: it is
+ * free public infrastructure, with no edge cache in front of it here, which
+ * is the other reason a ride is looked at once.
+ *
+ * A RIDE IS LOOKED AT ONCE
+ *
+ * The doors a ride opens are kept whether or not it is answered again — AND
+ * THE DOORS IT ALREADY HAD — so looking at a ride twice finds nothing new,
+ * and a run that looked at every ride cost more with every ride saved. So
+ * the ids of the rides looked at are kept in data/doors-checked.json —
+ * ids the rides answer already gives anybody — and a run looks at the
+ * rest. A ride goes in only once every stretch of it was answered, so one
+ * the router failed on is looked at again next time. --all looks at every
+ * ride, for the day what makes a door changes.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { pieces } from '../functions/api/_sections.js';
+import { answerRoute } from '../functions/api/route.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'data', 'doors.json');
+const CHECKED = join(ROOT, 'data', 'doors-checked.json');
 const SITE = 'https://tallinntastebuds.ee';
+const DRY = process.argv.includes('--dry');
+const ALL = process.argv.includes('--all');
 
 /* The city, a little inside nearTallinn()'s box in functions/api/_lib.js,
    and how many boxes a side it is asked for in. */
@@ -129,6 +161,7 @@ const SAME = 30;
 const PACE = 3.3;
 const PUSHED = 2 / 3;
 const PAUSE = 1100;
+const BUSY = 20000;
 
 /* A stretch with this share of its points within ON metres of the router's
    own ways is the router's way, not a door. */
@@ -180,26 +213,47 @@ async function rides() {
       for (const ride of (await res.json()).rides || []) seen.set(ride.id, ride.line);
     }
   }
-  return [...seen.values()].filter((line) => Array.isArray(line) && line.length >= 2);
+  return [...seen].filter(([, line]) => Array.isArray(line) && line.length >= 2).map(([id, line]) => ({ id, line }));
 }
+
+/* The site's own files out of this checkout, for the route run here: its
+   doors are data/doors.json as it stands. */
+const ASSETS = {
+  fetch: async (request) => {
+    try {
+      return new Response(readFileSync(join(ROOT, new URL(request.url).pathname)));
+    } catch (e) {
+      return new Response('', { status: 404 });
+    }
+  }
+};
 
 /* The router's way between two points by bike: how short it can make it,
    counted as A PATH THE ROUTER PUSHES A BIKE ALONG says, how far its two
    ends are from the points asked about, and the lines of the ways it
    rides. Kept by the pair, since the tightening asks about the same ends
-   more than once. */
+   more than once. A refusal that is an answer — no way there — is null;
+   a router that stayed busy or broken through three tries is null too,
+   and counted in `failed`, so the ride is looked at again next run. */
 const asked = new Map();
+let failed = 0;
 async function routed(a, b) {
   const key = a.join(',') + ';' + b.join(',');
   if (asked.has(key)) return asked.get(key);
+  const url = new URL(SITE + '/api/route?mode=bike&from=' + a[0].toFixed(4) + ',' + a[1].toFixed(4) +
+    '&to=' + b[0] + ',' + b[1]);
   let found = null;
-  for (let attempt = 0; attempt < 3 && !found; attempt++) {
-    await sleep(PAUSE);
+  let answered = false;
+  let wait = PAUSE;
+  for (let attempt = 0; attempt < 3 && !found && !answered; attempt++) {
+    await sleep(wait);
     try {
-      const res = await fetch(SITE + '/api/route?mode=bike&from=' + a[0].toFixed(4) + ',' + a[1].toFixed(4) +
-        '&to=' + b[0] + ',' + b[1]);
-      if (res.status === 404) break;
-      if (!res.ok) continue;
+      const res = await answerRoute({ request: new Request(url), env: { ASSETS } }, url.searchParams, false);
+      if (!res.ok) {
+        answered = res.status < 429;
+        wait = res.status === 429 ? BUSY : PAUSE;
+        continue;
+      }
       const way = await res.json();
       const ways = [way].concat(way.others || []);
       found = {
@@ -209,6 +263,7 @@ async function routed(a, b) {
       };
     } catch (e) { /* asked again */ }
   }
+  if (!found && !answered) failed++;
   asked.set(key, found);
   return found;
 }
@@ -264,8 +319,12 @@ function piecesOf(line) {
   return pieces(line).filter((piece) => piece.length >= 2);
 }
 
-const lines = (await rides()).flatMap(piecesOf);
-console.log(lines.length + ' ridden pieces');
+let checked = [];
+try { checked = JSON.parse(readFileSync(CHECKED, 'utf8')); } catch (e) { /* none looked at yet */ }
+const looked = new Set(checked);
+const all = await rides();
+const todo = ALL ? all : all.filter((ride) => !looked.has(ride.id));
+console.log(all.length + ' rides, ' + todo.length + ' to look at');
 
 /* The doors the file already has first — AND THE DOORS IT ALREADY HAD —
    then each one found, joined to its twin where it has one. */
@@ -287,8 +346,13 @@ function keep(door) {
   else if (door.meters < doors[twin].meters) doors[twin] = door;
 }
 
-for (const line of lines) {
-  for (const door of await doorsIn(line)) keep(door);
+for (const ride of todo) {
+  const before = failed;
+  for (const line of piecesOf(ride.line)) {
+    for (const door of await doorsIn(line)) keep(door);
+  }
+  if (failed === before) looked.add(ride.id);
+  else console.log(ride.id + '  the router did not answer ' + (failed - before) + ' of its stretches; looked at again next run');
 }
 
 const out = doors.map((door) => ({
@@ -303,7 +367,9 @@ for (const door of out) {
 }
 console.log(out.length + ' doors, ' + had + ' of them in the file already');
 
-if (!process.argv.includes('--dry')) {
+if (!DRY) {
   writeFileSync(OUT, '[\n' + out.map((door) => '  ' + JSON.stringify(door)).join(',\n') + (out.length ? '\n' : '') + ']\n');
-  console.log('wrote data/doors.json');
+  const ids = [...looked].sort();
+  writeFileSync(CHECKED, '[\n' + ids.map((id) => '  ' + JSON.stringify(id)).join(',\n') + (ids.length ? '\n' : '') + ']\n');
+  console.log('wrote data/doors.json and data/doors-checked.json');
 }

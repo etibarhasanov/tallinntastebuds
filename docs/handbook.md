@@ -3722,7 +3722,9 @@ two together.
 
 **Found by distance, not by shape.** `node tools/doors.mjs` reads the saved
 rides off `GET /api/rides?bbox=`, cuts each into stretches of two hundred
-metres, twice, and puts each stretch's ends to `/api/route` by bike. A
+metres, twice, and puts each stretch's ends to the bike route — the
+site's own, `functions/api/route.js`, run on the machine running the tool
+with no database. A
 stretch the router needs a hundred metres and half as much again for, by
 the shortest way it offers, is a door; it is then tightened to the part that makes the saving, and kept only
 where both ends are on the router's network, so the way in and the way on
@@ -3798,6 +3800,20 @@ rides are: lines with nobody's name and their ends already off.
 The tool is not one of the generators and the validator does not hold the
 file to it: what it writes depends on rides saved since it last ran and on
 a router outside the repository. It is run when there are new rides.
+
+**A ride is looked at once.** The ids of the rides the tool has looked at
+are kept in `data/doors-checked.json`, beside the doors, and a run looks at
+the rest — `--all` looks at every ride again, for the day what makes a door
+changes. Until 2026-11-21 every run looked at every ride, and asked the
+live site for a whole bike route for each stretch: the doors, the streets
+kept off, and the lookup in `ride_sections` that weighs a way, none of
+which a stretch of 200 m needs. One run over the twenty-eight kept rides,
+a hundred kilometres, made about a thousand of them in forty-six minutes
+— 1,074 lookups on production, 8,690 rows — before the owner saw them in
+the database's query insights and it was stopped. Now a run asks the live
+site for the rides and nothing else, nine requests, and the router from
+the machine running it, about two requests a stretch: two short rides
+were 36.
 
 ## Ways people have ridden
 
