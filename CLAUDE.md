@@ -7,7 +7,7 @@ who comes to the site and what they do, a page of how they found it, a page of l
 through which an AI assistant reads the places and the public lists, a public API at `/api/v1` with the map to put
 on another site at `/embed`, and — on a subdomain of its own — a deck of Estonian
 flashcards, with a door of its own at its `/mcp` for the words and the grammar.
-Static files, fifty-five Cloudflare Functions, two D1 databases (preview and
+Static files, fifty-six Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and

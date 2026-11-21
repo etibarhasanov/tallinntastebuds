@@ -11,6 +11,9 @@
     <bpmn:laneSet id="member-lanes">
       <bpmn:lane id="member-lane-member" name="Member">
         <bpmn:flowNodeRef>signed-in</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>azeri-community</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>azeri-community-keep</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>azeri-community-said</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>what-now</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>save</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>account-page</bpmn:flowNodeRef>
@@ -62,67 +65,90 @@
     <bpmn:startEvent id="signed-in" name="Arrives signed in">
       <bpmn:documentation>when: page:map
 ref: functions/api/account.js GET</bpmn:documentation>
-      <bpmn:outgoing>member-e1</bpmn:outgoing>
+      <bpmn:outgoing>member-e4</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="what-now" name="What now?">
+    <bpmn:userTask id="azeri-community" name="Writes in the Community on /azeri">
+      <bpmn:documentation>Anybody reads it; an account writes in it. A post — a title and a text in any language — or a comment, which may answer another; one's own changed or deleted; an upvote on anybody else's. Five posts and fifty comments a day. A dot on the tab, and a number before the browser's title, while another tab is read and there is something new. The site's owner may take anybody's down.
+when: azeri_write
+when: azeri_reply
+ref: azeri.html
+ref: assets/azeri.js</bpmn:documentation>
       <bpmn:incoming>member-e1</bpmn:incoming>
       <bpmn:outgoing>member-e2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="azeri-community-keep" name="Keeps what is written, the author's to change">
+      <bpmn:documentation>Every write reads the row's owner first. A deleted post with comments under it, and every deleted comment, is emptied and kept so the conversation still reads; a score and a post's count of comments are counted again by the write that changes them.
+ref: functions/api/azeri/community.js POST
+ref: functions/api/_community.js</bpmn:documentation>
+      <bpmn:incoming>member-e2</bpmn:incoming>
+      <bpmn:outgoing>member-e3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="azeri-community-said" name="Posts, comments or upvotes">
+      <bpmn:documentation>when: azeri_posted
+when: azeri_comment
+when: azeri_upvote</bpmn:documentation>
+      <bpmn:incoming>member-e3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="what-now" name="What now?">
+      <bpmn:incoming>member-e4</bpmn:incoming>
+      <bpmn:outgoing>member-e1</bpmn:outgoing>
       <bpmn:outgoing>member-e5</bpmn:outgoing>
-      <bpmn:outgoing>member-e15</bpmn:outgoing>
+      <bpmn:outgoing>member-e8</bpmn:outgoing>
       <bpmn:outgoing>member-e18</bpmn:outgoing>
-      <bpmn:outgoing>member-e23</bpmn:outgoing>
+      <bpmn:outgoing>member-e21</bpmn:outgoing>
+      <bpmn:outgoing>member-e26</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="save" name="Saves a place">
       <bpmn:documentation>when: save_place
 ref: assets/app.js</bpmn:documentation>
-      <bpmn:incoming>member-e2</bpmn:incoming>
-      <bpmn:outgoing>member-e3</bpmn:outgoing>
+      <bpmn:incoming>member-e5</bpmn:incoming>
+      <bpmn:outgoing>member-e6</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="account-page" name="Opens their account page">
       <bpmn:documentation>Their saves, their lists and the ones they kept, and the doors to everything else a member can do.
 when: page:account
 ref: account.html
 ref: assets/account.js</bpmn:documentation>
-      <bpmn:incoming>member-e5</bpmn:incoming>
-      <bpmn:outgoing>member-e6</bpmn:outgoing>
+      <bpmn:incoming>member-e8</bpmn:incoming>
+      <bpmn:outgoing>member-e9</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="account-what" name="What there?">
-      <bpmn:incoming>member-e6</bpmn:incoming>
-      <bpmn:outgoing>member-e7</bpmn:outgoing>
-      <bpmn:outgoing>member-e8</bpmn:outgoing>
-      <bpmn:outgoing>member-e21</bpmn:outgoing>
-      <bpmn:outgoing>member-e26</bpmn:outgoing>
+      <bpmn:incoming>member-e9</bpmn:incoming>
+      <bpmn:outgoing>member-e10</bpmn:outgoing>
+      <bpmn:outgoing>member-e11</bpmn:outgoing>
+      <bpmn:outgoing>member-e24</bpmn:outgoing>
       <bpmn:outgoing>member-e29</bpmn:outgoing>
       <bpmn:outgoing>member-e32</bpmn:outgoing>
       <bpmn:outgoing>member-e35</bpmn:outgoing>
-      <bpmn:outgoing>member-e36</bpmn:outgoing>
-      <bpmn:outgoing>member-e41</bpmn:outgoing>
+      <bpmn:outgoing>member-e38</bpmn:outgoing>
+      <bpmn:outgoing>member-e39</bpmn:outgoing>
       <bpmn:outgoing>member-e44</bpmn:outgoing>
+      <bpmn:outgoing>member-e47</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="account-read" name="Saves and lists read">
-      <bpmn:incoming>member-e7</bpmn:incoming>
+      <bpmn:incoming>member-e10</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:serviceTask id="save-account" name="Files the save under the account">
       <bpmn:documentation>ref: functions/api/saves.js POST</bpmn:documentation>
-      <bpmn:incoming>member-e3</bpmn:incoming>
-      <bpmn:outgoing>member-e4</bpmn:outgoing>
+      <bpmn:incoming>member-e6</bpmn:incoming>
+      <bpmn:outgoing>member-e7</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="saved" name="Saved on every device">
-      <bpmn:incoming>member-e4</bpmn:incoming>
+      <bpmn:incoming>member-e7</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="make-list" name="Makes a list">
       <bpmn:documentation>when: list_create
 ref: assets/lists.js draftList() makeDraft()
 ref: functions/list/[id].js /list/new
 ref: assets/account.js makeLink()</bpmn:documentation>
-      <bpmn:incoming>member-e8</bpmn:incoming>
-      <bpmn:outgoing>member-e9</bpmn:outgoing>
+      <bpmn:incoming>member-e11</bpmn:incoming>
+      <bpmn:outgoing>member-e12</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="list-create" name="Creates it">
       <bpmn:documentation>Up to 24 lists, 429 too-many past that.
 ref: functions/api/lists.js POST create</bpmn:documentation>
-      <bpmn:incoming>member-e9</bpmn:incoming>
-      <bpmn:outgoing>member-e10</bpmn:outgoing>
+      <bpmn:incoming>member-e12</bpmn:incoming>
+      <bpmn:outgoing>member-e13</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:userTask id="fill-list" name="Adds places, notes, what to order">
       <bpmn:documentation>Up to 50 places. A place the picker does not have is looked up on Google Maps, and one Google does not have either is typed in and found by address.
@@ -136,40 +162,40 @@ ref: lists.html
 ref: assets/lists.js
 ref: assets/lists.js pickerLookUp()
 ref: functions/api/lookup.js</bpmn:documentation>
-      <bpmn:incoming>member-e10</bpmn:incoming>
-      <bpmn:outgoing>member-e11</bpmn:outgoing>
+      <bpmn:incoming>member-e13</bpmn:incoming>
+      <bpmn:outgoing>member-e14</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="list-edit" name="Stores each edit">
       <bpmn:documentation>ref: functions/api/lists.js POST add, drop, order, say, mustOrder, edit, place, delete
 ref: functions/api/geocode.js GET</bpmn:documentation>
-      <bpmn:incoming>member-e11</bpmn:incoming>
-      <bpmn:outgoing>member-e12</bpmn:outgoing>
+      <bpmn:incoming>member-e14</bpmn:incoming>
+      <bpmn:outgoing>member-e15</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="public" name="Public?">
-      <bpmn:incoming>member-e12</bpmn:incoming>
-      <bpmn:outgoing>member-e13</bpmn:outgoing>
-      <bpmn:outgoing>member-e14</bpmn:outgoing>
+      <bpmn:incoming>member-e15</bpmn:incoming>
+      <bpmn:outgoing>member-e16</bpmn:outgoing>
+      <bpmn:outgoing>member-e17</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="published" name="On /lists and /u/&lt;name&gt;">
-      <bpmn:incoming>member-e13</bpmn:incoming>
+      <bpmn:incoming>member-e16</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:endEvent id="private" name="Theirs alone">
-      <bpmn:incoming>member-e14</bpmn:incoming>
+      <bpmn:incoming>member-e17</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="keep" name="Keeps somebody else's list">
       <bpmn:documentation>when: list_keep
 ref: assets/lists.js</bpmn:documentation>
-      <bpmn:incoming>member-e15</bpmn:incoming>
-      <bpmn:outgoing>member-e16</bpmn:outgoing>
+      <bpmn:incoming>member-e18</bpmn:incoming>
+      <bpmn:outgoing>member-e19</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="kept" name="Adds it to Lists you saved">
       <bpmn:documentation>400 own on your own list, cap of 200.
 ref: functions/api/lists.js POST keep, unkeep</bpmn:documentation>
-      <bpmn:incoming>member-e16</bpmn:incoming>
-      <bpmn:outgoing>member-e17</bpmn:outgoing>
+      <bpmn:incoming>member-e19</bpmn:incoming>
+      <bpmn:outgoing>member-e20</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="kept-done" name="Kept">
-      <bpmn:incoming>member-e17</bpmn:incoming>
+      <bpmn:incoming>member-e20</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="walk" name="Walks a list">
       <bpmn:documentation>Any list they can read, on foot, by bike or both: starts a walk, checks in at each place with the phone's location, in any order and over as many days as it takes, can have the places left put in the shortest order from where they are standing, and may leave a comment where they checked in and one on the whole of it at the end, and say how they went round: on foot, by bike, by car or mixed. The board under the places opens: pressing anybody's time there shows how that person walked it, place by place in the order they really checked them, with the real gap between each pair.
@@ -186,93 +212,93 @@ when: walk_trace
 ref: assets/walk.js
 ref: assets/lists.js walkView()
 ref: assets/app.js walkOnMap()</bpmn:documentation>
-      <bpmn:incoming>member-e18</bpmn:incoming>
-      <bpmn:outgoing>member-e19</bpmn:outgoing>
+      <bpmn:incoming>member-e21</bpmn:incoming>
+      <bpmn:outgoing>member-e22</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="walk-check" name="Checks the nearest place within 75 m, keeps the place and the time">
       <bpmn:documentation>The location a check sends is compared and not kept.
 when: walk_finish
 ref: functions/api/walk.js POST start, mode, check, note, order, again</bpmn:documentation>
-      <bpmn:incoming>member-e19</bpmn:incoming>
-      <bpmn:outgoing>member-e20</bpmn:outgoing>
+      <bpmn:incoming>member-e22</bpmn:incoming>
+      <bpmn:outgoing>member-e23</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="walk-done" name="Finished, on the list's board">
-      <bpmn:incoming>member-e20</bpmn:incoming>
+      <bpmn:incoming>member-e23</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="ride" name="Reads the bike rides they recorded">
       <bpmn:documentation>The Your rides card on the account page, there once they have a ride: what each was called, how far, how long and the day. Nothing on the website records one — a ride is recorded in Rattatee, the iPhone app, and saved under the account it is signed in to.
 ref: assets/account.js ridesCard()
 ref: functions/api/rides.js GET ?mine=1</bpmn:documentation>
-      <bpmn:incoming>member-e21</bpmn:incoming>
-      <bpmn:outgoing>member-e22</bpmn:outgoing>
+      <bpmn:incoming>member-e24</bpmn:incoming>
+      <bpmn:outgoing>member-e25</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:endEvent id="ride-done" name="Their rides, listed">
-      <bpmn:incoming>member-e22</bpmn:incoming>
+      <bpmn:incoming>member-e25</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="deal" name="Opens a discount pass">
       <bpmn:documentation>when: page:deal
 ref: deal.html
 ref: assets/deal.js</bpmn:documentation>
-      <bpmn:incoming>member-e23</bpmn:incoming>
-      <bpmn:outgoing>member-e24</bpmn:outgoing>
+      <bpmn:incoming>member-e26</bpmn:incoming>
+      <bpmn:outgoing>member-e27</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="admit" name="Admits the account, draws the hour's rate">
       <bpmn:documentation>when: pass_shown
 ref: functions/api/pass.js GET</bpmn:documentation>
-      <bpmn:incoming>member-e24</bpmn:incoming>
-      <bpmn:outgoing>member-e25</bpmn:outgoing>
+      <bpmn:incoming>member-e27</bpmn:incoming>
+      <bpmn:outgoing>member-e28</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="deal-done" name="Shows the code (see the discount diagram)">
-      <bpmn:incoming>member-e25</bpmn:incoming>
+      <bpmn:incoming>member-e28</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="edit-page" name="Edits the page under their name">
       <bpmn:documentation>A line about themselves, three handles, the languages they speak, a page of links with their public lists among it in the order they drag them — the line and the links in as many of the site's languages as they write them in.
 when: page:edit
 ref: edit.html
 ref: assets/edit.js</bpmn:documentation>
-      <bpmn:incoming>member-e26</bpmn:incoming>
-      <bpmn:outgoing>member-e27</bpmn:outgoing>
+      <bpmn:incoming>member-e29</bpmn:incoming>
+      <bpmn:outgoing>member-e30</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="page-saved" name="Stores the page">
       <bpmn:documentation>when: edit_save
 ref: functions/api/account.js POST display, about, lines, links, speaks, rows</bpmn:documentation>
-      <bpmn:incoming>member-e27</bpmn:incoming>
-      <bpmn:outgoing>member-e28</bpmn:outgoing>
+      <bpmn:incoming>member-e30</bpmn:incoming>
+      <bpmn:outgoing>member-e31</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="page-done" name="Profile up to date">
-      <bpmn:incoming>member-e28</bpmn:incoming>
+      <bpmn:incoming>member-e31</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="write" name="Writes a post for the blog">
       <bpmn:documentation>Headings, bold, links, lists, quotes, places from the map and public lists a reader swipes through, ten at the most, in as many of the site's languages as they write it in. A draft until they publish it; 20,000 characters, 10 new a day, 200 in all.
 when: page:write
 ref: write.html
 ref: assets/write.js</bpmn:documentation>
-      <bpmn:incoming>member-e29</bpmn:incoming>
-      <bpmn:outgoing>member-e30</bpmn:outgoing>
+      <bpmn:incoming>member-e32</bpmn:incoming>
+      <bpmn:outgoing>member-e33</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="post-saved" name="Stores it, a draft or published">
       <bpmn:documentation>when: write_publish
 ref: functions/api/posts.js POST save, delete</bpmn:documentation>
-      <bpmn:incoming>member-e30</bpmn:incoming>
-      <bpmn:outgoing>member-e31</bpmn:outgoing>
+      <bpmn:incoming>member-e33</bpmn:incoming>
+      <bpmn:outgoing>member-e34</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="post-live" name="On /blog and their profile">
-      <bpmn:incoming>member-e31</bpmn:incoming>
+      <bpmn:incoming>member-e34</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="insights" name="Reads who opened it, their lists and their posts">
       <bpmn:documentation>when: page:insights
 ref: insights.html
 ref: assets/insights.js</bpmn:documentation>
-      <bpmn:incoming>member-e32</bpmn:incoming>
-      <bpmn:outgoing>member-e33</bpmn:outgoing>
+      <bpmn:incoming>member-e35</bpmn:incoming>
+      <bpmn:outgoing>member-e36</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="views" name="Counts views of their own page, lists and posts">
       <bpmn:documentation>ref: functions/api/insights.js GET</bpmn:documentation>
-      <bpmn:incoming>member-e33</bpmn:incoming>
-      <bpmn:outgoing>member-e34</bpmn:outgoing>
+      <bpmn:incoming>member-e36</bpmn:incoming>
+      <bpmn:outgoing>member-e37</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="insights-done" name="Knows who looked">
-      <bpmn:incoming>member-e34</bpmn:incoming>
+      <bpmn:incoming>member-e37</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="account" name="Changes password, username or Google">
       <bpmn:documentation>when: account_password_change
@@ -280,296 +306,309 @@ when: account_rename
 when: account_google_unlink
 ref: account.html
 ref: assets/account.js</bpmn:documentation>
-      <bpmn:incoming>member-e35</bpmn:incoming>
-      <bpmn:outgoing>member-e39</bpmn:outgoing>
+      <bpmn:incoming>member-e38</bpmn:incoming>
+      <bpmn:outgoing>member-e42</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="account-change" name="Changes it, signs other devices out on a new password">
       <bpmn:documentation>ref: functions/api/account.js POST password-change, username-change, google-unlink
 ref: functions/api/google.js GET</bpmn:documentation>
-      <bpmn:incoming>member-e39</bpmn:incoming>
-      <bpmn:outgoing>member-e40</bpmn:outgoing>
+      <bpmn:incoming>member-e42</bpmn:incoming>
+      <bpmn:outgoing>member-e43</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="account-done" name="Account changed">
-      <bpmn:incoming>member-e40</bpmn:incoming>
+      <bpmn:incoming>member-e43</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="student" name="Says they are a student until a date">
       <bpmn:documentation>On the Student card of the account page. Nobody checks it: the date is the rate from the next pass. It can be changed, and 'I'm not a student' clears it.
 when: student_ask
 when: student_not
 ref: assets/account.js studentCard()</bpmn:documentation>
-      <bpmn:incoming>member-e36</bpmn:incoming>
-      <bpmn:outgoing>member-e37</bpmn:outgoing>
+      <bpmn:incoming>member-e39</bpmn:incoming>
+      <bpmn:outgoing>member-e40</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="student-asked" name="Keeps the date as the day they are a student until">
       <bpmn:documentation>Written straight into student_until, which the pass reads.
 ref: functions/api/account.js POST student</bpmn:documentation>
-      <bpmn:incoming>member-e37</bpmn:incoming>
-      <bpmn:outgoing>member-e38</bpmn:outgoing>
+      <bpmn:incoming>member-e40</bpmn:incoming>
+      <bpmn:outgoing>member-e41</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="student-done" name="A student until that day">
-      <bpmn:incoming>member-e38</bpmn:incoming>
+      <bpmn:incoming>member-e41</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="sign-out" name="Signs out">
       <bpmn:documentation>when: account_logout
 ref: assets/account.js</bpmn:documentation>
-      <bpmn:incoming>member-e41</bpmn:incoming>
-      <bpmn:outgoing>member-e42</bpmn:outgoing>
+      <bpmn:incoming>member-e44</bpmn:incoming>
+      <bpmn:outgoing>member-e45</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="session-gone" name="Deletes the session">
       <bpmn:documentation>ref: functions/api/account.js POST logout</bpmn:documentation>
-      <bpmn:incoming>member-e42</bpmn:incoming>
-      <bpmn:outgoing>member-e43</bpmn:outgoing>
+      <bpmn:incoming>member-e45</bpmn:incoming>
+      <bpmn:outgoing>member-e46</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="visitor" name="A visitor again">
-      <bpmn:incoming>member-e43</bpmn:incoming>
+      <bpmn:incoming>member-e46</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="delete" name="Deletes their account">
       <bpmn:documentation>Asks for the password, or the username on an account made through Google. No undo.
 when: account_delete
 ref: assets/account.js
 ref: assets/app.js</bpmn:documentation>
-      <bpmn:incoming>member-e44</bpmn:incoming>
-      <bpmn:outgoing>member-e45</bpmn:outgoing>
+      <bpmn:incoming>member-e47</bpmn:incoming>
+      <bpmn:outgoing>member-e48</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="account-gone" name="Deletes the account and everything filed under it, keeps the numbers">
       <bpmn:documentation>ref: functions/api/account.js POST delete</bpmn:documentation>
-      <bpmn:incoming>member-e45</bpmn:incoming>
-      <bpmn:outgoing>member-e46</bpmn:outgoing>
+      <bpmn:incoming>member-e48</bpmn:incoming>
+      <bpmn:outgoing>member-e49</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="deleted" name="Nobody, on the map">
-      <bpmn:incoming>member-e46</bpmn:incoming>
+      <bpmn:incoming>member-e49</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="member-e1" sourceRef="signed-in" targetRef="what-now" />
-    <bpmn:sequenceFlow id="member-e2" name="save" sourceRef="what-now" targetRef="save" />
-    <bpmn:sequenceFlow id="member-e3" sourceRef="save" targetRef="save-account" />
-    <bpmn:sequenceFlow id="member-e4" sourceRef="save-account" targetRef="saved" />
-    <bpmn:sequenceFlow id="member-e5" name="account page" sourceRef="what-now" targetRef="account-page" />
-    <bpmn:sequenceFlow id="member-e6" sourceRef="account-page" targetRef="account-what" />
-    <bpmn:sequenceFlow id="member-e7" name="reads" sourceRef="account-what" targetRef="account-read" />
-    <bpmn:sequenceFlow id="member-e8" name="make a list" sourceRef="account-what" targetRef="make-list" />
-    <bpmn:sequenceFlow id="member-e9" sourceRef="make-list" targetRef="list-create" />
-    <bpmn:sequenceFlow id="member-e10" sourceRef="list-create" targetRef="fill-list" />
-    <bpmn:sequenceFlow id="member-e11" sourceRef="fill-list" targetRef="list-edit" />
-    <bpmn:sequenceFlow id="member-e12" sourceRef="list-edit" targetRef="public" />
-    <bpmn:sequenceFlow id="member-e13" name="public" sourceRef="public" targetRef="published" />
-    <bpmn:sequenceFlow id="member-e14" name="private" sourceRef="public" targetRef="private" />
-    <bpmn:sequenceFlow id="member-e15" name="keep a list" sourceRef="what-now" targetRef="keep" />
-    <bpmn:sequenceFlow id="member-e16" sourceRef="keep" targetRef="kept" />
-    <bpmn:sequenceFlow id="member-e17" sourceRef="kept" targetRef="kept-done" />
-    <bpmn:sequenceFlow id="member-e18" name="walk a list" sourceRef="what-now" targetRef="walk" />
-    <bpmn:sequenceFlow id="member-e19" sourceRef="walk" targetRef="walk-check" />
-    <bpmn:sequenceFlow id="member-e20" sourceRef="walk-check" targetRef="walk-done" />
-    <bpmn:sequenceFlow id="member-e21" name="your rides" sourceRef="account-what" targetRef="ride" />
-    <bpmn:sequenceFlow id="member-e22" sourceRef="ride" targetRef="ride-done" />
-    <bpmn:sequenceFlow id="member-e23" name="discount" sourceRef="what-now" targetRef="deal" />
-    <bpmn:sequenceFlow id="member-e24" sourceRef="deal" targetRef="admit" />
-    <bpmn:sequenceFlow id="member-e25" sourceRef="admit" targetRef="deal-done" />
-    <bpmn:sequenceFlow id="member-e26" name="their page" sourceRef="account-what" targetRef="edit-page" />
-    <bpmn:sequenceFlow id="member-e27" sourceRef="edit-page" targetRef="page-saved" />
-    <bpmn:sequenceFlow id="member-e28" sourceRef="page-saved" targetRef="page-done" />
-    <bpmn:sequenceFlow id="member-e29" name="write a post" sourceRef="account-what" targetRef="write" />
-    <bpmn:sequenceFlow id="member-e30" sourceRef="write" targetRef="post-saved" />
-    <bpmn:sequenceFlow id="member-e31" sourceRef="post-saved" targetRef="post-live" />
-    <bpmn:sequenceFlow id="member-e32" name="insights" sourceRef="account-what" targetRef="insights" />
-    <bpmn:sequenceFlow id="member-e33" sourceRef="insights" targetRef="views" />
-    <bpmn:sequenceFlow id="member-e34" sourceRef="views" targetRef="insights-done" />
-    <bpmn:sequenceFlow id="member-e35" name="settings" sourceRef="account-what" targetRef="account" />
-    <bpmn:sequenceFlow id="member-e36" name="student" sourceRef="account-what" targetRef="student" />
-    <bpmn:sequenceFlow id="member-e37" sourceRef="student" targetRef="student-asked" />
-    <bpmn:sequenceFlow id="member-e38" sourceRef="student-asked" targetRef="student-done" />
-    <bpmn:sequenceFlow id="member-e39" sourceRef="account" targetRef="account-change" />
-    <bpmn:sequenceFlow id="member-e40" sourceRef="account-change" targetRef="account-done" />
-    <bpmn:sequenceFlow id="member-e41" name="sign out" sourceRef="account-what" targetRef="sign-out" />
-    <bpmn:sequenceFlow id="member-e42" sourceRef="sign-out" targetRef="session-gone" />
-    <bpmn:sequenceFlow id="member-e43" sourceRef="session-gone" targetRef="visitor" />
-    <bpmn:sequenceFlow id="member-e44" name="delete" sourceRef="account-what" targetRef="delete" />
-    <bpmn:sequenceFlow id="member-e45" sourceRef="delete" targetRef="account-gone" />
-    <bpmn:sequenceFlow id="member-e46" sourceRef="account-gone" targetRef="deleted" />
+    <bpmn:sequenceFlow id="member-e1" name="the community" sourceRef="what-now" targetRef="azeri-community" />
+    <bpmn:sequenceFlow id="member-e2" sourceRef="azeri-community" targetRef="azeri-community-keep" />
+    <bpmn:sequenceFlow id="member-e3" sourceRef="azeri-community-keep" targetRef="azeri-community-said" />
+    <bpmn:sequenceFlow id="member-e4" sourceRef="signed-in" targetRef="what-now" />
+    <bpmn:sequenceFlow id="member-e5" name="save" sourceRef="what-now" targetRef="save" />
+    <bpmn:sequenceFlow id="member-e6" sourceRef="save" targetRef="save-account" />
+    <bpmn:sequenceFlow id="member-e7" sourceRef="save-account" targetRef="saved" />
+    <bpmn:sequenceFlow id="member-e8" name="account page" sourceRef="what-now" targetRef="account-page" />
+    <bpmn:sequenceFlow id="member-e9" sourceRef="account-page" targetRef="account-what" />
+    <bpmn:sequenceFlow id="member-e10" name="reads" sourceRef="account-what" targetRef="account-read" />
+    <bpmn:sequenceFlow id="member-e11" name="make a list" sourceRef="account-what" targetRef="make-list" />
+    <bpmn:sequenceFlow id="member-e12" sourceRef="make-list" targetRef="list-create" />
+    <bpmn:sequenceFlow id="member-e13" sourceRef="list-create" targetRef="fill-list" />
+    <bpmn:sequenceFlow id="member-e14" sourceRef="fill-list" targetRef="list-edit" />
+    <bpmn:sequenceFlow id="member-e15" sourceRef="list-edit" targetRef="public" />
+    <bpmn:sequenceFlow id="member-e16" name="public" sourceRef="public" targetRef="published" />
+    <bpmn:sequenceFlow id="member-e17" name="private" sourceRef="public" targetRef="private" />
+    <bpmn:sequenceFlow id="member-e18" name="keep a list" sourceRef="what-now" targetRef="keep" />
+    <bpmn:sequenceFlow id="member-e19" sourceRef="keep" targetRef="kept" />
+    <bpmn:sequenceFlow id="member-e20" sourceRef="kept" targetRef="kept-done" />
+    <bpmn:sequenceFlow id="member-e21" name="walk a list" sourceRef="what-now" targetRef="walk" />
+    <bpmn:sequenceFlow id="member-e22" sourceRef="walk" targetRef="walk-check" />
+    <bpmn:sequenceFlow id="member-e23" sourceRef="walk-check" targetRef="walk-done" />
+    <bpmn:sequenceFlow id="member-e24" name="your rides" sourceRef="account-what" targetRef="ride" />
+    <bpmn:sequenceFlow id="member-e25" sourceRef="ride" targetRef="ride-done" />
+    <bpmn:sequenceFlow id="member-e26" name="discount" sourceRef="what-now" targetRef="deal" />
+    <bpmn:sequenceFlow id="member-e27" sourceRef="deal" targetRef="admit" />
+    <bpmn:sequenceFlow id="member-e28" sourceRef="admit" targetRef="deal-done" />
+    <bpmn:sequenceFlow id="member-e29" name="their page" sourceRef="account-what" targetRef="edit-page" />
+    <bpmn:sequenceFlow id="member-e30" sourceRef="edit-page" targetRef="page-saved" />
+    <bpmn:sequenceFlow id="member-e31" sourceRef="page-saved" targetRef="page-done" />
+    <bpmn:sequenceFlow id="member-e32" name="write a post" sourceRef="account-what" targetRef="write" />
+    <bpmn:sequenceFlow id="member-e33" sourceRef="write" targetRef="post-saved" />
+    <bpmn:sequenceFlow id="member-e34" sourceRef="post-saved" targetRef="post-live" />
+    <bpmn:sequenceFlow id="member-e35" name="insights" sourceRef="account-what" targetRef="insights" />
+    <bpmn:sequenceFlow id="member-e36" sourceRef="insights" targetRef="views" />
+    <bpmn:sequenceFlow id="member-e37" sourceRef="views" targetRef="insights-done" />
+    <bpmn:sequenceFlow id="member-e38" name="settings" sourceRef="account-what" targetRef="account" />
+    <bpmn:sequenceFlow id="member-e39" name="student" sourceRef="account-what" targetRef="student" />
+    <bpmn:sequenceFlow id="member-e40" sourceRef="student" targetRef="student-asked" />
+    <bpmn:sequenceFlow id="member-e41" sourceRef="student-asked" targetRef="student-done" />
+    <bpmn:sequenceFlow id="member-e42" sourceRef="account" targetRef="account-change" />
+    <bpmn:sequenceFlow id="member-e43" sourceRef="account-change" targetRef="account-done" />
+    <bpmn:sequenceFlow id="member-e44" name="sign out" sourceRef="account-what" targetRef="sign-out" />
+    <bpmn:sequenceFlow id="member-e45" sourceRef="sign-out" targetRef="session-gone" />
+    <bpmn:sequenceFlow id="member-e46" sourceRef="session-gone" targetRef="visitor" />
+    <bpmn:sequenceFlow id="member-e47" name="delete" sourceRef="account-what" targetRef="delete" />
+    <bpmn:sequenceFlow id="member-e48" sourceRef="delete" targetRef="account-gone" />
+    <bpmn:sequenceFlow id="member-e49" sourceRef="account-gone" targetRef="deleted" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="member-diagram">
     <bpmndi:BPMNPlane id="member-plane" bpmnElement="member-collaboration">
       <bpmndi:BPMNShape id="member-pool-di" bpmnElement="member-pool" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="1980" height="1650" />
+        <dc:Bounds x="0" y="0" width="1980" height="1760" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="member-lane-member-di" bpmnElement="member-lane-member" isHorizontal="true">
-        <dc:Bounds x="30" y="0" width="1950" height="1650" />
+        <dc:Bounds x="30" y="0" width="1950" height="1760" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="signed-in-di" bpmnElement="signed-in">
         <dc:Bounds x="137" y="45" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="100" y="85" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="azeri-community-di" bpmnElement="azeri-community">
+        <dc:Bounds x="475" y="28" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="azeri-community-keep-di" bpmnElement="azeri-community-keep">
+        <dc:Bounds x="665" y="28" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="azeri-community-said-di" bpmnElement="azeri-community-said">
+        <dc:Bounds x="897" y="45" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="860" y="85" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="what-now-di" bpmnElement="what-now">
         <dc:Bounds x="320" y="38" width="50" height="50" />
         <bpmndi:BPMNLabel><dc:Bounds x="290" y="92" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="save-di" bpmnElement="save">
-        <dc:Bounds x="475" y="28" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="account-page-di" bpmnElement="account-page">
         <dc:Bounds x="475" y="138" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="account-what-di" bpmnElement="account-what">
-        <dc:Bounds x="700" y="148" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="670" y="202" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="account-read-di" bpmnElement="account-read">
-        <dc:Bounds x="897" y="155" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="860" y="195" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="save-account-di" bpmnElement="save-account">
-        <dc:Bounds x="665" y="28" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="saved-di" bpmnElement="saved">
-        <dc:Bounds x="897" y="45" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="860" y="85" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="make-list-di" bpmnElement="make-list">
-        <dc:Bounds x="855" y="578" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="list-create-di" bpmnElement="list-create">
-        <dc:Bounds x="1045" y="578" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="fill-list-di" bpmnElement="fill-list">
-        <dc:Bounds x="1235" y="578" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="list-edit-di" bpmnElement="list-edit">
-        <dc:Bounds x="1425" y="578" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="public-di" bpmnElement="public">
-        <dc:Bounds x="1650" y="588" width="50" height="50" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1620" y="642" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="published-di" bpmnElement="published">
-        <dc:Bounds x="1847" y="595" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="635" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="private-di" bpmnElement="private">
-        <dc:Bounds x="1847" y="1585" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="1625" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="keep-di" bpmnElement="keep">
+      <bpmndi:BPMNShape id="account-page-di" bpmnElement="account-page">
         <dc:Bounds x="475" y="248" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="kept-di" bpmnElement="kept">
-        <dc:Bounds x="665" y="248" width="120" height="70" />
+      <bpmndi:BPMNShape id="account-what-di" bpmnElement="account-what">
+        <dc:Bounds x="700" y="258" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="670" y="312" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="kept-done-di" bpmnElement="kept-done">
+      <bpmndi:BPMNShape id="account-read-di" bpmnElement="account-read">
         <dc:Bounds x="897" y="265" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="860" y="305" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="walk-di" bpmnElement="walk">
+      <bpmndi:BPMNShape id="save-account-di" bpmnElement="save-account">
+        <dc:Bounds x="665" y="138" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="saved-di" bpmnElement="saved">
+        <dc:Bounds x="897" y="155" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="860" y="195" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="make-list-di" bpmnElement="make-list">
+        <dc:Bounds x="855" y="688" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="list-create-di" bpmnElement="list-create">
+        <dc:Bounds x="1045" y="688" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fill-list-di" bpmnElement="fill-list">
+        <dc:Bounds x="1235" y="688" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="list-edit-di" bpmnElement="list-edit">
+        <dc:Bounds x="1425" y="688" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="public-di" bpmnElement="public">
+        <dc:Bounds x="1650" y="698" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1620" y="752" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="published-di" bpmnElement="published">
+        <dc:Bounds x="1847" y="705" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="745" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="private-di" bpmnElement="private">
+        <dc:Bounds x="1847" y="1695" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1810" y="1735" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="keep-di" bpmnElement="keep">
         <dc:Bounds x="475" y="358" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="walk-check-di" bpmnElement="walk-check">
+      <bpmndi:BPMNShape id="kept-di" bpmnElement="kept">
         <dc:Bounds x="665" y="358" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="walk-done-di" bpmnElement="walk-done">
+      <bpmndi:BPMNShape id="kept-done-di" bpmnElement="kept-done">
         <dc:Bounds x="897" y="375" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="860" y="415" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ride-di" bpmnElement="ride">
-        <dc:Bounds x="855" y="688" width="120" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ride-done-di" bpmnElement="ride-done">
-        <dc:Bounds x="1087" y="705" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1050" y="745" width="110" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="deal-di" bpmnElement="deal">
+      <bpmndi:BPMNShape id="walk-di" bpmnElement="walk">
         <dc:Bounds x="475" y="468" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="admit-di" bpmnElement="admit">
+      <bpmndi:BPMNShape id="walk-check-di" bpmnElement="walk-check">
         <dc:Bounds x="665" y="468" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="deal-done-di" bpmnElement="deal-done">
+      <bpmndi:BPMNShape id="walk-done-di" bpmnElement="walk-done">
         <dc:Bounds x="897" y="485" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="860" y="525" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="edit-page-di" bpmnElement="edit-page">
+      <bpmndi:BPMNShape id="ride-di" bpmnElement="ride">
         <dc:Bounds x="855" y="798" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="page-saved-di" bpmnElement="page-saved">
-        <dc:Bounds x="1045" y="798" width="120" height="70" />
+      <bpmndi:BPMNShape id="ride-done-di" bpmnElement="ride-done">
+        <dc:Bounds x="1087" y="815" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1050" y="855" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="page-done-di" bpmnElement="page-done">
-        <dc:Bounds x="1277" y="815" width="36" height="36" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1240" y="855" width="110" height="28" /></bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="deal-di" bpmnElement="deal">
+        <dc:Bounds x="475" y="578" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="write-di" bpmnElement="write">
+      <bpmndi:BPMNShape id="admit-di" bpmnElement="admit">
+        <dc:Bounds x="665" y="578" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deal-done-di" bpmnElement="deal-done">
+        <dc:Bounds x="897" y="595" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="860" y="635" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="edit-page-di" bpmnElement="edit-page">
         <dc:Bounds x="855" y="908" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="post-saved-di" bpmnElement="post-saved">
+      <bpmndi:BPMNShape id="page-saved-di" bpmnElement="page-saved">
         <dc:Bounds x="1045" y="908" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="post-live-di" bpmnElement="post-live">
+      <bpmndi:BPMNShape id="page-done-di" bpmnElement="page-done">
         <dc:Bounds x="1277" y="925" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="1240" y="965" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="insights-di" bpmnElement="insights">
+      <bpmndi:BPMNShape id="write-di" bpmnElement="write">
         <dc:Bounds x="855" y="1018" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="views-di" bpmnElement="views">
+      <bpmndi:BPMNShape id="post-saved-di" bpmnElement="post-saved">
         <dc:Bounds x="1045" y="1018" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="insights-done-di" bpmnElement="insights-done">
+      <bpmndi:BPMNShape id="post-live-di" bpmnElement="post-live">
         <dc:Bounds x="1277" y="1035" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1075" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="account-di" bpmnElement="account">
+      <bpmndi:BPMNShape id="insights-di" bpmnElement="insights">
         <dc:Bounds x="855" y="1128" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="account-change-di" bpmnElement="account-change">
+      <bpmndi:BPMNShape id="views-di" bpmnElement="views">
         <dc:Bounds x="1045" y="1128" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="account-done-di" bpmnElement="account-done">
+      <bpmndi:BPMNShape id="insights-done-di" bpmnElement="insights-done">
         <dc:Bounds x="1277" y="1145" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1185" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="student-di" bpmnElement="student">
+      <bpmndi:BPMNShape id="account-di" bpmnElement="account">
         <dc:Bounds x="855" y="1238" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="student-asked-di" bpmnElement="student-asked">
+      <bpmndi:BPMNShape id="account-change-di" bpmnElement="account-change">
         <dc:Bounds x="1045" y="1238" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="student-done-di" bpmnElement="student-done">
+      <bpmndi:BPMNShape id="account-done-di" bpmnElement="account-done">
         <dc:Bounds x="1277" y="1255" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1295" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="sign-out-di" bpmnElement="sign-out">
+      <bpmndi:BPMNShape id="student-di" bpmnElement="student">
         <dc:Bounds x="855" y="1348" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="session-gone-di" bpmnElement="session-gone">
+      <bpmndi:BPMNShape id="student-asked-di" bpmnElement="student-asked">
         <dc:Bounds x="1045" y="1348" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="visitor-di" bpmnElement="visitor">
+      <bpmndi:BPMNShape id="student-done-di" bpmnElement="student-done">
         <dc:Bounds x="1277" y="1365" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1405" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="delete-di" bpmnElement="delete">
+      <bpmndi:BPMNShape id="sign-out-di" bpmnElement="sign-out">
         <dc:Bounds x="855" y="1458" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="account-gone-di" bpmnElement="account-gone">
+      <bpmndi:BPMNShape id="session-gone-di" bpmnElement="session-gone">
         <dc:Bounds x="1045" y="1458" width="120" height="70" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="deleted-di" bpmnElement="deleted">
+      <bpmndi:BPMNShape id="visitor-di" bpmnElement="visitor">
         <dc:Bounds x="1277" y="1475" width="36" height="36" />
         <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1515" width="110" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="delete-di" bpmnElement="delete">
+        <dc:Bounds x="855" y="1568" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="account-gone-di" bpmnElement="account-gone">
+        <dc:Bounds x="1045" y="1568" width="120" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deleted-di" bpmnElement="deleted">
+        <dc:Bounds x="1277" y="1585" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1240" y="1625" width="110" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="member-e1-di" bpmnElement="member-e1">
-        <di:waypoint x="173" y="63" />
-        <di:waypoint x="320" y="63" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e2-di" bpmnElement="member-e2">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="475" y="63" />
         <bpmndi:BPMNLabel><dc:Bounds x="374" y="33" width="97" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e3-di" bpmnElement="member-e3">
+      <bpmndi:BPMNEdge id="member-e2-di" bpmnElement="member-e2">
         <di:waypoint x="595" y="63" />
         <di:waypoint x="665" y="63" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e4-di" bpmnElement="member-e4">
+      <bpmndi:BPMNEdge id="member-e3-di" bpmnElement="member-e3">
         <di:waypoint x="785" y="63" />
         <di:waypoint x="897" y="63" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e4-di" bpmnElement="member-e4">
+        <di:waypoint x="173" y="63" />
+        <di:waypoint x="320" y="63" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e5-di" bpmnElement="member-e5">
         <di:waypoint x="370" y="63" />
@@ -580,62 +619,62 @@ ref: assets/app.js</bpmn:documentation>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e6-di" bpmnElement="member-e6">
         <di:waypoint x="595" y="173" />
-        <di:waypoint x="700" y="173" />
+        <di:waypoint x="665" y="173" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e7-di" bpmnElement="member-e7">
-        <di:waypoint x="750" y="173" />
+        <di:waypoint x="785" y="173" />
         <di:waypoint x="897" y="173" />
-        <bpmndi:BPMNLabel><dc:Bounds x="754" y="143" width="139" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e8-di" bpmnElement="member-e8">
-        <di:waypoint x="750" y="173" />
-        <di:waypoint x="766" y="173" />
-        <di:waypoint x="766" y="613" />
-        <di:waypoint x="855" y="613" />
-        <bpmndi:BPMNLabel><dc:Bounds x="770" y="583" width="81" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e9-di" bpmnElement="member-e9">
-        <di:waypoint x="975" y="613" />
-        <di:waypoint x="1045" y="613" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e10-di" bpmnElement="member-e10">
-        <di:waypoint x="1165" y="613" />
-        <di:waypoint x="1235" y="613" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e11-di" bpmnElement="member-e11">
-        <di:waypoint x="1355" y="613" />
-        <di:waypoint x="1425" y="613" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e12-di" bpmnElement="member-e12">
-        <di:waypoint x="1545" y="613" />
-        <di:waypoint x="1650" y="613" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e13-di" bpmnElement="member-e13">
-        <di:waypoint x="1700" y="613" />
-        <di:waypoint x="1847" y="613" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1704" y="583" width="139" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e14-di" bpmnElement="member-e14">
-        <di:waypoint x="1700" y="613" />
-        <di:waypoint x="1716" y="613" />
-        <di:waypoint x="1716" y="1603" />
-        <di:waypoint x="1847" y="1603" />
-        <bpmndi:BPMNLabel><dc:Bounds x="1720" y="1573" width="123" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e15-di" bpmnElement="member-e15">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="283" />
         <di:waypoint x="475" y="283" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="253" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e16-di" bpmnElement="member-e16">
+      <bpmndi:BPMNEdge id="member-e9-di" bpmnElement="member-e9">
         <di:waypoint x="595" y="283" />
-        <di:waypoint x="665" y="283" />
+        <di:waypoint x="700" y="283" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e10-di" bpmnElement="member-e10">
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="897" y="283" />
+        <bpmndi:BPMNLabel><dc:Bounds x="754" y="253" width="139" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e11-di" bpmnElement="member-e11">
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="766" y="283" />
+        <di:waypoint x="766" y="723" />
+        <di:waypoint x="855" y="723" />
+        <bpmndi:BPMNLabel><dc:Bounds x="770" y="693" width="81" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e12-di" bpmnElement="member-e12">
+        <di:waypoint x="975" y="723" />
+        <di:waypoint x="1045" y="723" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e13-di" bpmnElement="member-e13">
+        <di:waypoint x="1165" y="723" />
+        <di:waypoint x="1235" y="723" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e14-di" bpmnElement="member-e14">
+        <di:waypoint x="1355" y="723" />
+        <di:waypoint x="1425" y="723" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e15-di" bpmnElement="member-e15">
+        <di:waypoint x="1545" y="723" />
+        <di:waypoint x="1650" y="723" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e16-di" bpmnElement="member-e16">
+        <di:waypoint x="1700" y="723" />
+        <di:waypoint x="1847" y="723" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1704" y="693" width="139" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e17-di" bpmnElement="member-e17">
-        <di:waypoint x="785" y="283" />
-        <di:waypoint x="897" y="283" />
+        <di:waypoint x="1700" y="723" />
+        <di:waypoint x="1716" y="723" />
+        <di:waypoint x="1716" y="1713" />
+        <di:waypoint x="1847" y="1713" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1720" y="1683" width="123" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e18-di" bpmnElement="member-e18">
         <di:waypoint x="370" y="63" />
@@ -653,49 +692,49 @@ ref: assets/app.js</bpmn:documentation>
         <di:waypoint x="897" y="393" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e21-di" bpmnElement="member-e21">
-        <di:waypoint x="750" y="173" />
-        <di:waypoint x="766" y="173" />
-        <di:waypoint x="766" y="723" />
-        <di:waypoint x="855" y="723" />
-        <bpmndi:BPMNLabel><dc:Bounds x="770" y="693" width="81" height="28" /></bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e22-di" bpmnElement="member-e22">
-        <di:waypoint x="975" y="723" />
-        <di:waypoint x="1087" y="723" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e23-di" bpmnElement="member-e23">
         <di:waypoint x="370" y="63" />
         <di:waypoint x="386" y="63" />
         <di:waypoint x="386" y="503" />
         <di:waypoint x="475" y="503" />
         <bpmndi:BPMNLabel><dc:Bounds x="390" y="473" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e24-di" bpmnElement="member-e24">
+      <bpmndi:BPMNEdge id="member-e22-di" bpmnElement="member-e22">
         <di:waypoint x="595" y="503" />
         <di:waypoint x="665" y="503" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e25-di" bpmnElement="member-e25">
+      <bpmndi:BPMNEdge id="member-e23-di" bpmnElement="member-e23">
         <di:waypoint x="785" y="503" />
         <di:waypoint x="897" y="503" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e26-di" bpmnElement="member-e26">
-        <di:waypoint x="750" y="173" />
-        <di:waypoint x="766" y="173" />
+      <bpmndi:BPMNEdge id="member-e24-di" bpmnElement="member-e24">
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="766" y="283" />
         <di:waypoint x="766" y="833" />
         <di:waypoint x="855" y="833" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="803" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e27-di" bpmnElement="member-e27">
+      <bpmndi:BPMNEdge id="member-e25-di" bpmnElement="member-e25">
         <di:waypoint x="975" y="833" />
-        <di:waypoint x="1045" y="833" />
+        <di:waypoint x="1087" y="833" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e26-di" bpmnElement="member-e26">
+        <di:waypoint x="370" y="63" />
+        <di:waypoint x="386" y="63" />
+        <di:waypoint x="386" y="613" />
+        <di:waypoint x="475" y="613" />
+        <bpmndi:BPMNLabel><dc:Bounds x="390" y="583" width="81" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e27-di" bpmnElement="member-e27">
+        <di:waypoint x="595" y="613" />
+        <di:waypoint x="665" y="613" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e28-di" bpmnElement="member-e28">
-        <di:waypoint x="1165" y="833" />
-        <di:waypoint x="1277" y="833" />
+        <di:waypoint x="785" y="613" />
+        <di:waypoint x="897" y="613" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e29-di" bpmnElement="member-e29">
-        <di:waypoint x="750" y="173" />
-        <di:waypoint x="766" y="173" />
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="766" y="283" />
         <di:waypoint x="766" y="943" />
         <di:waypoint x="855" y="943" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="913" width="81" height="28" /></bpmndi:BPMNLabel>
@@ -709,8 +748,8 @@ ref: assets/app.js</bpmn:documentation>
         <di:waypoint x="1277" y="943" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e32-di" bpmnElement="member-e32">
-        <di:waypoint x="750" y="173" />
-        <di:waypoint x="766" y="173" />
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="766" y="283" />
         <di:waypoint x="766" y="1053" />
         <di:waypoint x="855" y="1053" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1023" width="81" height="28" /></bpmndi:BPMNLabel>
@@ -724,53 +763,53 @@ ref: assets/app.js</bpmn:documentation>
         <di:waypoint x="1277" y="1053" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e35-di" bpmnElement="member-e35">
-        <di:waypoint x="750" y="173" />
-        <di:waypoint x="766" y="173" />
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="766" y="283" />
         <di:waypoint x="766" y="1163" />
         <di:waypoint x="855" y="1163" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1133" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e36-di" bpmnElement="member-e36">
-        <di:waypoint x="750" y="173" />
-        <di:waypoint x="766" y="173" />
+        <di:waypoint x="975" y="1163" />
+        <di:waypoint x="1045" y="1163" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e37-di" bpmnElement="member-e37">
+        <di:waypoint x="1165" y="1163" />
+        <di:waypoint x="1277" y="1163" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e38-di" bpmnElement="member-e38">
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="766" y="283" />
         <di:waypoint x="766" y="1273" />
         <di:waypoint x="855" y="1273" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1243" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e37-di" bpmnElement="member-e37">
-        <di:waypoint x="975" y="1273" />
-        <di:waypoint x="1045" y="1273" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e38-di" bpmnElement="member-e38">
-        <di:waypoint x="1165" y="1273" />
-        <di:waypoint x="1277" y="1273" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e39-di" bpmnElement="member-e39">
-        <di:waypoint x="975" y="1163" />
-        <di:waypoint x="1045" y="1163" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e40-di" bpmnElement="member-e40">
-        <di:waypoint x="1165" y="1163" />
-        <di:waypoint x="1277" y="1163" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e41-di" bpmnElement="member-e41">
-        <di:waypoint x="750" y="173" />
-        <di:waypoint x="766" y="173" />
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="766" y="283" />
         <di:waypoint x="766" y="1383" />
         <di:waypoint x="855" y="1383" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1353" width="81" height="28" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e42-di" bpmnElement="member-e42">
+      <bpmndi:BPMNEdge id="member-e40-di" bpmnElement="member-e40">
         <di:waypoint x="975" y="1383" />
         <di:waypoint x="1045" y="1383" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="member-e43-di" bpmnElement="member-e43">
+      <bpmndi:BPMNEdge id="member-e41-di" bpmnElement="member-e41">
         <di:waypoint x="1165" y="1383" />
         <di:waypoint x="1277" y="1383" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e42-di" bpmnElement="member-e42">
+        <di:waypoint x="975" y="1273" />
+        <di:waypoint x="1045" y="1273" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e43-di" bpmnElement="member-e43">
+        <di:waypoint x="1165" y="1273" />
+        <di:waypoint x="1277" y="1273" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="member-e44-di" bpmnElement="member-e44">
-        <di:waypoint x="750" y="173" />
-        <di:waypoint x="766" y="173" />
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="766" y="283" />
         <di:waypoint x="766" y="1493" />
         <di:waypoint x="855" y="1493" />
         <bpmndi:BPMNLabel><dc:Bounds x="770" y="1463" width="81" height="28" /></bpmndi:BPMNLabel>
@@ -782,6 +821,21 @@ ref: assets/app.js</bpmn:documentation>
       <bpmndi:BPMNEdge id="member-e46-di" bpmnElement="member-e46">
         <di:waypoint x="1165" y="1493" />
         <di:waypoint x="1277" y="1493" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e47-di" bpmnElement="member-e47">
+        <di:waypoint x="750" y="283" />
+        <di:waypoint x="766" y="283" />
+        <di:waypoint x="766" y="1603" />
+        <di:waypoint x="855" y="1603" />
+        <bpmndi:BPMNLabel><dc:Bounds x="770" y="1573" width="81" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e48-di" bpmnElement="member-e48">
+        <di:waypoint x="975" y="1603" />
+        <di:waypoint x="1045" y="1603" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="member-e49-di" bpmnElement="member-e49">
+        <di:waypoint x="1165" y="1603" />
+        <di:waypoint x="1277" y="1603" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

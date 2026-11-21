@@ -2061,7 +2061,7 @@ if (existsSync(CLIPS_DIR)) {
    is the page's own, TABS in assets/azeri.js. */
 {
   const GUIDE_TABS = ['home', 'estonia', 'study', 'estonian'];
-  const CORNER_TABS = ['home', 'films', 'estonia', 'study', 'estonian', 'food'];
+  const CORNER_TABS = ['home', 'films', 'community', 'estonia', 'study', 'estonian', 'food'];
   const GUIDE_LANGS = ['az', 'en', 'ru', 'et'];
   const HTTPS_URL = /^https:\/\/[^\s]+$/;
   const SITE_PATH = /^\/[a-z][^\s]*$/;

@@ -2350,3 +2350,109 @@ CREATE TABLE IF NOT EXISTS ride_sections (
   -- and last in the table for that reason.
   steady     INTEGER NOT NULL DEFAULT 0
 );
+
+
+-- --------------------------------------------------------------- community
+-- The Community tab of /azeri, the Azerbaijani Corner: posts members write,
+-- the comments under them, the upvotes on both, and when each member last
+-- looked. functions/api/azeri/community.js is the only thing that writes any
+-- of the four, and **Community** under **The Azerbaijani corner** in
+-- docs/handbook.md is the reasoning. Anybody reads it and only an account
+-- writes in it, so every row is somebody's account: there is no device id
+-- here, as there is in `saves`.
+--
+-- The questions asked of them, and the key that answers each:
+--   the newest posts, a page at a time          idx_azeri_posts_new
+--   this week's posts, most upvoted first       idx_azeri_posts_top
+--   one post                                    the key
+--   how many a member posted today              idx_azeri_posts_owner
+--   a post's comments, oldest first, by page    the key, (post, n)
+--   a post's last ten comments                  the key, backwards
+--   how many a member commented today           idx_azeri_comments_owner
+--   which of these a member upvoted             the key, (owner, post, n)
+--   how many upvoted this                       idx_azeri_votes_on
+--   when a member last looked                   the key
+-- Every one names the front of a key, so a page costs what it is asked for
+-- and not what the table has grown to.
+CREATE TABLE IF NOT EXISTS azeri_posts (
+  -- Ten hex: random, so a post's address says nothing about how many there
+  -- are or which came first.
+  id               TEXT    PRIMARY KEY,
+  -- users.id, which is TEXT: a column of another type here would make the
+  -- join to users walk every account for every post.
+  owner            TEXT    NOT NULL,
+  title            TEXT    NOT NULL,
+  -- Plain text with its line breaks. No markup is stored, so none is ever
+  -- drawn: the page builds paragraphs and links out of it as text.
+  body             TEXT    NOT NULL,
+  created_at       INTEGER NOT NULL,
+  edited_at        INTEGER,
+  -- The week it was posted in, Monday to Sunday in Tallinn, numbered from the
+  -- one of 5 January 1970: Top this week is `week = ?`, the most upvoted
+  -- first, on idx_azeri_posts_top.
+  week             INTEGER NOT NULL,
+  -- How many upvoted it, recomputed from azeri_votes by the write that
+  -- changes one.
+  score            INTEGER NOT NULL DEFAULT 0,
+  -- How many comments it has had, which is also its last comment's `n`:
+  -- recomputed as MAX(n) by the write that adds one. A comment is never
+  -- removed — a deleted one is emptied and kept, so the replies to it still
+  -- say what they answered — so this counts the deleted ones too.
+  comments         INTEGER NOT NULL DEFAULT 0,
+  last_comment_at  INTEGER,
+  -- 0 standing; 1 deleted by its author while it had comments, so its title
+  -- and text are emptied and the row stays for the comments under it. A post
+  -- with no comments is deleted outright, and so is one the site's owner
+  -- takes down, comments and all.
+  gone             INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_azeri_posts_new ON azeri_posts (created_at, id);
+CREATE INDEX IF NOT EXISTS idx_azeri_posts_top ON azeri_posts (week, score, created_at, id);
+CREATE INDEX IF NOT EXISTS idx_azeri_posts_owner ON azeri_posts (owner, created_at);
+
+CREATE TABLE IF NOT EXISTS azeri_comments (
+  post        TEXT    NOT NULL,
+  -- 1, 2, 3… within its post, in the order they were written: the order they
+  -- are read in, the cursor a page of them is continued from, and what a
+  -- reply names.
+  n           INTEGER NOT NULL,
+  owner       TEXT    NOT NULL,
+  body        TEXT    NOT NULL,
+  -- The `n` of the comment this answers, in the same post, or NULL.
+  reply_to    INTEGER,
+  created_at  INTEGER NOT NULL,
+  edited_at   INTEGER,
+  score       INTEGER NOT NULL DEFAULT 0,
+  -- 0 standing; 1 deleted by its author, 2 taken down by the site's owner.
+  -- Either way `body` is emptied and the row is kept.
+  gone        INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (post, n)
+);
+CREATE INDEX IF NOT EXISTS idx_azeri_comments_owner ON azeri_comments (owner, created_at);
+
+CREATE TABLE IF NOT EXISTS azeri_votes (
+  owner  TEXT    NOT NULL,
+  post   TEXT    NOT NULL,
+  -- 0 for the post itself, a comment's `n` for that comment.
+  n      INTEGER NOT NULL,
+  PRIMARY KEY (owner, post, n)
+);
+CREATE INDEX IF NOT EXISTS idx_azeri_votes_on ON azeri_votes (post, n);
+
+-- One row a member, written when they open Community and when somebody
+-- comments on a post of theirs. It is what lights the dot on the tab.
+CREATE TABLE IF NOT EXISTS azeri_seen (
+  user_id   TEXT    PRIMARY KEY,
+  -- When they last opened Community, and the visit before that: a post or a
+  -- comment newer than `prev_at` is marked new for the length of a visit, so
+  -- opening a post and coming back to the list does not take the marks away.
+  -- A visit is one that began more than VISIT_MS after the last look.
+  seen_at   INTEGER NOT NULL DEFAULT 0,
+  prev_at   INTEGER NOT NULL DEFAULT 0,
+  -- When somebody else last commented on a post of theirs, and how many have
+  -- since they last looked: the one number here that is added to rather than
+  -- recomputed, since it is a count of what happened while they were away
+  -- and opening Community sets it back to nought.
+  mine_at   INTEGER NOT NULL DEFAULT 0,
+  mine_n    INTEGER NOT NULL DEFAULT 0
+);
