@@ -587,3 +587,12 @@ merge** — and this process adds:
   before any of them see it. Checked by `byId(item.place)` alone, seven of
   Google's ten bakeries drew as Google's card over places with a reel and
   photographs, and nothing failed: a stand-in is a valid row.
+- **A Leaflet pin that a keyboard can reach and not press.** `keyboard: true`
+  gives the marker a `tabindex` and `role="button"` and nothing else: in
+  Leaflet 1.9.4 the one thing that answers a key on a marker is
+  `bindPopup()`'s Enter, and a div raises no click of its own, so a pin
+  wired with `marker.on('click', …)` alone takes the focus and ignores
+  Enter. Hear Enter and Space as well — `addPin()` in `assets/app.js` on
+  the element, `draw()` in `assets/embed.js` through `marker.on('keydown')`.
+  The embed shipped without it, and Tab, Enter did nothing there until
+  2026-11-21.

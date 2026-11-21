@@ -2925,6 +2925,16 @@ site, and Clarity recording them would be this site watching another site's
 readers. It is `noindex` for the same reason the places it shows are indexed
 at `/`.
 
+**A pin is a button to a keyboard too.** Tab reaches the pins, and Enter or
+Space opens a pin's card, as on the map. Leaflet's `keyboard: true` makes a
+marker focusable and calls it a button, and stops there — in 1.9.4 the only
+thing that answers a key on one is a bound popup's Enter, and the embed binds
+none — so until 2026-11-21 a pin took the focus and did nothing with it.
+Opening a card puts the focus on the place's name, the way the map puts it
+into the panel, so **Open on Tallinn Tastebuds** is one Tab away rather than
+behind every pin still to come. Escape or the × puts it back on the pin; a
+press on the map closes the card and leaves the focus there.
+
 ## Close a place instead of deleting it
 
 When somewhere shuts down, set `"closed": true`. Nothing else about the entry

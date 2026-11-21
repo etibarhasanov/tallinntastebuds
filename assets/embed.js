@@ -237,6 +237,18 @@
     state.pins = found.places.map(function (place) {
       var marker = L.marker([place.lat, place.lng], { icon: pinIcon(false), title: place.name, keyboard: true });
       marker.on('click', function () { openCard(place, names); });
+      /* keyboard: true makes the pin focusable and calls it a button, and
+         that is all it does: in Leaflet 1.9.4 the only thing that answers a
+         key on a marker is bindPopup()'s Enter, and a div with a tabindex
+         raises no click of its own. So the keys a button answers are heard
+         here, Enter and Space, as addPin() in assets/app.js hears them on
+         the map's own pins. */
+      marker.on('keydown', function (ev) {
+        var key = ev.originalEvent.key;
+        if (key !== 'Enter' && key !== ' ' && key !== 'Spacebar') return;
+        ev.originalEvent.preventDefault();
+        openCard(place, names);
+      });
       marker.addTo(map);
       return { place: place, marker: marker };
     });
@@ -283,12 +295,28 @@
     tags.hidden = !tags.firstChild;
     $('embed-open').href = withLang(place.url);
     $('embed-card').hidden = false;
+    /* Into the card, as selectPlace() in assets/app.js moves it into the
+       panel: otherwise its one link is behind every pin still to come in the
+       tab order. Never scrolling, here or in closeCard(): the frame's page is
+       somebody else's to scroll, and a pin out of view would drag the map's
+       container off its tiles. */
+    $('embed-name').focus({ preventScroll: true });
   }
 
+  /* Focus inside the card is about to be hidden with it, so it goes back to
+     the card's pin rather than falling to the page; anywhere else — the map,
+     another pin — it stays where it is. */
   function closeCard() {
+    var was = state.on;
+    var card = $('embed-card');
     state.on = null;
     mark(null);
-    $('embed-card').hidden = true;
+    if (card.contains(document.activeElement)) {
+      state.pins.forEach(function (pin) {
+        if (pin.place.id === was) pin.marker.getElement().focus({ preventScroll: true });
+      });
+    }
+    card.hidden = true;
   }
 
   /* -------------------------------------------------------------- the boot */
