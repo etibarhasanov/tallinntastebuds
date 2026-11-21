@@ -92,7 +92,7 @@ else runs.
    part-way marks nothing, then one `UPDATE … SET map_id = … WHERE place_id =
    … AND map_id IS NULL` per row matched to the map, and last `venues_at`
    and `venues_all_at` in `meta` set to now, so the copy of the table each
-   isolate keeps reads it again whole at its next look — `googleTable()` in
+   isolate and each colo keeps is read again whole at the next look — `googleTable()` in
    `functions/api/_lib.js`. The header of the tool
    says why the mark moved from the front of the file to the end. The count
    is the number of keys, which the grep at the top of this file prints.

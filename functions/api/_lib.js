@@ -995,7 +995,8 @@ export async function eatOnly(env) {
 }
 
 /* ---------------------------------------------------------- Google's rows
- * google_venues, kept in the isolate once, for everything that reads it whole.
+ * google_venues, kept in the isolate and the colo, for everything that reads
+ * it whole.
  *
  * Four things read the table whole: the roll /api/v1/find searches, the two
  * slices the chat picks from, and the one /mcp dresses a place with. Each
@@ -1035,9 +1036,29 @@ export async function eatOnly(env) {
  * hand stamps nothing, so the whole table is read again after WHOLE_EVERY
  * whatever the stamps say.
  *
- * The day's worst, per isolate awake all day: 96 reads of two rows, the rows
- * that changed — thirty or so from the refresh, a few looked up — and the
- * table once, 1,177 rows. A few thousand, where it was 750,000.
+ * ONE READ A COLO, NOT ONE AN ISOLATE
+ *
+ * An isolate is not the site's to keep. Cloudflare wakes several in each
+ * colo that has visitors and throws them away when it likes, and each new
+ * one began with no copy and read all 1,177 rows. On 2026-11-21 the table
+ * was the dearest on the meter, 12,504 rows by the afternoon, for a table
+ * that had changed in thirty — the day's fill in ./_refresh.js among them,
+ * which reads it on its own. So the copy is also kept in the colo, in the
+ * Cache API, filed under `venues_all_at` — the way a list's copies are
+ * filed under `lists_at` in ./_lists.js — with `venues_at` and
+ * the time of its last look inside it. An isolate with nothing in hand reads
+ * the two marks as ever, takes the colo's copy filed under the same
+ * `venues_all_at`, reads the rows changed since that copy's last look if
+ * `venues_at` has moved, and puts the result back for the next one. The
+ * table is read whole once a colo: after the week's ranking or an export,
+ * when the day is up — the time it was read whole travels with the copy —
+ * or when the colo lets the copy go. 824 KB as JSON for the export's 1,112
+ * rows, under two milliseconds to parse, measured in Node on 2026-11-21.
+ *
+ * The day's worst, per isolate awake all day: 96 reads of two rows and the
+ * rows that changed — thirty or so from the refresh, a few looked up. Per
+ * colo, the table once more, 1,177 rows. Where a new isolate read it whole,
+ * now one per colo does.
  *
  * BEFORE THE COLUMN IS THERE
  *
@@ -1099,7 +1120,15 @@ async function lookAgain(env) {
     }
   }
 
-  if (google && marks && now - google.at < WHOLE_EVERY && marks.all === google.all) {
+  /* No copy here that still holds — the isolate's first look, its day gone,
+     or every row changed — so the one the colo keeps under the same
+     `venues_all_at`, if another isolate left one. */
+  if (marks && !holds(google, marks, now)) {
+    const kept = await fromColo(marks.all, now);
+    if (kept) google = kept;
+  }
+
+  if (holds(google, marks, now)) {
     if (marks.some === google.some) {
       google.looked = now;
       return google;
@@ -1114,6 +1143,7 @@ async function lookAgain(env) {
       const rows = new Map(google.rows);
       for (const row of results || []) rows.set(row.place_id, row);
       google = { ...google, rows, version: ++version, some: marks.some, looked: now, since: now - SKEW };
+      await intoColo(google, now);
       return google;
     } catch (e) {
       /* No changed_at yet: read it whole, below. */
@@ -1121,9 +1151,9 @@ async function lookAgain(env) {
   }
 
   try {
-    /* The whole table, 1,177 rows on 2026-11-19 — once a day, after the
-       week's ranking or an export, and before the column is there once a
-       change. */
+    /* The whole table, 1,177 rows on 2026-11-19 — once a day per colo,
+       after the week's ranking or an export, and before the column is there
+       once a change. */
     const { results } = await env.DB.prepare('SELECT * FROM google_venues').all();
     google = {
       rows: new Map((results || []).map((row) => [row.place_id, row])),
@@ -1134,10 +1164,86 @@ async function lookAgain(env) {
       looked: now,
       since: now - SKEW
     };
+    /* Filed only under marks that were read: a copy made while `meta` could
+       not be read is this isolate's alone. */
+    if (marks) await intoColo(google, now);
   } catch (e) {
     /* The database is down: the copy there was, or none. */
   }
   return google;
+}
+
+/* Whether a copy is still good for these marks: made whole within
+   WHOLE_EVERY, and no `venues_all_at` since. Some rows having moved is
+   still good — they are read on their own. */
+function holds(copy, marks, now) {
+  return !!(copy && marks && now - copy.at < WHOLE_EVERY && marks.all === copy.all);
+}
+
+/* The colo's copy is filed under the site's own address, since the readers
+   hand this env and not their request, and under /api/admin/, which
+   _middleware.js answers 403 to anybody but the owner before any route runs
+   — the same as the visitor days in ./_visitors.js — so nothing a visitor
+   asks for can be answered out of it. `venues_all_at` is in the address, and
+   COLO_SHAPE moves when what is kept does. */
+const COLO_AT = 'https://tallinntastebuds.ee/api/admin/kept/google-venues';
+const COLO_SHAPE = '1';
+
+function coloKey(all) {
+  const url = new URL(COLO_AT);
+  url.searchParams.set('all', all);
+  url.searchParams.set('shape', COLO_SHAPE);
+  return new Request(url.toString());
+}
+
+/* The copy the colo keeps under this `venues_all_at`, as googleTable() keeps
+   one, or null — none there, past its day, or no Cache API (the tools in
+   tools/ load these modules in Node). */
+async function fromColo(all, now) {
+  if (typeof caches === 'undefined') return null;
+  try {
+    const hit = await caches.default.match(coloKey(all));
+    if (!hit) return null;
+    const kept = await hit.json();
+    if (!kept || !Array.isArray(kept.rows) || kept.all !== all || !(now - kept.at < WHOLE_EVERY)) return null;
+    return {
+      rows: new Map(kept.rows.map((row) => [row.place_id, row])),
+      version: ++version,
+      some: kept.some,
+      all: kept.all,
+      at: kept.at,
+      looked: now,
+      since: kept.since
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+/* This isolate's copy, into the colo for the next isolate that wakes there,
+   until its day is up — `at`, when it was read whole, travels with it, so a
+   copy handed on is read whole again when the first one would have been.
+   Awaited, so the copy is there before the answer goes: about 824 KB, put
+   by the isolate that read the table whole and again by each that read a
+   change into it. Never throws. */
+async function intoColo(copy, now) {
+  if (typeof caches === 'undefined') return;
+  const seconds = Math.floor((copy.at + WHOLE_EVERY - now) / 1000);
+  if (seconds <= 0) return;
+  try {
+    const body = JSON.stringify({
+      rows: [...copy.rows.values()],
+      some: copy.some,
+      all: copy.all,
+      at: copy.at,
+      since: copy.since
+    });
+    await caches.default.put(coloKey(copy.all), new Response(body, {
+      headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=' + seconds }
+    }));
+  } catch (e) {
+    /* The next isolate reads the table, as before. */
+  }
 }
 
 /* Says what changed, after a writer's own write has gone through: `ids` the
