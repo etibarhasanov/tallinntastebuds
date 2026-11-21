@@ -17080,6 +17080,13 @@ page in Azerbaijani does not turn the map into Azerbaijani for somebody who
 reads it in Russian. It was Azerbaijani and English alone until the guide
 arrived.
 
+Beside the mark the page writes its own name rather than the site's —
+**Azerbaijani Corner**, *Azərbaycan guşəsi* — with **by Tallinn Tastebuds**
+under it, small and muted, as a byline: the owner's choice on 2026-11-21,
+over the name and the byline run together as one line, which came to five
+lines beside the mark on a desktop. The two are `azeriCorner` and `azeriBy`,
+and the mark still goes back to the map.
+
 The films are written in two of the four. A summary is the wiki's
 Azerbaijani or the English made from it, so somebody reading in Russian or
 Estonian is shown the English, as nearer to them than the Azerbaijani, under
