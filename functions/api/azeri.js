@@ -11,7 +11,9 @@
  * estonian.json, one to a tab — and every sentence in them is an object
  * keyed by language, az, en, ru and et, as a deck's is. The food is a list
  * of the site's, which the page draws through /embed and asks nothing here
- * for. This route is the only way to read the files.
+ * for. This route is the only way to read the files. Community, the tab
+ * people write in, is a route of its own, ./azeri/community.js, and the
+ * one part of the corner that reads the database.
  *
  * NOBODY SIGNS IN TO READ IT
  *

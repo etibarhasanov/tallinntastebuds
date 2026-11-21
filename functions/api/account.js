@@ -110,6 +110,7 @@ import {
 import { recentViews } from './_visits.js';
 import { adminIds, ownerCookie } from './_admin.js';
 import { postsReady } from './_posts.js';
+import { forgetMember } from './_community.js';
 
 /* The line somebody writes about themselves is capped by MAX_ABOUT in
    ./_profile.js now, beside cleanLine(), because the same line in the site's
@@ -1022,6 +1023,10 @@ export async function onRequestPost(context) {
     try {
       await env.DB.prepare('DELETE FROM flashcard_progress WHERE user_id = ?').bind(id).run();
     } catch (e) { /* not applied here yet */ }
+    /* And its words in the Azerbaijani Corner's Community, emptied where
+       others answered them and gone where nobody did — forgetMember() in
+       ./_community.js says how — on its own for the same reason. */
+    await forgetMember(env, id);
 
     return signedOut(request, { deleted: true, user: null });
   }

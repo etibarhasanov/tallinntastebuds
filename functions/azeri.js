@@ -70,6 +70,7 @@ const LANGS = ['az', 'en', 'ru', 'et'];
    tab's name off the tab; here there is no tab to read it off. */
 const TAB_KEYS = {
   films: 'azeriFilms',
+  community: 'azeriCommunity',
   estonia: 'azeriEstonia',
   study: 'azeriStudy',
   estonian: 'azeriEstonian',
