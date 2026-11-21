@@ -12,7 +12,7 @@ row that is `n + 1`'d rather than a log that is replayed. That is the whole
 design, and it is why the two halves are so different to change: the
 **write** half is one open route every page knocks on, hardened against
 whatever a request says; the **read** half is the owner's alone, cached
-five minutes at the edge, and drawn in the reading language with the words
+at the edge — five minutes, and the UTC day for `/admin/stats` — and drawn in the reading language with the words
 fetched in the same request as the numbers.
 
 This skill is the checklist for changing either half. It is not the
@@ -186,7 +186,8 @@ validator passes and the page draws.
    `admin.html` is not one of them.
 9. **The words ride with the numbers.** Every admin route answers through
    `wordsFor()` so the page makes one request on the way in; the edge
-   cache is keyed on the route, the language and the range alone —
+   cache is keyed on the route, the language and the range alone, and
+   `/admin/stats` on the day as well, since it is held until midnight —
    `statsKey()`, `visitorsKey()`, `foundKey()`, `flowsKey()` — never the
    rest of the address; the browser is told `private, no-store` whatever
    the colo holds; and `/api/admin/live` is `no-store` outright. When an
