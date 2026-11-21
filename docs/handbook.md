@@ -16799,14 +16799,21 @@ the table.
 
 ## Azerbaijan, for members
 
-`/azeri` — a corner of the site about Azerbaijan, for people with an
-account, read in Azerbaijani, English, Russian or Estonian and linked from
-nowhere. It has four tabs. **Films** is the country's cinema. **Estonia**,
-**Studying** and **Estonian** are a guide for somebody arriving in Estonia
-from there, which is who the corner is for: what to sort out and in what
-order, how to get into a university, and where to learn the language.
-Nothing in the apps reads any of it, and nothing on the map, the rail or
-Discover points at it: the address is given to somebody, or it is not found.
+`/azeri` — *Estoniyada Azərbaycan guşəsi*, an Azerbaijani corner in
+Estonia: a corner of the site for Azerbaijanis living here, for people with
+an account, read in Azerbaijani, English, Russian or Estonian and linked
+from nowhere. It has five tabs. **Films** is the country's cinema.
+**Estonia**, **Studying** and **Estonian** are a guide for somebody arriving
+in Estonia from there, which is who the corner is for: what to sort out and
+in what order, how to get into a university, and where to learn the
+language. **Food** is where to eat it here, on a map. Nothing in the apps
+reads any of it, and nothing on the map, the rail or Discover points at it:
+the address is given to somebody, or it is not found.
+
+The heading said *Azərbaycan* until 2026-11-21, a country's name over a page
+whose readers are somewhere else; the owner chose *Estoniyada Azərbaycan
+guşəsi* for it, and the line under it says who the corner is for and what
+is in it.
 
 ### Where the films come from
 
@@ -17028,6 +17035,40 @@ What it deliberately does not do: search, comments, questions and answers,
 events, mentors, or editing from the admin page. Those belong to a community
 site of its own, and this is the part of one that is only words.
 
+### Food, on a map
+
+**Food** is a list of the site's own, *Azerbaijani food in Tallinn* by
+`tallinntastebuds` — `/list/azerbaijani-food-in-tallinn-9srkxf` — drawn on a
+map in the tab. On 2026-11-21 it was twenty-five places, six of them on the
+map: Badam, Faxinin marketi, Telliskivi Šašlõkk, Baklažaan, Morii Tea House,
+Bakinski Dvorik, Sahil, Kishmish, Merlot, WOW Grill, all seven Armudu and all
+eight Shaurma Kebab. Each has a sentence, in the owner's words where the
+place is on the map and in what the place says of itself where it is not,
+and the Shaurma Kebab rows name the poke kebab as the one to order. Sahil is
+in no Google export, so it is a place added by hand, the way the list
+picker adds one.
+
+The map is `/embed?list=<id>&lang=<code>` in a frame — the map any other
+site can put on its page, **The map on your site** — so it is in the
+language the corner is read in, it has its own loading, error and empty
+states, and a pin opens a card with the place's photograph, address and
+the list's sentence, and a button that opens the place on the site in a new
+tab. Under the frame are who made the list and **Open the whole list**,
+which goes to the list's own page, every sentence in order. The tab asks
+`/api/azeri?tab=food`, which answers the list's id, `FOOD_LIST` in the
+route, behind the same door as the other tabs; it asks nothing else.
+
+It is a list and not a file here so that the owner changes it where every
+list is changed — the list's page, signed in as its owner — and the tab
+follows without a deploy. The owner was shown the tab as a mockup, the real
+embed of the real list inside the corner at 390 px and on a desktop, and
+chose it over two others: a card that only linked to the list, and the
+list's places drawn as rows like the guide's topics.
+
+What it does not do: filter the pins, open a place inside the corner rather
+than in a new tab, or show the sentences beside the map — the list's page
+does that.
+
 ### The door, and what a page costs
 
 The corner is behind the members' door, and a static file has no door:
@@ -17047,6 +17088,12 @@ rows at the very worst, against the five million, and it does not grow with
 the topics. The files are 26 to 48 KB with all four languages in them, a
 fraction of a millisecond to parse, kept five minutes per isolate like the
 films'.
+
+The food tab is the same one read, the session, and the route reads no
+list: the frame's `/embed` reads `/api/v1/lists/<id>`, the list's row and its
+places, the same read whoever asks, and the public API keeps that answer
+five minutes in each colo. So a colo reads the list at most 288 times a day,
+however many members open the tab.
 
 The shelf is never sent whole. It opens on the feature films that can be
 watched, the most watched first, twenty to a page, with **Previous** and **Next** under
@@ -21272,11 +21319,12 @@ Azerbaijan, `assets/azeri.js`:
 | `azeri_film` | `film` — a film opened |
 | `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) — a film played in the page, or a link out where it is not YouTube's |
 | `azeri_youtube` | `film` — Open on YouTube, under the player |
-| `azeri_films`, `azeri_estonia`, `azeri_study`, `azeri_estonian` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters |
+| `azeri_films`, `azeri_estonia`, `azeri_study`, `azeri_estonian`, `azeri_food` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters |
 | `azeri_topic` | `tab`, `topic` — a topic of the guide opened |
 | `azeri_source` | `topic` — a link out of an opened topic: an office, a university, a site in the list of them, or a row into one of the flashcards' lessons |
 | `azeri_way` | `way` — **Go to** a place to learn Estonian, the button at the foot of its topic on the Estonian tab |
 | `azeri_flashcards` | Open the flashcards, on the Estonian tab |
+| `azeri_list` | Open the whole list, under the map on the Food tab |
 | `language_select`, `language_open`, `home`, `account_open` | as on the map |
 
 The privacy policy is read rather than pressed, so what is reported is the way
