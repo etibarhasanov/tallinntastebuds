@@ -4,10 +4,10 @@
  * the tokens of every style — and this file is only what the corner needs
  * on top of that: the tabs, the search and its chips, the switches, the
  * rows with their play buttons, an opened film and the player in it, the
- * topics of the guide and an opened one, the food's map, and the door for
- * somebody signed out. Each was drawn as a mockup first and the owner said yes to that;
- * every colour here is a token, so the swatch on the map recolours the
- * page with nothing in this file to change.
+ * topics of the guide and an opened one, the places' map, and the door
+ * for somebody signed out. Each was drawn as a mockup first and the owner
+ * said yes to that; every colour here is a token, so the swatch on the map
+ * recolours the page with nothing in this file to change.
  */
 
 /* The corner's name beside the mark, in the wordmark's own type, and the
@@ -33,39 +33,44 @@
 /* Nothing that is words is shown until the words are in. The markup is
    written in English, and drawing it while data/lang/<code>.json is on its
    way showed somebody reading in Azerbaijani an English page that turned
-   Azerbaijani a moment later, on every tab, since every tab is a load. So
-   the name, the heading and the tabs keep their room and stay unseen until
-   the boot at the bottom of assets/azeri.js marks the body ready — once the
-   words have come, or have failed to, and the markup's English is all
-   there is. The mark is not words and is drawn at once. */
+   Azerbaijani a moment later. So the name and the tabs keep their room and
+   stay unseen until the boot at the bottom of assets/azeri.js marks the
+   body ready — once the words have come, or have failed to, and the
+   markup's English is all there is. That is the first load alone: a tab is
+   drawn in the page, and the name and the tabs stay where they are. The
+   mark is not words and is drawn at once. */
 .azeri-body:not(.is-ready) .azeri-brand,
-.azeri-body:not(.is-ready) .azeri-head,
 .azeri-body:not(.is-ready) .azeri-tabs { visibility: hidden; }
 
-.azeri-head { margin-bottom: 6px; }
+/* The page's heading, for a screen reader alone: the eye reads the corner's
+   name beside the mark. */
+.azeri-said {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
 
-/* The tabs of the corner: the films, the three of the guide, and the food.
-   Five fit a 390px phone in each of the page's languages because a phone
-   draws them a size smaller and closer together: in Russian, the longest,
-   they came to 386px of the row's 358 at the size a desktop draws. A
-   narrower phone scrolls the row sideways, as the chips do, rather than
-   wrapping it — assets/azeri.js scrolls the tab that is on into view — and
-   the row says so with pan-x, which is how assets/back.js knows a sideways
-   finger here is not Back. */
+/* The tabs of the corner: the films, the three of the guide and the places,
+   straight under the corner's name. Five do not fit a 390px phone in one
+   line — in Russian, the longest, they come to 386px of the row's 358 — and
+   a row that scrolled sideways, even a size smaller, left the last of them
+   past the edge with nothing to say it was there. So the row wraps: on a
+   phone it is two lines in each of the page's four languages, and every tab
+   is in sight. The on tab's line is under its own word, wherever that word
+   wrapped to. */
 .azeri-tabs {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 12px 20px;
   border-bottom: 1px solid var(--hairline);
-  margin: 0 0 14px;
+  margin: 4px 0 14px;
   font-size: 15px;
   white-space: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
-  touch-action: pan-x;
-}
-.azeri-tabs::-webkit-scrollbar { display: none; }
-@media (max-width: 420px) {
-  .azeri-tabs { gap: 16px; font-size: 14px; }
 }
 .azeri-tab {
   padding: 0 0 9px;
@@ -336,7 +341,7 @@
 .azeri-flash .lists-say { margin-bottom: 14px; }
 .azeri-ways { margin: 0 0 8px; }
 
-/* ------------------------------------------------------------- the food */
+/* ----------------------------------------------------------- the places */
 
 /* The list on /embed's map, in a card the frame fills to its edges, and
    under it who made the list and the button to all of it. Tall enough on a
@@ -394,8 +399,6 @@
    the row above. Everything is the same nodes the phone's list is made of. */
 @media (min-width: 900px) {
   .azeri-body .lists-brand, .azeri-body .lists-main { max-width: 1180px; padding-left: 24px; padding-right: 24px; }
-  .azeri-head .lists-title { font-size: 40px; }
-  .azeri-head .lists-say { font-size: 16px; }
   .azeri-tabs { font-size: 17px; margin-bottom: 20px; }
 
   /* The search and the switch share a line, and the chips have room to wrap

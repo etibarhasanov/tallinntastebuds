@@ -120,7 +120,7 @@ when: azeri_flashcards</bpmn:documentation>
       <bpmn:incoming>member-e6</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="azeri-food" name="Looks at the Azerbaijani food on a map on /azeri">
-      <bpmn:documentation>The Food tab: the site's list Azerbaijani food in Tallinn on /embed's map, in the corner's language, and a pin opens the place's card with the list's sentence. The route answers only the list's id, behind the same door; the map reads the public API, kept five minutes in each colo.
+      <bpmn:documentation>The Azerbaijani places tab: the site's list Azerbaijani food in Tallinn on /embed's map, in the corner's language, and a pin opens the place's card with the list's sentence. The route answers only the list's id, behind the same door; the map reads the public API, kept five minutes in each colo.
 when: azeri_food
 ref: assets/azeri.js
 ref: functions/api/azeri.js GET
