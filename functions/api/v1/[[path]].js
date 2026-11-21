@@ -395,6 +395,10 @@ async function oneList(context, id) {
       title: list.title,
       intro: list.intro || '',
       by: list.by,
+      /* The marker its author chose for its places, one of the forty-five
+         ids in functions/api/_pins.js, and '' where they chose none. /embed
+         draws it on every row the map does not have, as the map does. */
+      pin: list.pin,
       places: list.items.length,
       url: listUrl(list.id),
       items: listRows(list, all)

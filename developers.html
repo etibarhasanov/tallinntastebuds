@@ -82,7 +82,7 @@
   }]
 }</code></pre>
     <p>A search with <code>near</code> adds <code>distance_m</code> to each place and puts the nearest first. Otherwise the order is how well your words matched, then the name. It is never a ranking: being on the map is the verdict, and there are no scores.</p>
-    <p>Link every place to its <code>url</code>, and say the write-ups are Tallinn Tastebuds'. A list is its author's opinion, under their name, and not the map's. A list's place with <code>approved: false</code> is one its author added that is not on the map.</p>
+    <p>Link every place to its <code>url</code>, and say the write-ups are Tallinn Tastebuds'. A list is its author's opinion, under their name, and not the map's. A list's place with <code>approved: false</code> is one its author added that is not on the map. A list's <code>pin</code> is the marker its author chose to draw those places with — <code>plate</code>, <code>heart</code>, <code>croissant</code> and forty-two more — and empty where they chose none.</p>
 
     <h2>Errors</h2>
     <p>An error is <code>{ "version": 1, "error": { "code", "message" } }</code>. Branch on the code: <code>bad-request</code> (400), <code>not-found</code> (404), <code>closed</code> (404, the place has closed), <code>method-not-allowed</code> (405) and <code>unavailable</code> (503, the lists cannot be read right now; the places still can).</p>
