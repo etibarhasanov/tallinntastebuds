@@ -17203,8 +17203,11 @@ English, Russian and Estonian — the four the guide is written in, and the
 four somebody from Azerbaijan living in Estonia is likely to read — and the
 choice is kept under `ttb.azeri.lang` rather than `ttb.lang`, so reading this
 page in Azerbaijani does not turn the map into Azerbaijani for somebody who
-reads it in Russian. It was Azerbaijani and English alone until the guide
-arrived.
+reads it in Russian. It opens in Azerbaijani: the address's `?lang=`
+first, then the page's own remembered choice, then Azerbaijani, whatever the
+browser or the rest of the site is read in — the owner's word on 2026-11-21,
+before which it followed `ttb.lang` and the browser and fell back to
+English. It was Azerbaijani and English alone until the guide arrived.
 
 Beside the mark the page writes its own name rather than the site's —
 **Azerbaijani Corner**, *Azərbaycan guşəsi* — with **by Tallinn Tastebuds**
