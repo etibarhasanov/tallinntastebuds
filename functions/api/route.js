@@ -71,7 +71,8 @@
  * that keep off are answered — KEEPING OFF below.
  *
  * And by bike and on foot no way rides out and straight back the way it
- * came — SPURS below.
+ * came — SPURS below. Nor, by bike, does a way keep the bend it made to
+ * reach a point it was asked through — SETTLING below.
  *
  * And by bike a way can be a train: ride to a station, an Elron train with
  * the bike on it, ride on. Those are `trains`, answered beside the ways by
@@ -334,7 +335,10 @@ async function street(context, mode, from, to, withTrains, heading) {
   /* And of all of those, the one riders made the most of goes in front —
      RIDDEN below. */
   if (mode === 'bike' && heading === null) ways = await riddenFirst(context, ways, shortest);
-  ways = await Promise.all(ways.slice(0, 1 + OTHERS).map(unpocket));
+  /* And a way asked through a made-up point is asked again through its own
+     streets, which can make two ways one — SETTLING below. */
+  ways = (await Promise.all(ways.slice(0, 1 + OTHERS).map((one) => settle(one, heading))))
+    .filter((way, i, all) => !all.slice(0, i).some((before) => alike(way, before)));
   const best = ways[0];
   const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
   if (best.ridden) answer.ridden = true;
@@ -455,8 +459,8 @@ async function leg(a, b) {
 
 /* The router's one way by bike through [lat, lng] points in order, setting
    off by `heading` where there is one, or null where it has none. The
-   points in the middle ride along as `through`, for unpocket() to look
-   around and take off before the way is answered — POCKETS below. */
+   points in the middle ride along as `through`, for settle() to ask the
+   way again around before it is answered — SETTLING below. */
 async function oneWay(points, heading = null) {
   try {
     const res = await ask(OSRM.bike + points.map((p) => p[1] + ',' + p[0]).join(';') +
@@ -647,17 +651,16 @@ const SPUR_WIDE = 20;
 function unspur(found) {
   let way = found;
   for (let cut = spur(way.line); cut; cut = spur(way.line)) {
-    way = shorten(way, cut.i, cut.j + 1, [], cut.at, cut.gone, cut.gone);
+    way = shorten(way, cut.i, cut.j + 1, cut.at, cut.gone);
   }
   return way;
 }
 
-/* A way with the stretch after point `i` and before point `j` taken out
-   and `between` ridden in its place: `at` metres along, `span` long, and
-   the way `gone` shorter for it. */
-function shorten(way, i, j, between, at, span, gone) {
-  const line = way.line.slice(0, i + 1).concat(between, way.line.slice(j));
-  const steps = way.steps.filter((s) => s.turn === 'arrive' || s.meters < at - 1 || s.meters > at + span + 1)
+/* A way with the stretch after point `i` and before point `j` taken out,
+   `at` metres along and `gone` long. */
+function shorten(way, i, j, at, gone) {
+  const line = way.line.slice(0, i + 1).concat(way.line.slice(j));
+  const steps = way.steps.filter((s) => s.turn === 'arrive' || s.meters < at - 1 || s.meters > at + gone + 1)
     .map((s) => (s.meters > at ? Object.assign({}, s, { meters: Math.max(0, Math.round(s.meters - gone)) }) : s));
   const turn = bend(line.slice(0, i + 1), line.slice(i));
   if (turn) {
@@ -714,73 +717,74 @@ function spur(line) {
   return null;
 }
 
-/* ---------------------------------------------------------------- pockets
- * A point the router is asked through does not always snap to a dead end.
- * On 2026-11-19 the owner sent a picture from Rattatee of a way from Herne
- * to Narva maantee: off the path beside the athletics hall, down one lane
- * of its car park to the point KEEPING OFF had put there to get the way off
- * Liivalaia, and back up another lane to the same path 37 m further on —
- * 120 m ridden for those 37. It is not a spur: the way back is not the way
- * out, and it rejoins further along than SPUR_NEAR.
+/* --------------------------------------------------------------- settling
+ * A point the router is asked through — KEEPING OFF and EITHER SIDE — is
+ * made up: square to a street or to the straight line, so far out. It says
+ * which side a way goes round and nothing about which street, and the
+ * router has to touch it wherever it snapped — a dead end, a car park, a
+ * path across a park — and bends the way to get there. Each bend came back
+ * as a shape of its own and was given a rule of its own: a stub up into
+ * Vabaduse väljak and back, which SPURS cut; on 2026-11-19 a loop down one
+ * lane of the car park by the athletics hall and up another, which was cut
+ * as a pocket; and on 2026-11-21, in a picture from Rattatee, a way from
+ * Herne to Vana Villem that turned off Võistluse down a path to a dead end
+ * in the sports grounds the point had snapped beside. Its stub came off as
+ * a spur, and the path down to it and the turn back onto Toonela tee were
+ * left — a hook neither rule knew — and it said 18 minutes for a way that
+ * is 12, since the forty metres of dead end the router had priced at two
+ * and a half minutes came off by their share of the metres.
  *
- * So a way asked through a point is looked at around that point: the two
- * points of the line, one before it and one after, each within
- * POCKET_REACH along the line, that are no more than POCKET_GAP apart and
- * have POCKET_RATIO times that ridden between them, the pair with the most
- * to save. Whether there is a way straight across is the router's to say
- * and not a guess — a ramp up to a bridge looks the same from above — so it
- * is asked for the way between the two, and where that is POCKET_RATIO
- * times shorter than what was ridden, it is ridden instead, with the turns
- * of the pocket gone and one said where it was cut if the way bends there.
+ * So no way is answered with the line it was asked for through a made-up
+ * point, whatever shape the bend took. Once it is found it is asked for
+ * again through two points of its own line, SETTLE before and SETTLE after
+ * where it came nearest the made-up point, or its ends where those are
+ * nearer. They are on streets the way really rides, so the way in and the
+ * way on are the ones it had and the side it went round is the side it goes
+ * round; between them the router rides what it likes best, which is at
+ * least as good by its own measure as what the line did to touch the point;
+ * and the metres, seconds and turns are all the router's. A way asked
+ * through two made-up points, as one kept off a street on its side is,
+ * settles round each, and round both at once where the stretches meet.
  *
- * It is done last, to the ways that are answered and not to every way that
- * was tried, since nearly every point snaps a little off the line and has
- * some pocket to ask about: one more router request for each point an
- * answered way went through that has one — six at the most, three ways
- * through two points each — and no row. Nothing waits on it: a leg the
- * router will not answer is the way with its pocket, as it was.
+ * A way that settles onto a street in KEEP_OFF for further than it rode one
+ * keeps the line it had, and one that settles into a way already offered is
+ * offered once. It is done last, to the ways that are answered and not to
+ * every way tried: one router request for each answered way that was asked
+ * through a point, three at the most, and no row. Nothing waits on it: a way
+ * the router will not answer again is the way as it was.
  */
-const POCKET_GAP = 60;
-const POCKET_REACH = 300;
-const POCKET_RATIO = 2.5;
+const SETTLE = 300;
 
-async function unpocket(found) {
-  const { through = [], ...rest } = found;
-  let way = rest;
-  for (const via of through) {
-    const cut = pocket(way.line, via);
-    if (!cut) continue;
-    const across = await leg(way.line[cut.i], way.line[cut.j]);
-    if (!across || across.meters * POCKET_RATIO > cut.span) continue;
-    way = shorten(way, cut.i, cut.j, across.line.slice(1, -1), cut.at, cut.span, cut.span - across.meters);
-  }
-  return way;
-}
-
-/* The pocket a line makes around `via`, from point `i` to point `j`, `at`
-   metres along and `span` long, or null. */
-function pocket(line, via) {
-  const xy = line.map(flat);
-  const gap = (a, b) => Math.hypot(xy[a][0] - xy[b][0], xy[a][1] - xy[b][1]);
+async function settle(found, heading = null) {
+  const { through = [], ...way } = found;
+  if (!through.length) return way;
+  const xy = way.line.map(flat);
   const along = [0];
-  for (let k = 1; k < line.length; k++) along.push(along[k - 1] + gap(k - 1, k));
-  const [vx, vy] = flat(via);
-  let tip = 0;
-  xy.forEach((p, k) => {
-    if (Math.hypot(p[0] - vx, p[1] - vy) < Math.hypot(xy[tip][0] - vx, xy[tip][1] - vy)) tip = k;
-  });
-  let best = null;
-  for (let i = tip - 1; i >= 0 && along[tip] - along[i] <= POCKET_REACH; i--) {
-    for (let j = tip + 1; j < line.length && along[j] - along[tip] <= POCKET_REACH; j++) {
-      const span = along[j] - along[i];
-      const across = gap(i, j);
-      if (across <= POCKET_GAP && span >= across * POCKET_RATIO && span >= SPUR_MIN &&
-        (!best || span - across > best.span - best.across)) {
-        best = { i: i, j: j, at: along[i], span: span, across: across };
-      }
-    }
+  for (let k = 1; k < xy.length; k++) along.push(along[k - 1] + Math.hypot(xy[k][0] - xy[k - 1][0], xy[k][1] - xy[k - 1][1]));
+  const last = xy.length - 1;
+  const stretches = [];
+  for (const [vx, vy] of through.map(flat)) {
+    const off = (k) => Math.hypot(xy[k][0] - vx, xy[k][1] - vy);
+    let tip = 0;
+    for (let k = 1; k <= last; k++) if (off(k) < off(tip)) tip = k;
+    let a = tip;
+    while (a > 0 && along[tip] - along[a] < SETTLE) a--;
+    let b = tip;
+    while (b < last && along[b] - along[tip] < SETTLE) b++;
+    stretches.push([a, b]);
   }
-  return best;
+  const joined = [];
+  for (const [a, b] of stretches.sort((x, y) => x[0] - y[0])) {
+    const before = joined[joined.length - 1];
+    if (before && a <= before[1]) before[1] = Math.max(before[1], b);
+    else joined.push([a, b]);
+  }
+  const points = [0].concat(...joined, last).filter((k, i, all) => k !== all[i - 1]);
+  const again = await oneWay(points.map((k) => way.line[k]), heading);
+  if (!again) return way;
+  const settled = unspur(again);
+  if (ridden(settled).meters > Math.max(KEEP_OFF_MIN, ridden(way).meters)) return way;
+  return Object.assign(way, { meters: settled.meters, seconds: settled.seconds, line: settled.line, steps: settled.steps });
 }
 
 /* ------------------------------------------------------------ keeping off
@@ -1423,7 +1427,7 @@ async function ride(a, b) {
   const one = await leg(start, end);
   if (!one || !one.meters) return one;
   const [kept] = await keepOff([one], { lat: a.lat, lng: a.lng }, { lat: b.lat, lng: b.lng }, one.meters);
-  const way = await unpocket(kept || one);
+  const way = await settle(kept || one);
   return { meters: way.meters, seconds: way.seconds, line: thin(way.line, MAX_POINTS / 3), steps: way.steps };
 }
 
