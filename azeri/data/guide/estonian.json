@@ -3,34 +3,260 @@
   "checked": "2026-11",
   "topics": [
     {
+      "id": "language",
+      "name": {"az": "Eston dili, qısaca", "en": "Estonian, in short", "ru": "Эстонский язык вкратце", "et": "Eesti keel lühidalt"},
+      "covers": {"az": "Necə dildir, və nə tanış gələcək", "en": "What kind of language it is, and what will feel familiar", "ru": "Что это за язык и что покажется знакомым", "et": "Milline keel see on ja mis tundub tuttav"},
+      "body": [
+        {"p": {
+          "az": "Baltik-fin dilidir: fin dilinin yaxın, macar dilinin isə uzaq qohumu; nə slavyan, nə də german dilidir. Sözləri yeni olacaq, amma sözlərin necə qurulduğu tanış gələcək.",
+          "en": "A Finnic language: a close relative of Finnish, a distant one of Hungarian, and neither Slavic nor Germanic. Its words will be new; the way it builds them will not.",
+          "ru": "Прибалтийско-финский язык: близкий родственник финского, дальний — венгерского, ни славянский, ни германский. Слова будут новыми, а то, как они строятся, — нет.",
+          "et": "Läänemeresoome keel: soome keele lähedane ja ungari keele kauge sugulane, mitte slaavi ega germaani keel. Sõnad on uued, aga see, kuidas neid moodustatakse, tundub tuttav."}},
+        {"head": {"az": "Şəkilçilər, azərbaycancadakı kimi", "en": "Endings, as in Azerbaijani", "ru": "Окончания, как в азербайджанском", "et": "Lõpud, nagu aserbaidžaani keeles"}},
+        {"table": {
+          "heads": ["eesti", "azərbaycan", {"az": "hal", "en": "means", "ru": "значит", "et": "kääne"}],
+          "rows": [
+            ["maja", "ev", {"az": "adlıq hal", "en": "a house", "ru": "дом", "et": "nimetav"}],
+            ["majas", "evdə", {"az": "yerlik hal", "en": "in the house", "ru": "в доме", "et": "seesütlev"}],
+            ["majast", "evdən", {"az": "çıxışlıq hal", "en": "out of the house", "ru": "из дома", "et": "seestütlev"}]
+          ]}},
+        {"head": {"az": "Artıq tanıdığın hərflər", "en": "Letters you already have", "ru": "Буквы, которые вы уже знаете", "et": "Tähed, mida sa juba tunned"}},
+        {"table": {
+          "heads": ["eesti", "azərbaycan", {"az": "məsələn", "en": "for example", "ru": "например", "et": "näiteks"}],
+          "rows": [
+            ["ä", "ə", {"az": "päev, gün", "en": "päev, day", "ru": "päev, день", "et": "päev"}],
+            ["ö", "ö", {"az": "öö, gecə", "en": "öö, night", "ru": "öö, ночь", "et": "öö"}],
+            ["ü", "ü", {"az": "üks, bir", "en": "üks, one", "ru": "üks, один", "et": "üks"}],
+            ["õ", {"az": "ən yaxını ı", "en": "nearest is ı", "ru": "ближе всего ı, или ы", "et": "lähim on ı"}, {"az": "õhtu, axşam", "en": "õhtu, evening", "ru": "õhtu, вечер", "et": "õhtu"}]
+          ]}},
+        {"head": {"az": "Və yeni olanlar", "en": "And what is new", "ru": "И что нового", "et": "Ja mis on uus"}},
+        {"list": [
+          {"b": {"az": "Cins yoxdur, artikl da.", "en": "No gender, no articles.", "ru": "Нет рода и артиклей.", "et": "Sugu ega artikleid pole."},
+           "t": {
+            "az": "Tema həm kişiyə, həm qadına deyilir, eynilə o kimi.",
+            "en": "Tema is he and she alike, as o is.",
+            "ru": "Tema — это и «он», и «она», как азербайджанское o.",
+            "et": "Tema käib nii mehe kui naise kohta, nagu aserbaidžaani o."}},
+          {"b": {"az": "Gələcək zaman yoxdur.", "en": "No future tense.", "ru": "Нет будущего времени.", "et": "Tulevikuvormi pole."},
+           "t": {
+            "az": "Onun işini indiki zaman görür: homme ma lähen — sabah gedirəm.",
+            "en": "The present does it: homme ma lähen, tomorrow I go.",
+            "ru": "Его делает настоящее: homme ma lähen — завтра я иду.",
+            "et": "Tulevikku väljendab olevik: homme ma lähen."}},
+          {"b": {"az": "On dörd hal,", "en": "Fourteen cases,", "ru": "Четырнадцать падежей,", "et": "Neliteist käänet,"},
+           "t": {
+            "az": "hamısı sözün üç formasından düzəlir — buna görə kartlarda hər ismin üç forması var.",
+            "en": "all built from three forms of the word — which is why every noun on the flashcards shows three.",
+            "ru": "и все строятся из трёх форм слова — поэтому у каждого существительного на карточках их три.",
+            "et": "kõik tehtud sõna kolmest vormist — seepärast on sõnakaartidel igal nimisõnal kolm vormi."}},
+          {"b": {"az": "Uzunluq sözü dəyişir.", "en": "Length changes the word.", "ru": "Долгота меняет слово.", "et": "Välde muudab sõna."},
+           "t": {
+            "az": "İki dəfə yazılan hərf uzun deyilir: lina — kətan, linna — şəhərin.",
+            "en": "A letter written twice is said longer: lina, linen; linna, the town's.",
+            "ru": "Удвоенная буква звучит дольше: lina — лён, linna — города.",
+            "et": "Kahekordne täht hääldatakse pikemalt, nii et lina ja linna on eri sõnad."}}
+        ]},
+        {"head": {"az": "Kartlarda", "en": "On the flashcards", "ru": "На карточках", "et": "Sõnakaartidel"}},
+        {"rows": [
+          {"name": {"az": "On dörd hal", "en": "The fourteen cases", "ru": "Четырнадцать падежей", "et": "Neliteist käänet"},
+           "why": {"az": "Hər şəkilçi və cavab verdiyi sual", "en": "Every ending, and the question each one answers", "ru": "Все окончания и вопрос, на который отвечает каждое", "et": "Iga lõpp ja küsimus, millele see vastab"},
+           "url": "/flashcard?d=cases"},
+          {"name": {"az": "Niyə ismin üç forması var", "en": "Why a noun has three forms", "ru": "Почему у существительного три формы", "et": "Miks on nimisõnal kolm vormi"},
+           "why": {"az": "Kartda leib, hesabda leiva, menyuda leiba", "en": "The card says leib, the bill leiva, the menu leiba", "ru": "На карточке leib, в счёте leiva, в меню leiba", "et": "Kaardil leib, arvel leiva, menüüs leiba"},
+           "url": "/flashcard?d=noun-forms"}
+        ]}
+      ],
+      "links": []
+    },
+    {
+      "id": "levels",
+      "name": {"az": "Hansı səviyyə, harada", "en": "Which level, and where", "ru": "Какой уровень и где", "et": "Milline tase ja kus"},
+      "covers": {"az": "A1-dən C1-ə, hər birinin kursu və imtahan", "en": "A1 to C1, the course for each, and the exam", "ru": "От A1 до C1: курс для каждого и экзамен", "et": "A1-st C1-ni, igale tasemele kursus ja eksam"},
+      "level": "A1–C1",
+      "body": [
+        {"p": {
+          "az": "Kurslar və imtahanlar Avropanın ümumi şkalasından istifadə edir. Kurs hansı səviyyədə bitdiyini deyir; sertifikatı isə yalnız dövlət imtahanı verir.",
+          "en": "Courses and exams use Europe's common scale. A course says which level it ends at; only the state's exam gives a certificate.",
+          "ru": "Курсы и экзамены пользуются общеевропейской шкалой. Курс говорит, на каком уровне он заканчивается; сертификат даёт только государственный экзамен.",
+          "et": "Kursused ja eksamid kasutavad Euroopa ühist skaalat. Kursus ütleb, millise tasemeni see viib; tunnistuse annab ainult riigi eksam."}},
+        {"ladder": {
+          "levels": ["A1", "A2", "B1", "B2", "C1"],
+          "rows": [
+            {"name": "Keeleklikk", "span": ["A1", "A2"]},
+            {"name": "Keeletee", "span": ["B1", "B1"]},
+            {"name": "Settle in Estonia", "span": ["A1", "B1"]},
+            {"name": {"az": "Dil evi", "en": "Language House", "ru": "Дом языка", "et": "Keelemaja"}, "span": ["A1", "B1"]},
+            {"name": {"az": "Dövlət imtahanı", "en": "The state exam", "ru": "Госэкзамен", "et": "Tasemeeksam"}, "dots": ["A2", "B1", "B2", "C1"]}
+          ],
+          "mark": "B1",
+          "note": {"az": "vətəndaşlıq, uzunmüddətli yaşayış", "en": "citizenship, long-term residence", "ru": "гражданство, долгосрочный ВНЖ", "et": "kodakondsus, pikaajaline elanik"}}},
+        {"list": [
+          {"b": {"az": "İmtahan", "en": "The exam", "ru": "Экзамен", "et": "Eksami"},
+           "t": {
+            "az": "Harno-nundur, yəni Təhsil və Gənclər İdarəsinin, və pulsuzdur. Eston şəxsi kodun varsa onlayn, yoxsa kağız üzərində qeydiyyatdan keçirsən.",
+            "en": "is Harno's, the Education and Youth Board's, and free. Register online with an Estonian personal code, or on paper without one.",
+            "ru": "проводит Harno, Департамент образования и молодёжи, и он бесплатный. Записаться можно онлайн с эстонским личным кодом или на бумаге без него.",
+            "et": "korraldab Harno ehk Haridus- ja Noorteamet ning see on tasuta. Registreeru veebis Eesti isikukoodiga või ilma selleta paberil."}},
+          {"b": {"az": "Vətəndaşlıq", "en": "Citizenship", "ru": "Для гражданства", "et": "Kodakondsuseks"},
+           "t": {
+            "az": "üçün B1 və konstitusiya ilə Vətəndaşlıq Qanunu üzrə ikinci imtahan lazımdır.",
+            "en": "asks for B1, and a second exam on the constitution and the Citizenship Act.",
+            "ru": "нужен B1 и второй экзамен — по конституции и Закону о гражданстве.",
+            "et": "on vaja B1-taset ning teist eksamit põhiseaduse ja kodakondsuse seaduse tundmise kohta."}},
+          {"b": {"az": "Uzunmüddətli yaşayış", "en": "Long-term residence", "ru": "Для долгосрочного вида на жительство", "et": "Pikaajalise elaniku elamisloaks"},
+           "t": {
+            "az": "üçün B1 lazımdır.",
+            "en": "asks for B1.",
+            "ru": "нужен B1.",
+            "et": "on vaja B1-taset."}},
+          {"b": {"az": "İş.", "en": "Work.", "ru": "Работа.", "et": "Töö."},
+           "t": {
+            "az": "Hansı iş üçün hansı səviyyənin lazım olduğunu Dil Qanunu müəyyən edir, Dil Şurası (Keeleamet) isə yoxlayır.",
+            "en": "The Language Act says which jobs need which level, and the Language Board checks.",
+            "ru": "Какой уровень нужен для какой работы, определяет Закон о языке, а проверяет Департамент языка (Keeleamet).",
+            "et": "Keeleseadus ütleb, milline töö millist keeleoskust nõuab, ja Keeleamet kontrollib seda."}}
+        ]}
+      ],
+      "links": [
+        {"name": "harno.ee", "url": "https://harno.ee/en"},
+        {"name": "politsei.ee", "url": "https://www.politsei.ee/en"},
+        {"name": "keeleamet.ee", "url": "https://www.keeleamet.ee"}
+      ]
+    },
+    {
       "id": "settle",
       "name": "Settle in Estonia",
-      "covers": {"az": "Dövlətin yeni gələnlər üçün pulsuz kursları, A1-dən B1-ə", "en": "The state's free courses for newcomers, from A1 to B1", "ru": "Бесплатные государственные курсы для новоприбывших, от A1 до B1", "et": "Riigi tasuta kursused uussisserändajatele, A1-st B1-ni"},
-      "url": "https://www.settleinestonia.ee"
+      "covers": {"az": "Dövlətin yeni gələnlər üçün proqramı", "en": "The state's welcome programme for newcomers", "ru": "Государственная программа адаптации для новоприбывших", "et": "Riigi kohanemisprogramm uussisserändajatele"},
+      "level": "A1–B1",
+      "url": "https://www.settleinestonia.ee",
+      "body": [
+        {"p": {
+          "az": "Dövlətin yeni gələnlər üçün proqramı, onu İnteqrasiya Fondu aparır: eston dili, və ölkənin necə işlədiyi haqqında günlər — dövlət, iş, təhsil, ailə.",
+          "en": "The state's welcome programme, run by the Integration Foundation: Estonian, and days on how the country works — the state, work, study, family.",
+          "ru": "Государственная программа адаптации, которую ведёт Фонд интеграции: эстонский язык и дни о том, как устроена страна, — государство, работа, учёба, семья.",
+          "et": "Riigi kohanemisprogramm, mida korraldab Integratsiooni Sihtasutus: eesti keel ja päevad sellest, kuidas riik toimib — riik, töö, õppimine, pere."}},
+        {"facts": [
+          {"k": {"az": "Səviyyə", "en": "Level", "ru": "Уровень", "et": "Tase"},
+           "v": {"az": "A1, A2 və B1", "en": "A1, A2 and B1", "ru": "A1, A2 и B1", "et": "A1, A2 ja B1"}},
+          {"k": {"az": "Dərs dili", "en": "Taught in", "ru": "Язык занятий", "et": "Õppekeel"},
+           "v": {"az": "Eston dili ilk dərsdən; qalan günlər ingilis və ya rus dilində", "en": "Estonian from the first lesson; the other days in English or Russian", "ru": "Эстонский с первого урока; остальные дни на английском или русском", "et": "Eesti keel esimesest tunnist; teised päevad inglise või vene keeles"}},
+          {"k": {"az": "Harada", "en": "Where", "ru": "Где", "et": "Kus"},
+           "v": {"az": "Tallin, Tartu, Narva və ya onlayn", "en": "Tallinn, Tartu, Narva, or online", "ru": "Таллинн, Тарту, Нарва или онлайн", "et": "Tallinn, Tartu, Narva või veebis"}},
+          {"k": {"az": "Kimə", "en": "Who", "ru": "Кому", "et": "Kellele"},
+           "v": {"az": "Burada ilk beş ilini yaşayan böyüyə, yaşayış icazəsi və ya yaşayış hüququ ilə", "en": "An adult in their first five years here, on a residence permit or a right of residence", "ru": "Взрослым в первые пять лет здесь, с видом на жительство или правом на проживание", "et": "Täiskasvanule esimesel viiel aastal Eestis, elamisloa või elamisõigusega"}},
+          {"k": {"az": "Qiymət", "en": "Cost", "ru": "Цена", "et": "Hind"},
+           "v": {"az": "Pulsuz", "en": "Free", "ru": "Бесплатно", "et": "Tasuta"}},
+          {"k": {"az": "Başlamaq", "en": "To start", "ru": "Как начать", "et": "Alustamine"},
+           "v": {"az": "ID-kart, Smart-ID və ya Mobil-ID ilə daxil ol. Qrup dolan kimi bağlanır.", "en": "Sign in with an ID card, Smart-ID or Mobile-ID. A group closes the moment it is full.", "ru": "Войдите с ID-картой, Smart-ID или Mobiil-ID. Группа закрывается, как только набрана.", "et": "Logi sisse ID-kaardi, Smart-ID või Mobiil-ID-ga. Rühm suletakse kohe, kui see täis saab."}}
+        ]}
+      ],
+      "links": []
     },
     {
       "id": "keeleklikk",
       "name": "Keeleklikk",
-      "covers": {"az": "Pulsuz onlayn kurs, ilk sözdən A2-yə qədər", "en": "A free course online, from the first word to A2", "ru": "Бесплатный онлайн-курс, с нуля до A2", "et": "Tasuta veebikursus algajale kuni A2-tasemeni"},
-      "url": "https://www.keeleklikk.ee"
+      "covers": {"az": "Pulsuz onlayn kurs, ilk sözdən", "en": "A free course online, from the first word", "ru": "Бесплатный онлайн-курс, с первого слова", "et": "Tasuta veebikursus esimesest sõnast"},
+      "level": "0–A2",
+      "url": "https://www.keeleklikk.ee",
+      "body": [
+        {"p": {
+          "az": "Dövlətin başlayanlar üçün kursu, tək və öz tempinlə keçilir: cizgi hekayə, qrammatikaya dair qısa videolar və hər birindən sonra tapşırıqlar.",
+          "en": "The state's course for a beginner, done alone at your own pace: an animated story, short videos on the grammar, and exercises after each.",
+          "ru": "Государственный курс для начинающих, самостоятельно и в своём темпе: анимационная история, короткие видео о грамматике и упражнения после каждого.",
+          "et": "Riigi kursus algajale, iseseisvalt ja omas tempos: animeeritud lugu, lühikesed grammatikavideod ja harjutused iga järel."}},
+        {"facts": [
+          {"k": {"az": "Səviyyə", "en": "Level", "ru": "Уровень", "et": "Tase"},
+           "v": {"az": "Sıfırdan A2-yə", "en": "From nothing to A2", "ru": "С нуля до A2", "et": "Nullist A2-ni"}},
+          {"k": {"az": "İzah dili", "en": "Explained in", "ru": "Объяснения", "et": "Selgitused"},
+           "v": {"az": "İngilis, rus və ya ukrayna dili", "en": "English, Russian or Ukrainian", "ru": "На английском, русском или украинском", "et": "Inglise, vene või ukraina keeles"}},
+          {"k": {"az": "Harada", "en": "Where", "ru": "Где", "et": "Kus"},
+           "v": {"az": "Onlayn", "en": "Online", "ru": "Онлайн", "et": "Veebis"}},
+          {"k": {"az": "Müəllim", "en": "A teacher", "ru": "Учитель", "et": "Õpetaja"},
+           "v": {"az": "Ona e-poçtla yazırsan, o da cavab verir", "en": "You write to one by email, and they write back", "ru": "Вы пишете ему по почте, и он отвечает", "et": "Kirjutad talle e-kirja ja ta vastab"}},
+          {"k": {"az": "Qiymət", "en": "Cost", "ru": "Цена", "et": "Hind"},
+           "v": {"az": "Pulsuz, hər kəs üçün", "en": "Free, for anybody", "ru": "Бесплатно, для всех", "et": "Tasuta, kõigile"}}
+        ]}
+      ],
+      "links": []
     },
     {
       "id": "keeletee",
       "name": "Keeletee",
-      "covers": {"az": "Onun davamı olan kurs, B1-ə qədər", "en": "The course that follows it, to B1", "ru": "Курс-продолжение, до B1", "et": "Sellele järgnev kursus, B1-tasemeni"},
-      "url": "https://www.keeletee.ee"
+      "covers": {"az": "Ondan sonrakı kurs", "en": "The course that follows it", "ru": "Курс-продолжение", "et": "Sellele järgnev kursus"},
+      "level": "A2–B1",
+      "url": "https://www.keeletee.ee",
+      "body": [
+        {"p": {
+          "az": "Keeleklikk-in davamı, eyni müəlliflərdən: hekayənin yerinə real insanlarla müsahibələr, qrammatika videoları, tapşırıqlar və testlər.",
+          "en": "Keeleklikk's sequel, by the same makers: interviews with real people in place of the story, videos on the grammar, exercises and tests.",
+          "ru": "Продолжение Keeleklikk от тех же авторов: вместо истории — интервью с реальными людьми, видео о грамматике, упражнения и тесты.",
+          "et": "Keeleklikki järg samadelt autoritelt: loo asemel päris inimeste intervjuud, grammatikavideod, harjutused ja testid."}},
+        {"facts": [
+          {"k": {"az": "Səviyyə", "en": "Level", "ru": "Уровень", "et": "Tase"},
+           "v": {"az": "A2-dən B1-ə, dövlətin istədiyi səviyyə", "en": "A2 to B1, the level the state asks for", "ru": "От A2 до B1 — уровень, который требует государство", "et": "A2-st B1-ni, tase, mida riik nõuab"}},
+          {"k": {"az": "İzah dili", "en": "Explained in", "ru": "Объяснения", "et": "Selgitused"},
+           "v": {"az": "İngilis, rus və ya ukrayna dili", "en": "English, Russian or Ukrainian", "ru": "На английском, русском или украинском", "et": "Inglise, vene või ukraina keeles"}},
+          {"k": {"az": "Harada", "en": "Where", "ru": "Где", "et": "Kus"},
+           "v": {"az": "Onlayn", "en": "Online", "ru": "Онлайн", "et": "Veebis"}},
+          {"k": {"az": "Qiymət", "en": "Cost", "ru": "Цена", "et": "Hind"},
+           "v": {"az": "Pulsuz, hər kəs üçün", "en": "Free, for anybody", "ru": "Бесплатно, для всех", "et": "Tasuta, kõigile"}}
+        ]}
+      ],
+      "links": []
     },
     {
       "id": "keelemaja",
       "name": {"az": "Eston dili evi (Eesti keele maja)", "en": "The Estonian Language House", "ru": "Дом эстонского языка (Eesti keele maja)", "et": "Eesti keele maja"},
-      "covers": {"az": "Tallinn və Narvada kurslar, dil kafeləri və klublar", "en": "Courses, language cafés and clubs in Tallinn and Narva", "ru": "Курсы, языковые кафе и клубы в Таллинне и Нарве", "et": "Kursused, keelekohvikud ja klubid Tallinnas ja Narvas"},
-      "url": "https://www.integratsioon.ee/en"
+      "covers": {"az": "Kurslar, dil kafeləri və dil dostu", "en": "Courses, language cafés and a language friend", "ru": "Курсы, языковые кафе и языковой друг", "et": "Kursused, keelekohvikud ja keelesõber"},
+      "level": "A1–B1",
+      "url": "https://www.integratsioon.ee/en",
+      "body": [
+        {"p": {
+          "az": "İnteqrasiya Fondunun Tallin və Narvadakı evləri: burada eston dili öyrədildiyi qədər də danışılır. Təcrübə hər kəs üçündür; kurslar isə bir müddətdir burada yaşayanlar üçün.",
+          "en": "The Integration Foundation's houses in Tallinn and Narva, where Estonian is practised as much as taught. The practice is for anybody; the courses are for somebody who has been here a while.",
+          "ru": "Дома Фонда интеграции в Таллинне и Нарве, где на эстонском столько же говорят, сколько его учат. Практика открыта всем; курсы — для тех, кто живёт здесь уже какое-то время.",
+          "et": "Integratsiooni Sihtasutuse majad Tallinnas ja Narvas, kus eesti keelt nii õpetatakse kui ka räägitakse. Harjutamine on kõigile; kursused neile, kes on siin juba mõnda aega elanud."}},
+        {"facts": [
+          {"k": {"az": "Kurslar", "en": "Courses", "ru": "Курсы", "et": "Kursused"},
+           "v": {"az": "A1-dən B1-ə, beş ildir daimi yaşayanlar və vətəndaşlığa müraciət edənlər üçün", "en": "A1 to B1, for permanent residents of five years and for citizenship applicants", "ru": "От A1 до B1 — для постоянных жителей с пятью годами здесь и для подающих на гражданство", "et": "A1-st B1-ni, viis aastat siin elanud alalistele elanikele ja kodakondsuse taotlejatele"}},
+          {"k": {"az": "Təcrübə", "en": "Practice", "ru": "Практика", "et": "Harjutamine"},
+           "v": {"az": "Hər həftə dil kafesi, hər iki evdə və onlayn; könüllü dil dostu", "en": "A language café every week, in both houses and online; a volunteer language friend", "ru": "Языковое кафе каждую неделю, в обоих домах и онлайн; языковой друг-волонтёр", "et": "Keelekohvik igal nädalal, mõlemas majas ja veebis; vabatahtlik keelesõber"}},
+          {"k": {"az": "Məsləhət", "en": "Advice", "ru": "Консультация", "et": "Nõustamine"},
+           "v": {"az": "Səviyyəni müəyyən edən və plan quran pulsuz məsləhət", "en": "A free consultation that finds your level and makes you a plan", "ru": "Бесплатная консультация: определят уровень и составят план", "et": "Tasuta nõustamine, mis selgitab taseme ja teeb õppeplaani"}},
+          {"k": {"az": "Qiymət", "en": "Cost", "ru": "Цена", "et": "Hind"},
+           "v": {"az": "Pulsuz", "en": "Free", "ru": "Бесплатно", "et": "Tasuta"}},
+          {"k": {"az": "Başlamaq", "en": "To start", "ru": "Как начать", "et": "Alustamine"},
+           "v": {"az": "Saytdakı təqvim. Kurslara qeydiyyat mərhələlərlə açılır və tez dolur.", "en": "The calendar on the site. Courses open in rounds and fill fast.", "ru": "Календарь на сайте. Запись на курсы открывается волнами и быстро заполняется.", "et": "Kalender veebilehel. Kursustele registreerimine avatakse voorudena ja kohad täituvad kiiresti."}}
+        ]}
+      ],
+      "links": []
     },
     {
       "id": "sonaveeb",
       "name": "Sõnaveeb",
       "covers": {"az": "Lüğət, sözün bütün formaları ilə", "en": "The dictionary, with every form of a word", "ru": "Словарь со всеми формами слова", "et": "Sõnastik koos sõna kõigi vormidega"},
-      "url": "https://sonaveeb.ee"
+      "level": {"az": "hər səviyyə", "en": "every level", "ru": "любой уровень", "et": "iga tase"},
+      "url": "https://sonaveeb.ee",
+      "body": [
+        {"p": {
+          "az": "Eston Dili İnstitutunun lüğəti — öyrənərkən açıq saxlamağa dəyən lüğət.",
+          "en": "The dictionary of the Institute of the Estonian Language, and the one to keep open while learning.",
+          "ru": "Словарь Института эстонского языка — тот, что стоит держать открытым, пока учишь язык.",
+          "et": "Eesti Keele Instituudi sõnastik, mida tasub õppides lahti hoida."}},
+        {"facts": [
+          {"k": {"az": "Formalar", "en": "Forms", "ru": "Формы", "et": "Vormid"},
+           "v": {"az": "Sözün bütün cədvəli: on dörd hal və ya bütün zamanlar", "en": "A word's whole table: fourteen cases, or every tense", "ru": "Вся таблица слова: четырнадцать падежей или все времена", "et": "Sõna kogu tabel: neliteist käänet või kõik ajad"}},
+          {"k": {"az": "Öyrənənə", "en": "For learners", "ru": "Для учащихся", "et": "Õppijale"},
+           "v": {"az": "Çox işlənən sözlər sadə eston dilində, şəkillərlə", "en": "The common words in simple Estonian, with pictures", "ru": "Частые слова простым эстонским, с картинками", "et": "Levinumad sõnad lihtsas eesti keeles, piltidega"}},
+          {"k": {"az": "Səsləndirmə", "en": "Said aloud", "ru": "Произношение", "et": "Hääldus"},
+           "v": {"az": "Çox işlənən sözlər, insan səsi ilə", "en": "The common words, recorded by a person", "ru": "Частые слова, записанные живым голосом", "et": "Levinumad sõnad, inimese häälega salvestatud"}},
+          {"k": {"az": "Tərcümə", "en": "Translations", "ru": "Переводы", "et": "Tõlked"},
+           "v": {"az": "Bir çox söz üçün ingilis, rus və ukrayna dilinə", "en": "English, Russian and Ukrainian, for many words", "ru": "На английский, русский и украинский, для многих слов", "et": "Inglise, vene ja ukraina keelde, paljudele sõnadele"}},
+          {"k": {"az": "Qiymət", "en": "Cost", "ru": "Цена", "et": "Hind"},
+           "v": {"az": "Pulsuz", "en": "Free", "ru": "Бесплатно", "et": "Tasuta"}}
+        ]}
+      ],
+      "links": []
     }
   ]
 }

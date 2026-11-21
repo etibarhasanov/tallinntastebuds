@@ -1542,7 +1542,8 @@
   "azeriFlashTitle": "Eesti keel, selgitused aserbaidžaani, vene või inglise keeles",
   "azeriFlashSay": "Sõnakomplektid, grammatikatunnid, vestlused ja laulud.",
   "azeriFlashOpen": "Ava sõnakaardid",
-  "azeriWays": "Teised võimalused"
+  "azeriWays": "Keel ja kus veel seda õppida",
+  "azeriGoTo": "Mine lehele {site}"
  },
  "blurbs": {
   "180-degrees": "Ainus kahe Michelini tärniga restoran Baltikumis. Väga vahva eksperimentaalne koht Noblessneri rannapromenaadil, kus degustatsioonimenüü üllatab sind käigu haaval.",

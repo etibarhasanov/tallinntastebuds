@@ -25,13 +25,15 @@
  *
  * THE GUIDE. A tab is asked for whole, once, in the language the page is
  * read in — and again when that changes, since the answer carries one
- * language. Its topics are the films' rows with a chevron where Watch is:
- * one with a body opens under its row, one topic at a time, and one with an
- * address is a way out. Estonian opens on the site's own flashcards, which
- * is the tab's one filled action. From 900px the topics stand down the left
- * and the opened one beside them, so the first is open on arrival there —
- * an empty half would be the first thing seen. The layout is all in
- * assets/azeri.css.
+ * language. Its topics are the films' rows with a chevron where Watch is,
+ * and each opens under its row, one topic at a time. A topic is blocks —
+ * paragraphs, lists, a table, facts, a ladder of levels, rows that lead to
+ * the flashcards — drawn by BLOCKS, one function a kind. On the Estonian
+ * tab, under the site's own flashcards, a topic that is somewhere to learn
+ * says its levels on its row and ends in the one button that goes there.
+ * From 900px the topics stand down the left and the opened one beside
+ * them, so the first is open on arrival there — an empty half would be the
+ * first thing seen. The layout is all in assets/azeri.css.
  *
  * A PAGE AT A TIME. The shelf is never fetched whole. It opens on the
  * feature films that can be watched, the most watched first, twenty to a page, and
@@ -344,11 +346,10 @@
      seen. */
   function firstTopic(topics) {
     var asked = new URLSearchParams(window.location.search).get('topic');
-    var readable = topics.filter(function (topic) { return topic.body; });
-    for (var i = 0; i < readable.length; i++) {
-      if (readable[i].id === asked) return asked;
+    for (var i = 0; i < topics.length; i++) {
+      if (topics[i].id === asked) return asked;
     }
-    return readable.length && isWide() ? readable[0].id : null;
+    return topics.length && isWide() ? topics[0].id : null;
   }
 
   function isWide() {
@@ -703,17 +704,15 @@
   /* ----------------------------------------------------------- the guide */
 
   /* A tab of the guide: the line saying what it is, the flashcards where
-     the tab is Estonian, the topics, and under them the line saying whose
-     word is final. */
+     the tab is Estonian, the topics — a list beside an article on a wide
+     screen — and under them the line saying whose word is final. */
   function drawGuide(host) {
     if (SAY_KEYS[state.tab]) host.appendChild(el('p', { className: 'lists-say', text: t(SAY_KEYS[state.tab]) }));
     if (state.tab === 'estonian') {
       host.appendChild(flashcards());
       host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriWays') }));
     }
-    /* Topics that open are a list beside an article on a wide screen; ways
-       out are the wall the films are. */
-    var list = el('div', { className: 'azeri-list card' + (state.tab === 'estonian' ? '' : ' is-guide') });
+    var list = el('div', { className: 'azeri-list card is-guide' });
     if (state.loading) {
       list.appendChild(skeleton());
     } else if (!state.guide) {
@@ -722,20 +721,20 @@
       state.guide.topics.forEach(function (topic) { list.appendChild(topicRow(topic)); });
     }
     host.appendChild(list);
-    if (state.guide && state.tab !== 'estonian') {
-      host.appendChild(el('p', { className: 'azeri-credit', text: t('azeriGuideCredit') }));
-    }
+    if (state.guide) host.appendChild(el('p', { className: 'azeri-credit', text: t('azeriGuideCredit') }));
   }
 
-  /* The site's own way to learn the language, and the tab's one filled
-     action. The flashcards speak three languages, so their address names
-     the reader's only where it is one of the three. */
+  /* An address in the flashcards, in the reader's language where it is one
+     of the three they speak; any other address as it is. */
+  function inFlashcards(url) {
+    if (url.indexOf(FLASHCARDS) !== 0 || FLASH_LANGS.indexOf(state.lang) === -1) return url;
+    return url + (url.indexOf('?') === -1 ? '?' : '&') + 'lang=' + state.lang;
+  }
+
+  /* The site's own way to learn the language, and the card's one filled
+     action. */
   function flashcards() {
-    var go = el('a', {
-      className: 'go',
-      href: FLASHCARDS + (FLASH_LANGS.indexOf(state.lang) !== -1 ? '?lang=' + state.lang : ''),
-      text: t('azeriFlashOpen')
-    });
+    var go = el('a', { className: 'go', href: inFlashcards(FLASHCARDS), text: t('azeriFlashOpen') });
     go.addEventListener('click', function () { track('azeri_flashcards'); });
     return el('div', { className: 'card azeri-flash' }, [
       el('p', { className: 'eyebrow', text: t('azeriFlashEyebrow') }),
@@ -745,26 +744,20 @@
     ]);
   }
 
-  /* A topic: a film's row with a chevron where Watch is. One with a body
-     opens in the page; one with an address is a way out, and the whole row
-     is the link. */
+  /* A topic: a film's row with a chevron where Watch is, and the levels it
+     covers before the chevron, where a menu row keeps its count. */
   function topicRow(topic) {
     var go = el('span', { className: 'menu-go', 'aria-hidden': 'true' });
     go.innerHTML = CHEVRON;
-    var kids = [
+    var isOpen = state.topic === topic.id;
+    var head = el('button', { type: 'button', className: 'azeri-row has-go', 'aria-expanded': String(isOpen) }, [
       el('span', { className: 'azeri-words' }, [
         el('span', { className: 'azeri-name', text: topic.name }),
         el('span', { className: 'azeri-meta', text: topic.covers })
       ]),
+      topic.level ? el('span', { className: 'azeri-level', text: topic.level }) : null,
       go
-    ];
-    if (topic.url) {
-      var out = el('a', { className: 'azeri-row has-go', href: topic.url, target: '_blank', rel: 'noopener' }, kids);
-      out.addEventListener('click', function () { track('azeri_way', { way: topic.id }); });
-      return el('div', { className: 'azeri-film azeri-topic' }, [out]);
-    }
-    var isOpen = state.topic === topic.id;
-    var head = el('button', { type: 'button', className: 'azeri-row has-go', 'aria-expanded': String(isOpen) }, kids);
+    ]);
     head.addEventListener('click', function () { openTopic(topic.id); });
     var wrap = el('div', { className: 'azeri-film azeri-topic' + (isOpen ? ' is-open' : ''), id: 'topic-' + topic.id }, [head]);
     if (isOpen) wrap.appendChild(article(topic));
@@ -801,24 +794,117 @@
     return a;
   }
 
-  /* An opened topic: when it was checked, its paragraphs and lists, and the
-     links to where the rule itself is written. Its name is drawn again as a
-     heading for the wide screen, where the article stands beside the list
-     rather than under its own row; a phone does not show it. */
+  /* A list of the guide's, numbered or not: each item a lead in bold, or a
+     link where it has an address, and its sentence. */
+  function items(tag, list, topic) {
+    var node = el(tag);
+    list.forEach(function (it) {
+      var lead = !it.b ? null : it.url ? outLink(it.b, it.url, topic) : el('b', { text: it.b });
+      node.appendChild(el('li', {}, [lead, lead ? ' ' : null, it.t]));
+    });
+    return node;
+  }
+
+  /* One way to draw each kind of block a topic is made of — the kinds
+     guideIn() in functions/api/azeri.js answers, and tools/validate.mjs
+     holds the files to. */
+  var BLOCKS = {
+    p: function (text) { return el('p', { text: text }); },
+    head: function (text) { return el('h3', { className: 'azeri-sub', text: text }); },
+    steps: function (list, topic) { return items('ol', list, topic); },
+    list: function (list, topic) { return items('ul', list, topic); },
+    /* The flashcards' lesson table: Estonian first, what it means last. */
+    table: function (tbl) {
+      var row = function (cells, tag) {
+        return el('tr', {}, cells.map(function (cell) { return el(tag, { text: cell }); }));
+      };
+      return el('table', { className: 'azeri-table' }, [
+        el('thead', {}, [row(tbl.heads, 'th')]),
+        el('tbody', {}, tbl.rows.map(function (cells) { return row(cells, 'td'); }))
+      ]);
+    },
+    /* A label beside its fact, the way an opened film lists its people. */
+    facts: function (list) {
+      var dl = el('dl', { className: 'azeri-facts' });
+      list.forEach(function (f) {
+        dl.appendChild(el('dt', { text: f.k }));
+        dl.appendChild(el('dd', { text: f.v }));
+      });
+      return dl;
+    },
+    /* The ladder: which course covers which level. A row is a name and a
+       track of the levels, with a bar across the ones a course covers or a
+       dot at each one an exam is held at; the level the state asks for is
+       one column washed down the whole ladder, and its note stands under it.
+       The number of levels is the file's, handed to the stylesheet. */
+    ladder: function (l) {
+      var at = function (level) { return l.levels.indexOf(level) + 1; };
+      var track = function (kids) {
+        return el('span', { className: 'azeri-track' },
+          [el('span', { className: 'azeri-wash', style: 'grid-column: ' + at(l.mark) })].concat(kids));
+      };
+      var head = el('div', { className: 'azeri-rung is-head' }, [
+        el('span'),
+        track(l.levels.map(function (level) {
+          return el('span', { className: 'azeri-step' + (level === l.mark ? ' is-mark' : ''), style: 'grid-column: ' + at(level), text: level });
+        }))
+      ]);
+      var rungs = l.rows.map(function (r) {
+        var marks = r.span
+          ? [el('span', { className: 'azeri-bar', style: 'grid-column: ' + at(r.span[0]) + ' / ' + (at(r.span[1]) + 1) })]
+          : r.dots.map(function (level) { return el('span', { className: 'azeri-dot', style: 'grid-column: ' + at(level) }); });
+        return el('div', { className: 'azeri-rung' }, [el('span', { className: 'azeri-rung-name', text: r.name }), track(marks)]);
+      });
+      var from = Math.max(1, at(l.mark) - 1);
+      var to = Math.min(l.levels.length, at(l.mark) + 1) + 1;
+      var note = el('div', { className: 'azeri-rung is-note' }, [
+        el('span'),
+        el('span', { className: 'azeri-track' }, [el('span', { style: 'grid-column: ' + from + ' / ' + to, text: l.note })])
+      ]);
+      return el('div', { className: 'azeri-ladder', style: '--levels: ' + l.levels.length }, [head].concat(rungs, [note]));
+    },
+    /* Rows that lead to the flashcards, the account menu's own: a name, the
+       line under it, a chevron, and the width of the card to press. */
+    rows: function (list, topic) {
+      var menu = el('div', { className: 'menu azeri-menu' });
+      list.forEach(function (r) {
+        var go = el('span', { className: 'menu-go', 'aria-hidden': 'true' });
+        go.innerHTML = CHEVRON;
+        var a = el('a', { className: 'menu-row', href: inFlashcards(r.url) }, [
+          el('span', { className: 'menu-say' }, [
+            el('span', { className: 'menu-name', text: r.name }),
+            el('span', { className: 'menu-why', text: r.why })
+          ]),
+          go
+        ]);
+        a.addEventListener('click', function () { track('azeri_source', { topic: topic.id }); });
+        menu.appendChild(el('div', { className: 'menu-item' }, [a]));
+      });
+      return menu;
+    }
+  };
+
+  /* An opened topic: when it was checked, its blocks, the one button to the
+     place it is about where it is somewhere to learn, and the links to where
+     the rule itself is written. Its name is drawn again as a heading for the
+     wide screen, where the article stands beside the list rather than under
+     its own row; a phone does not show it. A kind of block this script does
+     not know is left out rather than drawn wrong. */
   function article(topic) {
     var box = el('div', { className: 'azeri-detail azeri-article' }, [
       el('h2', { className: 'azeri-heading', text: topic.name }),
       el('p', { className: 'azeri-kind', text: t('azeriChecked', { when: checkedMonth() }) })
     ]);
     topic.body.forEach(function (block) {
-      if (block.p) { box.appendChild(el('p', { text: block.p })); return; }
-      var list = el(block.steps ? 'ol' : 'ul');
-      (block.steps || block.list).forEach(function (it) {
-        var lead = !it.b ? null : it.url ? outLink(it.b, it.url, topic) : el('b', { text: it.b });
-        list.appendChild(el('li', {}, [lead, lead ? ' ' : null, it.t]));
-      });
-      box.appendChild(list);
+      var kind = Object.keys(block)[0];
+      if (BLOCKS[kind]) box.appendChild(BLOCKS[kind](block[kind], topic));
     });
+    if (topic.url) {
+      var site = topic.url.replace(/^https:\/\/(www\.)?/, '').split('/')[0];
+      var go = el('a', { className: 'go', href: topic.url, target: '_blank', rel: 'noopener', text: t('azeriGoTo', { site: site }) + ' ↗' });
+      go.addEventListener('click', function () { track('azeri_way', { way: topic.id }); });
+      box.appendChild(go);
+    }
     if (topic.links.length) {
       var links = el('p', { className: 'azeri-links' });
       topic.links.forEach(function (l) { links.appendChild(outLink(l.name, l.url, topic)); });

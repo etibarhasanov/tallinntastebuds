@@ -16935,18 +16935,38 @@ to live, work and tax, health, children, day to day, and the state's websites
 in one place. **Studying** is eight more: the universities, getting in step by
 step, fees and scholarships, a student's residence permit, student life,
 working while studying, after graduating, and having a degree recognised.
-**Estonian** is not topics but ways: a card whose button opens the site's own
-flashcards — the tab's one filled action, at `/flashcard` on this host as the
-map's own door to them is, and the address names the reader's language where
-it is one of the three the cards speak — and under it the
-state's free courses, the two free ones online, the language house and the
-dictionary, each a row that leads out.
+**Estonian** opens on a card whose button opens the site's own flashcards —
+at `/flashcard` on this host as the map's own door to them is, and the
+address names the reader's language where it is one of the three the cards
+speak — and under it seven topics: the language itself, which level and
+where, and the five places to learn it — the state's free courses, the two
+free ones online, the language house and the dictionary.
+
+**The Estonian tab is written for somebody who speaks Azerbaijani.** It had
+been five rows that led out, a name and a line each, and the owner found it
+empty. So *Estonian, in short* sets the language beside the reader's own: the
+endings that do what Azerbaijani's do — *maja, majas, majast* beside *ev,
+evdə, evdən* — and the letters they already have, *ä* as *ə*, *ö* and *ü* as
+themselves and *õ* nearest *ı*, then what is new, and two rows into the
+flashcards' lessons. *Which level, and where* draws the five as a ladder of
+levels, A1 to C1, a bar across what each course covers and a dot at each
+level the state's exam is held at, with B1 washed down it as the level
+citizenship and long-term residence ask for. And each place to learn says on
+its row which levels it covers, where a menu row keeps its count, and opens
+into a sentence, its facts — level, the language it is explained in, where,
+who, the cost, how to start — and one button, **Go to keeleklikk.ee**. The
+facts are what the sites said on 2026-11-21, read through search results
+because no session here can reach them; what could not be confirmed — how
+somebody signs up to Keeleklikk and Keeletee, whether Sõnaveeb needs an
+account — is left out rather than guessed. The owner was shown the mockup, and a
+version with the rows saying all of it on their faces, before any of it was
+built.
 
 A topic is a film's row with a chevron where **Watch** is: its name, a line
 saying what it covers, and the width of the card to press. It opens under its
 row, one at a time, and what opens is short on purpose — a paragraph, a list
-whose every item starts with the thing in bold, and under them the links to
-the offices that decide. **The guide names no figure that changes.** No fee,
+whose every item starts with the thing in bold, a table or a place's facts,
+and under them the links to the offices that decide. **The guide names no figure that changes.** No fee,
 no deadline, no number of days: a sentence says the thing exists and the link
 says how much it is this year, because a guide that was right in November is
 a guide somebody will be told off at a counter for in March. One figure is
@@ -16969,21 +16989,33 @@ worth reading. It is the same nodes: a topic's own box is taken away with
 `display: contents`, so its row and its article fall into the two columns of
 the list. The first topic is open on arrival there, since an empty half
 would be the first thing seen, and pressing the open one does not close it.
-The Estonian tab's ways out stay a wall of cards. The owner was shown both
-layouts as mockups, the wall and the two columns, before either was built.
+The owner was shown both layouts as mockups, the wall and the two columns,
+before either was built. The Estonian tab was a wall of cards while its
+topics were only links, and is the two columns now that each has something
+to read.
 
 **The text is three files written by hand**, `azeri/data/guide/estonia.json`,
 `study.json` and `estonian.json`, and it is content rather than interface,
 so like a deck's it is not in `data/ui.json`: every sentence is an object
 keyed by language, `az`, `en`, `ru` and `et`, and a name that is the same in
 each — TalTech, eesti.ee — is a plain string. A topic has a `body` of blocks
-— `p`, a paragraph, and `steps` and `list`, each item a lead `b`, its
-sentence `t` and, where the lead is a link, a `url` — and its `links`; or it
-has a `url` alone and is a way out. `node tools/validate.mjs` fails a
-sentence missing one of the four languages, a topic with neither a body nor
-an address, a repeated id, and an address that is not https. To change what
-the guide says, edit the file; to add a topic, add it to the file. Nothing
-is generated from it and no script names a topic.
+and its `links`, and where it is a place to learn, its `level` and the `url`
+its button goes to. A block is one kind under one key: `p`, a paragraph;
+`head`, a heading inside the topic; `steps` and `list`, each item a lead `b`,
+its sentence `t` and, where the lead is a link, a `url`; `table`, the
+flashcards' lesson table, `heads` and `rows`; `facts`, a label `k` beside
+its fact `v`; `ladder`, its `levels`, `rows` each a `span` from one level to
+another or `dots` at some, the `mark` washed and its `note`; and `rows`, a
+`name`, a `why` and a `url` that may be a path on this site, for the
+flashcards' lessons. `guideIn()` in `functions/api/azeri.js`, `BLOCKS` in
+`assets/azeri.js` and `GUIDE_BLOCKS` in `tools/validate.mjs` are the three
+lists of kinds, and a new kind goes into all three. The validator fails a
+block of a kind it does not list, a sentence missing one of the four
+languages, a topic with nothing to open, a table row short of a cell, a
+ladder bar running backwards or on a level it lacks, a repeated id, and an
+address out that is not https. To change what the guide says, edit the file;
+to add a topic, add it to the file. Nothing is generated from it and no
+script names a topic.
 
 The button went to `flashcard.tallinntastebuds.ee` for its first day and did
 not open for the owner. It was the only link on the site to the subdomain:
@@ -17012,7 +17044,7 @@ answer carries the one language: the same single read, the session, and
 opening a topic asks for nothing. Changing the language asks again. A
 thousand members opening all three tabs every day is 3,000 reads, 12,000
 rows at the very worst, against the five million, and it does not grow with
-the topics. The files are 2 to 45 KB with all four languages in them, a
+the topics. The files are 26 to 48 KB with all four languages in them, a
 fraction of a millisecond to parse, kept five minutes per isolate like the
 films'.
 
@@ -21224,8 +21256,8 @@ Azerbaijan, `assets/azeri.js`:
 | `azeri_youtube` | `film` — Open on YouTube, under the player |
 | `azeri_films`, `azeri_estonia`, `azeri_study`, `azeri_estonian` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters |
 | `azeri_topic` | `tab`, `topic` — a topic of the guide opened |
-| `azeri_source` | `topic` — a link out of an opened topic: an office, a university, a site in the list of them |
-| `azeri_way` | `way` — one of the other ways to learn Estonian, under the flashcards |
+| `azeri_source` | `topic` — a link out of an opened topic: an office, a university, a site in the list of them, or a row into one of the flashcards' lessons |
+| `azeri_way` | `way` — **Go to** a place to learn Estonian, the button at the foot of its topic on the Estonian tab |
 | `azeri_flashcards` | Open the flashcards, on the Estonian tab |
 | `language_select`, `language_open`, `home`, `account_open` | as on the map |
 
