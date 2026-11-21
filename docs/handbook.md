@@ -3913,20 +3913,28 @@ to Toompea three ways became two, and the second lost 89 m at Vana-Lõuna.
 A hook of twenty-odd metres round a traffic island, which the router also
 calls a turn round, is not a spur and stays.
 
-**And its pockets.** The point does not always snap to a dead end. The same
-day the owner sent a second picture: a way from Herne to Narva maantee that
-left the path beside the athletics hall, went down one lane of its car park
-to the point that was keeping it off Liivalaia, and came back up another
-lane to the same path 37 m further on, 120 m ridden for those 37. That is
-not a spur — it comes back by another way, and further along — so
-`unpocket()` looks around each point a way was asked through for two points
-of the line no more than `POCKET_GAP` apart with `POCKET_RATIO` times that
-ridden between them, and asks the router for the way straight across; where
-that is as much shorter, it is ridden instead. The router is asked rather
-than the gap trusted, since a ramp up to a bridge looks the same from above.
-It is done to the ways that are answered and not to each one tried: one more
-router request for each point an answered way went through that has a
-pocket, six at the most, and no row.
+**And it is asked for again through its own streets.** The point does not
+always snap to a dead end, and each other place it snapped to bent the way
+into a shape of its own: on 2026-11-19 a loop down one lane of the car park
+by the athletics hall and up another, which had a rule of its own for a
+while, and on 2026-11-21 a way from Herne to Vana Villem that turned off
+Võistluse down a path to a dead end in the sports grounds. Its stub came off
+as a spur, and the path down to it and the turn back onto Toonela tee stayed
+— a hook no rule knew — at 18 minutes for a way that is 12, since the dead
+end's turn round came off by its share of the metres and not of the time.
+A rule for each shape is a rule short every time the point lands somewhere
+new. So the point now only chooses the side: once a way through it is
+found, `settle()` in `functions/api/route.js` asks the router for it again
+through two points of its own line, 300 m before and after where it came
+nearest the point. Those are on streets the way really rides, so the side
+it went round stays; between them the router rides what it likes best,
+whatever the bend was, and the metres, seconds and turns are the router's.
+A way that would settle onto a street it keeps off keeps the line it had,
+and one that settles into a way already offered is offered once. One router
+request for each answered way that went through a point, three at the most,
+and no row. Run over fourteen trips across town against the code before it,
+it took the hook off, took up to three minutes off the ways it touched, and
+made two ways one on two trips.
 
 **A street is a line in `KEEP_OFF`**, its name, its width and its middle,
 in the route itself rather than a data file: it is a decision the owner
