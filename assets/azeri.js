@@ -144,7 +144,7 @@
   var SEARCH_WAIT = 300;
 
   var state = {
-    lang: 'en',
+    lang: 'az',
     ui: {},
     names: {},
     tab: 'films',    // which of TABS the address names
@@ -230,20 +230,16 @@
   }
 
   /* One of the page's four: the address, then this page's own choice, then
-     the site's, then the browser's, then English. */
+     Azerbaijani. Not the site's choice nor the browser's, as it was: the
+     page is a corner about Azerbaijan and opens in its language, the
+     owner's word on 2026-11-21, and the switch is one press from the
+     other three for anybody who reads one of them instead. */
   function pickLanguage() {
     var fromUrl = new URLSearchParams(window.location.search).get('lang');
     if (LANGS.indexOf(fromUrl) !== -1) return fromUrl;
     var own = storeGet(LANG_KEY);
     if (LANGS.indexOf(own) !== -1) return own;
-    var site = storeGet('ttb.lang');
-    if (LANGS.indexOf(site) !== -1) return site;
-    var prefs = navigator.languages || [navigator.language || ''];
-    for (var i = 0; i < prefs.length; i++) {
-      var base = String(prefs[i]).toLowerCase().split('-')[0];
-      if (LANGS.indexOf(base) !== -1) return base;
-    }
-    return 'en';
+    return 'az';
   }
 
   /* The tab the address names, and the films where it names none. */
