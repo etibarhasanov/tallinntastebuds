@@ -71,7 +71,7 @@
     {
       "id": "levels",
       "name": {"az": "Hansı səviyyə, harada", "en": "Which level, and where", "ru": "Какой уровень и где", "et": "Milline tase ja kus"},
-      "covers": {"az": "A1-dən C1-ə, hər birinin kursu və imtahan", "en": "A1 to C1, the course for each, and the exam", "ru": "От A1 до C1: курс для каждого и экзамен", "et": "A1-st C1-ni, igale tasemele kursus ja eksam"},
+      "covers": {"az": "A1-dən C1-ə, hər birinin kursu, imtahan və dövlətin nə istədiyi", "en": "A1 to C1, the course for each, the exam, and what the state asks for", "ru": "От A1 до C1: курс для каждого, экзамен и что требует государство", "et": "A1-st C1-ni, igale tasemele kursus, eksam ja mida riik nõuab"},
       "level": "A1–C1",
       "body": [
         {"p": {
@@ -109,6 +109,20 @@
             "en": "asks for B1.",
             "ru": "нужен B1.",
             "et": "on vaja B1-taset."}},
+          {"b": {"az": "İşləmək üçün yaşayış icazəsini uzatmaq", "en": "Extending a permit for employment", "ru": "Для продления ВНЖ для работы", "et": "Töötamiseks antud elamisloa pikendamiseks"},
+           "url": "https://www.politsei.ee/en/instructions/residence-permit-for-employment",
+           "t": {
+            "az": "üçün, 16 iyul 2018-ci ildən bəri verilmiş iş icazələri ilə burada beş il yaşamısansa, A2 və ya daha yüksək səviyyə lazımdır; o beş ildən sonra yeni iş icazəsi üçün də. 15 iyul 2018-ci ildə artıq iş icazəsi olandan bu tələb olunmur, bəzi icazə növlərindən də — onların arasında elmi tədqiqat, akademik heyət, Aİ Mavi Kartı və şirkətdaxili köçürmə.",
+            "en": "asks for A2 or above once you have lived here five years on permits for employment given since 16 July 2018, and so does a new one after those five years. It is not asked of anybody who already held a permit for employment on 15 July 2018, nor for some kinds of permit — research, academic staff, an EU Blue Card and an intra-company transfer among them.",
+            "ru": "нужен A2 или выше, если вы прожили здесь пять лет по ВНЖ для работы, выданным с 16 июля 2018 года; то же и для нового ВНЖ для работы после этих пяти лет. Не требуется от тех, у кого ВНЖ для работы был уже 15 июля 2018 года, и для некоторых видов ВНЖ — среди них научная работа, академический персонал, Голубая карта ЕС и внутрикорпоративный перевод.",
+            "et": "on vaja A2-taset või kõrgemat, kui oled siin elanud viis aastat alates 16. juulist 2018 antud töötamise elamislubadega; sama kehtib uue töötamise elamisloa kohta pärast neid viit aastat. Seda ei nõuta neilt, kellel oli töötamise elamisluba juba 15. juulil 2018, ega mõne loa liigi puhul — nende seas teadustöö, akadeemiline töötaja, ELi sinine kaart ja ettevõttesisene üleviimine."}},
+          {"b": {"az": "Daimi məskunlaşma icazəsi", "en": "A permit to settle permanently", "ru": "Для ВНЖ для постоянного поселения", "et": "Püsivalt Eestisse elama asumise elamisloaks"},
+           "url": "https://www.integratsioon.ee/en/information-foreigners-applying-temporary-residence-permit-permanent-residence-estonia-requirements",
+           "t": {
+            "az": "üçün 1 yanvar 2026-cı ildən A2 və Settle in Estonia proqramının əsas modulu lazımdır. Bu icazə son beş ilin ən azı üçünü burada yaşamış şəxs üçündür, təhsil illəri sayılmır; 2026-cı ildən əvvəl verilmiş belə icazə onlarsız uzadılır.",
+            "en": "asks for A2 and Settle in Estonia's basic module since 1 January 2026. It is the permit for somebody who has lived here at least three of the last five years, not counting study; one given before 2026 is extended without them.",
+            "ru": "с 1 января 2026 года нужны A2 и базовый модуль Settle in Estonia. Это ВНЖ для того, кто прожил здесь не меньше трёх из последних пяти лет, не считая учёбы; выданный до 2026 года продлевается без них.",
+            "et": "on alates 1. jaanuarist 2026 vaja A2-taset ja Settle in Estonia baasmoodulit. See on luba sellele, kes on viimase viie aasta jooksul elanud siin vähemalt kolm aastat, õpinguid arvestamata; enne 2026. aastat antud luba pikendatakse ilma nendeta."}},
           {"b": {"az": "İş.", "en": "Work.", "ru": "Работа.", "et": "Töö."},
            "t": {
             "az": "Hansı iş üçün hansı səviyyənin lazım olduğunu Dil Qanunu müəyyən edir, Dil Şurası (Keeleamet) isə yoxlayır.",

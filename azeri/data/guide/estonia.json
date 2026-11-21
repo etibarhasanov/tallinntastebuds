@@ -15,10 +15,10 @@
         {"list": [
           {"b": {"az": "İş.", "en": "Work.", "ru": "Работа.", "et": "Töö."},
            "t": {
-            "az": "İşəgötürən qısamüddətli işləməyini Polis və Sərhəd Mühafizəsi Departamentində qeydiyyata alır, sən isə uzunmüddətli (D) vizaya müraciət edirsən. Daha uzun qalmaq üçün işləmək üçün yaşayış icazəsi alınır.",
-            "en": "Your employer registers your short-term employment with the Police and Border Guard Board, and you apply for a long-stay (D) visa. For a longer stay you apply for a residence permit for employment.",
-            "ru": "Работодатель регистрирует краткосрочную работу в Департаменте полиции и погранохраны, а вы подаёте на долгосрочную визу (D). Для более длительного пребывания оформляется вид на жительство для работы.",
-            "et": "Tööandja registreerib sinu lühiajalise töötamise Politsei- ja Piirivalveametis ning sina taotled pikaajalist (D) viisat. Pikemaks ajaks taotletakse elamisluba töötamiseks."}},
+            "az": "İşəgötürən qısamüddətli işləməyini Polis və Sərhəd Mühafizəsi Departamentində qeydiyyata alır, sən isə uzunmüddətli (D) vizaya müraciət edirsən. Daha uzun qalmaq üçün işləmək üçün yaşayış icazəsi alınır. Beş ildən sonra onu uzatmaq üçün eston dilini A2 səviyyəsində bilmək lazımdır; kimin azad olduğunu Eston dili bölməsi deyir.",
+            "en": "Your employer registers your short-term employment with the Police and Border Guard Board, and you apply for a long-stay (D) visa. For a longer stay you apply for a residence permit for employment. Five years on, extending it asks for Estonian at level A2; the Estonian tab says who is spared.",
+            "ru": "Работодатель регистрирует краткосрочную работу в Департаменте полиции и погранохраны, а вы подаёте на долгосрочную визу (D). Для более длительного пребывания оформляется вид на жительство для работы. Через пять лет для его продления нужен эстонский на уровне A2; кого это не касается, сказано во вкладке «Эстонский язык».",
+            "et": "Tööandja registreerib sinu lühiajalise töötamise Politsei- ja Piirivalveametis ning sina taotled pikaajalist (D) viisat. Pikemaks ajaks taotletakse elamisluba töötamiseks. Viie aasta pärast nõuab selle pikendamine eesti keelt A2-tasemel; keda see ei puuduta, ütleb vaheleht „Eesti keel“."}},
           {"b": {"az": "Təhsil.", "en": "Study.", "ru": "Учёба.", "et": "Õppimine."},
            "t": {
             "az": "Universitetin qəbul məktubu təhsil üçün yaşayış icazəsinin əsasıdır. Addımlar Təhsil bölməsindədir.",

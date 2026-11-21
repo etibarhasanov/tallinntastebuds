@@ -16973,7 +16973,15 @@ themselves and *õ* nearest *ı*, then what is new, and two rows into the
 flashcards' lessons. *Which level, and where* draws the five as a ladder of
 levels, A1 to C1, a bar across what each course covers and a dot at each
 level the state's exam is held at, with B1 washed down it as the level
-citizenship and long-term residence ask for. And each place to learn says on
+citizenship and long-term residence ask for. Under the ladder, the list of
+what the state asks for has two rows at A2, each leading to the page that
+says so: extending a permit for employment after five years on such permits
+given since 16 July 2018, with who is spared, from the Police and Border
+Guard Board; and the permit to settle permanently since 1 January 2026, with
+Settle in Estonia's basic module, from the Integration Foundation. The
+Estonia tab's work row says it in a sentence and points here. Both were read
+on 2026-11-21 the same way as the rest, through search results quoting
+those pages. And each place to learn says on
 its row which levels it covers, where a menu row keeps its count, and opens
 into a sentence, its facts — level, the language it is explained in, where,
 who, the cost, how to start — and one button, **Go to keeleklikk.ee**. The
