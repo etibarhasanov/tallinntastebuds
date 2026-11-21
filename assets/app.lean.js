@@ -3389,6 +3389,33 @@
     } catch (e) { /* Back then leaves the site, as it did before */ }
   }
 
+  function wireHome() {
+    var link = dom.brand.querySelector('.brand-home');
+    if (!link || !discover) return;
+    link.addEventListener('click', function (ev) {
+      if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      ev.preventDefault();
+      if (discover.up()) return;
+      try {
+        window.history.pushState({ discover: true }, '', window.location.href);
+      } catch (e) { /* the page still comes up */ }
+      closeStories();
+      closeMore();
+      closeAccount();
+      forgetResults({ redraw: false });
+      forgetAnswer({ redraw: false });
+      if (state.list) letGoOfList();
+      state.active = [];
+      applyFilters();
+      closePanel({ history: false });
+      state.marked = null;
+      paintMarkers();
+      fitToPins();
+      syncUrl();
+      standOnDiscover(true);
+    });
+  }
+
   function leaveDiscover() {
     if (!discover || !discover.up()) return;
     standOnDiscover(false);
@@ -8185,6 +8212,7 @@
       mountRadio();
       mountShell();
       mountDiscover();
+      wireHome();
       renderStoryRing();
       wireControls();
       wireStories();
