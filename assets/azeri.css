@@ -1,14 +1,13 @@
-/* Tallinn Tastebuds — /azeri, the members' corner about Azerbaijan.
+/* Tallinn Tastebuds — /azeri, a corner about Azerbaijan, open to anybody.
  *
  * The page is the lists page's shape — its ground, its header, its cards,
  * the tokens of every style — and this file is only what the corner needs
  * on top of that: the tabs, the search and its chips, the switches, the
  * rows with their pictures and play buttons, an opened film and the
  * picture that turns into its player, the topics of the guide and an
- * opened one, the places' map, and the door for somebody signed out. Each
- * was drawn as a mockup first and the owner said yes to that; every colour
- * here is a token, so the swatch on the map recolours the page with nothing
- * in this file to change.
+ * opened one, and the places' map. Each was drawn as a mockup first and
+ * the owner said yes to that; every colour here is a token, so the swatch
+ * on the map recolours the page with nothing in this file to change.
  */
 
 /* The corner's name beside the mark, in the wordmark's own type, and the
@@ -411,10 +410,6 @@
 .azeri-credit { margin: 16px 0 24px; font-size: 12px; text-align: center; color: var(--muted); }
 .azeri-credit a { color: var(--muted); }
 
-.azeri-door { text-align: center; padding: 44px 24px; }
-.azeri-door p { margin: 0 auto 20px; max-width: 34ch; line-height: 1.5; }
-.azeri-signin { display: inline-block; font-size: 14px; padding: 11px 22px; }
-
 /* ------------------------------------------------------- on a wide screen */
 
 /* From 900px the page stops being a phone's column in the middle of a
@@ -505,8 +500,6 @@
   .azeri-pager { justify-content: center; gap: 22px; margin-top: 26px; }
   .azeri-pager .link-btn { font-size: 14px; padding: 11px 20px; }
   .azeri-where { font-size: 14px; }
-
-  .azeri-door { max-width: 520px; margin: 40px auto 0; }
 
   /* The guide is read rather than browsed, so it is not a wall: the topics
      stand down the left as one ruled list, and the opened one is a card

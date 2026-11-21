@@ -1,44 +1,45 @@
 /**
  * Tallinn Tastebuds — /api/azeri, what the Azerbaijan corner is read from.
  *
- * /azeri is a page for members only, linked from nowhere: Azerbaijan's
- * films, beside them a guide to living in Estonia for somebody arriving
- * from there, and the Azerbaijani food in Tallinn on a map. The films are
- * the 2,615 of the Azerbaijani Wikipedia's list, collected by
+ * /azeri is a page for anybody, account or not, linked from nowhere:
+ * Azerbaijan's films, beside them a guide to living in Estonia for somebody
+ * arriving from there, and the Azerbaijani food in Tallinn on a map. The
+ * films are the 2,615 of the Azerbaijani Wikipedia's list, collected by
  * tools/azfilms.mjs into azeri/data/. The guide is three files written by
- * hand under azeri/data/guide/ — estonia.json, study.json and estonian.json,
- * one to a tab — and every sentence in them is an object keyed by language,
- * az, en, ru and et, as a deck's is. The food is a list in the database,
- * FOOD_LIST, which the page draws through /embed. This route is the only
- * way to read the files, and the door to all of it.
+ * hand under azeri/data/guide/ — estonia.json, study.json and
+ * estonian.json, one to a tab — and every sentence in them is an object
+ * keyed by language, az, en, ru and et, as a deck's is. The food is a list
+ * of the site's, which the page draws through /embed and asks nothing here
+ * for. This route is the only way to read the files.
+ *
+ * NOBODY SIGNS IN TO READ IT
+ *
+ * It was the members' corner until 2026-11-21, and this route was its door:
+ * a session or 401. The owner opened it that day — reading and watching are
+ * for everybody, and an account is for writing something — so it asks
+ * nobody who they are, and a film plays for anybody who presses Watch.
  *
  * WHY A ROUTE AND NOT THE FILE
  *
- * The corner is behind the members' door, and a static file has no door:
- * _routes.json hands /data/* to the asset server past every Function. So
- * its files live under /azeri/data/, which functions/_middleware.js answers
- * with the not-found page for everybody, and this reads them through
- * env.ASSETS, which goes around the middleware — the way every other
- * Function reads a data file.
+ * Because of what a page would cost the phone reading it. The shelf is a
+ * 290 KB index and the films beside it in files of a hundred, and a tab of
+ * the guide is 26 to 48 KB with all four languages in it; this answers
+ * twenty films, or one tab in the one language asked for. So the files
+ * live under /azeri/data/, which functions/_middleware.js answers with the
+ * not-found page as it does the tools' other working files, and this reads
+ * them through env.ASSETS, which goes around the middleware — the way
+ * every other Function reads a data file.
  *
  * WHAT IT COSTS
  *
- * One read of the database per request, and it is the session: a lookup on
- * sessions' primary key, token_hash, joined to users by theirs — one row of
- * each, two at most when a browser carries two cookies (sessionTokens() in
- * _lib.js). Nothing else touches the database, because the films are not in
- * it. A member reading every one of the 523 feature films is twenty-seven
- * pages and twenty-seven reads, and a hundred members doing that every day
- * is 2,700 against the five million; the number does not grow with the
- * films. A tab of the guide is the same one read, once: the whole tab comes
- * in one answer, and opening a topic asks for nothing. A thousand members
- * opening all three tabs every day is 3,000 reads, 12,000 rows at the very
- * worst, and it does not grow with the topics, which are a file. The food
- * tab is that one read too, and nothing here reads the list: the map is
- * /embed, which reads /api/v1/lists/<id> — one list's row and its places,
- * the same read whoever asks — and that answer is kept five minutes in each
- * colo, so a colo reads the list at most 288 times a day however many
- * members open the tab.
+ * Nothing from the database: it reads no row, because the films and the
+ * guide are files and nobody's session is asked for. Somebody reading every
+ * one of the 523 feature films is twenty-seven requests and no reads, and
+ * the number of readers changes the requests and nothing else. The food's
+ * map is /embed, which reads /api/v1/lists/<id> — one list's row and its
+ * places, the same read whoever asks — and that answer is kept five minutes
+ * in each colo, so a colo reads the list at most 288 times a day however
+ * many people open the tab.
  *
  * And the CPU, which on the free plan is ten milliseconds a request. The
  * whole shelf as one file was 1.7 MB, and a cold isolate spent four to ten
@@ -78,8 +79,8 @@
  *
  *   GET /api/azeri?tab=estonia&lang=az
  *
- *   tab     estonia, study or estonian: a tab of the guide; food is below.
- *           Anything else, or nothing, is the films above.
+ *   tab     estonia, study or estonian: a tab of the guide. Anything else,
+ *           or nothing, is the films above.
  *   lang    az, en, ru or et, the four the guide is written in; anything
  *           else is English.
  *
@@ -108,22 +109,13 @@
  * way's own site, the topic's one button. Both are left out where a topic
  * has none. Every string is in the language asked for.
  *
- *   GET /api/azeri?tab=food
- *
- *   { tab: 'food', list }
- *
- * `list` is the id of the public list the tab draws on a map, FOOD_LIST.
- * The page could carry the id itself; it asks so that the tab has the same
- * door as the others, and so the list it draws is named in one place.
- *
- * Signed out it is 401 `signed-out` and nothing else, so the page draws its
- * door; without a database, 503 `no-database`, the same as every route that
- * needs a session. The order is the index's, which tools/azfilms.mjs
- * writes: the most watched on the studio's YouTube channel first, then the
- * newest, the films with no year last, then by title.
+ * A file that cannot be read is 503 `unavailable`. The order is the
+ * index's, which tools/azfilms.mjs writes: the most watched on the studio's
+ * YouTube channel first, then the newest, the films with no year last,
+ * then by title.
  */
 
-import { json, sessionUser, dataFile, foldWords, wrongDatabase } from './_lib.js';
+import { json, dataFile, foldWords } from './_lib.js';
 
 const INDEX = '/azeri/data/index.json';
 const CHUNKS = '/azeri/data/films/';
@@ -133,11 +125,6 @@ const SHELVES = ['feature', 'animation', 'documentary', 'series'];
 const GUIDE = '/azeri/data/guide/';
 const TABS = ['estonia', 'study', 'estonian'];
 const GUIDE_LANGS = ['az', 'en', 'ru', 'et'];
-/* "Azerbaijani food in Tallinn", by tallinntastebuds: the restaurants, the
-   market and the two chains, each with a sentence. A list rather than a
-   file here, so it is changed on the list's own page, signed in as its
-   owner, and the tab follows without a deploy. */
-const FOOD_LIST = 'azerbaijani-food-in-tallinn-9srkxf';
 
 /* The same fold tools/azfilms.mjs gave every film's words: foldWords()
    leaves ə and ı as they are, since neither has a base letter NFD can take
@@ -187,13 +174,8 @@ function guideIn(file, lang) {
 }
 
 export async function onRequestGet(context) {
-  const { request, env } = context;
-  if (!env.DB || (await wrongDatabase(env))) return json({ error: 'no-database' }, 503);
-  if (!(await sessionUser(request, env))) return json({ error: 'signed-out' }, 401);
-
-  const url = new URL(request.url);
+  const url = new URL(context.request.url);
   const tab = url.searchParams.get('tab');
-  if (tab === 'food') return json({ tab, list: FOOD_LIST });
   if (TABS.includes(tab)) {
     const asked = url.searchParams.get('lang');
     try {

@@ -178,9 +178,11 @@ const RETIRED = new Set(['/stats', '/stats.html', '/google', '/google.html']);
    around this block entirely, which is why none of them needed changing.
    flows/ is not on the list: /admin/flows draws its diagrams from there.
 
-   And one directory that is the site's but not everybody's: /azeri/data/,
-   the films of the members' Azerbaijan page, which only /api/azeri hands
-   out, and only to a session — the header of functions/api/azeri.js. */
+   And one directory the site reads but does not serve: /azeri/data/, the
+   films and the guide of the Azerbaijani corner and the tool's working
+   files beside them. /api/azeri hands them out a page of twenty films, or
+   a tab in one language, at a time, rather than to a phone whole — the
+   header of functions/api/azeri.js. */
 const DOCS_ONLY = ['/db/', '/exports/', '/tools/', '/azeri/data/'];
 const CONFIG_ONLY = new Set(['/wrangler.toml']);
 

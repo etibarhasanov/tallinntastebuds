@@ -221,10 +221,10 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, follow
 
-# Azerbaijan, the members' corner. Stored as azeri.html and served at /azeri.
-# Linked from nowhere and for members only, so neither indexed nor followed:
-# what is behind it is /api/azeri, which answers a session alone. The page
-# carries the meta robots tag to match; this is the half that binds for
+# The Azerbaijani corner. Stored as azeri.html and served at /azeri. Open to
+# anybody since 2026-11-21, and still linked from nowhere — the address is
+# given to somebody rather than found — so neither indexed nor followed. The
+# page carries the meta robots tag to match; this is the half that binds for
 # anything that does not parse the HTML to find it.
 /azeri.html
   Cache-Control: public, max-age=0, must-revalidate

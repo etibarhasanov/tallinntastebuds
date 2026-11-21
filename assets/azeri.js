@@ -1,14 +1,16 @@
-/* Tallinn Tastebuds — /azeri, the members' corner about Azerbaijan.
+/* Tallinn Tastebuds — /azeri, a corner about Azerbaijan, open to anybody.
  *
- * WHAT IT IS. A page for people with an account, linked from nowhere on the
- * site, and five tabs on it, straight under the corner's name. Azerbaijani
- * films is the country's cinema: the 2,615 of the Azerbaijani Wikipedia's
- * list, which tools/azfilms.mjs collects and /api/azeri hands out twenty at
- * a time. Estonia, Studying and Estonian are a guide for somebody arriving
- * here from there — what to sort out and in what order, how to get into a
- * university, and where to learn the language. Azerbaijani places is where
- * to eat it here, on a map. **Azerbaijan, for members** in
- * docs/handbook.md.
+ * WHAT IT IS. A page for anybody, account or not, linked from nowhere on
+ * the site, and five tabs on it, straight under the corner's name.
+ * Azerbaijani films is the country's cinema: the 2,615 of the Azerbaijani
+ * Wikipedia's list, which tools/azfilms.mjs collects and /api/azeri hands
+ * out twenty at a time. Estonia, Studying and Estonian are a guide for
+ * somebody arriving here from there — what to sort out and in what order,
+ * how to get into a university, and where to learn the language.
+ * Azerbaijani places is where to eat it here, on a map. Nothing on it asks
+ * anybody to sign in, Watch included: an account on this site is for
+ * writing something, and here there is nothing to write. **The Azerbaijani
+ * corner** in docs/handbook.md.
  *
  * FOUR LANGUAGES, NOT ELEVEN. The page's words are in data/ui.json in all
  * eleven, like every other page's, because the validator holds every key to
@@ -55,9 +57,9 @@
  * Previous and Next under the list turn the pages; a chip, the switch or the
  * search starts again from the first. The switch is on to begin with, since
  * a film somebody can play is the reason to be here, and off is a press
- * away. Each page costs the route one read of the database, the session,
- * and nothing more — the header of functions/api/azeri.js has the sums — so
- * the pages are buttons rather than a scroll that asks on its own.
+ * away. Each page is one request to the route, which reads files and no
+ * row of the database — the header of functions/api/azeri.js has the sums —
+ * and the pages are buttons rather than a scroll that asks on its own.
  *
  * WHAT IS SHOWN, AND IN WHICH LANGUAGE. A title is the film's own, in
  * Azerbaijani, with the English one beside it where the studio gave one. The
@@ -85,10 +87,9 @@
  * Tallinn", drawn on a map by /embed in a frame — the map any other site
  * can put on its page, in the reader's language, with its own loading,
  * error and empty states, and a card with the list's sentence when a pin is
- * pressed. The route answers the list's id behind the same door as the
- * other tabs, and the tab asks nothing else: the list is edited on its own
- * page and the map follows. Under the frame, whose list it is and the way
- * to the whole of it.
+ * pressed. Which list is FOOD_LIST below, and the tab asks the route for
+ * nothing: the list is edited on its own page and the map follows. Under
+ * the frame, whose list it is and the way to the whole of it.
  *
  * WIDE, IT IS A WALL OF FILMS. Every film carries the picture YouTube
  * keeps for its video, or its year where there is no video. On a phone the
@@ -117,6 +118,11 @@
      in functions/api/_lib.js. */
   var FLASHCARDS = '/flashcard';
   var FLASH_LANGS = ['az', 'en', 'ru'];
+  /* "Azerbaijani food in Tallinn", by tallinntastebuds: the restaurants, the
+     market and the two chains, each with a sentence. A list rather than a
+     file here, so it is changed on the list's own page, signed in as its
+     owner, and the tab follows without a deploy. */
+  var FOOD_LIST = 'azerbaijani-food-in-tallinn-9srkxf';
   var WIDE = '(min-width: 900px)';
   var CHEVRON = '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 5l7 7-7 7"/></svg>';
   var LANG_KEY = 'ttb.azeri.lang';
@@ -143,7 +149,6 @@
     names: {},
     tab: 'films',    // which of TABS the address names
     guide: null,     // a tab of the guide, as the route answered it
-    food: null,      // the places tab, as the route answered it: the list's id
     topic: null,     // the id of the topic opened, if one is
     kind: 'feature',
     q: '',
@@ -158,7 +163,6 @@
     asking: 0,       // which ask is the latest, so an older answer is dropped
     loading: false,  // the first page of a new ask is on its way
     failed: false,   // the last ask did not come back
-    door: false,     // nobody is signed in
     ready: false     // the words are in, or are not coming: nothing is drawn before
   };
   var searchTimer = null;
@@ -354,11 +358,10 @@
     return API + '?' + p.toString();
   }
 
-  /* Ask the route, and hand what it answers to `took`: the door where
-     nobody is signed in, the failed state for anything else that is not an
-     answer. An answer to an older ask that arrives after a newer one is
-     dropped, so typing fast never leaves the shelf showing what the
-     last-but-one word found. */
+  /* Ask the route, and hand what it answers to `took`, or set the failed
+     state for anything that is not an answer. An answer to an older ask
+     that arrives after a newer one is dropped, so typing fast never leaves
+     the shelf showing what the last-but-one word found. */
   function send(url, took) {
     var mine = ++state.asking;
     state.loading = true;
@@ -370,9 +373,7 @@
       .then(function (answer) {
         if (mine !== state.asking) return;
         state.loading = false;
-        if (answer.status === 401) { state.door = true; draw(); return; }
         if (answer.status !== 200) throw new Error(String(answer.status));
-        state.door = false;
         state.failed = false;
         took(answer.out);
         draw();
@@ -408,20 +409,18 @@
     });
   }
 
-  /* The places: which list the map draws, and the door if nobody is in.
-     What an earlier visit to the tab answered is let go first, or the map
-     would be drawn while this ask is out and again when it is back. */
-  function askFood() {
-    state.food = null;
-    send(API + '?tab=food', function (out) { state.food = out; });
-  }
-
-  /* What is under the tabs, asked for: a page of the films, the places'
-     list, or a tab of the guide. */
+  /* What is under the tabs, asked for: a page of the films or a tab of the
+     guide. The places ask the route for nothing and are drawn at once, and
+     an answer to the tab before that is still on its way is let go, as a
+     newer ask would let it go — or it would draw the map a second time. */
   function askShown() {
     if (state.tab === 'films') ask(1);
-    else if (state.tab === 'food') askFood();
-    else askGuide();
+    else if (state.tab !== 'food') askGuide();
+    else {
+      state.asking++;
+      state.loading = false;
+      draw();
+    }
   }
 
   /* The topic open on arrival: the one the address names, and on a wide
@@ -468,7 +467,6 @@
     if (!state.ready) return;
     var host = document.getElementById('shelf');
     while (host.firstChild) host.removeChild(host.firstChild);
-    if (state.door) { host.appendChild(door()); return; }
     if (state.tab === 'food') { drawFood(host); return; }
     if (state.tab !== 'films') { drawGuide(host); return; }
     host.appendChild(tools());
@@ -487,21 +485,6 @@
     host.appendChild(el('p', { className: 'azeri-credit' }, [
       el('a', { href: WIKI + encodeURIComponent('Azərbaycan_filmlərinin_siyahısı'), rel: 'noopener', target: '_blank', text: t('azeriCredit') })
     ]));
-  }
-
-  /* The door, for somebody with no session: the map's own sign-in sheet,
-     which brings them back here when they are in. */
-  function door() {
-    var here = window.location.pathname + window.location.search;
-    return el('div', { className: 'card azeri-door' }, [
-      el('p', { text: t('azeriDoorText') }),
-      el('a', {
-        className: 'link-btn is-primary azeri-signin',
-        href: '/?account=in&then=' + encodeURIComponent(here),
-        'data-track': 'account_open',
-        text: t('azeriSignIn')
-      })
-    ]);
   }
 
   function tools() {
@@ -821,23 +804,15 @@
 
   /* The places tab, food at its address: what it is, the list on /embed's
      map in the language the page is read in, and under it whose list it is
-     and the way to the whole of it. While the route has not
-     answered there is the shelf's skeleton; when it could not, the guide's
-     line saying so. Which style the map wears it reads for itself, from the
-     same storage on the same host. */
+     and the way to the whole of it. The frame has its own loading, error
+     and empty states, so the tab has none. Which style the map wears it
+     reads for itself, from the same storage on the same host. */
   function drawFood(host) {
     host.appendChild(el('p', { className: 'lists-say', text: t('azeriFoodSay') }));
-    if (!state.food) {
-      host.appendChild(el('div', { className: 'azeri-list card' }, [
-        state.loading ? skeleton() : el('p', { className: 'azeri-note', role: 'status', text: t('azeriGuideError') })
-      ]));
-      return;
-    }
-    var list = encodeURIComponent(state.food.list);
     host.appendChild(el('div', { className: 'card azeri-map' }, [
-      el('iframe', { src: '/embed?list=' + list + '&lang=' + state.lang, title: t('azeriFoodMap') })
+      el('iframe', { src: '/embed?list=' + FOOD_LIST + '&lang=' + state.lang, title: t('azeriFoodMap') })
     ]));
-    var all = el('a', { className: 'go', href: '/list/' + list, text: t('azeriFoodOpen') });
+    var all = el('a', { className: 'go', href: '/list/' + FOOD_LIST, text: t('azeriFoodOpen') });
     all.addEventListener('click', function () { track('azeri_list'); });
     host.appendChild(el('div', { className: 'azeri-map-foot' }, [
       el('span', { className: 'azeri-meta', text: t('azeriFoodBy') }),

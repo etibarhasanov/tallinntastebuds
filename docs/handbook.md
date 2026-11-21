@@ -16816,17 +16816,17 @@ the table.
 
 ---
 
-## Azerbaijan, for members
+## The Azerbaijani corner
 
 `/azeri` — *Estoniyada Azərbaycan guşəsi*, an Azerbaijani corner in
-Estonia: a corner of the site for Azerbaijanis living here, for people with
-an account, read in Azerbaijani, English, Russian or Estonian and linked
-from nowhere. It has five tabs, straight under the corner's name.
-**Azerbaijani films** is the country's cinema. **Estonia**, **Studying** and
-**Estonian** are a guide for somebody arriving in Estonia from there, which
-is who the corner is for: what to sort out and in what order, how to get
-into a university, and where to learn the language. **Azerbaijani places**
-is where to eat it here, on a map. Nothing in the apps
+Estonia: a corner of the site for Azerbaijanis living here, open to anybody
+with an account or without one, read in Azerbaijani, English, Russian or
+Estonian and linked from nowhere. It has five tabs, straight under the
+corner's name. **Azerbaijani films** is the country's cinema. **Estonia**,
+**Studying** and **Estonian** are a guide for somebody arriving in Estonia
+from there, which is who the corner is for: what to sort out and in what
+order, how to get into a university, and where to learn the language.
+**Azerbaijani places** is where to eat it here, on a map. Nothing in the apps
 reads any of it, and nothing on the map, the rail or Discover points at it:
 the address is given to somebody, or it is not found.
 
@@ -17117,9 +17117,11 @@ language the corner is read in, it has its own loading, error and empty
 states, and a pin opens a card with the place's photograph, address and
 the list's sentence, and a button that opens the place on the site in a new
 tab. Under the frame are who made the list and **Open the whole list**,
-which goes to the list's own page, every sentence in order. The tab asks
-`/api/azeri?tab=food`, which answers the list's id, `FOOD_LIST` in the
-route, behind the same door as the other tabs; it asks nothing else.
+which goes to the list's own page, every sentence in order. Which list is
+`FOOD_LIST` in `assets/azeri.js`, and the tab asks the route for nothing.
+For its first day it asked `/api/azeri?tab=food` for the id, so that the
+tab stood behind the same door as the others; when the door went, the ask
+had nothing left to do.
 
 It is a list and not a file here so that the owner changes it where every
 list is changed — the list's page, signed in as its owner — and the tab
@@ -17136,40 +17138,52 @@ What it does not do: filter the pins, open a place inside the corner rather
 than in a new tab, or show the sentences beside the map — the list's page
 does that.
 
-### The door, and what a page costs
+### Open to anybody, and what a page costs
 
-The corner is behind the members' door, and a static file has no door:
-`/data/*` is handed to the asset server past every Function. So its files live
-under `/azeri/data/`, which `functions/_middleware.js` answers with the
-not-found page, and `GET /api/azeri` reads them through `env.ASSETS` for a
-session and nobody else. Signed out, the page draws a card whose button is
-the map's own sign-in sheet, `/?account=in&then=` and the address that was
-asked for, tab and topic and all, which brings somebody back to it when they
-are in.
+The corner was for members until 2026-11-21: `/api/azeri` answered a
+session and nobody else, and signed out the page was one card whose button
+was the map's sign-in sheet. The owner opened it that day, with the rule
+that goes with it — reading and watching are anybody's, and an account is
+for writing something. So nothing on it asks who somebody is, **Watch**
+included, and there is nothing in it to write: the corner has no comments,
+and if it ever has, writing one is what will take an account. The owner was
+shown the corner opened with **Watch** still asking for an account — a card
+in the film's row where the player would be, or a button saying **Sign in
+to watch** — and chose neither: a film plays for anybody who presses it.
 
-A tab of the guide is asked for whole, once, with `tab` and `lang`, and the
-answer carries the one language: the same single read, the session, and
-opening a topic asks for nothing. Changing the language asks again. A
-thousand members opening all three tabs every day is 3,000 reads, 12,000
-rows at the very worst, against the five million, and it does not grow with
-the topics. The files are 26 to 48 KB with all four languages in them, a
+It is still linked from nowhere and not indexed, in the page's head and in
+`_headers`: the address is given to somebody. Putting it in front of search
+engines, or on the map's rail, is a decision of its own and was not taken
+with this one.
+
+Its files are under `/azeri/data/`, which `functions/_middleware.js` answers
+with the not-found page, and `GET /api/azeri` reads them through
+`env.ASSETS`. That was the door once, since a static file has none —
+`/data/*` is handed to the asset server past every Function — and now it is
+about size: the route answers twenty films, or a tab in one language, where
+the files are a 290 KB index, the films a hundred to a file, and every
+sentence of the guide in four languages.
+
+The route reads nothing from the database. A tab of the guide is asked for
+whole, once, with `tab` and `lang`, and the answer carries the one
+language; opening a topic asks for nothing, and changing the language asks
+again. The files are 26 to 48 KB with all four languages in them, a
 fraction of a millisecond to parse, kept five minutes per isolate like the
 films'.
 
-The places tab is the same one read, the session, and the route reads no
-list: the frame's `/embed` reads `/api/v1/lists/<id>`, the list's row and its
-places, the same read whoever asks, and the public API keeps that answer
-five minutes in each colo. So a colo reads the list at most 288 times a day,
-however many members open the tab.
+The places tab asks the route nothing: the frame's `/embed` reads
+`/api/v1/lists/<id>`, the list's row and its places, the same read whoever
+asks, and the public API keeps that answer five minutes in each colo. So a
+colo reads the list at most 288 times a day, however many people open the
+tab.
 
 The shelf is never sent whole. It opens on the feature films that can be
-watched, the most watched first, twenty to a page, with **Previous** and **Next** under
-the list; **Only ones I can watch** is on to begin with and a press turns it
-off, and a chip, the switch or the search starts again from page one. Each
-page costs the database one read — the session, by its key — and nothing else, because the
-films are not in the database. Reading every one of the 523 feature films is
-twenty-seven pages and twenty-seven reads; a hundred members doing that every
-day is 2,700 against the five million.
+watched, the most watched first, twenty to a page, with **Previous** and
+**Next** under the list; **Only ones I can watch** is on to begin with and a
+press turns it off, and a chip, the switch or the search starts again from
+page one. Each page is one request and no read of the database, because the
+films are not in it: reading every one of the 523 feature films is
+twenty-seven requests, and more readers mean more requests and nothing else.
 
 They are not one file either. The whole shelf was 1.7 MB, and a cold isolate
 on the free plan's ten milliseconds of CPU spent four to ten of them parsing
@@ -17178,9 +17192,7 @@ that once: `index.json`, 290 KB, every film in the shelf's order with its
 shelf, year, whether it can be watched and its words already folded; and the
 films in files of a hundred in that order, `films/<n>.json`. A request walks
 the index and parses the one or two files its page is in, a couple of
-milliseconds cold, and the route keeps them five minutes per isolate. A member reading all
-523 feature films is eleven reads. A hundred members doing that every day is
-1,100 against the five million, and the number does not grow with the films.
+milliseconds cold, and the route keeps them five minutes per isolate.
 
 ### Four languages, in a site of eleven
 
