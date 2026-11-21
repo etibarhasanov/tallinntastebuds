@@ -3696,8 +3696,8 @@ to be counted every time. `FULL`, `TENTH` and `MOST` in
 and `tally()` the statement; a number changed there holds from the next
 save.
 
-**One thing reads it, and nothing answers it.** A bike route weighs its
-ways by it. It is counts and no rider, and still no square is published:
+**One thing reads it, and nothing answers it.** A bike route asks it
+where people crossed between the two ends, and weighs its ways by it. It is counts and no rider, and still no square is published:
 with one rider a square's pace is one person's afternoon. What else it is
 for — a ride on Your rides saying how much of itself had been ridden before
 and where it waited; a warning on a stretch people push through. Each
@@ -3816,51 +3816,110 @@ than what most rides said; it ran a ride in either direction, so a ride
 home downhill was offered as the way back up; and it read lines where the
 rides had already been counted, a cost that grew with them.
 
-**Now the ways are weighed, not made.** The router and the doors offer
-their ways as before, with the ways round either side — kept off the
-streets in `KEEP_OFF`, their spurs off — and `riddenFirst()` in
-`functions/api/route.js` asks
-`riddenShare()` in `_sections.js` about each: how much of its length lies
-on squares people have ridden *in the direction it runs*, and how much of
-that they rode at their own pace (**What the rides say about a street**).
-The number of rides only decides whether a square has been ridden at all:
-that everybody goes one way does not make it the better one.
+**For two days the ways were only weighed.** The router and the doors
+offered their ways, with the ways round either side, and each was asked
+how much of it people had ridden. On 2026-11-20 the owner said the routes
+never learn from the rides, and they could not. Each of the twenty-two
+kept rides that went somewhere was put to `/api/route` between its own two
+ends, against a table they had all been counted into: the way offered
+first covered 0.35 of what had been ridden on the mean, the best of the
+ways offered 0.43, and five of the twenty-two were offered as ridden. Two
+things held it there. Weighing can only choose among the ways it is
+handed, and the router's are seldom the streets people ride. And a way was
+held to lying in the very squares the rides had, where a router draws a
+street down its middle and a phone records the cycle path beside it: a
+ride's own line moved fourteen metres to one side was found ridden for
+0.58 of its length.
 
-**Offered first, and said.** The way with the best score is the ridden
-way, where at least 200 m and half of it were ridden and it is no more
-than 1.4 times the shortest. It goes first with `ridden: true` beside it,
-the button reads *Ridden · 4 min · 950 m* and the sentence ends *a way
-people have ridden*. It is one of the ways already there, moved to the
-front, and the rest follow in the order they had. The answer's shape is
-what it was, so both apps draw and speak it without knowing.
+**Now a way is asked for through where people went.** `riddenAcross()` in
+`_sections.js` draws up to three lines square across the trip, about one
+every 500 m, and asks the squares along each which were crossed going the
+trip's way — within three eighths of a turn of it, never the way back.
+Crossings close together are one, as heavy as the rides in them. A chain
+takes a crossing from each line, or none, and has to hold together: from
+each point to the next it runs within an eighth of a turn of how both
+were ridden, and it is no longer than 1.3 times the straight line. The
+heaviest chain about as short as any, and the heaviest of all where that
+is another, come back as the middles of their squares with the way each
+was ridden, and `riddenWays()` in `functions/api/route.js` asks the router
+for its way through each twice: through the points, and passing each the
+way it was ridden, so that one does not snap to the far carriageway. A
+way made so is still the router's streets with the router's turns. One
+that rides a street in `KEEP_OFF` is dropped however many rode it, and
+the rest lose their spurs like any other.
 
-**What it gives up.** A way no router knows is no longer invented from
-somebody's line: a ride across a yard is offered once it is a door, which
-`tools/doors.mjs` finds in the same rides. And a new cycle path scores
-nothing until it has been ridden. With three ways from one router and two
-round, there are few to choose between: more ways to weigh is the next
-thing this wants, and the day the five kinds were tried and taken back is
-why it is not here yet.
+**And every way is weighed, a stride and its neighbours at a time.**
+`riddenFirst()` asks `riddenShare()` about the router's ways and the made
+ones together: each is walked fourteen metres at a time, and a stride is
+ridden where its square, or the square to either hand of it, was crossed
+that way (**What the rides say about a street**). The ride moved fourteen
+metres aside is found now for 0.96 of it, a whole square off for 0.59,
+and sixty metres off, the next street over, for 0.07. What is compared is
+the metres of each that nobody rode at their own pace, the fewest
+winning, so a loop half as long again is not taken for a street because a
+little more of it was ridden; and a made way has to leave a fifth fewer
+than any of the router's, since close is not enough for a way stitched
+through points.
 
-**What it costs.** A lookup in `ride_sections` on a bike route, on the key
-for each square and direction under the ways, and it is the one thing in
-`/api/route` that opens the database. It is billed a row for each square
-somebody has ridden that way and nothing for one nobody has: six hundred
-rows at the very worst however many rides there are — a longer trip is
-sampled more coarsely to stay under it — so five million a day is 8,300
-routes at the worst, and on 2026-11-19 a ride from Herne to Narva maantee
-read 36. Until that day it read 860: the squares went in as one JSON
-parameter under an `IN`, which D1 bills two rows a square asked, found or
-not, where the comment said a square not found cost nothing. They go in as
-`VALUES` now, fifty a statement in one batch — WHAT A READ COSTS in
-`_sections.js`. No router is asked anything more. No database, no
-table, or a table still waiting for its rebuild, is the answer exactly as
-the routers gave it. With a `heading` nothing is weighed: a new way every
-few hundred metres should not be a read each.
+**Offered first, and said.** The winner is the ridden way where at least
+200 m and half of it were ridden; a way more than 1.4 times the shortest
+is not in the comparison at all. It goes first with `ridden: true` beside
+it, the button reads *Ridden · 4 min · 950 m* and the sentence ends *a way
+people have ridden*. The router's others follow in the order they had, and
+a made way that does not win is not offered. The answer's shape is what it
+was, so both apps draw and speak it without knowing.
 
-**Anybody's ride, and nobody approves it**, as with a door, and with the
-same caveat: a ride somewhere nobody should cycle counts until it is taken
-out of `rides` and the table rebuilt.
+**What it did, on the same rides.** Fourteen of the twenty-two are offered
+as ridden, seven of them along a way made through where people went. The
+way offered first covers 0.47 of what was ridden, and the best offered
+0.53; it is four in a hundred longer than the router's shortest on the
+mean, where it was two. One trip is offered a way that ride did not take,
+because more of the other rides between those two places went another
+way, and that is what the rides say. What it still misses: rides past
+1.4 times the shortest way, which are tours rather than a way from one
+place to another; rides beside a street every bike way keeps off, whose
+crossings the router reaches only on that street; and rides shorter than
+any way the router has, which cross somewhere it has no path — those are
+doors, and `tools/doors.mjs` finds them in the same rides.
+
+**What it gives up.** A way no router knows is still not invented from
+somebody's line: a ride across a yard is followed once it is a door. A new
+cycle path scores nothing until it has been ridden. And three lines across
+a trip are a sample: a ride that leaves the router's way between two of
+them and comes back before the next is weighed and not followed.
+
+**What it costs.** Two lookups in `ride_sections` on a bike route, the
+crossings and the weighing, each on the key for the squares and
+directions asked about, and each billed a row for each that somebody has
+ridden and nothing for one nobody has; they are the one thing in
+`/api/route` that opens the database. The crossings ask 549 keys at the
+most and the weighing 600 — a longer trip is sampled more coarsely to stay
+under it — so a route reads 1,149 rows at the very worst however many
+rides there are, and five million a day is 4,350 routes at that. Over the
+twenty-two trips a route read 80 rows on the mean and 156 at the most,
+where the weighing alone had read 72 and 173: 62,500 routes a day. On
+production on 2026-11-21 the newest ride's trip read 11 rows for its
+crossings and 70 for its weighing, the keys it found of 851 asked. Until
+2026-11-19 the weighing read 860 rows for a ride from Herne to Narva
+maantee that now reads 36: the squares went in as one JSON parameter under
+an `IN`, which D1 bills two rows a square asked, found or not. They go in
+as `VALUES` now, fifty a statement in one batch — WHAT A READ COSTS in
+`_sections.js`. And up to four router requests for the made ways, and one
+for each point of a winning one that went into a pocket: 12.7 a route on
+the mean over those trips where it had been 10.6, and 26 at the most,
+against the fifty a Worker on the free plan may make. No database, no
+table, or no square ridden, is the answer exactly as the routers gave it.
+With a `heading` nothing is weighed and nothing made: a new way every few
+hundred metres should not be a read each.
+
+**Anybody's ride, and nobody approves it**, as with a door. A made way is
+the router's streets, so a ride somewhere nobody should cycle cannot pull
+a route where the router has no way; what it can do is send one down a
+street the router would not have chosen. It counts until rides through
+the same squares outweigh it — a square forgets a little with each ride
+it counts from fifty on — since taking it out of `rides` does not take it
+out of the squares, and counting them again from `rides` loses every ride
+counted without an account (**What the rides say about a street**).
 
 ## Roads a bike route keeps off
 
@@ -3926,7 +3985,7 @@ that is as much shorter, it is ridden instead. The router is asked rather
 than the gap trusted, since a ramp up to a bridge looks the same from above.
 It is done to the ways that are answered and not to each one tried: one more
 router request for each point an answered way went through that has a
-pocket, six at the most, and no row.
+pocket, seven at the most, and no row.
 
 **A street is a line in `KEEP_OFF`**, its name, its width and its middle,
 in the route itself rather than a data file: it is a decision the owner

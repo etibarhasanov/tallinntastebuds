@@ -10,10 +10,12 @@
  * stretch they push through are told apart by the clock alone. **What the
  * rides say about a street** in docs/handbook.md.
  *
- * One thing reads it: /api/route, which by bike weighs the ways its routers
- * offer by the squares under them and puts the one riders made the most of
- * first — riddenShare() at the foot of this file, RIDDEN in ./route.js.
- * Nothing answers a square to anybody.
+ * One thing reads it: /api/route, which by bike asks where riders went
+ * across between the two ends, has its router make a way through there,
+ * weighs that and the router's own ways by the squares under them and puts
+ * the one riders made the most of first — riddenAcross() and riddenShare()
+ * at the foot of this file, RIDDEN in ./route.js. Nothing answers a square
+ * to anybody.
  *
  * A SQUARE, AND WHY NOT A STREET
  *
@@ -437,24 +439,42 @@ export function tally(env, rows, id) {
  * How much of each of some ways people have ridden, that way, and how well
  * it rode: for every line handed in, { share, score }, both from 0 to 1.
  *
- * A way is walked STRIDE metres at a time and each stride asks its square
- * for the two compass points its heading lies between. A square counts as
+ * A way is walked STRIDE metres at a time and each stride asks its squares
+ * for the two compass points its heading lies between. A stride counts as
  * ridden once MIN_RIDES rides crossed it that way, and that is all the
  * number of rides decides: that everybody goes one way does not make it
  * the better one, only the surer one. `share` is the part of the way's
- * length on ridden squares. `score` is that length again with each square
+ * length on ridden strides. `score` is that length again with each stride
  * weighed by how many of its timed rides held their own pace there —
  * `steady` over `timed`, or UNTIMED where no ride through it had a clock —
  * so a way half of which is ridden steadily scores a half, and one ridden
  * all the way at a crawl scores nothing.
+ *
+ * BESIDE IT IS ON IT
+ *
+ * A stride asks the square it is in and the squares SIDE of a square to
+ * either hand of it, and is ridden where any of them was. Until 2026-11-21
+ * it asked its own square alone, and a way was held to lying in the very
+ * squares the rides had: but a router draws a street down its middle, a
+ * phone records the cycle path beside it, and a square's edge falls where
+ * it falls. Measured over the twenty-eight kept rides, each against a
+ * table they had all been counted into: a ride's own line moved 14 m to
+ * one side was found ridden for 0.58 of its length, and 20 m for 0.36 — so
+ * a way somebody had ridden end to end, drawn down the street they rode
+ * beside, weighed about half ridden, which is where ./route.js draws its
+ * line. With the squares beside it the same lines are found for 0.96 and
+ * 0.81, a whole square off for 0.59, and 60 m off — the next street over —
+ * for 0.07.
  *
  * WHAT A READ COSTS
  *
  * A lookup on the key for every square and direction asked about, and
  * never more than SCORE_ROWS of them: a longer trip is walked in longer
  * strides until its squares fit, so a way across the city is sampled where
- * a way round the corner is read whole. D1 bills the rows a statement
- * walks, and how the squares are handed to it decides what that is.
+ * a way round the corner is read whole — and the squares beside each
+ * stride are within that number, not on top of it. D1 bills the rows a
+ * statement walks, and how the squares are handed to it decides what that
+ * is.
  *
  * Until 2026-11-19 they went in as one JSON parameter, `cell IN (SELECT
  * value FROM json_each(?))`, and this comment said a lookup that finds
@@ -473,13 +493,14 @@ export function tally(env, rows, id) {
  * match nothing and read nothing, and the statements go as one batch. None
  * answers more than ASKED rows.
  *
- * SCORE_ROWS rows is then the worst there is, on the day every square
- * asked about has been ridden that way, and on any other day what has been:
- * 5,000,000 rows a day is 8,300 routes at the very worst. It is asked for
- * every bike route the site works out — ./route.js lets the phone that
- * asked keep the answer an hour, and nobody else.
+ * SCORE_ROWS rows is then the worst it reads, on the day every square
+ * asked about has been ridden that way, and on any other day what has been.
+ * It is asked for every bike route the site works out, after the crossings
+ * below — WHAT IT COSTS there has the two together — and ./route.js lets
+ * the phone that asked keep the answer an hour, and nobody else.
  */
 const STRIDE = 14;
+const SIDE = 0.5;
 const MIN_RIDES = 1;
 const UNTIMED = 0.5;
 const SCORE_ROWS = 600;
@@ -496,22 +517,45 @@ const LOOKUP =
   ') v CROSS JOIN ride_sections s ON s.cell = v.column1';
 const ASKED = LOOKUP.split('(?)').length - 1;
 
-/* A line as strides: [cell, lower point, metres], the upper point being
-   the next one round. Every `every`th stride is kept and stands for the
-   ones between. */
+/* The rows of `ride_sections` under these keys, by key: a lookup on the
+   key, `cell`, ASKED of them a statement and the statements one batch —
+   WHAT A READ COSTS above. */
+async function rowsFor(env, keys) {
+  const asks = [];
+  for (let i = 0; i < keys.length; i += ASKED) {
+    const some = keys.slice(i, i + ASKED);
+    asks.push(env.DB.prepare(LOOKUP).bind(...some, ...Array(ASKED - some.length).fill(null)));
+  }
+  const answers = asks.length ? await env.DB.batch(asks) : [];
+  return new Map(answers.flatMap((answer) => answer.results || []).map((row) => [row.cell, row]));
+}
+
+/* A line as strides: [squares, lower point, metres], the upper point being
+   the next one round, and the squares the one the stride is in and the one
+   SIDE of a square to either hand of it — BESIDE IT IS ON IT above. Every
+   `every`th stride is kept and stands for the ones between. */
 function stridesOf(line, every) {
   const out = [];
   let n = 0;
   for (let i = 1; i < line.length; i++) {
-    const d = metresBetween(line[i - 1], line[i]);
+    const a = line[i - 1];
+    const b = line[i];
+    const d = metresBetween(a, b);
     if (!(d > 0)) continue;
-    const lower = Math.floor(headingOf(line[i - 1], line[i])) % DIRS;
+    const lower = Math.floor(headingOf(a, b)) % DIRS;
     const parts = Math.ceil(d / STRIDE);
+    /* SIDE of a square to the left of the way the step runs, as [lat, lng]:
+       the step's east and north, turned a quarter and made that long. */
+    const east = (b[1] - a[1]) * Math.cos((a[0] + b[0]) / 2 * Math.PI / 180);
+    const north = b[0] - a[0];
+    const long = Math.hypot(east, north);
+    const left = [east / long * SIDE * CELL_LAT, -north / long * SIDE * CELL_LNG];
     for (let k = 1; k <= parts; k++) {
       if (n++ % every) continue;
       const f = k / parts;
+      const at = [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
       out.push([
-        cellOf([line[i - 1][0] + (line[i][0] - line[i - 1][0]) * f, line[i - 1][1] + (line[i][1] - line[i - 1][1]) * f]),
+        [...new Set([0, 1, -1].map((hand) => cellOf([at[0] + left[0] * hand, at[1] + left[1] * hand])))],
         lower,
         d / parts
       ]);
@@ -527,27 +571,22 @@ export async function riddenShare(env, lines) {
     ways = lines.map((line) => stridesOf(line, every));
     keys = new Set();
     for (const strides of ways) {
-      for (const [cell, lower] of strides) keys.add(cell + ':' + lower).add(cell + ':' + (lower + 1) % DIRS);
+      for (const [squares, lower] of strides) {
+        for (const cell of squares) keys.add(cell + ':' + lower).add(cell + ':' + (lower + 1) % DIRS);
+      }
     }
     if (keys.size <= SCORE_ROWS) break;
   }
-  /* A lookup on the key, `cell`, for each of at most SCORE_ROWS values,
-     ASKED a statement — WHAT A READ COSTS above. */
-  const all = [...keys];
-  const asks = [];
-  for (let i = 0; i < all.length; i += ASKED) {
-    const some = all.slice(i, i + ASKED);
-    asks.push(env.DB.prepare(LOOKUP).bind(...some, ...Array(ASKED - some.length).fill(null)));
-  }
-  const answers = asks.length ? await env.DB.batch(asks) : [];
-  const rows = new Map(answers.flatMap((answer) => answer.results || []).map((row) => [row.cell, row]));
+  const rows = await rowsFor(env, [...keys]);
   return ways.map((strides) => {
     let all = 0;
     let ridden = 0;
     let score = 0;
-    for (const [cell, lower, d] of strides) {
+    for (const [squares, lower, d] of strides) {
       all += d;
-      const found = [rows.get(cell + ':' + lower), rows.get(cell + ':' + (lower + 1) % DIRS)].filter(Boolean);
+      const found = squares
+        .flatMap((cell) => [rows.get(cell + ':' + lower), rows.get(cell + ':' + (lower + 1) % DIRS)])
+        .filter(Boolean);
       const sum = (name) => found.reduce((n, row) => n + row[name], 0);
       if (sum('rides') < MIN_RIDES) continue;
       ridden += d;
@@ -555,4 +594,153 @@ export async function riddenShare(env, lines) {
     }
     return all ? { share: ridden / all, score: score / all } : { share: 0, score: 0 };
   });
+}
+
+/* --------------------------------------------------- where they went across
+ * Where riders going from one end of a trip towards the other went, as the
+ * points they crossed at, in order, for ./route.js to ask its router for a
+ * way through: one chain of points or two, or none. Weighing can only
+ * choose among the ways it is handed, and the router's are seldom the one
+ * people ride — RIDDEN in ./route.js has what was measured.
+ *
+ * GATES
+ *
+ * Lines are drawn square across the straight line between the two ends —
+ * gates, one every GATE_EVERY metres or so and GATES at the most, each
+ * reaching GATE_SHARE of the trip's length to either side, between
+ * GATE_LEAST and GATE_MOST — and every square along each, one every
+ * GATE_STEP metres, is asked for the rides that crossed it going the trip's
+ * way: the compass point the trip's heading is nearest and the one either
+ * side of it, so a ride counts for a trip within three eighths of a turn of
+ * it and never for the way back. Squares within CROWD metres of each other
+ * along a gate are one crossing, as heavy as the rides in them all: a
+ * street's two pavements and a phone's scatter are one place to cross. A
+ * gate keeps its CROSSINGS heaviest, and each crossing the compass point
+ * it was most ridden by.
+ *
+ * CHAINS
+ *
+ * A chain is a crossing from each gate, or none from some, and it has to
+ * hold together: from each point to the next — the ends included — it runs
+ * within TURN compass points of the way both those crossings were ridden,
+ * and the whole is no longer than CHAIN_LONGER times the straight line. That
+ * is what keeps a chain from taking the busiest street at one gate and a
+ * different one at the next, or a crossing ridden across the trip rather
+ * than along it. Of the chains that hold, the heaviest — the most rides at
+ * its crossings together — among those within CHAIN_NEAR of the shortest,
+ * and the heaviest of all where that is another. Two, because the street
+ * most people take and the shorter one some do are both worth weighing,
+ * and the weighing, not this, decides. Each point comes back as the middle
+ * of its square, with the way it was ridden in degrees from north, which
+ * the router is asked to pass it by.
+ *
+ * It is what most rides say and not what the last one did, which is what
+ * was wrong with the network of saved rides RIDDEN describes.
+ *
+ * WHAT IT COSTS
+ *
+ * One batch of LOOKUP, as riddenShare() reads: three keys for each square
+ * along the gates, 549 at the most, eleven statements, billed a row for
+ * each key that is there — a gate crosses a handful of streets, and only
+ * those somebody rode that way are rows. Over the twenty-two trips RIDDEN
+ * was measured on, against a table the same rides were counted into: nine
+ * rows a trip on the mean and 22 at the most. With the weighing after it,
+ * a bike route read 80 rows on the mean and 156 at the most, where the
+ * weighing alone had read 72 and 173 — its squares beside each stride fill
+ * SCORE_ROWS sooner, and a long trip is sampled more coarsely for it. On
+ * production on 2026-11-21 the newest ride's trip asked these crossings
+ * 276 keys and read 11 rows, and its weighing 575 keys and read 70.
+ *
+ * The very worst is SCORE_ROWS and 549 together, 1,149 rows, on the day
+ * every square asked about has been ridden every way asked: 5,000,000 rows
+ * a day is 4,350 bike routes at that, and 62,000 at the mean.
+ */
+const GATE_FROM = 500;
+const GATE_EVERY = 500;
+const GATES = 3;
+const GATE_SHARE = 0.4;
+const GATE_LEAST = 250;
+const GATE_MOST = 600;
+const GATE_STEP = 20;
+const CROWD = 35;
+const CROSSINGS = 3;
+const TURN = 1;
+const CHAIN_LONGER = 1.3;
+const CHAIN_NEAR = 1.1;
+
+export async function riddenAcross(env, from, to) {
+  const length = metresBetween(from, to);
+  if (length < GATE_FROM) return [];
+  /* Metres east and north of `from`, by the metres in a degree of each. */
+  const perLat = 6371000 * Math.PI / 180;
+  const perLng = perLat * Math.cos(from[0] * Math.PI / 180);
+  const flat = (p) => [(p[1] - from[1]) * perLng, (p[0] - from[0]) * perLat];
+  const [tx, ty] = flat(to);
+  const ux = tx / length;
+  const uy = ty / length;
+  const nearest = Math.round(headingOf(from, to));
+  const dirs = [-1, 0, 1].map((turn) => (nearest + turn + DIRS) % DIRS);
+
+  const count = Math.max(1, Math.min(GATES, Math.round(length / GATE_EVERY) - 1));
+  const wide = Math.min(GATE_MOST, Math.max(GATE_LEAST, length * GATE_SHARE));
+  const gates = [];
+  for (let g = 1; g <= count; g++) {
+    const along = length * g / (count + 1);
+    const squares = new Set();
+    for (let s = -wide; s <= wide; s += GATE_STEP) {
+      squares.add(cellOf([from[0] + (uy * along + ux * s) / perLat, from[1] + (ux * along - uy * s) / perLng]));
+    }
+    gates.push([...squares]);
+  }
+  const rows = await rowsFor(env, gates.flatMap((squares) => squares.flatMap((cell) => dirs.map((dir) => cell + ':' + dir))));
+
+  /* Each gate's crossings: a ridden square, where it is, the point it was
+     mostly ridden by, and the rides in it and in the squares CROWD round it. */
+  const crossings = gates.map((squares) => {
+    const ridden = squares.map((cell) => {
+      const each = dirs.map((dir) => (rows.get(cell + ':' + dir) || { rides: 0 }).rides);
+      const [row, column] = cell.split(':').map(Number);
+      const at = [row * CELL_LAT, column * CELL_LNG];
+      return { at: at, xy: flat(at), rides: each[0] + each[1] + each[2], dir: dirs[each.indexOf(Math.max(...each))] };
+    }).filter((square) => square.rides >= MIN_RIDES);
+    const gap = (a, b) => Math.hypot(a.xy[0] - b.xy[0], a.xy[1] - b.xy[1]);
+    for (const square of ridden) {
+      square.crowd = ridden.reduce((n, other) => n + (gap(square, other) <= CROWD ? other.rides : 0), 0);
+    }
+    const kept = [];
+    for (const square of ridden.sort((a, b) => b.crowd - a.crowd || b.rides - a.rides)) {
+      if (kept.length < CROSSINGS && kept.every((other) => gap(square, other) > 2 * CROWD)) kept.push(square);
+    }
+    return kept;
+  });
+
+  /* Every chain, sixty-four at the most, and the ones that hold — CHAINS. */
+  let chains = [[]];
+  for (const gate of crossings) chains = chains.flatMap((chain) => gate.concat(null).map((pick) => chain.concat(pick)));
+  const held = [];
+  for (const chain of chains) {
+    const picks = chain.filter(Boolean);
+    if (!picks.length) continue;
+    const stops = [{ xy: [0, 0] }].concat(picks, [{ xy: [tx, ty] }]);
+    let long = 0;
+    let fits = true;
+    for (let i = 1; i < stops.length; i++) {
+      const dx = stops[i].xy[0] - stops[i - 1].xy[0];
+      const dy = stops[i].xy[1] - stops[i - 1].xy[1];
+      const runs = (Math.atan2(dx, dy) / (2 * Math.PI) * DIRS + DIRS) % DIRS;
+      long += Math.hypot(dx, dy);
+      for (const end of [stops[i - 1], stops[i]]) {
+        const swing = Math.abs(runs - end.dir) % DIRS;
+        if (end.dir !== undefined && Math.min(swing, DIRS - swing) > TURN) fits = false;
+      }
+    }
+    if (fits && long <= length * CHAIN_LONGER) held.push({ picks: picks, long: long, rides: picks.reduce((n, pick) => n + pick.crowd, 0) });
+  }
+  if (!held.length) return [];
+  const heaviest = (some) => some.reduce((a, c) => (c.rides > a.rides || (c.rides === a.rides && c.long < a.long) ? c : a));
+  const shortest = Math.min(...held.map((chain) => chain.long));
+  const near = heaviest(held.filter((chain) => chain.long <= shortest * CHAIN_NEAR));
+  const most = heaviest(held);
+  return (most === near ? [near] : [near, most])
+    .map((chain) => chain.picks.map((pick) => [Number(pick.at[0].toFixed(5)), Number(pick.at[1].toFixed(5)), pick.dir * 360 / DIRS]));
 }

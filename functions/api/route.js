@@ -61,9 +61,9 @@
  * many as three, is the first one and the router's own is the first of
  * `others`. Same fields, same words; DOORS below.
  *
- * And where people have ridden one of the ways between the two points,
- * that way and held their pace on it, it is the first one, with `ridden:
- * true` beside it — RIDDEN below.
+ * And where people have ridden between the two points, the way they went
+ * — one of the router's, or one it is asked for through where they crossed
+ * — is the first one, with `ridden: true` beside it — RIDDEN below.
  *
  * And by bike some streets are not offered at all. A way that rides Tartu
  * maantee, Liivalaia, or Pärnu maantee from Vabaduse väljak to Liivalaia,
@@ -176,7 +176,7 @@
  */
 
 import { json, inEstonia, km, dataFile, wrongDatabase } from './_lib.js';
-import { riddenShare } from './_sections.js';
+import { riddenShare, riddenAcross } from './_sections.js';
 
 const OSRM = {
   foot: 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/',
@@ -214,7 +214,9 @@ const OTHERS = 2;
 const MAX_POINTS = 600;
 
 /* A heading is rounded to this many degrees, and the way must set off
-   within this many either side of it. */
+   within this many either side of it — as a way made through where riders
+   went must pass each point within this many of how it was ridden, RIDDEN
+   below. */
 const HEADING_STEP = 15;
 const HEADING_RANGE = 45;
 
@@ -266,10 +268,12 @@ function decode(text) {
   return out;
 }
 
-/* `heading`, where the asker gave one, as the router takes it: for the
-   first of `points` points, and none for the rest. */
-function bearings(heading, points) {
-  return heading === null ? '' : '&bearings=' + heading + ',' + HEADING_RANGE + ';'.repeat(points - 1);
+/* The way each point is to be left or passed, as the router takes it:
+   `headings` is degrees from north for each point in turn, or null for a
+   point that may be passed any way, and nothing is said where none has one. */
+function bearings(headings) {
+  if (headings.every((heading) => heading === null)) return '';
+  return '&bearings=' + headings.map((heading) => (heading === null ? '' : heading + ',' + HEADING_RANGE)).join(';');
 }
 
 async function street(context, mode, from, to, withTrains, heading) {
@@ -285,7 +289,7 @@ async function street(context, mode, from, to, withTrains, heading) {
      alternatives costs the buttons and never the line. Before either, with
      a heading, asked to set off that way — and without it where the router
      has no street there running that way. */
-  const tries = (heading === null ? [] : [OTHERS + bearings(heading, 2)]).concat([OTHERS, 'false']);
+  const tries = (heading === null ? [] : [OTHERS + bearings([heading, null])]).concat([OTHERS, 'false']);
   let res;
   try {
     for (const tail of tries) {
@@ -331,9 +335,9 @@ async function street(context, mode, from, to, withTrains, heading) {
     ways = ways.map(unspur).filter((way, i, all) => !all.slice(0, i).some((before) => alike(way, before)));
   }
   if (mode === 'bike' && heading === null && ways.length <= OTHERS) ways = await eitherSide(ways, from, to);
-  /* And of all of those, the one riders made the most of goes in front —
-     RIDDEN below. */
-  if (mode === 'bike' && heading === null) ways = await riddenFirst(context, ways, shortest);
+  /* And of all of those, and the router's way through where riders went,
+     the one they made the most of goes in front — RIDDEN below. */
+  if (mode === 'bike' && heading === null) ways = await riddenFirst(context, ways, shortest, from, to);
   ways = await Promise.all(ways.slice(0, 1 + OTHERS).map(unpocket));
   const best = ways[0];
   const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
@@ -454,13 +458,16 @@ async function leg(a, b) {
 }
 
 /* The router's one way by bike through [lat, lng] points in order, setting
-   off by `heading` where there is one, or null where it has none. The
-   points in the middle ride along as `through`, for unpocket() to look
-   around and take off before the way is answered — POCKETS below. */
+   off by `heading` where there is one, or null where it has none. A point
+   in the middle may carry a third number, the way it is to be passed, in
+   degrees from north — RIDDEN below asks through a square the way it was
+   ridden. The points in the middle ride along as `through`, for unpocket()
+   to look around and take off before the way is answered — POCKETS below. */
 async function oneWay(points, heading = null) {
   try {
+    const passing = points.map((p, i) => (i ? (p.length > 2 ? p[2] : null) : heading));
     const res = await ask(OSRM.bike + points.map((p) => p[1] + ',' + p[0]).join(';') +
-      '?overview=full&geometries=geojson&steps=true&alternatives=false' + bearings(heading, points.length), 'bike');
+      '?overview=full&geometries=geojson&steps=true&alternatives=false' + bearings(passing), 'bike');
     if (!res.ok) return null;
     const body = await res.json();
     const found = body && body.code === 'Ok' && Array.isArray(body.routes) ? way(body.routes[0]) : null;
@@ -568,47 +575,107 @@ function bend(before, after) {
  * they had — a ride home downhill was offered as the way back up — and it
  * read lines where the city's rides had already been counted.
  *
- * So no way is made here now. The ways are the ones the router and the
- * doors offer and the ways round either side, kept off the streets in
- * KEEP_OFF and with their spurs off like any other, and each is weighed by
- * the squares under it: riddenShare() in ./_sections.js, which says how
- * much of a way people have ridden in the direction it runs, and how much
- * of that they rode at their own pace. The best of them by that score is
- * the ridden way, where at least RIDDEN_MIN metres and RIDDEN_SHARE of it
- * were ridden and it is no more than RIDDEN_LONGER times the shortest. It
- * goes first, the answer says `ridden: true` beside it, and the bar says
- * somebody rode it; the others follow in the order they had.
+ * For two days after that no way was made at all: the ways the router and
+ * the doors offered, and the ways round either side, were weighed by the
+ * squares under them and the best put first. On 2026-11-20 the owner said
+ * the routes never learn, and they could not. The kept rides that went
+ * somewhere, twenty-two, were each put to this route between their own two
+ * ends, against a table they had all been counted into: the way offered
+ * first covered 0.35 of what had been ridden on the mean, the best of the
+ * ways offered 0.43, and five were offered as ridden. Weighing only chooses
+ * among the ways it is handed, and it was also holding them to lying in
+ * the very squares the rides had — BESIDE IT IS ON IT in ./_sections.js.
  *
- * What that gives up is the way no router knows: a ride across a yard is
- * offered only once it is a door. What it costs is a lookup in
- * `ride_sections` by its key for each square under the ways, billed only
- * for the squares somebody rode and SCORE_ROWS rows at the most however
- * many rides there are — WHAT A READ COSTS in ./_sections.js. Nothing waits on
- * it: no database, no table, no square ridden — each is the ways exactly
- * as they were.
+ * So the squares are asked where riders went — riddenAcross() in
+ * ./_sections.js, the crossings most ridden in the trip's direction on a
+ * few lines drawn across it, as one chain or two — and the router is asked
+ * for its way through each chain: riddenWays() below. Still no line is the
+ * site's own; a made way is the router's streets through points riders
+ * chose, with its turns, kept off the streets in KEEP_OFF and with its
+ * spurs off like any other.
+ *
+ * Then every way is weighed by the squares under it: riddenShare(), which
+ * says how much of a way people have ridden in the direction it runs, and
+ * how much of that they rode at their own pace. What is compared is the
+ * metres of each that nobody rode at their pace, the fewest winning, so a
+ * loop half as long again is not taken for a street because a little more
+ * of it was ridden. A made way has to leave MADE_BETTER of what any way of
+ * the router's leaves, a fifth fewer: the router's ways are whole streets
+ * it chose and a made one is stitched through points, so close is not
+ * enough. The winner is the ridden way where at least RIDDEN_MIN metres
+ * and RIDDEN_SHARE of it were ridden; a way more than RIDDEN_LONGER times
+ * the shortest is not in the comparison at all. It goes first, the answer
+ * says `ridden: true` beside it, and the bar says somebody rode it; the
+ * router's others follow in the order they had. A made way that does not
+ * win is not offered.
+ *
+ * On the same twenty-two rides afterwards, fourteen were offered as ridden,
+ * seven of them along a way made here; the way offered first covered 0.47
+ * of what had been ridden and the best offered 0.53; and the way first was
+ * four in a hundred longer than the shortest offered on the mean, where it
+ * had been two. The rides it still misses are tours, rides along a street
+ * every bike way keeps off, and rides shorter than any way the router has,
+ * which are doors waiting to be found.
+ *
+ * What that still gives up is the stretch no router knows: a ride across a
+ * yard is followed only once it is a door. What it costs is two lookups in
+ * `ride_sections` by its key, the crossings and the weighing, billed only
+ * for the squares somebody rode — WHAT IT COSTS and WHAT A READ COSTS in
+ * ./_sections.js — and up to four router requests. Nothing waits on it: no
+ * database, no table, no square ridden — each is the ways exactly as they
+ * were.
  */
 const RIDDEN_MIN = 200;
 const RIDDEN_SHARE = 0.5;
 const RIDDEN_LONGER = 1.4;
+const MADE_BETTER = 0.8;
 
-async function riddenFirst(context, ways, shortest) {
+async function riddenFirst(context, ways, shortest, from, to) {
   const env = context.env || {};
   if (!env.DB) return ways;
+  let all = ways;
   let weighed;
   try {
     if (await wrongDatabase(env)) return ways;
-    weighed = await riddenShare(env, ways.map((way) => way.line));
+    all = ways.concat(await riddenWays(env, from, to));
+    weighed = await riddenShare(env, all.map((way) => way.line));
   } catch (e) {
     return ways;
   }
+  /* The metres of a way nobody rode at their own pace — and for a way made
+     here, those metres over MADE_BETTER, so it has to leave a fifth fewer
+     than a way the router thought of to be taken for it. Of the ways short
+     enough to be offered as ridden, the one with the fewest. */
+  const unridden = (i) => all[i].meters * (1 - weighed[i].score) / (i < ways.length ? 1 : MADE_BETTER);
   let best = -1;
-  ways.forEach((way, i) => {
-    const { share, score } = weighed[i];
-    if (share < RIDDEN_SHARE || share * way.meters < RIDDEN_MIN || way.meters > shortest * RIDDEN_LONGER) return;
-    if (best < 0 || score > weighed[best].score) best = i;
+  all.forEach((way, i) => {
+    if (way.meters <= shortest * RIDDEN_LONGER && (best < 0 || unridden(i) < unridden(best))) best = i;
   });
   if (best < 0) return ways;
-  return [Object.assign({}, ways[best], { ridden: true })].concat(ways.filter((way, i) => i !== best));
+  const rode = weighed[best].share * all[best].meters;
+  if (rode < RIDDEN_MIN || rode < all[best].meters * RIDDEN_SHARE) return ways;
+  return [Object.assign({}, all[best], { ridden: true })].concat(ways.filter((way) => way !== all[best]));
+}
+
+/* The router's ways through where riders went across — WHERE THEY WENT
+   ACROSS in ./_sections.js. Each chain of crossings is asked for twice:
+   through the squares' middles, and through them the way each was ridden,
+   which keeps the router from snapping one to the far side of a road or
+   to a lane running the other way, and where no street by the square runs
+   that way is no answer. Four requests at the most. A way that rides a
+   street every bike way keeps off is not offered however many rode it,
+   and the spurs come off the rest like any other's. */
+async function riddenWays(env, from, to) {
+  const ends = [[from.lat, from.lng], [to.lat, to.lng]];
+  const chains = await riddenAcross(env, ends[0], ends[1]);
+  const asked = chains.flatMap((chain) => [
+    oneWay([ends[0]].concat(chain.map((p) => p.slice(0, 2)), [ends[1]])),
+    oneWay([ends[0]].concat(chain, [ends[1]]))
+  ]);
+  return (await Promise.all(asked))
+    .filter(Boolean)
+    .map(unspur)
+    .filter((way) => onKeepOff(way).meters <= KEEP_OFF_MIN);
 }
 
 /* A way with this share of its points within ALIKE_NEAR metres of another
@@ -736,9 +803,10 @@ function spur(line) {
  * It is done last, to the ways that are answered and not to every way that
  * was tried, since nearly every point snaps a little off the line and has
  * some pocket to ask about: one more router request for each point an
- * answered way went through that has one — six at the most, three ways
- * through two points each — and no row. Nothing waits on it: a leg the
- * router will not answer is the way with its pocket, as it was.
+ * answered way went through that has one — seven at the most, a ridden
+ * way through three points and two ways round through two each — and no
+ * row. Nothing waits on it: a leg the router will not answer is the way
+ * with its pocket, as it was.
  */
 const POCKET_GAP = 60;
 const POCKET_REACH = 300;
@@ -874,7 +942,7 @@ function apart(p, line) {
 
 /* How far a way rides the streets to keep off, all of them together, and
    from where to where on the one it rides most. */
-function ridden(way) {
+function onKeepOff(way) {
   const on = KEEP_OFF.map(() => ({ meters: 0, start: null, end: null }));
   let gone = 0;
   for (let i = 1; i < way.line.length; i++) {
@@ -899,7 +967,7 @@ function ridden(way) {
    the ways round are asked through it too, in the order the two points come
    between the ends. */
 async function keepOff(ways, from, to, shortest, heading = null, past = null) {
-  const rides = ways.map(ridden);
+  const rides = ways.map(onKeepOff);
   const worst = rides.reduce((a, b) => (b.meters > a.meters ? b : a));
   if (worst.meters <= KEEP_OFF_MIN) return ways;
 
@@ -926,7 +994,7 @@ async function keepOff(ways, from, to, shortest, heading = null, past = null) {
     .sort((a, b) => a.seconds - b.seconds);
 
   const all = ways.concat(round);
-  const on = rides.concat(round.map(ridden)).map((r) => r.meters);
+  const on = rides.concat(round.map(onKeepOff)).map((r) => r.meters);
   const least = Math.min(...on);
   const room = least <= KEEP_OFF_MIN ? KEEP_OFF_MIN : least + KEEP_OFF_MIN;
 
@@ -1001,15 +1069,15 @@ async function eitherSide(ways, from, to) {
   const round = (await Promise.all(vias.map(async (via) => {
     let found = [await oneWay([ends[0], via, ends[1]])].filter(Boolean);
     for (let turn = 0; turn < SIDE_TURNS && found.length; turn++) {
-      const least = found.reduce((a, b) => (ridden(b).meters < ridden(a).meters ? b : a));
-      if (ridden(least).meters <= KEEP_OFF_MIN) break;
+      const least = found.reduce((a, b) => (onKeepOff(b).meters < onKeepOff(a).meters ? b : a));
+      if (onKeepOff(least).meters <= KEEP_OFF_MIN) break;
       found = await keepOff([least], from, to, shortest * SIDE_LONGER / KEEP_OFF_LONGER, null, via);
     }
     return found;
   })))
     .flat()
     .map(unspur)
-    .filter((way) => way.meters <= shortest * SIDE_LONGER && ridden(way).meters <= KEEP_OFF_MIN)
+    .filter((way) => way.meters <= shortest * SIDE_LONGER && onKeepOff(way).meters <= KEEP_OFF_MIN)
     .sort((a, b) => a.seconds - b.seconds);
   const all = ways.slice();
   for (const way of round) {
