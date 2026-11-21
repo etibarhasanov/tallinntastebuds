@@ -2106,7 +2106,13 @@ if (existsSync(CLIPS_DIR)) {
           fail(where, `section ${i + 1} is not one of the corner's other tabs, ${CORNER_TABS.slice(1).join(', ')}`);
           return;
         }
-        said(section.why, `section ${section.tab}: why`);
+        said(section.line, `section ${section.tab}: line`);
+        for (const lang of GUIDE_LANGS) {
+          const line = isPlainObject(section.line) && section.line[lang];
+          if (isNonEmptyString(line) && line.split('{tab}').length !== 2) {
+            fail(where, `section ${section.tab}: line in ${lang} does not name {tab} exactly once — the tab's name is the link in it`);
+          }
+        }
       });
     }
     if (!Array.isArray(guide.topics) || !guide.topics.length) { fail(where, 'has no topics'); continue; }

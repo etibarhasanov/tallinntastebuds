@@ -34,7 +34,7 @@
  * links to those addresses. They were followed, once: every press loaded the
  * page again, so the name, the tabs and the switch went blank and came back
  * on each, since they wait for the words. Now a press on any link to the
- * corner — a tab, a row of the home, the link an answer ends in — is
+ * corner — a tab, a line of the home, the link an answer ends in — is
  * caught, the address moves with pushState, and only what is under the tabs
  * is drawn again; Back and Forward walk the tabs through popstate, and a
  * press with a key held still opens the link in a new tab. Each is reported
@@ -45,10 +45,10 @@
  * THE HOME. The guide's shape, so it is drawn by the guide's code: the
  * route answers it as a tab, home.json beside the guide's three, with a
  * sentence saying who the corner is for and a line for each of the other
- * tabs besides. The lines are rows under "In this corner", each named by
- * its tab and pressed as its tab is; the questions are topics with no line
- * under the name, and an answer is a sentence or two and the one link into
- * the tab that says the rest. functions/azeri.js writes the same words into
+ * tabs besides. The lines are sentences under "Where to start", each with
+ * its tab's name in it as the link, pressed as its tab is; the questions
+ * are topics with no line under the name, and an answer is a sentence or
+ * two and the one link into the tab that says the rest. functions/azeri.js writes the same words into
  * the page as text for the reader that runs no script — a search engine
  * among them — and this file empties #shelf before it draws, as it always
  * did.
@@ -276,7 +276,7 @@
     }
   }
 
-  /* A press on a link to the corner — a tab, a row of the home, the link
+  /* A press on a link to the corner — a tab, a line of the home, the link
      an answer ends in — draws that tab under the tabs, and the address moves
      with it, rather than the link loading the page again: A TAB IS AN
      ADDRESS, AND NOT A LOAD, at the top. One listener on the document, since
@@ -802,8 +802,8 @@
   /* A tab of the guide: the line saying what it is, the flashcards where
      the tab is Estonian, the topics — a list beside an article on a wide
      screen — and under them the line saying whose word is final. The home
-     is drawn here too, once it has answered: its sentence, the other tabs
-     as rows, and the questions as its topics. */
+     is drawn here too, once it has answered: its sentence, a sentence
+     leading to each of the other tabs, and the questions as its topics. */
   function drawGuide(host) {
     if (SAY_KEYS[state.tab]) host.appendChild(el('p', { className: 'lists-say', text: t(SAY_KEYS[state.tab]) }));
     if (state.tab === 'estonian') {
@@ -812,7 +812,7 @@
     }
     if (state.tab === 'home' && state.guide) {
       host.appendChild(el('p', { className: 'lists-say azeri-home-say', text: state.guide.say }));
-      host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriInCorner') }));
+      host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriStart') }));
       host.appendChild(sections(state.guide.sections));
       host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriQuestions') }));
     }
@@ -828,29 +828,24 @@
     if (state.guide) host.appendChild(el('p', { className: 'azeri-credit', text: t('azeriGuideCredit') }));
   }
 
-  /* The home's rows, one for each of the other tabs, with the line saying
-     what is in it. A row is named and addressed by its tab, read off the
-     tab itself, so the two cannot say different things; a press on it is
-     drawn by wireLinks() as a press on the tab is, and counted under the
-     tab's own name. */
+  /* Where to start: a sentence for each of the other tabs, saying who it is
+     for, with the tab's name in it as the link — {tab} in the file's line.
+     It was a card of rows with a chevron each, until 2026-11-21: straight
+     under the tabs it read as the same menu twice, and the owner asked for
+     sentences instead. The name is read off the tab itself, so the two
+     cannot say different things; a press on it is drawn by wireLinks() as a
+     press on the tab is, and counted under the tab's own name. */
   function sections(list) {
-    var menu = el('div', { className: 'menu azeri-menu' });
+    var lines = el('ul', { className: 'azeri-start' });
     list.forEach(function (section) {
       var tab = document.querySelector('.azeri-tab[data-tab="' + section.tab + '"]');
       if (!tab) return;
-      var go = el('span', { className: 'menu-go', 'aria-hidden': 'true' });
-      go.innerHTML = CHEVRON;
-      var a = el('a', { className: 'menu-row', href: tab.getAttribute('href') }, [
-        el('span', { className: 'menu-say' }, [
-          el('span', { className: 'menu-name', text: tab.textContent }),
-          el('span', { className: 'menu-why', text: section.why })
-        ]),
-        go
-      ]);
+      var a = el('a', { href: tab.getAttribute('href'), text: tab.textContent });
       a.addEventListener('click', function () { track(tab.getAttribute('data-track')); });
-      menu.appendChild(el('div', { className: 'menu-item' }, [a]));
+      var parts = section.line.split('{tab}');
+      lines.appendChild(el('li', null, [parts[0], a, parts[1]]));
     });
-    return el('div', { className: 'card azeri-home-menu' }, [menu]);
+    return lines;
   }
 
   /* ---------------------------------------------------------- the places */

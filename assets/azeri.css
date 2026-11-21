@@ -2,7 +2,7 @@
  *
  * The page is the lists page's shape — its ground, its header, its cards,
  * the tokens of every style — and this file is only what the corner needs
- * on top of that: the tabs, the home's rows, the search and its chips, the
+ * on top of that: the tabs, the home's lines, the search and its chips, the
  * switches, the rows with their pictures and play buttons, an opened film
  * and the picture that turns into its player, the topics of the guide and
  * an opened one, and the places' map. Each was drawn as a mockup first and
@@ -375,14 +375,21 @@
 /* ------------------------------------------------------------- the home */
 
 /* The sentence saying who the corner is for, at a line length worth
-   reading on a desktop, and the other tabs as rows in a card: the rows'
-   own hairlines between them and none at the card's edges, which the card
-   draws already. */
+   reading on a desktop, and under it where to start: a sentence for each
+   of the other tabs, a hairline down its left, the tab's name in it as the
+   link — in the ink, bold, underlined in the accent. Sentences rather than
+   a card of rows since 2026-11-21: rows straight under the tabs read as the
+   same menu twice. */
 .azeri-home-say { max-width: 62ch; }
-.azeri-home-menu { padding: 2px 16px; margin-bottom: 20px; }
-.azeri-home-menu .azeri-menu { margin: 0; }
-.azeri-home-menu .menu-item:first-child .menu-row { border-top: 0; }
-.azeri-home-menu .menu-item:last-child .menu-row { border-bottom: 0; }
+.azeri-start { list-style: none; max-width: 62ch; margin: 0 0 22px; padding: 0; }
+.azeri-start li { padding: 7px 0 7px 14px; margin-bottom: 4px; border-left: 2px solid var(--hairline); line-height: 1.5; }
+.azeri-start a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
 
 /* ----------------------------------------------------------- the places */
 
@@ -519,7 +526,6 @@
      beside them. The same nodes — a topic's own box is taken away, so its
      row and its article can sit in the two columns. */
   .azeri-flash { max-width: 560px; }
-  .azeri-home-menu { max-width: 560px; }
   .azeri-rung { grid-template-columns: 170px minmax(0, 1fr); }
   .azeri-ladder { font-size: 14px; }
   .azeri-list.is-guide {
