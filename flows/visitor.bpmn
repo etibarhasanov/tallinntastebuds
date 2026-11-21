@@ -252,7 +252,7 @@ ref: assets/feedback.js</bpmn:documentation>
       <bpmn:incoming>visitor-e28</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="azeri-home" name="Opens /azeri on its home">
-      <bpmn:documentation>Nothing on the map links to the corner: it is found by its address, a search or the sitemap. Who it is for in a sentence, a row for each of the other five tabs, and twelve questions people ask, each answered in a sentence or two and ending in the one link into the tab that says the rest. In Azerbaijani first, or English, Russian or Estonian.
+      <bpmn:documentation>Nothing on the map links to the corner: it is found by its address, a search or the sitemap. Who it is for in a sentence, a sentence leading to each of the other five tabs, and twelve questions people ask, each answered in a sentence or two and ending in the one link into the tab that says the rest. In Azerbaijani first, or English, Russian or Estonian.
 when: page:azeri
 when: azeri_home
 ref: azeri.html

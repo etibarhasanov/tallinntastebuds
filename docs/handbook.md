@@ -16853,9 +16853,15 @@ thirty-eight, and the line under it two more. From the top:
 
 - one sentence saying who the corner is for, in the reading width a
   paragraph keeps on a desktop;
-- **In this corner**, the other five tabs as rows in a card, each its tab's
-  own name and a line saying what is in it, pressed as the tab is — drawn in
-  the page, not loaded, and counted under the tab's own name;
+- **Where to start**, a sentence for each of the other five tabs saying who
+  it is for — *Just arrived — **Estonia**: what to sort out, in the order it
+  comes up* — with the tab's own name in it as the link, pressed as the tab
+  is and counted under the tab's own name. It was **In this corner**, the
+  five as rows in a card with a chevron each, for its first day: straight
+  under the tabs it read as the same menu twice, and the owner asked for
+  sentences, shown two ways as a mockup and chose this one. Each sentence is
+  a `line` in the file with `{tab}` where the name goes, which the
+  validator holds to exactly once in each of the four;
 - **Questions people ask**, twelve of them, rows like the guide's topics with
   no line under the name. Each opens into a sentence or two and the one link
   into the tab and the topic that say the rest — *The first 30 days ›*,
@@ -16867,7 +16873,7 @@ thirty-eight, and the line under it two more. From the top:
 
 It is drawn by the guide's code because it is the guide's shape: the route
 answers it as a tab, `azeri/data/guide/home.json`, with `say` and `sections`
-beside the `topics`, and the page draws the sentence and the rows above the
+beside the `topics`, and the page draws the sentence and the lines above the
 same list of topics. Every answer is written out of what the guide already
 says — no figure that changes, the guide's rule, and B1 for citizenship
 because the guide says it — so a question whose topic is rewritten is a
@@ -16896,8 +16902,8 @@ The owner was shown it as a mockup at 390px and on a desktop, with its
 loading, error and two signed-out states, before any of it was built, said
 yes to it, and said that nobody should need to sign in for any of it — the
 rule the corner had been opened under the same morning. The words *Home*,
-*In this corner* and *Questions people ask* are `azeriHome`,
-`azeriInCorner` and `azeriQuestions` in all eleven languages; everything
+*Where to start* and *Questions people ask* are `azeriHome`,
+`azeriStart` and `azeriQuestions` in all eleven languages; everything
 else on it is in the file, in the corner's four.
 
 What it does not do: search the corner, take a question from a reader, or
@@ -17107,7 +17113,7 @@ Forward walk the tabs through `popstate`, a press with a key held still opens
 the link in a new tab, and each is reported to the site's count as the page
 view the load used to be, through `TTBTrack.view()`, the way the blog's
 in-page walks are. Since the home, any link into the corner is caught the
-same way — a row of the home, the link an answer ends in — by one listener
+same way — a line of the home, the link an answer ends in — by one listener
 on the document, `wireLinks()`, and one pressed from further down the page
 takes the reader back up to the tabs.
 
@@ -21478,7 +21484,7 @@ Azerbaijan, `assets/azeri.js` and the tabs in `azeri.html`:
 | `azeri_film` | `film` — a film opened |
 | `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) — a film played in the page, or a link out where it is not YouTube's |
 | `azeri_youtube` | `film` — Open on YouTube, under the player |
-| `azeri_home`, `azeri_films`, `azeri_estonia`, `azeri_study`, `azeri_estonian`, `azeri_food` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters — and a row of the home, under the name of the tab it opens |
+| `azeri_home`, `azeri_films`, `azeri_estonia`, `azeri_study`, `azeri_estonian`, `azeri_food` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters — and a line of the home, under the name of the tab it opens |
 | `azeri_topic` | `tab`, `topic` — a topic of the guide opened, or a question of the home, `tab` being `home` |
 | `azeri_source` | `topic` — a link out of an opened topic: an office, a university, a site in the list of them, or a row into one of the flashcards' lessons; or the link an answer of the home ends in, into a tab of the corner or the feedback page |
 | `azeri_way` | `way` — **Go to** a place to learn Estonian, the button at the foot of its topic on the Estonian tab |

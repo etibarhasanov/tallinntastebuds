@@ -4,24 +4,24 @@
   "say": {"az": "Estoniyada yaşayan və ya bura köçməyə hazırlaşan azərbaycanlılar üçün: ölkənin filmləri bir yerdə, və icma söhbətlərində hər həftə yeni gələnlərə verilən cavablar, bir dəfə yazılı şəkildə.", "en": "For Azerbaijanis who live in Estonia or are about to move here: the country’s films in one place, and what the community’s chats answer every week for somebody new, written down once.", "ru": "Для азербайджанцев, которые живут в Эстонии или собираются сюда переехать: фильмы страны в одном месте и ответы, которые каждую неделю дают новичкам в чатах общины, записанные один раз.", "et": "Eestis elavatele või siia kolida plaanivatele aserbaidžaanlastele: kodumaa filmid ühes kohas ja vastused, mida kogukonna vestlustes iga nädal uustulnukatele antakse, üks kord kirja pandud."},
   "sections": [
     {
-      "tab": "films",
-      "why": {"az": "1898-ci ildən bəri Azərbaycan kinosu, və elə burada baxıla bilən filmlər.", "en": "Azerbaijan’s cinema since 1898, and the films that play right here.", "ru": "Кино Азербайджана с 1898 года и фильмы, которые можно смотреть прямо здесь.", "et": "Aserbaidžaani kino aastast 1898 ja filmid, mida saab vaadata otse siin."}
-    },
-    {
       "tab": "estonia",
-      "why": {"az": "Gələndən sonra nəyi həll etməli, qarşıya çıxdığı ardıcıllıqla.", "en": "What to sort out after arriving, in the order it comes up.", "ru": "Что уладить после приезда, в том порядке, в каком это понадобится.", "et": "Mida pärast saabumist korda ajada, selles järjekorras, nagu see ette tuleb."}
+      "line": {"az": "Yenicə gəlmisinizsə — {tab}: nəyi hansı ardıcıllıqla həll etməli.", "en": "Just arrived — {tab}: what to sort out, in the order it comes up.", "ru": "Только приехали — {tab}: что уладить и в каком порядке.", "et": "Äsja saabunud — {tab}: mida korda ajada ja mis järjekorras."}
     },
     {
       "tab": "study",
-      "why": {"az": "Universitet seçməkdən ondan sonrakı ilk işə qədər.", "en": "From choosing a university to the first job after it.", "ru": "От выбора университета до первой работы после него.", "et": "Ülikooli valikust kuni esimese tööni pärast seda."}
+      "line": {"az": "Oxumağa gəlirsinizsə — {tab}: universitetdən ilk işə qədər.", "en": "Coming to study — {tab}: from the university to the first job.", "ru": "Приезжаете учиться — {tab}: от университета до первой работы.", "et": "Tulete õppima — {tab}: ülikoolist esimese tööni."}
     },
     {
       "tab": "estonian",
-      "why": {"az": "Eston dili Azərbaycan dilinin yanında, və onu harada öyrənmək.", "en": "The language set beside Azerbaijani, and where to learn it.", "ru": "Эстонский рядом с азербайджанским, и где его учить.", "et": "Eesti keel aserbaidžaani keele kõrval ja kus seda õppida."}
+      "line": {"az": "Dili öyrənmək üçün — {tab}.", "en": "To learn the language — {tab}.", "ru": "Чтобы выучить язык — {tab}.", "et": "Keelt õppima — {tab}."}
+    },
+    {
+      "tab": "films",
+      "line": {"az": "Darıxanda — {tab}. Elə saytda baxa bilərsiniz.", "en": "Missing home — {tab}. You can watch them right here on the site.", "ru": "Когда скучаете по дому — {tab}. Смотреть можно прямо на сайте.", "et": "Kui igatsete kodu — {tab}. Neid saab vaadata otse siin lehel."}
     },
     {
       "tab": "food",
-      "why": {"az": "Tallinndə Azərbaycan yeməyini harada yemək, xəritədə.", "en": "Where to eat Azerbaijani food in Tallinn, on a map.", "ru": "Где поесть азербайджанскую еду в Таллинне, на карте.", "et": "Kus Tallinnas Aserbaidžaani toitu süüa, kaardil."}
+      "line": {"az": "Ev yeməyi üçün — {tab}, xəritədə.", "en": "For a taste of home — {tab}, on a map.", "ru": "Для домашней еды — {tab}, на карте.", "et": "Kodumaise toidu jaoks — {tab}, kaardil."}
     }
   ],
   "topics": [

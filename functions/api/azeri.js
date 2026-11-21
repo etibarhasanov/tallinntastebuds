@@ -117,11 +117,12 @@
  * The home is the same answer with two things more, and its topics are the
  * questions people ask:
  *
- *   { tab: 'home', checked, say, sections: [ { tab, why } ], topics }
+ *   { tab: 'home', checked, say, sections: [ { tab, line } ], topics }
  *
  * `say` is the sentence under the tabs, saying who the corner is for, and
- * `sections` the other tabs in order, each with the line saying what is in
- * it — its name is the tab's own, which the page already has. A question has
+ * `sections` the other tabs in order, each with the sentence saying who it
+ * is for, `{tab}` in it where the tab's name goes as the link — the name is
+ * the tab's own, which the page already has. A question has
  * no `covers`, and its `links` are one address on this site, mostly a tab
  * and a topic of the corner, `/azeri?tab=estonia&topic=housing`, where the
  * answer is written out at length. functions/azeri.js reads the same file
@@ -183,7 +184,7 @@ function guideIn(file, lang) {
     tab: file.tab,
     checked: file.checked,
     ...(file.say ? { say: say(file.say) } : {}),
-    ...(file.sections ? { sections: file.sections.map((s) => ({ tab: s.tab, why: say(s.why) })) } : {}),
+    ...(file.sections ? { sections: file.sections.map((s) => ({ tab: s.tab, line: say(s.line) })) } : {}),
     topics: file.topics.map((topic) => ({
       id: topic.id,
       name: say(topic.name),

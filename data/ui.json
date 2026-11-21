@@ -1548,7 +1548,7 @@
     "azeriFlashSay": "Söz dəstləri, qrammatika dərsləri, dialoqlar və mahnılar.",
     "azeriFlashOpen": "Kartları aç",
     "azeriWays": "Dil, və onu başqa harada öyrənmək olar",
-    "azeriInCorner": "Bu guşədə",
+    "azeriStart": "Haradan başlamalı",
     "azeriQuestions": "Tez-tez verilən suallar",
     "azeriGoTo": "{site} saytına keç"
   },
@@ -3101,7 +3101,7 @@
     "azeriFlashSay": "Decks of words, grammar lessons, conversations and songs.",
     "azeriFlashOpen": "Open the flashcards",
     "azeriWays": "The language, and where else to learn it",
-    "azeriInCorner": "In this corner",
+    "azeriStart": "Where to start",
     "azeriQuestions": "Questions people ask",
     "azeriGoTo": "Go to {site}"
   },
@@ -4654,7 +4654,7 @@
     "azeriFlashSay": "Sõnakomplektid, grammatikatunnid, vestlused ja laulud.",
     "azeriFlashOpen": "Ava sõnakaardid",
     "azeriWays": "Keel ja kus veel seda õppida",
-    "azeriInCorner": "Selles nurgakeses",
+    "azeriStart": "Kust alustada",
     "azeriQuestions": "Korduma kippuvad küsimused",
     "azeriGoTo": "Mine lehele {site}"
   },
@@ -6207,7 +6207,7 @@
     "azeriFlashSay": "Sanapakkoja, kielioppitunteja, keskusteluja ja lauluja.",
     "azeriFlashOpen": "Avaa sanakortit",
     "azeriWays": "Kieli ja missä muualla sitä voi opiskella",
-    "azeriInCorner": "Tässä nurkassa",
+    "azeriStart": "Mistä aloittaa",
     "azeriQuestions": "Usein kysyttyä",
     "azeriGoTo": "Siirry sivulle {site}"
   },
@@ -7760,7 +7760,7 @@
     "azeriFlashSay": "Baralhos de palavras, lições de gramática, conversas e canções.",
     "azeriFlashOpen": "Abrir os cartões",
     "azeriWays": "A língua, e onde mais a aprender",
-    "azeriInCorner": "Neste canto",
+    "azeriStart": "Por onde começar",
     "azeriQuestions": "Perguntas frequentes",
     "azeriGoTo": "Ir para {site}"
   },
@@ -9313,7 +9313,7 @@
     "azeriFlashSay": "Наборы слов, уроки грамматики, диалоги и песни.",
     "azeriFlashOpen": "Открыть карточки",
     "azeriWays": "Язык и где ещё его учить",
-    "azeriInCorner": "В этом уголке",
+    "azeriStart": "С чего начать",
     "azeriQuestions": "Частые вопросы",
     "azeriGoTo": "Перейти на {site}"
   },
@@ -10866,7 +10866,7 @@
     "azeriFlashSay": "Mazos de palabras, lecciones de gramática, conversaciones y canciones.",
     "azeriFlashOpen": "Abrir las tarjetas",
     "azeriWays": "La lengua, y dónde más aprenderla",
-    "azeriInCorner": "En este rincón",
+    "azeriStart": "Por dónde empezar",
     "azeriQuestions": "Preguntas frecuentes",
     "azeriGoTo": "Ir a {site}"
   },
@@ -12419,7 +12419,7 @@
     "azeriFlashSay": "Kelime desteleri, dil bilgisi dersleri, diyaloglar ve şarkılar.",
     "azeriFlashOpen": "Kartları aç",
     "azeriWays": "Dil ve onu başka nerede öğrenebileceğin",
-    "azeriInCorner": "Bu köşede",
+    "azeriStart": "Nereden başlamalı",
     "azeriQuestions": "Sık sorulan sorular",
     "azeriGoTo": "{site} sitesine git"
   },
@@ -13972,7 +13972,7 @@
     "azeriFlashSay": "Набори слів, уроки граматики, діалоги й пісні.",
     "azeriFlashOpen": "Відкрити картки",
     "azeriWays": "Мова і де ще її вчити",
-    "azeriInCorner": "У цьому куточку",
+    "azeriStart": "З чого почати",
     "azeriQuestions": "Часті запитання",
     "azeriGoTo": "Перейти на {site}"
   },
@@ -15525,7 +15525,7 @@
     "azeriFlashSay": "Des paquets de mots, des leçons de grammaire, des conversations et des chansons.",
     "azeriFlashOpen": "Ouvrir les cartes",
     "azeriWays": "La langue, et où l’apprendre ailleurs",
-    "azeriInCorner": "Dans ce coin",
+    "azeriStart": "Par où commencer",
     "azeriQuestions": "Questions fréquentes",
     "azeriGoTo": "Aller sur {site}"
   },
@@ -17078,7 +17078,7 @@
     "azeriFlashSay": "Wortstapel, Grammatiklektionen, Gespräche und Lieder.",
     "azeriFlashOpen": "Karteikarten öffnen",
     "azeriWays": "Die Sprache, und wo man sie sonst lernt",
-    "azeriInCorner": "In dieser Ecke",
+    "azeriStart": "Wo anfangen",
     "azeriQuestions": "Häufige Fragen",
     "azeriGoTo": "Zu {site}"
   }
