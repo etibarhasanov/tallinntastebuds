@@ -2802,7 +2802,7 @@ account, `Access-Control-Allow-Origin: *`, and nothing counted.
 | `/api/v1/places` | the open places on the map: `q`, `type`, `max_price`, `near=lat,lng`, `radius`, `ids`, `lang`, `limit` (≤ 100), `offset` |
 | `/api/v1/places/<id>` | one place, every photo and a Google Maps link; a closed one is `404 closed` |
 | `/api/v1/lists` | the public lists of four places or more: `q`, `by`, `limit` (≤ 50), `offset` |
-| `/api/v1/lists/<id>` | one public list, its rows in its author's order, `approved: false` on a row the map does not have |
+| `/api/v1/lists/<id>` | one public list, its rows in its author's order, `approved: false` on a row the map does not have, and `pin`, the marker its author chose, `''` for none |
 | `/api/v1/types` | the fourteen kinds of place, named in all eleven languages |
 
 Every answer is `{ "version": 1, … }` and carries `API-Version: 1`. An error
@@ -2913,6 +2913,30 @@ it is the public API's first user, and the proof that what `/developers`
 promises is enough to build a map with. A list row with no point is left
 off; a list that is empty, private or missing says **Nothing to show here**;
 an API out of reach says so with **Try again**.
+
+**It opens close, and draws the map's pins.** The opening view is every pin,
+fitted to the frame exactly — `zoomSnap: 0`, as on the map — and kept out
+from under the chip and off the credit. Leaflet's own fit rounds down to a
+whole level, and on the Azerbaijan corner's **Azerbaijani places** that was
+10 on a phone and 11 on a desk, twenty-five places in the middle third of
+the frame; it is 10.9 and 11.7 now, which the owner chose on 2026-11-21.
+The pins are the ones `/?list=` draws, by **The pins**: the mouth on a
+place on the map, in its three readings, and the list's own marker on every
+row the map does not have — `pin` on `/api/v1/lists/<id>`, added for this. Until then every
+pin here was one drop in the accent, and a list on the embed and the same
+list on the map looked like two different lists. Nothing clusters, so a
+place on the map stands above a marker where the two touch; Telliskivi
+Šašlõkk was a mouth hidden under the Shaurma Kebab next door.
+
+**Closer in, the names.** From zoom 13 a pin carries its name wherever the
+whole name fits, clear of every pin, every name already placed, the chip and
+the card — the map's own greedy layout, `labelPlan()` in `assets/app.js`,
+which starts a level later at 14 because it has twelve hundred places to
+the embed's hundred at most. The open place is named whatever it lands on,
+in the accent, and is panned out from under its own card into the strip
+above it when there is one — on a phone a card with a photograph fills the
+frame, and the map stays where it is. A name is a text node, as on the map: a row off Google
+carries whatever the business called itself there.
 
 **The one page another site may frame.** Every other page is
 `frame-ancestors 'self'` — **The security headers** — and this one is
@@ -17314,8 +17338,11 @@ site can put on its page, **The map on your site** — so it is in the
 language the corner is read in, it has its own loading, error and empty
 states, and a pin opens a card with the place's photograph, address and
 the list's sentence, and a button that opens the place on the site in a new
-tab. Under the frame are who made the list and **Open the whole list**,
-which goes to the list's own page, every sentence in order. Which list is
+tab. Its pins are the map's: the mouth on the six of the list's places that
+are on the map, the plate the list wears on the other nineteen, and from
+zoom 13 their names. Under the frame are who made the list and **Open the
+whole list**, which goes to the list's own page, every sentence in order.
+Which list is
 `FOOD_LIST` in `assets/azeri.js`, and the tab asks the route for nothing.
 For its first day it asked `/api/azeri?tab=food` for the id, so that the
 tab stood behind the same door as the others; when the door went, the ask
@@ -19473,6 +19500,10 @@ what each of the list's places is drawn as in the panel above it, so a page of
 twenty is twenty constellations rather than twenty identical red ones, and the
 bakeries one is found without reading a word. See **Public lists** for where
 that panel comes from and why a phone draws none.
+
+And off the site, on `/embed?list=<id>` — **The map on your site** — whose
+pins are the map's own, the mouth and the list's marker, read out of the
+`pin` the public API answers the list with.
 
 On the map it says something the four pages cannot: the pins under the band
 are already wearing that glyph, so the name and what is drawn under it are one
