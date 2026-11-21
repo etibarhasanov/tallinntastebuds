@@ -2826,11 +2826,15 @@ CORS headers, since they pass other people's free services through. A place
 here is the map's own row, with the phone and website the map holds.
 
 **What it costs.** The places are `data/restaurants.json` through
-`mapPlaces()`, no database. The lists read D1: `publicLists()` is kept five
-minutes per isolate, and every answer five minutes in the colo, keyed on the
-address — so a loop over one address is answered from the colo, and a loop
-over a thousand reads the lists once per isolate per five minutes. A database
-that is down is `503 unavailable` on the lists and nothing else.
+`mapPlaces()`, no database. The lists read D1: `publicLists()` is kept per
+isolate until a list changes — `keptLists()`, under the lists mark (**What is
+cached, and until when** under **Lists**) — and every answer five minutes in
+the colo, keyed on the address and, for the lists, on the mark, so the colo
+never answers from before an edit. A loop over one address is answered from
+the colo, and a loop over a thousand reads the lists once per isolate per
+edit; a lists request costs one row of `meta` for the mark. A browser, or
+another site's cache, may still keep an answer five minutes. A database that
+is down is `503 unavailable` on the lists and nothing else.
 
 ### Versions, and the promise in the address
 
@@ -8475,9 +8479,10 @@ reader got there — the directory, a link somebody sent, a byline, a search
 result. Not when the owner opens their own, which is checked in `boot()`: a
 list its author reloads while editing it would otherwise climb a page ranked
 on strangers. The row is one upsert bounded by the number of lists there are
-rather than by the traffic. The same batch copies the new total onto the
+rather than by the traffic. Once a week the total is copied onto the
 list's own row, `lists.opens`, which is what the directory sorts by — so it
-reads no `press_counts` at all. `db/schema.sql` over `press_counts` is the
+reads no `press_counts` at all, and its order holds still from Monday to
+Monday: **What is cached, and until when** under **Lists**. `db/schema.sql` over `press_counts` is the
 whole of that table's reasoning, and over `lists` the reasoning for its three
 counts.
 
@@ -8719,14 +8724,15 @@ There was a counts table for about an hour once, and it went: a keep needs an
 account, one page asked, and a migration run by hand was a real cost bought
 against a hypothetical one. The hypothetical came, so each count is now kept
 the way `save_counts` is — recomputed from its own source, on that source's
-key, in the batch that changes it, never nudged by one. `KEEPS_SQL` in
-`functions/api/lists.js` on a keep or an un-keep — deleting an account leaves
-the lists it kept one high, on purpose, since they were kept and nobody needs
-that number exact; `ITEMS_SQL` beside it on an add or a drop; and the
-opens copied off `press_counts`' running total by `POST /api/stats` in the
-batch that bumps it. There is no index for the three sorts, on purpose: at a
-few dozen lists, reading all of them is cheaper than keeping three indexes,
-and the comment above the read in `mostKept()` carries the number.
+key, never nudged by one. `ITEMS_SQL` in `functions/api/lists.js` on an add or
+a drop, in the batch that changes it; and the keeps and the opens once a week,
+from `list_keeps` and from `press_counts`' running total, on the first visit
+after Monday 00:00 UTC — **THE WEEK THE COUNTS ARE FROM** in
+`functions/api/_lists.js`. Until 2026-11-21 those two were copied in the batch
+of every keep and every open, and the owner asked for an order that holds
+still for a week instead. There is no index for the three sorts, on purpose:
+at a few dozen lists, reading all of them is cheaper than keeping three
+indexes, and the comment above the read in `mostKept()` carries the number.
 
 **Nothing about a list itself changed.** No new button on it, no new state,
 no third option under **Who can open it**. A keep already existed and was a
@@ -9261,8 +9267,8 @@ places that are open.
 The answer is cached five minutes: it changes when a deploy or a sync changes
 it, and it is the same for everybody — unlike a list, which is read by its
 owner in the middle of writing it and is never cached for them; the copy a
-colo keeps of a public list is of the page a stranger gets, for a minute, and
-**Kept in the colo** under **Getting found** says how.
+colo keeps of a public list is of the page a stranger gets, until the list
+changes, and **What is cached, and until when** under **Lists** says how.
 
 Five minutes in the Function as well as in the browser, and the Function's is
 the one that protects anything. `max-age` is advice to the browser:
@@ -9606,10 +9612,11 @@ survives the absence of — see **The two columns, and the afternoon they do
 not exist** under **The pins**.
 
 The keeps are counted onto the list's own row, `lists.keeps`, the way
-`save_counts` sits behind the saves: recomputed inside the batch that changes
-them, never nudged by one — the second **Where the number comes from** under
-**Public lists**. `lists.items` and `lists.opens` beside it are the same idea for the
-places on a list and the times it was opened.
+`save_counts` sits behind the saves: recomputed from their own rows, never
+nudged by one, and once a week — the second **Where the number comes from**
+under **Public lists**. `lists.items` and `lists.opens` beside it are the same
+idea for the places on a list, counted in the batch of every add and drop, and
+the times it was opened, counted weekly like the keeps.
 
 Deleting a list deletes the keeps on it, in the same batch. Left behind they
 would be invisible — the index joins them to a list that is gone — and still
@@ -9685,19 +9692,52 @@ half of this. A list is published under your name and twenty-four of them is
 more than anybody maintains; a keep is a bookmark, nothing goes out under
 anybody's name, and a bookmark drawer is allowed to be a drawer.
 
-### What is not cached
+### What is cached, and until when
 
-Nothing on `/api/v1/me/lists`, and nothing `/list/<id>` serves. It is the one place
-in this codebase that does not reach for the edge, deliberately: a public list
-is read by strangers, which argues for a cache, and it is also read by its
-owner in the middle of writing it, which argues against one. Losing an edit
-behind a thirty-second TTL would be the feature feeling broken at the exact
-moment somebody is using it. A list read is a handful of rows on an indexed
-key. It can afford to be true.
+Nothing a session reads. `/api/v1/me/lists` answers somebody their own lists,
+whether they kept each, and a list they are in the middle of writing, and none
+of that is kept anywhere: a public list is read by strangers, which argues for
+a cache, and it is also read by its owner mid-edit, which argues against one,
+and losing an edit behind a TTL would be the feature feeling broken at the
+exact moment somebody is using it. A private list is served only to the
+session that owns it, which is the other half of the reason: a shared copy of
+that response would be somebody's private page handed to the next person who
+asked for it.
 
-A private list is served only to the session that owns it, which is the other
-half of the reason: a shared copy of that response would be somebody's private
-page handed to the next person who asked for it.
+What strangers read is kept, and kept until it changes rather than for a
+minute. A list's own page, `/lists` and the chips and search on it, Discover,
+the public API's lists and the lists an assistant searches are each filed
+under one mark, `lists_at`, a row of `meta` that every write to a list adds one
+to in the same batch: making one, renaming it, the line under it, its pin,
+public or private, a place on or off it, a note, the order, deleting it — and
+a new username or a deleted account, which change a byline or take lists
+away. A visit asks for the mark first, one row by its key, and looks for a copy
+filed under it; the edit moved the mark, so a stranger reads a renamed title
+as soon as its owner does, and in every colo at once, which no purge could do
+— a purge reaches one colo. A copy lives a week at the most. A list's own page
+asks for Google's two marks beside it, since it prints Google's hours, phone
+and rating on every row off Google's roll and the refresh moves those without
+touching a list. **WHEN A LIST LAST CHANGED** in `functions/api/_lists.js` is
+the whole of it, and the owner asked for it on 2026-11-21, with the renaming of
+a list as the example.
+
+The counts are the week's. `lists.opens` and `lists.keeps` — the order of
+**Most opened** and **Most saved** on `/lists`, of **Popular lists** on
+Discover, and the number beside each list in its owner's drawer — are made on
+the first visit after Monday 00:00 UTC, from `press_counts` and `list_keeps`,
+and hold still until the next Monday; Discover's quiet places and its Play
+card's finishers are made the same week and kept in `meta`. Opens and keeps are
+still counted as they happen, which is what next Monday's numbers come from.
+Two things stay live, because the person who pressed is looking: the number
+beside a list's own Save button, and the answer to pressing it. **THE WEEK THE
+COUNTS ARE FROM** in the same file.
+
+It costs one row of `meta` a visit — three on a list's own page — and a copy
+made again after an edit anywhere, the week turning or a deploy, rather than
+once a minute per colo; once a week about sixty rows for the counts and 279 for
+the quiet places. Over 18–21 November 2026, before it, the lists read about
+seven thousand rows a day for twenty-five lists, and every open wrote its total
+onto its list.
 
 ### Indexed, and unfurled
 
@@ -20254,8 +20294,10 @@ the bottom, and a place added yesterday is on it today. A place that is
 closed, or closed for now, is never on it; they sit at the bottom of the
 count because they are shut, and the shelf would otherwise stand on doors
 nobody can go through. No position is printed on a card, since the front of
-this shelf is not a place to be. It turns within five minutes of an open,
-which is how long the answer is kept. The other end of the order is not sent
+this shelf is not a place to be. It turns once a week: the five are worked out
+on the first visit after Monday 00:00 UTC and kept for everybody until the
+next, the owner's call on 2026-11-21, kept two deep so a place that closes
+midweek leaves the shelf at the next deploy. The other end of the order is not sent
 at all: the route answered `opened`, the old shelf's ids, for a few hours
 more in case the iPhone app drew it, and it never had.
 
@@ -21993,12 +22035,15 @@ three pages served from `lists.html` seed whose you are and what you kept,
 so a copy of one is kept only where nobody was signed in, and a signed-in
 visit is rendered and answered `no-store` as it always was; the blog reads no
 session and keeps one copy for everybody. The map's copy lives a day, since
-only a deploy changes it; the pages read the database too, so theirs live a
-minute, which is what a crawler walking the directory or a link opened by a
-hundred people in an hour costs one render each, and short enough that a
-list edited by its owner is what strangers see within the minute. Nothing
-purges on a write — a purge reaches one colo, and the minute is what the
-others would have had anyway. Every copy carries a weak ETag, so a browser
+only a deploy changes it. A list's page and the directory read the database
+too, and file their copies under the lists mark beside the deployment, so
+theirs live until a list changes and a week at the most — an edit moves the
+key in every colo at once (**What is cached, and until when** under
+**Lists**). A profile and a post move no mark, so theirs live a minute,
+which is what a crawler walking them or a link opened by a hundred people in
+an hour costs one render each, and short enough that an edit is what
+strangers see within the minute. Nothing purges on a write — a purge reaches
+one colo, and the minute is what the others would have had anyway. Every copy carries a weak ETag, so a browser
 that holds the page gets a 304; the map is told `public, max-age=0,
 must-revalidate`, the same words `_headers` gives the static file and the
 validator holds the two to, and the pages `private` with the same

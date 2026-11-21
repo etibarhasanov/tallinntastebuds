@@ -1,5 +1,5 @@
 /**
- * Tallinn Tastebuds — reading one list.
+ * Tallinn Tastebuds — reading one list, and knowing when any list changed.
  *
  * Underscore-prefixed, so this is a module and never a route. It holds the one
  * thing three files all need: the shape of a list as the page wants it.
@@ -11,13 +11,18 @@
  *                              tool with an id, signed out, so an assistant
  *                              reads what a stranger does
  *
+ * And the mark every copy of a list is kept under, with the week its counts
+ * are from — WHEN A LIST LAST CHANGED below — which every route that keeps a
+ * copy asks and every write to a list moves.
+ *
  * It lives here rather than in _lib.js because _lib.js is the plumbing every
  * route needs — hashing, sessions, which database this is — and this is one
  * feature's query.
  */
 
-import { catalogue, venuesByIds, addedByIds, isAdded } from './_lib.js';
+import { catalogue, venuesByIds, addedByIds, isAdded, VENUE_MARKS } from './_lib.js';
 import { readingPins, pinSelect, pinsOf } from './_pins.js';
+import { weekOf } from './_rank.js';
 
 /* The share code's shape. A slug, a dash and six characters, but written as a
    general slug rather than as that exact pattern: it is the primary key of a
@@ -57,6 +62,140 @@ export async function readingMustOrder(env, make) {
     mustOrderColumn = false;
     return make(false);
   }
+}
+
+/* ------------------------------------------------ WHEN A LIST LAST CHANGED
+ *
+ * Every copy of a list kept anywhere — a list's page, the directory and the
+ * directory's own API in the colo, Discover's shelves, the public API's and
+ * an assistant's copy of every public list in an isolate — is filed under one
+ * mark and kept until the mark moves, rather than for one minute or five. The
+ * mark is a row of `meta`, `lists_at`, a number that every write changing
+ * what a list shows adds one to in the same batch as the write: making a
+ * list, its title, the line under it, its pin, whether it is public, a place
+ * on or off it, a note, the order, deleting it — ./lists.js — and the two
+ * writes in ./account.js that change a list's byline or take lists away, a
+ * new username and a deleted account. So a copy filed under the mark cannot
+ * outlive a write: the write moved the mark, and nobody asks for the old one
+ * again. The owner asked for it on 21 November 2026, with the renaming of a
+ * list as the example: a stranger sees a new title as soon as the owner does.
+ *
+ * Asked before the rows, never after. A copy is made of rows read after the
+ * mark it is filed under, so a write landing between the two files newer
+ * rows under the older mark — one more rebuild on the next visit — and never
+ * older rows under the newer one.
+ *
+ * A count and not a time, because two writes in the same millisecond would be
+ * one time and two changes, and a copy made between them would outlive the
+ * second.
+ *
+ * One mark for every list, not one each, because the directory, the shelves
+ * and the API's search are all of them at once — and because a dozen edits a
+ * day across twenty-five lists (21 Nov 2026) is a dozen rebuilds per colo of
+ * each copy. The day that is too many is the day one list's page gets a mark
+ * of its own.
+ *
+ * WHAT IS NOT ON IT
+ *
+ * The counts, which have a week of their own below. And the Google details of
+ * a place on a list, which move with googleTable()'s marks in ./_lib.js and
+ * not with this: the one page that prints them, a list's own, asks for those
+ * too — listsMark(env, true).
+ *
+ * WHAT IT COSTS
+ *
+ * One row of `meta` by its key on each visit to anything that keeps a copy,
+ * three for a list's own page, and on an isolate's first visit of a week one
+ * more. A copy is made again after a write anywhere, the week turning, a
+ * deploy, or the colo letting it go — not on a clock.
+ */
+const MARK = 'lists_at';
+const MARK_SQL =
+  "INSERT INTO meta (key, value) VALUES (?, '1') " +
+  'ON CONFLICT(key) DO UPDATE SET value = CAST(value AS INTEGER) + 1';
+
+/* The statement that moves the mark, for the batch of the write that changed
+   a list — in the batch, so the two land together or not at all. */
+export function listsChanged(env) {
+  return env.DB.prepare(MARK_SQL).bind(MARK);
+}
+
+/* ---------------------------------------------- THE WEEK THE COUNTS ARE FROM
+ *
+ * `lists.opens` and `lists.keeps` — the order of Most opened and Most saved on
+ * /lists, of Popular lists on Discover, and the number beside a list in its
+ * owner's drawer — are made once a week: on the first visit after Monday
+ * 00:00 UTC to anything that asks for the mark, by one statement that sets
+ * both on every list from what was counted, in the batch that moves the mark
+ * and writes the week into `lists_week`. Until then they are last week's, on
+ * purpose. The owner asked for it on 21 November 2026: an order that holds
+ * still for a week, and copies that are not made again every time somebody
+ * opens a list.
+ *
+ * The counting has not stopped. Every open is still press_counts bumped by
+ * POST /api/stats and every keep a row of list_keeps, which is what next
+ * week's numbers are read from; what stopped is copying each onto the list's
+ * row as it happened. Two things still read them live, because the person
+ * who pressed is looking: the count beside a list's own Save button, which
+ * readList() below counts, and the answer to the press itself in keep() in
+ * ./lists.js.
+ *
+ * The week is weekOf() in ./_rank.js, the UTC Monday Google's ranking is made
+ * in too. Each isolate remembers the last week it found made, so after its
+ * first visit of a week it asks for the mark alone. Two isolates that find a
+ * week unmade at the same moment both make it, which is the same numbers
+ * twice. A week whose making fails stays last week's in that isolate rather
+ * than being tried on every visit; the next isolate tries again.
+ *
+ * Once a week, then: every list, its press_counts row on that table's key and
+ * its keeps on list_keeps', about sixty rows read for twenty-five lists and
+ * six keeps on 21 Nov 2026, and a row written per list.
+ */
+const WEEK = 'lists_week';
+
+/* The kind POST /api/stats counts a list's opens under — LIST in ./stats.js,
+   restated rather than imported, since that file is a route. */
+const OPENED = 'list';
+
+const RECOUNT_SQL =
+  'UPDATE lists SET ' +
+  'opens = COALESCE((SELECT n FROM press_counts WHERE kind = ? AND id = lists.id), 0), ' +
+  'keeps = (SELECT COUNT(*) FROM list_keeps WHERE list_id = lists.id)';
+
+let weekMade = '';
+
+/* What a copy of a list is filed under: the mark and the week, as one short
+   string for a key — with Google's two marks as well where `google` asks for
+   them. The week's counts are made first where they are due, so the mark
+   read is the one their making moved. Throws where `meta` cannot be read,
+   which every caller takes as "keep no copy this time". The caller has
+   already asked wrongDatabase(). */
+export async function listsMark(env, google) {
+  const week = weekOf(Date.now());
+  if (weekMade !== week) {
+    /* One row of meta by its key. */
+    const made = await env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind(WEEK).first();
+    if (!made || made.value !== week) {
+      try {
+        await env.DB.batch([
+          env.DB.prepare(RECOUNT_SQL).bind(OPENED),
+          listsChanged(env),
+          env.DB
+            .prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value')
+            .bind(WEEK, week)
+        ]);
+      } catch (e) { /* last week's counts, in this isolate — see above */ }
+    }
+    weekMade = week;
+  }
+  /* One row of meta by its key, or three. */
+  const keys = google ? [MARK, ...VENUE_MARKS] : [MARK];
+  const { results } = await env.DB
+    .prepare(google ? 'SELECT key, value FROM meta WHERE key IN (?, ?, ?)' : 'SELECT key, value FROM meta WHERE key = ?')
+    .bind(...keys)
+    .all();
+  const value = (key) => ((results || []).find((row) => row.key === key) || {}).value || '0';
+  return keys.map(value).join('.') + '.' + week;
 }
 
 /**

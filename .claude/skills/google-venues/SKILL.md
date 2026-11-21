@@ -99,7 +99,10 @@ else runs.
    Then `node tools/googlelists.mjs`, which rewrites `db/google-lists.sql`
    from the new export; `--show` first prints the six lists with the score,
    rating and count beside each name, which is the diff worth reading
-   before the SQL's.
+   before the SQL's. Its last statement adds one to `lists_at` in `meta`, so
+   every copy of a list kept under that mark — a list's page, `/lists`,
+   Discover, the public API — is made again at its next visit rather than at
+   the next Monday: `listsChanged()` in `functions/api/_lists.js`.
    Then `node tools/city.mjs`, which rewrites `data/city.json` — coordinates
    and nothing else, one pair a line, so the diff says which of the city's
    dots moved. Nothing loads it: it is served as an asset.

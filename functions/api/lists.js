@@ -36,8 +36,8 @@
  *     on somebody else's list is the whole point of the gesture, so it is
  *     routed above the ownership check and does its own narrower one — the
  *     list must exist and be public, the row it writes is keyed by the
- *     session's own user id, and the one column of the list it touches is
- *     `keeps`, set to a recount of those rows. See keep().
+ *     session's own user id, and it touches no column of the list at all:
+ *     the count on the list's row is made once a week. See keep().
  *   - A place id that is on none of the three rolls — data/places.json,
  *     google_venues, or the added_places somebody typed in — is refused, so
  *     nobody can fill the table with rows for places that do not exist. That
@@ -45,14 +45,13 @@
  *   - Everything a person types is capped in length before it is stored, so
  *     one list cannot become a megabyte of somebody's prose.
  *
- * NOTHING HERE IS CACHED
+ * NOTHING A SESSION READS IS CACHED
  *
- * Deliberately, and it is the one place this codebase does not reach for the
- * edge. A public list is read by strangers, which argues for a cache; it is
- * also read by its owner in the middle of writing it, which argues against
- * one, and losing an edit behind a thirty-second TTL would be the feature
- * feeling broken at the exact moment somebody is using it. A list read is a
- * handful of rows on an indexed key. It can afford to be true.
+ * Deliberately. A public list is read by strangers, which argues for a cache;
+ * it is also read by its owner in the middle of writing it, which argues
+ * against one, and losing an edit behind a thirty-second TTL would be the
+ * feature feeling broken at the exact moment somebody is using it. A list
+ * read is a handful of rows on an indexed key. It can afford to be true.
  *
  * The keep and its count are in the same answer and under the same rule. The
  * count is the weaker case for freshness — nobody is harmed by a bookmark
@@ -61,17 +60,27 @@
  * response was made for somebody else, is the feature lying about your own
  * collection. A private list is served only to the session that owns it for
  * exactly the same reason.
+ *
+ * The one answer kept is everybody's lists asked with no session at all — the
+ * chips and the search on /lists, signed out — which is the same for every
+ * stranger. It is kept in the colo under the lists mark, which every write
+ * below moves, so it is never a copy from before an edit: WHEN A LIST LAST
+ * CHANGED in ./_lists.js.
  */
 
 import { json, sessionUser, catalogue, venuesByIds, addedByIds, isAdded, wrongDatabase, inEstonia, inPages, PAGE } from './_lib.js';
 /* Every write that went through is counted — countUse() in ./_visitors.js. */
 import { countUse } from './_visitors.js';
 /* Reading one list is shared with functions/list/[id].js, which serves the
-   page a link opens with the list already in it. */
-import { readList, LIST_ID, MAX_LISTS, readingMustOrder } from './_lists.js';
+   page a link opens with the list already in it — and so is the mark every
+   write here moves. */
+import { readList, LIST_ID, MAX_LISTS, readingMustOrder, listsChanged, listsMark } from './_lists.js';
 /* Every public list, most opened first — shared with functions/lists/index.js,
    which seeds the first page into the document it serves. */
-import { mostKept, sortOf } from './_mostkept.js';
+import { mostKept, sortOf, query } from './_mostkept.js';
+/* How a copy is kept in the colo and handed to a browser, shared with the
+   pages that keep one. */
+import { PRIVATELY, MARKED_TTL, canonical, coloKey, fromColo, keepInColo, signedIn } from '../_shell.js';
 
 /* The eight markers a list may wear, and the reader that survives a database
    the ALTER has not reached yet. */
@@ -109,18 +118,15 @@ const MAX_ADDED = 100;
 const MAX_NAME = 80;
 const MAX_ADDRESS = 120;
 
-/* The two counts a list carries on its own row, so /lists can sort and
-   filter by them without counting anything — mostKept() in _mostkept.js.
-   Each sets the column to a recount of one list's rows on that table's key,
-   never a +1, in the same batch as the write it follows, so neither can
-   drift from what it counts. KEEPS_SQL binds the list id twice; ITEMS_SQL
-   the edit time, which every add and drop stamps anyway, then the id twice.
+/* How many places a list holds, on its own row, so /lists can hold a list to
+   its four-place floor without counting anything — mostKept() in
+   _mostkept.js. Set to a recount of one list's rows on list_items' key, never
+   a +1, in the same batch as the add or the drop it follows, so it cannot
+   drift from what it counts. It binds the edit time, which every add and drop
+   stamps anyway, then the id twice.
 
-   Deleting an account takes its keeps away without recounting the lists it
-   kept, on purpose: those people did keep them, and the number being one
-   high until somebody next keeps or drops is not worth the code. */
-const KEEPS_SQL =
-  'UPDATE lists SET keeps = (SELECT COUNT(*) FROM list_keeps WHERE list_id = ?) WHERE id = ?';
+   The row's other two counts, the opens and the keeps, are made once a week
+   instead — THE WEEK THE COUNTS ARE FROM in ./_lists.js. */
 const ITEMS_SQL =
   'UPDATE lists SET updated_at = ?, items = (SELECT COUNT(*) FROM list_items WHERE list_id = ?) WHERE id = ?';
 /* The three lengths a list has to fit, mirrored by assets/lists.js. */
@@ -246,29 +252,52 @@ export async function onRequestGet(context) {
      It is not quite the one answer here that ignores who is asking, and it was
      until the rows grew a bookmark of their own: the lists and their order are
      the same twenty for everybody, and `kept` and `mine` on each of them are
-     about the session. That is why the answer is no-store like the rest of
-     this route — a shared copy of it would draw somebody else's bookmarks. */
+     about the session. So a signed-in answer is no-store like the rest of
+     this route — a shared copy of it would draw somebody else's bookmarks —
+     and only the answer to nobody is kept: in the colo, under the address
+     with what the answer depends on and nothing else, and the lists mark.
+
+     The mark is asked whoever is asking, since asking it is what makes the
+     week's counts where they are due, and the order below is read from them.
+     A mark that cannot be read is an answer made and not kept. The cursor is
+     cut to the longest a real one can be, so a made-up one is one more first
+     page and not a key as long as somebody likes. */
   if (params.get('all')) {
-    const page = await mostKept(context, {
-      from: params.get('from') || '',
-      q: params.get('q') || '',
-      sort: sortOf(params.get('sort')),
-      user: user
-    });
-    return json({
+    const from = (params.get('from') || '').slice(0, 80);
+    const q = query(params.get('q'));
+    const sort = sortOf(params.get('sort'));
+    let key = null;
+    try {
+      const mark = await listsMark(env);
+      if (!signedIn(request)) {
+        const url = new URL(canonical(request, '/api/v1/me/lists'));
+        url.searchParams.set('all', '1');
+        if (from) url.searchParams.set('from', from);
+        if (q) url.searchParams.set('q', q);
+        url.searchParams.set('sort', sort);
+        key = coloKey(url.toString(), mark);
+        const hit = await fromColo(request, key, PRIVATELY);
+        if (hit) return hit;
+      }
+    } catch (e) {
+      key = null;
+    }
+    const page = await mostKept(context, { from: from, q: q, sort: sort, user: user });
+    const res = json({
       ready: true,
       user: user ? user.username : null,
       all: page.all,
       sort: page.sort,
       next: page.next
     }, 200);
+    return key ? keepInColo(context, key, res, MARKED_TTL, PRIVATELY) : res;
   }
 
   if (!user) return json({ ready: true, user: null, lists: [] }, 200);
 
   /* The index: every list this account holds, newest edit first, each with
-     how many places are on it and how many people kept it — the two counts
-     the list's own row carries, KEEPS_SQL and ITEMS_SQL above.
+     how many places are on it and how many people kept it — two of the counts
+     the list's own row carries, ITEMS_SQL above and the week's keeps.
      So this reads the account's lists on idx_lists_owner and nothing else,
      at most the twenty-four an account can make. */
   const { results } = await readingPins(env, (pins) => env.DB
@@ -430,13 +459,16 @@ async function create(context, body, user) {
   for (let tries = 0; tries < 5; tries++) {
     const id = stem + '-' + code();
     try {
-      await env.DB
-        .prepare(
-          'INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at) ' +
-          'VALUES (?, ?, ?, ?, 1, ?, ?)'
-        )
-        .bind(id, user.id, title, words(body.intro, MAX_INTRO), now, now)
-        .run();
+      await env.DB.batch([
+        env.DB
+          .prepare(
+            'INSERT INTO lists (id, owner, title, intro, public, created_at, updated_at) ' +
+            'VALUES (?, ?, ?, ?, 1, ?, ?)'
+          )
+          .bind(id, user.id, title, words(body.intro, MAX_INTRO), now, now),
+        /* Under Newest at once — WHEN A LIST LAST CHANGED in ./_lists.js. */
+        listsChanged(env)
+      ]);
       return json({ id: id, title: title }, 200);
     } catch (e) {
       /* Taken. Round again with a different code. */
@@ -563,9 +595,9 @@ async function addPlace(context, body, user) {
  * As honest as an account is, which is the same answer /api/v1/saves gives about
  * its own numbers and worth being plain about. One row per (list, account),
  * so nobody inflates a count by pressing twice; anybody willing to make ten
- * accounts can add ten. Nothing on this site sorts or ranks by it, so what
- * that buys is a bigger number next to a list and not a better position
- * anywhere — which is most of the reason it is not worth doing.
+ * accounts can add ten. Most saved on /lists orders by it, a week behind —
+ * THE WEEK THE COUNTS ARE FROM in ./_lists.js — so ten accounts buy a place
+ * in that order next Monday and a bigger number next to a list at once.
  */
 async function keep(context, id, row, user, on) {
   const { env } = context;
@@ -601,13 +633,13 @@ async function keep(context, id, row, user, on) {
      first created_at is what holds a collection in the order it was
      actually built.
 
-     Then `lists.keeps` set to a recount of the list's keeps, in the same
-     batch, and handed back by the same statement. A recount rather than +1,
-     because a press that hit the conflict clause changed nothing, and a +1
-     for it would drift from the rows and never be corrected — the reasoning
-     that makes save_counts a recount. It reads one list's keeps on
-     list_keeps' key, and it is what lets /lists sort by keeps without
-     counting them — the read in mostKept() in _mostkept.js. */
+     Then the list's keeps counted, in the same batch, for the number beside
+     the button the person just pressed — one list's keeps on list_keeps'
+     key. Counted rather than +1, because a press that hit the conflict
+     clause changed nothing. `lists.keeps`, which Most saved on /lists orders
+     by, is not touched: it is made once a week — THE WEEK THE COUNTS ARE
+     FROM in ./_lists.js — and neither is the mark, so nobody's copy of a
+     list is made again for a bookmark. */
   const [, kept] = await env.DB.batch([
     on
       ? env.DB
@@ -619,11 +651,11 @@ async function keep(context, id, row, user, on) {
       : env.DB
         .prepare('DELETE FROM list_keeps WHERE list_id = ? AND owner = ?')
         .bind(id, user.id),
-    env.DB.prepare(KEEPS_SQL + ' RETURNING keeps').bind(id, id)
+    env.DB.prepare('SELECT COUNT(*) AS n FROM list_keeps WHERE list_id = ?').bind(id)
   ]);
   const row0 = kept.results && kept.results[0];
 
-  return json({ id: id, kept: on, keeps: row0 ? row0.keeps : 0 }, 200);
+  return json({ id: id, kept: on, keeps: row0 ? row0.n : 0 }, 200);
 }
 
 /* The title, the line under it, whether the link works for anybody but its
@@ -676,10 +708,14 @@ async function edit(context, body, id) {
        updated_at anyway would reorder somebody's index for a change that did
        not happen. */
     if (!use.length) return Promise.resolve(null);
-    return env.DB
-      .prepare('UPDATE lists SET ' + use.map(([set]) => set).join(', ') + ', updated_at = ? WHERE id = ?')
-      .bind(...use.map(([, value]) => value), Date.now(), id)
-      .run();
+    return env.DB.batch([
+      env.DB
+        .prepare('UPDATE lists SET ' + use.map(([set]) => set).join(', ') + ', updated_at = ? WHERE id = ?')
+        .bind(...use.map(([, value]) => value), Date.now(), id),
+      /* A new title is everybody's at once — WHEN A LIST LAST CHANGED in
+         ./_lists.js, which a rename is the owner's own example of. */
+      listsChanged(env)
+    ]);
   });
   return json({ ok: true }, 200);
 }
@@ -699,7 +735,8 @@ async function remove(context, id) {
        and adding one to a live database is a rebuild. One statement in the
        same batch does the same job where it can be read. */
     env.DB.prepare('DELETE FROM list_keeps WHERE list_id = ?').bind(id),
-    env.DB.prepare('DELETE FROM lists WHERE id = ?').bind(id)
+    env.DB.prepare('DELETE FROM lists WHERE id = ?').bind(id),
+    listsChanged(env)
   ]);
   /* And everybody's walk of it — functions/api/walk.js — which has nothing
      left to be a walk of. Outside the batch because those two tables reach a
@@ -806,7 +843,8 @@ async function add(context, body, id) {
         "WHERE excluded.say <> ''"
       )
       .bind(id, place, known.name, words(body.say, MAX_SAY), id, now),
-    env.DB.prepare(ITEMS_SQL).bind(now, id, id)
+    env.DB.prepare(ITEMS_SQL).bind(now, id, id),
+    listsChanged(env)
   ]);
 
   return json({ place: place, name: known.name }, 200);
@@ -825,7 +863,8 @@ async function say(context, body, id) {
     env.DB
       .prepare('UPDATE list_items SET say = ? WHERE list_id = ? AND place_id = ?')
       .bind(words(body.say, MAX_SAY), id, place),
-    env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id)
+    env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id),
+    listsChanged(env)
   ]);
   return json({ place: place }, 200);
 }
@@ -852,7 +891,8 @@ async function mustOrder(context, body, id) {
       env.DB
         .prepare('UPDATE list_items SET must_order = ? WHERE list_id = ? AND place_id = ?')
         .bind(words(body.mustOrder, MAX_MUST_ORDER), id, place),
-      env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id)
+      env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id),
+      listsChanged(env)
     ]);
   });
   return json({ place: place }, 200);
@@ -868,7 +908,8 @@ async function drop(context, body, id) {
     env.DB
       .prepare('DELETE FROM list_items WHERE list_id = ? AND place_id = ?')
       .bind(id, place),
-    env.DB.prepare(ITEMS_SQL).bind(now, id, id)
+    env.DB.prepare(ITEMS_SQL).bind(now, id, id),
+    listsChanged(env)
   ]);
   return json({ dropped: place }, 200);
 }
@@ -889,7 +930,7 @@ async function drop(context, body, id) {
  * hundred reorders of the same list.
  *
  * A list is capped at MAX_ITEMS places, so this is one small read and at most
- * MAX_ITEMS + 1 statements in one batch. It said "a hundred" for as long as
+ * MAX_ITEMS + 2 statements in one batch. It said "a hundred" for as long as
  * the cap was twenty, which is the argument for naming the constant rather
  * than a number that has to be moved twice.
  */
@@ -928,7 +969,10 @@ async function order(context, body, id) {
       .prepare('UPDATE list_items SET pos = ? WHERE list_id = ? AND place_id = ?')
       .bind(i, id, place)
   );
-  statements.push(env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id));
+  statements.push(
+    env.DB.prepare('UPDATE lists SET updated_at = ? WHERE id = ?').bind(now, id),
+    listsChanged(env)
+  );
 
   await env.DB.batch(statements);
   return json({ places: final }, 200);

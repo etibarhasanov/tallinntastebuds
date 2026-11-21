@@ -83,6 +83,7 @@ const KNOWN = [
   { file: 'api/_refresh.js', has: 'FROM google_venues', why: 'the refresh of Google places: a scheduled job and the owner, ~1,200 rows' },
   { file: 'api/_rank.js', has: 'google_venues', why: 'the weekly re-rank, once a week' },
   { file: 'api/_rank.js', has: 'FROM google_reranks', why: 'one row a week, 52 a year' },
+  { file: 'api/_lists.js', has: 'UPDATE lists SET opens', why: "the week's counts, once a week: every list, its press_counts row and its keeps — 25 lists and 6 keeps, about sixty rows, on 21 Nov 2026" },
   { file: 'api/_visitors.js', has: 'FROM visitor_live', why: 'a ring of LIVE_SPAN slots, 60 rows for ever' },
   { file: 'api/_account.js', has: 'DELETE FROM login_fails', why: 'old failed sign-ins only; the table holds a day of them' },
   { file: 'api/account.js', has: 'DELETE FROM username_holds', why: 'released names past their hold; one row per renamed account' },
@@ -169,7 +170,7 @@ const ROWS = [
   { file: 'api/chess.js', has: 'FROM chess_moves m', why: "one game's moves, every ply", fix: 'another session: chess_moves for a game, paged by ply' },
 
   /* To fix, and nobody has them: over a hundred, and not on the owner's list. */
-  { file: '_public.js', has: 'WHERE l.public = 1 ORDER BY l.id, i.pos LIMIT ?', why: "publicLists(): LIMIT READ_CAP, two thousand, every public list's places for /mcp and /api/v1, five minutes per isolate", fix: SESSION },
+  { file: '_public.js', has: 'WHERE l.public = 1 ORDER BY l.id, i.pos LIMIT ?', why: "publicLists(): LIMIT READ_CAP, two thousand, every public list's places for /mcp and /api/v1, once per isolate per edit to a list", fix: SESSION },
   { file: 'blog/sitemap.js', has: "SELECT id, updated_at FROM posts WHERE status = 'published'", why: 'LIMIT MOST, five thousand: every published post, an hour at the edge', fix: SESSION },
   { file: 'blog.js', has: 'SELECT list_id, name FROM list_items WHERE list_id IN', why: "a post's lists' places: MAX_LISTS ten lists of MAX_ITEMS fifty, five hundred", fix: SESSION },
   { file: 'api/rides.js', has: 'FROM rides WHERE user_id = ? ORDER BY created_at DESC LIMIT ?', why: 'LIMIT MINE, two hundred of somebody\'s rides, with their lines when asked', fix: SESSION },
@@ -177,8 +178,8 @@ const ROWS = [
   { file: 'api/flashcard.js', has: 'SELECT day FROM flashcard_days WHERE user_id = ? ORDER BY day DESC LIMIT 366', why: 'a year of days, for the streak', fix: SESSION },
   { file: 'api/lists.js', has: 'k.created_at AS kept_at', why: "the lists one account keeps: MAX_KEPT, two hundred", fix: SESSION },
   { file: 'api/walk.js', has: 'WHERE c.user_id = ? AND w.finished_at IS NULL', why: "every check on every walk one account has going: a walk a list, fifty a walk, and no cap on walks", fix: SESSION },
-  { file: 'api/discover.js', has: "SELECT id, n FROM press_counts WHERE kind = 'place'", why: 'every place ever opened, ours and Google\'s; five minutes per colo', fix: SESSION },
-  { file: 'api/discover.js', has: 'FROM walks WHERE finished_at IS NOT NULL AND list_id IN', why: 'every finished walk of the ROUTES five lists, one a walker, growing with the accounts', fix: SESSION },
+  { file: 'api/discover.js', has: "SELECT id, n FROM press_counts WHERE kind = 'place'", why: 'every place ever opened, ours and Google\'s; once a week, kept in meta for every colo', fix: SESSION },
+  { file: 'api/discover.js', has: 'FROM walks WHERE finished_at IS NOT NULL AND list_id IN', why: 'every finished walk of the ROUTES five lists, one a walker, growing with the accounts; once a week, kept in meta for every colo', fix: SESSION },
   { file: 'api/_visits.js', has: 'SELECT p.id, p.lang, p.status, ? AS n FROM posts p WHERE p.owner = ?', why: "one account's published posts: MAX_POSTS, two hundred", fix: SESSION },
   { file: 'api/_visits.js', has: 'SELECT post, lang, title FROM post_texts WHERE post IN', why: 'LIST_BATCH fifty posts at a time, a text a language: up to 550', fix: SESSION },
   { file: 'api/_visits.js', has: 'FROM list_counts', why: 'LIST_BATCH fifty lists at a time, a row a country each', fix: SESSION },
@@ -390,10 +391,12 @@ function leading(table, index) {
 }
 
 /* The site's tables a statement names, each by its own name and by the
-   alias it was given, as the plan calls them. */
+   alias it was given, as the plan calls them — an UPDATE's own table among
+   them, which until 21 November 2026 this did not count, so an UPDATE with
+   no WHERE walked its table unseen. */
 function aliases(sql) {
   const alias = new Map();
-  for (const m of sql.matchAll(/\b(?:FROM|JOIN)\s+(\w+)(?:\s+(?:AS\s+)?(\w+))?/gi)) {
+  for (const m of sql.matchAll(/\b(?:FROM|JOIN|UPDATE)\s+(\w+)(?:\s+(?:AS\s+)?(\w+))?/gi)) {
     if (TABLES.has(m[1])) { alias.set(m[1], m[1]); if (m[2]) alias.set(m[2], m[1]); }
   }
   return alias;

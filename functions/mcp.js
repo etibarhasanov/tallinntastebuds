@@ -166,8 +166,8 @@
 import { mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase, venueHours,
   googleTable } from './api/_lib.js';
 import { door, bad, optionalString, optionalNumber, named, wordsOf, toolResult, toolError, MAX_QUERY, ANNOTATIONS } from './_mcp.js';
-import { readList, LIST_ID } from './api/_lists.js';
-import { DEFAULT_LANG, photoUrl, placeUrl, listUrl, mapsSearch, matchScore, byName, publicLists, matchLists, listRows } from './_public.js';
+import { readList, LIST_ID, listsMark } from './api/_lists.js';
+import { DEFAULT_LANG, photoUrl, placeUrl, listUrl, mapsSearch, matchScore, byName, publicLists, keptLists, matchLists, listRows } from './_public.js';
 import { SITE } from './_shell.js';
 
 /* How the server introduces itself in `initialize`. `name` is the id a
@@ -810,12 +810,19 @@ function searchArgs(raw, types, langs) {
 /* ------------------------------------------------------------- the lists
  * The public lists the words land on, and one list whole — both read and
  * matched through ./_public.js, which the public API reads them through too.
+ * Every public list is kept in the isolate until one changes, under the
+ * lists mark — keptLists() there and listsMark() in ./api/_lists.js — and
+ * read afresh where the mark, a row of `meta`, cannot be.
  */
 async function searchLists(env, raw) {
   const query = optionalString(raw, 'query', MAX_QUERY);
   const by = foldWords(optionalString(raw, 'by', 40)).trim();
   const limit = optionalNumber(raw, 'limit');
-  const found = matchLists(await publicLists(env), wordsOf(query), by);
+  let mark = null;
+  try {
+    mark = await listsMark(env);
+  } catch (e) { /* read afresh, below */ }
+  const found = matchLists(mark ? await keptLists(env, mark) : await publicLists(env), wordsOf(query), by);
 
   const out = {
     lists: found

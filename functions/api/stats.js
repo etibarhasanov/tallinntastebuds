@@ -41,8 +41,9 @@
  *            Never when its own owner opens it, which the page leaves out
  *            and realList() below refuses as well, and not again the same
  *            day from the same browser and network — firstToday() in
- *            ./_visits.js, the rule profile views keep. It is read by
- *            _mostkept.js, which is what orders /lists, by listViews() in
+ *            ./_visits.js, the rule profile views keep. It is read once a
+ *            week onto the list's own row — listsMark() in ./_lists.js —
+ *            which is what _mostkept.js orders /lists by, by listViews() in
  *            ./_visits.js, which draws it back to the list's owner on
  *            /insights, and by ./admin/stats.js, which draws every opened
  *            list to the site's owner. It is never drawn on a row anybody
@@ -376,16 +377,12 @@ export async function onRequestPost(context) {
       'ON CONFLICT(kind, id) DO UPDATE SET n = press_counts.n + 1'
     )
     .bind(k, id);
+  /* A list's opens reach the list's own row, where /lists sorts by them,
+     once a week and not here — THE WEEK THE COUNTS ARE FROM in ./_lists.js,
+     which reads this running total. Until 21 November 2026 every open copied
+     it across in this batch, a row written per open, and moved the order of
+     /lists as it happened. */
   const bumps = device ? [bump(kind), bump(device + '.' + kind)] : [bump(kind)];
-  /* A list's opens, copied onto the list's own row so /lists can sort by them
-     without joining press_counts — mostKept() in ./_mostkept.js. Copied off
-     the total the statement before it just bumped, one row on its key, rather
-     than nudged a second time, so the two cannot disagree. */
-  if (kind === LIST) {
-    bumps.push(env.DB
-      .prepare('UPDATE lists SET opens = (SELECT n FROM press_counts WHERE kind = ? AND id = ?) WHERE id = ?')
-      .bind(LIST, id, id));
-  }
   try {
     /* And again for a phone — BY DEVICE. One batch, so the two never
        disagree about whether the press landed. */

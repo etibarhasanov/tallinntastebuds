@@ -53,11 +53,19 @@
  *
  * The rows are seeded per session — whose you are, which of them you kept —
  * so a copy of this page is kept only where nobody was signed in, under the
- * address with the search and the order on it, stamped with the deployment,
- * for PAGE_TTL, a minute. A signed-in visit is rendered and answered
- * no-store, as it always was. KEPT IN THE COLO in functions/_shell.js is the
- * mechanism and the argument; what is this file's is the key and the one
- * file the copy is stamped with, which is the page.
+ * address with the search and the order on it, stamped with the deployment
+ * and filed under the lists mark, until a list changes or the week turns. A
+ * signed-in visit is rendered and answered no-store, as it always was. KEPT
+ * IN THE COLO in functions/_shell.js is the mechanism and the argument, and
+ * WHEN A LIST LAST CHANGED in functions/api/_lists.js the mark; what is this
+ * file's is the key and the one file the copy is stamped with, which is the
+ * page.
+ *
+ * Most opened and Most saved are last Monday's order all week — THE WEEK THE
+ * COUNTS ARE FROM in the same file — and Newest is now, since a list made
+ * this minute moves the mark like any other edit. The mark is asked on every
+ * visit, signed in or not, because asking it is what makes the week's counts
+ * where nobody has made them yet.
  *
  * WHAT HAPPENS WHEN IT CANNOT
  *
@@ -71,9 +79,10 @@
 import { sessionUser, wrongDatabase } from '../api/_lib.js';
 import {
   canonical, esc, head, shell, sow, rehead, fill, unscripted, EMPTY, page,
-  PRIVATELY, PAGE_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
+  PRIVATELY, MARKED_TTL, deployStamp, coloKey, fromColo, keepInColo, signedIn
 } from '../_shell.js';
 import { mostKept, query, sortOf } from '../api/_mostkept.js';
+import { listsMark } from '../api/_lists.js';
 
 const PATH = '/lists';
 
@@ -126,14 +135,19 @@ export async function onRequest(context) {
   const sort = sortOf(new URL(request.url).searchParams.get('sort'));
 
   /* The copy this colo holds for whoever is not signed in — KEPT IN THE COLO
-     in the header. A stamp that cannot be read is the page served the way it
-     was before any copy was kept. */
+     in the header — and the mark asked whoever is asking, which makes the
+     week's counts where they are due. A stamp or a mark that cannot be read
+     is the page served the way it was before any copy was kept. */
+  const readable = !!env.DB && !(await wrongDatabase(env));
   let key = null;
-  if (!signedIn(request)) {
+  if (readable) {
     try {
-      key = directoryKey(request, q, sort, await deployStamp(context, ['/lists.html']));
-      const hit = await fromColo(request, key, PRIVATELY);
-      if (hit) return hit;
+      const mark = await listsMark(env);
+      if (!signedIn(request)) {
+        key = directoryKey(request, q, sort, (await deployStamp(context, ['/lists.html'])) + '.' + mark);
+        const hit = await fromColo(request, key, PRIVATELY);
+        if (hit) return hit;
+      }
     } catch (e) {
       key = null;
     }
@@ -160,7 +174,7 @@ export async function onRequest(context) {
      reason to tell a crawler to forget an address that will be answering
      properly again in a minute — the page it gets is the real one, it simply
      fetches its rows a moment later. */
-  if (!env.DB || (await wrongDatabase(env))) return page(html, 200, true);
+  if (!readable) return page(html, 200, true);
 
   let first;
   let user;
@@ -190,5 +204,5 @@ export async function onRequest(context) {
   html = fill(html, EMPTY['lists.html'], unscripted(prose(first)));
 
   const res = page(html, 200, true);
-  return key ? keepInColo(context, key, res, PAGE_TTL, PRIVATELY) : res;
+  return key ? keepInColo(context, key, res, MARKED_TTL, PRIVATELY) : res;
 }

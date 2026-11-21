@@ -1051,6 +1051,10 @@ export async function eatOnly(env) {
  * them the table has, where naming them would throw. */
 const SOME_CHANGED = 'venues_at';
 const ALL_CHANGED = 'venues_all_at';
+/* Both, for a reader that keeps a copy of its own of something drawn from
+   this table and files it under them: a list's page — listsMark() in
+   ./_lists.js. */
+export const VENUE_MARKS = [SOME_CHANGED, ALL_CHANGED];
 const CHECK_EVERY = 15 * 60 * 1000;
 const MISS_EVERY = 60 * 1000;
 const WHOLE_EVERY = 24 * 60 * 60 * 1000;

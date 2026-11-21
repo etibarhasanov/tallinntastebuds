@@ -111,6 +111,10 @@ import { recentViews } from './_visits.js';
 import { adminIds, ownerCookie } from './_admin.js';
 import { postsReady } from './_posts.js';
 import { forgetMember } from './_community.js';
+/* A new name is a new byline on every list the account wrote, and a deleted
+   account takes its lists with it: both move the mark every copy of a list
+   is kept under — WHEN A LIST LAST CHANGED in ./_lists.js. */
+import { listsChanged } from './_lists.js';
 
 /* The line somebody writes about themselves is capped by MAX_ABOUT in
    ./_profile.js now, beside cleanLine(), because the same line in the site's
@@ -556,7 +560,8 @@ export async function onRequestPost(context) {
            for nothing. */
         env.DB
           .prepare('DELETE FROM username_holds WHERE released_at < ?')
-          .bind(now - HOLD_DAYS * 86400000)
+          .bind(now - HOLD_DAYS * 86400000),
+        listsChanged(env)
       ]);
     } catch (e) {
       /* Two people taking the same free name in the same second. The unique
@@ -991,7 +996,8 @@ export async function onRequestPost(context) {
       env.DB
         .prepare('INSERT OR REPLACE INTO username_holds (user_id, username, released_at) VALUES (?, ?, ?)')
         .bind(id, user.username, now),
-      env.DB.prepare('DELETE FROM username_holds WHERE released_at < ?').bind(now - HOLD_DAYS * 86400000)
+      env.DB.prepare('DELETE FROM username_holds WHERE released_at < ?').bind(now - HOLD_DAYS * 86400000),
+      listsChanged(env)
     );
     for (const place of saved) {
       statements.push(env.DB.prepare(RECOUNT_SQL).bind(place, place));

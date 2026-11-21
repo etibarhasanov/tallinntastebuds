@@ -75,20 +75,22 @@
  * The places are data/restaurants.json, five minutes per isolate through
  * mapPlaces() in ../_lib.js — no database at all. The lists read the database:
  * publicLists() in ../../_public.js is every row of every public list in one
- * statement, so its answer is kept five minutes per isolate here, and every
- * answer this route gives is kept five minutes in the colo besides, keyed on
- * the whole address. A loop asking the same thing is answered from the colo;
- * a loop asking a thousand different things reads the lists once per isolate
- * per five minutes and one list's rows per new id. A database that is down
- * costs the lists and nothing else: 503 `unavailable` there, the places as
- * ever.
+ * statement, so its answer is kept per isolate until a list changes —
+ * keptLists() there, under the lists mark in ../_lists.js — and every answer
+ * this route gives is kept five minutes in the colo besides, keyed on the
+ * whole address and, for the lists, on the mark too, which costs a lists
+ * request one row of `meta`. A loop asking the same thing is answered from
+ * the colo; a loop asking a thousand different things reads the lists once
+ * per isolate per edit and one list's rows per new id. A database that is
+ * down costs the lists and nothing else: 503 `unavailable` there, the places
+ * as ever.
  */
 
 import { mapPlaces, dataFile, languageIndex, nearTallinn, foldWords, km, wrongDatabase } from '../_lib.js';
-import { readList, LIST_ID } from '../_lists.js';
+import { readList, LIST_ID, listsMark } from '../_lists.js';
 import {
   VERSION, DEFAULT_LANG, photoUrl, placeUrl, listUrl, mapsSearch, wordsOf,
-  matchScore, byName, publicLists, matchLists, listRows
+  matchScore, byName, publicLists, keptLists, matchLists, listRows
 } from '../../_public.js';
 import { SITE } from '../../_shell.js';
 
@@ -118,7 +120,9 @@ const SUNSET = null;
 
 /* Five minutes, everywhere: the map moves when a deploy moves it and a list
    when its author presses something, and five minutes is how stale
-   /api/v1/find is already allowed to be. */
+   /api/v1/find is already allowed to be. In this colo a lists answer is filed
+   under the lists mark as well, so it is never behind an edit here; five
+   minutes is how long a browser, or another site's cache, may keep one. */
 const MAX_AGE = 300;
 
 const MAX_QUERY = 200;
@@ -345,27 +349,20 @@ async function types(context) {
 }
 
 /* ------------------------------------------------------------- the lists */
-const LISTS_TTL = 5 * 60 * 1000;
-let lists = null;
-let listsAt = 0;
-
 async function readable(env) {
   return !!env.DB && !(await wrongDatabase(env));
 }
 
-async function everyList(env) {
-  if (lists && Date.now() - listsAt < LISTS_TTL) return lists;
-  lists = await publicLists(env);
-  listsAt = Date.now();
-  return lists;
-}
-
-async function listIndex(context, params) {
+/* `mark` is the lists mark the door asked for the colo's key, and null where
+   it could not be read — every public list read afresh then, and the answer
+   not kept. */
+async function listIndex(context, params, mark) {
   const by = foldWords((params.get('by') || '').slice(0, 40)).trim();
   const words = wordsOf((params.get('q') || '').slice(0, MAX_QUERY));
   const limits = page(params, LIST_LIMIT);
   if (!(await readable(context.env))) return fail('unavailable', 'The lists cannot be read right now; the places can.');
-  const found = matchLists(await everyList(context.env), words, by);
+  const every = mark ? await keptLists(context.env, mark) : await publicLists(context.env);
+  const found = matchLists(every, words, by);
   const { rows, ...meta } = paged(found, limits);
   return answer({
     ...meta,
@@ -473,12 +470,12 @@ function handlerOf(mod, method) {
 }
 
 /* --------------------------------------------------------------- the door */
-async function read(context, parts, params) {
+async function read(context, parts, params, mark) {
   const [what, id, more] = parts;
   if (more !== undefined) return null;
   if (what === undefined) return index();
   if (what === 'places') return id === undefined ? places(context, params) : place(context, params, id);
-  if (what === 'lists') return id === undefined ? listIndex(context, params) : oneList(context, id);
+  if (what === 'lists') return id === undefined ? listIndex(context, params, mark) : oneList(context, id);
   if (what === 'types' && id === undefined) return types(context);
   return null;
 }
@@ -506,17 +503,30 @@ export async function onRequest(context) {
     return res;
   }
 
-  /* The colo copy first — WHAT IT COSTS. Keyed on the address alone, since
-     nothing here reads who is asking. */
+  /* The colo copy first — WHAT IT COSTS. Keyed on the address, since nothing
+     here reads who is asking, and a lists answer on the lists mark as well,
+     so this colo never hands one out from before an edit: WHEN A LIST LAST
+     CHANGED in ../_lists.js. A lists answer whose mark could not be read is
+     made and not kept. */
   const url = new URL(request.url);
-  const key = new Request(url.toString(), { method: 'GET' });
-  const cache = typeof caches !== 'undefined' ? caches.default : null;
+  const address = new URL(url.toString());
+  let mark = null;
+  if (parts[0] === 'lists' && (await readable(context.env))) {
+    try {
+      mark = await listsMark(context.env);
+      address.searchParams.set('lists', mark);
+    } catch (e) {
+      mark = null;
+    }
+  }
+  const cache = typeof caches !== 'undefined' && (parts[0] !== 'lists' || mark) ? caches.default : null;
+  const key = new Request(address.toString(), { method: 'GET' });
   const kept = cache ? await cache.match(key) : null;
   if (kept) return method === 'HEAD' ? new Response(null, kept) : kept;
 
   let res;
   try {
-    res = await read(context, parts, url.searchParams) ||
+    res = await read(context, parts, url.searchParams, mark) ||
       fail('not-found', 'There is nothing at ' + url.pathname + '. ' + SITE + '/developers lists what there is.');
   } catch (e) {
     if (!(e instanceof Bad)) throw e;
