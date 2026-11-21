@@ -298,7 +298,7 @@ ref: tools/azfilms.mjs</bpmn:documentation>
 when: azeri_youtube</bpmn:documentation>
       <bpmn:incoming>visitor-e34</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="azeri-community" name="Reads the Community on /azeri">
+    <bpmn:userTask id="azeri-community" name="Reads the posts on /azeri">
       <bpmn:documentation>What the corner's people write to each other: posts newest first or this week's most upvoted, twenty to a page, and a post with its comments oldest first, fifty at a time. Signed out, where a member would post, comment or upvote there is the way to sign in.
 when: azeri_community
 when: azeri_sort

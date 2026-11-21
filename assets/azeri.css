@@ -440,9 +440,12 @@
 .azeri-cm-list { padding: 0; overflow: hidden; }
 
 /* The order, New and Top this week, and the one filled action across from
-   it. */
-.azeri-cm-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 14px; }
-.azeri-cm-order { display: flex; gap: 16px; font-size: 13.5px; }
+   it. Neither ever breaks inside itself: in Azerbaijani the two orders and
+   Yazmaq üçün daxil ol come to more than a 390px phone has, and each was
+   drawn on two lines, so the row wraps instead and the button goes under. */
+.azeri-cm-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 14px; }
+.azeri-cm-bar .go { white-space: nowrap; }
+.azeri-cm-order { display: flex; gap: 16px; font-size: 13.5px; white-space: nowrap; }
 .azeri-cm-order a { padding: 0 0 5px; color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; }
 .azeri-cm-order a:hover { color: var(--ink); }
 .azeri-cm-order a.is-on { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
