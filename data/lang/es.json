@@ -1520,8 +1520,6 @@
   "azeriCredit": "De la lista de películas de la Wikipedia en azerí, CC BY-SA.",
   "azeriEmpty": "Ninguna película con ese título, director o actor.",
   "azeriError": "Las películas no responden ahora mismo.",
-  "azeriDoorText": "Este rincón del sitio se abre para quien tiene cuenta. Entra o crea una: solo hace falta un nombre de usuario y una contraseña.",
-  "azeriSignIn": "Entrar",
   "azeriPrev": "Anterior",
   "azeriNext": "Siguiente",
   "azeriPageOf": "Página {n} de {total}",

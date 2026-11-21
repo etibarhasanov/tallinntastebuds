@@ -6,10 +6,9 @@
 <title>An Azerbaijani corner in Estonia | Tallinn Tastebuds</title>
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
-<!-- For members, and linked from nowhere: not indexed, not followed, and
-     _headers says the same for anything that does not read the markup. The
-     door is /api/azeri, which answers a session and nobody else; this page
-     is only the room it opens into. -->
+<!-- Open to anybody, and linked from nowhere: the address is given to
+     somebody rather than found, so it is not indexed or followed, and
+     _headers says the same for anything that does not read the markup. -->
 <meta name="robots" content="noindex, nofollow">
 <!-- Analytics: Microsoft Clarity, from one file rather than a snippet
      pasted into every head. assets/analytics.js holds the id and the
@@ -29,7 +28,7 @@
      — the tabs, the chips, the rows — from its own. -->
 <link rel="stylesheet" href="/assets/styles.lean.css?v=4f81ed66">
 <link rel="stylesheet" href="/assets/lists.lean.css?v=e7381579">
-<link rel="stylesheet" href="/assets/azeri.css?v=9218cf79">
+<link rel="stylesheet" href="/assets/azeri.css?v=3c94326c">
 </head>
 <body class="lists-body azeri-body">
 
@@ -72,11 +71,10 @@
     <a class="azeri-tab" href="/azeri?tab=estonian" data-tab="estonian" data-track="azeri_estonian" data-i18n="azeriEstonian">Estonian</a>
     <a class="azeri-tab" href="/azeri?tab=food" data-tab="food" data-track="azeri_food" data-i18n="azeriPlaces">Azerbaijani places</a>
   </nav>
-  <!-- Everything under the tabs — the door when nobody is signed in, the
-       search, the chips and the films, the topics of the guide, or the
-       places' map — is built by assets/azeri.js once /api/azeri and the
-       page's words have both answered, so nothing from the state before is
-       left standing. -->
+  <!-- Everything under the tabs — the search, the chips and the films, the
+       topics of the guide, or the places' map — is built by assets/azeri.js
+       once the page's words are in, and /api/azeri has answered where the
+       tab asks it, so nothing from the state before is left standing. -->
   <div id="shelf"></div>
 </main>
 
@@ -99,6 +97,6 @@
 <script src="/assets/back.js?v=9d9a7dd8" defer></script>
 <!-- The language switch, a global for the page's own script to use. -->
 <script src="/assets/language.js?v=fcaf98e0" defer></script>
-<script src="/assets/azeri.js?v=9f6c1653" defer></script>
+<script src="/assets/azeri.js?v=ba3951ec" defer></script>
 </body>
 </html>
