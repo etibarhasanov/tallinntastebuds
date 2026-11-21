@@ -551,14 +551,19 @@
 
   /* ------------------------------------------------------------- drawing */
 
+  /* Everything under the tabs, drawn again from the state — but on the
+     films the box of search, chips and switches is kept, and tools()
+     redraws what is in it. */
   function draw() {
     if (!state.ready) return;
     var host = document.getElementById('shelf');
-    while (host.firstChild) host.removeChild(host.firstChild);
+    var kept = state.tab === 'films' ? host.querySelector('.azeri-tools') : null;
+    while (host.lastChild && host.lastChild !== kept) host.removeChild(host.lastChild);
     if (state.tab === 'community') { drawCommunity(host); return; }
     if (state.tab === 'food') { drawFood(host); return; }
     if (state.tab !== 'films') { drawGuide(host); return; }
-    host.appendChild(tools());
+    if (kept) tools(kept);
+    else host.appendChild(tools(null));
     var list = el('div', { className: 'azeri-list card' });
     if (state.loading) {
       list.appendChild(skeleton());
@@ -576,32 +581,45 @@
     ]));
   }
 
-  function tools() {
-    var box = el('div', { className: 'azeri-tools' });
-
-    var search = el('input', {
-      type: 'search',
-      className: 'lists-input azeri-search',
-      placeholder: t('azeriSearch'),
-      'aria-label': t('azeriSearch'),
-      maxlength: '80',
-      autocomplete: 'off',
-      spellcheck: 'false'
-    });
-    search.value = state.q;
-    search.addEventListener('input', function () {
-      if (searchTimer) clearTimeout(searchTimer);
-      searchTimer = setTimeout(function () {
-        var q = search.value.trim();
-        if (q === state.q) return;
-        state.q = q;
-        ask(1);
-        /* draw() replaced the box; the caret goes back where it was. */
-        var again = document.querySelector('.azeri-search');
-        if (again) { again.focus(); again.setSelectionRange(again.value.length, again.value.length); }
-      }, SEARCH_WAIT);
-    });
-    box.appendChild(search);
+  /* The search, the chips and the switches over the films. The box and the
+     search in it are made once a visit to the tab and kept by draw(), and
+     only the chips and the switches after the search are drawn again, for
+     their counts. The search was drawn again too, until 2026-11-21, with
+     the caret put back after: the field under somebody's fingers was a new
+     one twice a search, so the answer coming took the focus to the page —
+     the next letters went nowhere and a phone's keyboard closed after the
+     first — and a letter typed while it was on its way was wiped. */
+  function tools(box) {
+    var search;
+    if (box) {
+      search = box.querySelector('.azeri-search');
+      while (box.lastChild !== search) box.removeChild(box.lastChild);
+    } else {
+      box = el('div', { className: 'azeri-tools' });
+      search = el('input', {
+        type: 'search',
+        className: 'lists-input azeri-search',
+        maxlength: '80',
+        autocomplete: 'off',
+        spellcheck: 'false'
+      });
+      search.value = state.q;
+      search.addEventListener('input', function () {
+        if (searchTimer) clearTimeout(searchTimer);
+        searchTimer = setTimeout(function () {
+          var q = search.value.trim();
+          if (q === state.q) return;
+          state.q = q;
+          /* Left for another tab inside the wait: kept for coming back,
+             and not asked, or its answer would take that tab's place. */
+          if (state.tab === 'films') ask(1);
+        }, SEARCH_WAIT);
+      });
+      box.appendChild(search);
+    }
+    /* The words again on every draw, for a language switched under it. */
+    search.placeholder = t('azeriSearch');
+    search.setAttribute('aria-label', t('azeriSearch'));
 
     var chips = el('div', { className: 'azeri-chips', role: 'group', 'aria-label': t('azeriFilms') });
     SHELVES.forEach(function (kind) {
