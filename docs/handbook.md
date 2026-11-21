@@ -16885,11 +16885,10 @@ The tab the bare `/azeri` opens on, first of the six, since 2026-11-21: the
 owner asked for a home page that says what the corner is and what its
 sections are, and answers some questions with links, in no more than fifty
 sentences, to help the corner be found and to serve the community. It has
-thirty-nine — the thirty-ninth Community's line under Where to start, added
-with the tab — and the line under it two more. From the top:
+thirty-eight — Where to start gained a line for Posts with the tab, and the
+sentence that opened the page went — and the line under it two more. From
+the top:
 
-- one sentence saying who the corner is for, in the reading width a
-  paragraph keeps on a desktop;
 - **Where to start**, a sentence for each of the other six tabs saying who
   it is for — *Just arrived — **Estonia**: what to sort out, in the order it
   comes up* — with the tab's own name in it as the link, pressed as the tab
@@ -16908,10 +16907,17 @@ with the tab — and the line under it two more. From the top:
   arrival, as the guide's do;
 - the guide's line saying it is not official advice.
 
+It opened, for its first day, on one sentence saying who the corner is for —
+*Estoniyada yaşayan və ya bura köçməyə hazırlaşan azərbaycanlılar üçün…* —
+and the owner took it off the page on 2026-11-21, so the home begins at
+Where to start. The sentence stays in the file as `say`, because it is
+still the page's description: what a search shows under the corner's name,
+written into the head by `functions/azeri.js`, and nowhere on the page.
+
 It is drawn by the guide's code because it is the guide's shape: the route
-answers it as a tab, `azeri/data/guide/home.json`, with `say` and `sections`
-beside the `topics`, and the page draws the sentence and the lines above the
-same list of topics. Every answer is written out of what the guide already
+answers it as a tab, `azeri/data/guide/home.json`, with `sections` beside
+the `topics`, and the page draws the lines above the same list of topics;
+`say`, in the file beside them, is the head's alone. Every answer is written out of what the guide already
 says — no figure that changes, the guide's rule, and B1 for citizenship
 because the guide says it — so a question whose topic is rewritten is a
 question to read again. The validator holds the file to the guide's rules,

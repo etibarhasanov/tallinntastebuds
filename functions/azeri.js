@@ -109,8 +109,9 @@ function answerOf(topic, lang) {
 }
 
 /* The home as the page shows it, in the classes it is drawn with: the
-   sentence, the tabs, the questions, and the line saying whose word is
-   final. */
+   tabs, the questions, and the line saying whose word is final. Its
+   sentence, `say`, is the description in the head and nowhere in the
+   page, since the owner took it off the page on 2026-11-21. */
 function words(home, ui, lang) {
   const sections = home.sections.map((s) => {
     const [before, after] = say(s.line, lang).split('{tab}');
@@ -122,7 +123,6 @@ function words(home, ui, lang) {
     '<p>' + esc(answerOf(topic, lang)) + '</p>' +
     topic.links.map((l) => '<p><a href="' + esc(linkIn(l.url, lang)) + '">' + esc(say(l.name, lang)) + '</a></p>').join(''));
   return unscripted(
-    '<p class="lists-say">' + esc(say(home.say, lang)) + '</p>' +
     '<h2>' + esc(ui.azeriStart) + '</h2>' +
     '<ul>' + sections.join('') + '</ul>' +
     '<h2>' + esc(ui.azeriQuestions) + '</h2>' +

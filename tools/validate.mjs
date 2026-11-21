@@ -2098,6 +2098,9 @@ if (existsSync(CLIPS_DIR)) {
     if (guide.tab !== tab) fail(where, `"tab" is ${JSON.stringify(guide.tab)}, not the file's own name`);
     if (!MONTH.test(guide.checked || '')) fail(where, '"checked" is not a YYYY-MM month');
     if (home) {
+      /* The sentence saying who the corner is for: not drawn in the page
+         since 2026-11-21, and still the description a search shows,
+         through functions/azeri.js. */
       said(guide.say, '"say"');
       const sections = Array.isArray(guide.sections) ? guide.sections : [];
       if (!sections.length) fail(where, 'has no "sections" — the home is what says what is in the corner');
