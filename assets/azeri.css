@@ -10,6 +10,26 @@
  * page with nothing in this file to change.
  */
 
+/* The corner's name beside the mark, in the wordmark's own type, and the
+   site under it in the eyebrow's — small and muted, a byline rather than a
+   second title. On a phone each keeps to one line and ends in an ellipsis
+   if it must, as the wordmark does on every page; wide, the name breaks
+   where the map's does and the byline runs on past the mark's measure,
+   since nothing stands to the right of it there. */
+.azeri-brand { display: flex; flex-direction: column; min-width: 0; }
+.azeri-by {
+  margin-top: 1px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 861px) {
+  .azeri-by { margin-top: 6px; font-size: 14px; overflow: visible; }
+}
+
 .azeri-head { margin-bottom: 6px; }
 
 /* The tabs of the corner: the films, and the three of the guide. Four fit
