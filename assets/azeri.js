@@ -1,13 +1,14 @@
 /* Tallinn Tastebuds — /azeri, the members' corner about Azerbaijan.
  *
  * WHAT IT IS. A page for people with an account, linked from nowhere on the
- * site, and five tabs on it. Films is the country's cinema: the 2,615 of the
- * Azerbaijani Wikipedia's list, which tools/azfilms.mjs collects and
- * /api/azeri hands out twenty at a time. Estonia, Studying and Estonian are
- * a guide for somebody arriving here from there — what to sort out and in
- * what order, how to get into a university, and where to learn the
- * language. Food is where to eat it here, on a map. **Azerbaijan, for
- * members** in docs/handbook.md.
+ * site, and five tabs on it, straight under the corner's name. Azerbaijani
+ * films is the country's cinema: the 2,615 of the Azerbaijani Wikipedia's
+ * list, which tools/azfilms.mjs collects and /api/azeri hands out twenty at
+ * a time. Estonia, Studying and Estonian are a guide for somebody arriving
+ * here from there — what to sort out and in what order, how to get into a
+ * university, and where to learn the language. Azerbaijani places is where
+ * to eat it here, on a map. **Azerbaijan, for members** in
+ * docs/handbook.md.
  *
  * FOUR LANGUAGES, NOT ELEVEN. The page's words are in data/ui.json in all
  * eleven, like every other page's, because the validator holds every key to
@@ -19,18 +20,23 @@
  *
  * NO ENGLISH FIRST. The markup is written in English and this file turns it
  * into the reader's language once data/lang/<code>.json has come, and for a
- * moment on every load — every tab is one — that was an English page turning
- * Azerbaijani in front of somebody. So the name beside the mark, the heading
- * and the tabs are kept unseen by assets/azeri.css until the boot at the
- * bottom marks the body ready, the shelf is not drawn before then either,
- * and the first ask to the route goes out beside the words, not after them.
+ * moment on every load that was an English page turning Azerbaijani in
+ * front of somebody. So the name beside the mark and the tabs are kept
+ * unseen by assets/azeri.css until the boot at the bottom marks the body
+ * ready, the shelf is not drawn before then either, and the first ask to
+ * the route goes out beside the words, not after them.
  *
- * A TAB IS AN ADDRESS. /azeri is the films and /azeri?tab=estonia a tab of
- * the guide: the tabs are links, the page loads again under the one that
- * was pressed, and Back goes where it should with nothing here keeping
- * count. A topic that is opened is written into the address beside it,
- * &topic=housing, so the address somebody copies opens what they were
- * reading.
+ * A TAB IS AN ADDRESS, AND NOT A LOAD. /azeri is the films and
+ * /azeri?tab=estonia a tab of the guide, and the tabs are links to those
+ * addresses. They were followed, once: every press loaded the page again,
+ * so the name, the tabs and the switch went blank and came back on each,
+ * since they wait for the words. Now a press is caught, the address moves
+ * with pushState, and only what is under the tabs is drawn again; Back and
+ * Forward walk the tabs through popstate, and a press with a key held still
+ * opens the link in a new tab. Each is reported to the site's count as a
+ * page view, as the load was. A topic that is opened is written into the
+ * address beside its tab, &topic=housing, so the address somebody copies
+ * opens what they were reading.
  *
  * THE GUIDE. A tab is asked for whole, once, in the language the page is
  * read in — and again when that changes, since the answer carries one
@@ -74,13 +80,15 @@
  * row, so taking the row away is taking the sound away. A link that is not
  * YouTube's opens where it lives.
  *
- * THE FOOD. A list of the site's, "Azerbaijani food in Tallinn", drawn on a
- * map by /embed in a frame — the map any other site can put on its page,
- * in the reader's language, with its own loading, error and empty states,
- * and a card with the list's sentence when a pin is pressed. The route
- * answers the list's id behind the same door as the other tabs, and the
- * tab asks nothing else: the list is edited on its own page and the map
- * follows. Under the frame, the whole list, every sentence in order.
+ * THE PLACES. The tab is Azerbaijani places, at ?tab=food, the address it
+ * had on the day it was made. A list of the site's, "Azerbaijani food in
+ * Tallinn", drawn on a map by /embed in a frame — the map any other site
+ * can put on its page, in the reader's language, with its own loading,
+ * error and empty states, and a card with the list's sentence when a pin is
+ * pressed. The route answers the list's id behind the same door as the
+ * other tabs, and the tab asks nothing else: the list is edited on its own
+ * page and the map follows. Under the frame, whose list it is and the way
+ * to the whole of it.
  *
  * WIDE, IT IS A WALL OF FILMS. On a phone the shelf is a list, a line or
  * two a film. From 900px it is a grid of cards, each under the picture
@@ -133,7 +141,7 @@
     names: {},
     tab: 'films',    // which of TABS the address names
     guide: null,     // a tab of the guide, as the route answered it
-    food: null,      // the food tab, as the route answered it: the list's id
+    food: null,      // the places tab, as the route answered it: the list's id
     topic: null,     // the id of the topic opened, if one is
     kind: 'feature',
     q: '',
@@ -239,25 +247,53 @@
   }
 
   /* The tabs are links in the markup, which cannot know which of them it
-     was served for: this says so on the one that is on, and on a phone too
-     narrow for all five, where the row scrolls sideways, brings it into
-     view — Food, the last, would otherwise be the one tab out of sight
-     while it is the one being read. Sideways only: the page itself does not
-     move. */
+     was served for: this says so on the one that is on. The row wraps on a
+     phone rather than scrolling, so every tab is in sight and none needs
+     bringing into view. */
   function markTab() {
     var tabs = document.querySelectorAll('.azeri-tab');
     for (var i = 0; i < tabs.length; i++) {
       var on = tabs[i].getAttribute('data-tab') === state.tab;
       tabs[i].className = 'azeri-tab' + (on ? ' is-on' : '');
-      if (on) {
-        tabs[i].setAttribute('aria-current', 'page');
-        var row = tabs[i].parentNode;
-        var past = tabs[i].getBoundingClientRect().right - row.getBoundingClientRect().right;
-        if (past > 0) row.scrollLeft += past;
-      } else {
-        tabs[i].removeAttribute('aria-current');
-      }
+      if (on) tabs[i].setAttribute('aria-current', 'page');
+      else tabs[i].removeAttribute('aria-current');
     }
+  }
+
+  /* A press on a tab draws that tab under the tabs, and the address moves
+     with it, rather than the link loading the page again: A TAB IS AN
+     ADDRESS, AND NOT A LOAD, at the top. A press with a key held, or with
+     another button, is the browser's — a new tab, a new window. */
+  function wireTabs() {
+    var tabs = document.querySelectorAll('.azeri-tab');
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].addEventListener('click', function (e) {
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        var tab = e.currentTarget.getAttribute('data-tab');
+        if (tab === state.tab) return;
+        window.history.pushState(null, '', e.currentTarget.getAttribute('href'));
+        showTab(tab);
+      });
+    }
+    /* Back to the same tab is the skip link's #main being walked off, and
+       there is nothing to draw again. */
+    window.addEventListener('popstate', function () {
+      var tab = pickTab();
+      if (tab !== state.tab) showTab(tab);
+    });
+  }
+
+  /* The tab the address now names, drawn and asked for as the boot does,
+     and counted as the page view the load used to be. The words of the
+     page are said again for the skip link, which says where it leads. */
+  function showTab(tab) {
+    state.tab = tab;
+    state.topic = null;
+    markTab();
+    if (Object.keys(state.ui).length) applyStaticStrings();
+    askShown();
+    if (window.TTBTrack) window.TTBTrack.view(document.title);
   }
 
   function loadWords(lang) {
@@ -276,13 +312,9 @@
     each('data-i18n', function (n, k) { n.textContent = t(k); });
     each('data-i18n-aria-label', function (n, k) { n.setAttribute('aria-label', t(k)); });
     /* The skip link is written for the films; under a tab of the guide it
-       leads to topics, and under the food to the map. */
+       leads to topics, and under the places to the map. */
     if (state.tab !== 'films') document.querySelector('.skip-link').textContent = t(state.tab === 'food' ? 'azeriSkipMap' : 'azeriSkipTopics');
     document.title = t('azeriTitle') + ' | Tallinn Tastebuds';
-    /* The tabs are as wide as their words now, so the one that is on is
-       brought into view again by what they are, not what the markup's
-       English was. */
-    markTab();
   }
 
   function drawSwitch() {
@@ -300,7 +332,7 @@
     loadWords(code).then(function () {
       applyStaticStrings();
       drawSwitch();
-      /* The films carry both of their languages and the food's map is
+      /* The films carry both of their languages and the places' map is
          asked for in the new one when it is drawn again; a tab of the
          guide was answered in one, so it is asked for again. */
       if (state.tab === 'films' || state.tab === 'food') draw();
@@ -374,9 +406,20 @@
     });
   }
 
-  /* The food: which list the map draws, and the door if nobody is in. */
+  /* The places: which list the map draws, and the door if nobody is in.
+     What an earlier visit to the tab answered is let go first, or the map
+     would be drawn while this ask is out and again when it is back. */
   function askFood() {
+    state.food = null;
     send(API + '?tab=food', function (out) { state.food = out; });
+  }
+
+  /* What is under the tabs, asked for: a page of the films, the places'
+     list, or a tab of the guide. */
+  function askShown() {
+    if (state.tab === 'films') ask(1);
+    else if (state.tab === 'food') askFood();
+    else askGuide();
   }
 
   /* The topic open on arrival: the one the address names, and on a wide
@@ -765,10 +808,11 @@
     if (state.guide) host.appendChild(el('p', { className: 'azeri-credit', text: t('azeriGuideCredit') }));
   }
 
-  /* ---------------------------------------------------------------- food */
+  /* ---------------------------------------------------------- the places */
 
-  /* The food tab: what it is, the list on /embed's map in the language the
-     page is read in, and the list itself under it. While the route has not
+  /* The places tab, food at its address: what it is, the list on /embed's
+     map in the language the page is read in, and under it whose list it is
+     and the way to the whole of it. While the route has not
      answered there is the shelf's skeleton; when it could not, the guide's
      line saying so. Which style the map wears it reads for itself, from the
      same storage on the same host. */
@@ -995,9 +1039,8 @@
      until the words are in — draw() stands back while state.ready is
      false — so an answer that beats them waits to be drawn with them. */
   state.lang = pickLanguage();
-  if (state.tab === 'films') ask(1);
-  else if (state.tab === 'food') askFood();
-  else askGuide();
+  wireTabs();
+  askShown();
   Promise.all([
     getJSON(LANGS_URL).then(function (names) { state.names = names; }).catch(function () {}),
     loadWords(state.lang).catch(function () {})

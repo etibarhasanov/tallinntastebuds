@@ -16802,18 +16802,25 @@ the table.
 `/azeri` — *Estoniyada Azərbaycan guşəsi*, an Azerbaijani corner in
 Estonia: a corner of the site for Azerbaijanis living here, for people with
 an account, read in Azerbaijani, English, Russian or Estonian and linked
-from nowhere. It has five tabs. **Films** is the country's cinema.
-**Estonia**, **Studying** and **Estonian** are a guide for somebody arriving
-in Estonia from there, which is who the corner is for: what to sort out and
-in what order, how to get into a university, and where to learn the
-language. **Food** is where to eat it here, on a map. Nothing in the apps
+from nowhere. It has five tabs, straight under the corner's name.
+**Azerbaijani films** is the country's cinema. **Estonia**, **Studying** and
+**Estonian** are a guide for somebody arriving in Estonia from there, which
+is who the corner is for: what to sort out and in what order, how to get
+into a university, and where to learn the language. **Azerbaijani places**
+is where to eat it here, on a map. Nothing in the apps
 reads any of it, and nothing on the map, the rail or Discover points at it:
 the address is given to somebody, or it is not found.
 
 The heading said *Azərbaycan* until 2026-11-21, a country's name over a page
 whose readers are somewhere else; the owner chose *Estoniyada Azərbaycan
-guşəsi* for it, and the line under it says who the corner is for and what
-is in it.
+guşəsi* for it, with a line under it saying who the corner is for. The same
+day, from a screenshot of the top of the page, the owner took the heading,
+the line and the eyebrow over them, *Üzvlər üçün*, out altogether: they said
+again what the name beside the mark says, and the tabs now come straight
+under it. *Estoniyada Azərbaycan guşəsi* is the page's title in the
+browser's tab, `azeriTitle`, and the heading is kept for a screen reader
+alone, as the corner's name. The owner was shown the top with and without
+the eyebrow and chose without.
 
 ### Where the films come from
 
@@ -16984,10 +16991,26 @@ true. Each topic says
 the month it was last read against its sources, the tab's `checked`, and the
 line under every list says it is not official advice and whose word is final.
 
-A tab is an address — `/azeri?tab=estonia`, and the tabs are links, so Back
-goes where it should — and an opened topic is written into it beside the tab,
-`&topic=housing`, so the address somebody copies into a chat opens what they
-were reading.
+A tab is an address — `/azeri?tab=estonia` — and an opened topic is written
+into it beside the tab, `&topic=housing`, so the address somebody copies into
+a chat opens what they were reading. **A tab is not a load.** The tabs are
+links, and for their first weeks a press followed one and loaded the page
+again; since the name and the tabs wait unseen for the words (below), every
+press blanked the top of the page and drew it back. The owner asked on
+2026-11-21 for the top to stay still, so a press is caught, the address moves
+with `pushState`, and only what is under the tabs is drawn again: Back and
+Forward walk the tabs through `popstate`, a press with a key held still opens
+the link in a new tab, and each is reported to the site's count as the page
+view the load used to be, through `TTBTrack.view()`, the way the blog's
+in-page walks are.
+
+**Five tabs wrap on a phone.** The first says **Azerbaijani films** rather
+than *Films*, beside the last, and five do not fit a 390px phone in one line
+— in Russian, the longest, they came to 386px of the row's 358. Drawn a size
+smaller in a row that scrolled sideways, the last was still out of sight on a
+narrower phone with nothing to say it was there, so the owner chose a row
+that wraps: two lines on a phone, in each of the four languages, every tab in
+sight.
 
 **From 900px the guide is not the wall the films are.** A wall is for
 browsing and a guide is read in order, so the topics stand down the left as
@@ -17035,9 +17058,9 @@ What it deliberately does not do: search, comments, questions and answers,
 events, mentors, or editing from the admin page. Those belong to a community
 site of its own, and this is the part of one that is only words.
 
-### Food, on a map
+### Azerbaijani places, on a map
 
-**Food** is a list of the site's own, *Azerbaijani food in Tallinn* by
+**Azerbaijani places** is a list of the site's own, *Azerbaijani food in Tallinn* by
 `tallinntastebuds` — `/list/azerbaijani-food-in-tallinn-9srkxf` — drawn on a
 map in the tab. On 2026-11-21 it was twenty-five places, six of them on the
 map: Badam, Faxinin marketi, Telliskivi Šašlõkk, Baklažaan, Morii Tea House,
@@ -17063,7 +17086,11 @@ list is changed — the list's page, signed in as its owner — and the tab
 follows without a deploy. The owner was shown the tab as a mockup, the real
 embed of the real list inside the corner at 390 px and on a desktop, and
 chose it over two others: a card that only linked to the list, and the
-list's places drawn as rows like the guide's topics.
+list's places drawn as rows like the guide's topics. The tab was *Food* for
+its first hour; the owner named it **Azerbaijani places**, *Azərbaycan
+məkanları*, the same day. Its label is `azeriPlaces`, and it keeps
+`?tab=food`, `azeri_food` and the words of the map, `azeriFoodSay` and the
+three beside it, since what it maps is the food.
 
 What it does not do: filter the pins, open a place inside the corner rather
 than in a new tab, or show the sentences beside the map — the list's page
@@ -17089,7 +17116,7 @@ the topics. The files are 26 to 48 KB with all four languages in them, a
 fraction of a millisecond to parse, kept five minutes per isolate like the
 films'.
 
-The food tab is the same one read, the session, and the route reads no
+The places tab is the same one read, the session, and the route reads no
 list: the frame's `/embed` reads `/api/v1/lists/<id>`, the list's row and its
 places, the same read whoever asks, and the public API keeps that answer
 five minutes in each colo. So a colo reads the list at most 288 times a day,
@@ -17136,9 +17163,9 @@ and the mark still goes back to the map.
 
 And it shows no English first. The markup is written in English and the
 words come after it, out of `data/lang/<code>.json`, so for the length of
-that fetch every load — and every tab is a load — was an English page that
-turned Azerbaijani in front of the reader. Now the name, the heading and the
-tabs keep their room unseen until the words are in, or have failed and the
+that fetch every load — and every tab was a load then — was an English page
+that turned Azerbaijani in front of the reader. Now the name and the tabs
+keep their room unseen until the words are in, or have failed and the
 markup's English is all there is, which is what the lists and the account
 page already do with a `<main>` that ships empty. The first ask to
 `/api/azeri` goes out beside the words rather than after them, since the
@@ -21324,7 +21351,7 @@ Azerbaijan, `assets/azeri.js`:
 | `azeri_source` | `topic` — a link out of an opened topic: an office, a university, a site in the list of them, or a row into one of the flashcards' lessons |
 | `azeri_way` | `way` — **Go to** a place to learn Estonian, the button at the foot of its topic on the Estonian tab |
 | `azeri_flashcards` | Open the flashcards, on the Estonian tab |
-| `azeri_list` | Open the whole list, under the map on the Food tab |
+| `azeri_list` | Open the whole list, under the map on the Azerbaijani places tab |
 | `language_select`, `language_open`, `home`, `account_open` | as on the map |
 
 The privacy policy is read rather than pressed, so what is reported is the way
