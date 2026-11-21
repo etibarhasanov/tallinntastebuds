@@ -222,12 +222,17 @@
 .azeri-words { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .azeri-topic .azeri-meta { white-space: normal; }
 .azeri-row.has-go:hover .menu-go { color: var(--accent); }
-.azeri-topic.is-open .menu-go { transform: rotate(90deg); color: var(--accent); }
+.azeri-topic.is-open > .azeri-row .menu-go { transform: rotate(90deg); color: var(--accent); }
+/* The levels a way covers, where a menu row keeps its count: mono, muted,
+   before the chevron. */
+.azeri-level { flex: none; font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
 
 /* An opened topic: a film's detail, with lists in it. The reset the page
    wears takes the markers off every list, and a guide's steps are numbered,
-   so they are put back here. The heading is the wide screen's. */
+   so they are put back here. The heading is the wide screen's; a heading
+   inside the topic is a lesson's. */
 .azeri-heading { display: none; }
+.azeri-sub { margin: 16px 0 6px; font-family: var(--display); font-size: 15px; font-weight: 600; line-height: 1.3; }
 .azeri-article ol, .azeri-article ul { margin: 0 0 10px; padding-left: 20px; }
 .azeri-article ol { list-style: decimal; }
 .azeri-article ul { list-style: disc; }
@@ -240,7 +245,54 @@
 .azeri-sources .azeri-kind { display: block; margin-bottom: 4px; }
 .azeri-sources .azeri-links { margin: 0; }
 
-/* The Estonian tab's card: the flashcards, the tab's one filled action. */
+/* The flashcards' lesson table, restated from .flash-table in
+   assets/flashcard.css, which this page does not load: Estonian in the mono
+   and the ink, the rest muted, what it means in the body face at the end of
+   the row, and hairlines between the rows and none around them. */
+.azeri-table { width: 100%; border-collapse: collapse; margin: 4px 0 6px; font-family: var(--mono); font-size: 13px; }
+.azeri-table th { padding: 0 8px 6px 0; font-size: 12px; font-weight: 500; text-align: left; color: var(--muted); }
+.azeri-table td { padding: 7px 8px 7px 0; border-top: 1px solid var(--hairline); vertical-align: top; color: var(--muted); }
+.azeri-table td:first-child { color: var(--ink); }
+.azeri-table td:last-child { padding-right: 0; font-family: var(--body); font-size: 13.5px; }
+
+/* A way's facts, as an opened film lists its people: the label in the
+   muted column, the fact beside it, a hairline over each pair. */
+.azeri-facts { display: grid; grid-template-columns: max-content 1fr; gap: 0 14px; margin: 4px 0 16px; }
+.azeri-facts dt, .azeri-facts dd { margin: 0; padding: 7px 0; border-top: 1px solid var(--hairline); }
+.azeri-facts dt { padding-top: 9px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+/* The rows to the flashcards' lessons: the account menu's, a little
+   tighter inside an article. */
+.azeri-menu { margin: 6px 0 4px; }
+.azeri-menu .menu-row { padding: 11px 2px; }
+
+/* The ladder: a name and a track of the levels to a rung. A course is a
+   bar in the accent, the site's one filled shape; an exam is a dot at each
+   level it is held at; the level the state asks for is washed down the
+   whole ladder, its name in the ink, and the note under it says who asks.
+   --levels comes from the file, and the columns are minmax(0, 1fr) so a
+   long word in the note cannot widen its own. */
+.azeri-ladder { margin: 6px 0 14px; font-size: 13px; }
+.azeri-rung {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  align-items: stretch;
+  min-height: 34px;
+  border-top: 1px solid var(--hairline);
+}
+.azeri-rung.is-head { min-height: 22px; border-top: 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.azeri-rung.is-note { min-height: 0; font-family: var(--mono); font-size: 11.5px; line-height: 1.3; color: var(--muted); }
+.azeri-rung.is-note span span { padding-top: 6px; text-align: center; }
+.azeri-rung-name { align-self: center; padding: 6px 6px 6px 0; line-height: 1.25; }
+.azeri-track { display: grid; grid-template-columns: repeat(var(--levels), minmax(0, 1fr)); align-items: center; }
+.azeri-track > * { grid-row: 1; }
+.azeri-wash { align-self: stretch; background: var(--wash); }
+.azeri-step { text-align: center; }
+.azeri-step.is-mark { color: var(--ink); font-weight: 600; }
+.azeri-bar { height: 10px; margin: 0 4px; border-radius: 100px; background: var(--accent); }
+.azeri-dot { justify-self: center; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+
+/* The Estonian tab's card: the flashcards, the site's own way to learn. */
 .azeri-flash { padding: 18px 16px; margin-bottom: 18px; }
 .azeri-flash h2 { margin: 4px 0 6px; font-family: var(--display); font-size: 19px; line-height: 1.25; }
 .azeri-flash .lists-say { margin-bottom: 14px; }
@@ -391,10 +443,10 @@
   /* The guide is read rather than browsed, so it is not a wall: the topics
      stand down the left as one ruled list, and the opened one is a card
      beside them. The same nodes — a topic's own box is taken away, so its
-     row and its article can sit in the two columns. A way out, on the
-     Estonian tab, stays a card of the wall with its row's own padding. */
+     row and its article can sit in the two columns. */
   .azeri-flash { max-width: 560px; }
-  .azeri-topic .azeri-row { padding: 14px 16px; }
+  .azeri-rung { grid-template-columns: 170px minmax(0, 1fr); }
+  .azeri-ladder { font-size: 14px; }
   .azeri-list.is-guide {
     grid-template-columns: 330px minmax(0, 1fr);
     grid-auto-flow: row;
@@ -416,7 +468,7 @@
      than on paper, and its chevron points at the article, in the accent. */
   .azeri-list.is-guide .azeri-topic.is-open .azeri-row { background: var(--wash); }
   .azeri-list.is-guide .azeri-topic.is-open .azeri-name { font-size: 16px; }
-  .azeri-list.is-guide .azeri-topic.is-open .menu-go { transform: none; }
+  .azeri-list.is-guide .azeri-topic.is-open > .azeri-row .menu-go { transform: none; }
   .azeri-list.is-guide .azeri-detail {
     grid-column: 2;
     grid-row: 1 / span 12;

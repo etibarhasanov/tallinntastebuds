@@ -94,7 +94,7 @@ when: azeri_youtube</bpmn:documentation>
       <bpmn:incoming>member-e3</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="azeri-guide" name="Reads the guide to Estonia on /azeri">
-      <bpmn:documentation>Three tabs beside the films: Estonia and Studying, eight topics each that open in the page, and Estonian, the ways to learn the language. In the same four languages. No figure that changes is written in it; every topic links the office that decides.
+      <bpmn:documentation>Three tabs beside the films: Estonia and Studying, eight topics each that open in the page, and Estonian, seven — the language beside Azerbaijani, the levels, and five places to learn it, each with its button. In the same four languages. No figure that changes is written in it; every topic links the office that decides.
 when: azeri_estonia
 when: azeri_study
 when: azeri_estonian

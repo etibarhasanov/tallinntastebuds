@@ -1542,7 +1542,8 @@
   "azeriFlashTitle": "Viroa, selitykset englanniksi, venäjäksi tai azeriksi",
   "azeriFlashSay": "Sanapakkoja, kielioppitunteja, keskusteluja ja lauluja.",
   "azeriFlashOpen": "Avaa sanakortit",
-  "azeriWays": "Muita tapoja"
+  "azeriWays": "Kieli ja missä muualla sitä voi opiskella",
+  "azeriGoTo": "Siirry sivulle {site}"
  },
  "blurbs": {
   "180-degrees": "Baltian ainoa kahden Michelin-tähden ravintola. Todella hieno kokeileva paikka Noblessnerin rannassa, jossa maistelumenu on rakennettu yllättämään ruokalajista toiseen.",

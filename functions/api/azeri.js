@@ -41,7 +41,7 @@
  * already folded; and the films themselves in files of a hundred in that
  * order, films/<n>.json. A request walks the index once and parses the one
  * or two files its page is in. All of them are kept five minutes per
- * isolate by dataFile(). A tab of the guide is 2 to 45 KB in all four
+ * isolate by dataFile(). A tab of the guide is 26 to 48 KB in all four
  * languages, a fraction of a millisecond to parse, and the answer carries
  * the one language that was asked for.
  *
@@ -76,15 +76,30 @@
  *   lang    az, en, ru or et, the four the guide is written in; anything
  *           else is English.
  *
- *   { tab, checked, topics: [ { id, name, covers, body, links } or
- *                             { id, name, covers, url } ] }
+ *   { tab, checked, topics: [ { id, name, covers, level, url, body, links } ] }
  *
  * `checked` is the month the tab was last read against its sources,
- * `2026-11`. A topic with a `body` opens in the page: its blocks are
- * `{ p }`, a paragraph, and `{ steps }` and `{ list }`, a numbered and a
- * plain list of `{ b, t, url }` — a lead in bold, the sentence after it, and
- * where the lead is a link, its address. A topic with a `url` is a way out
- * and has no body. Every string is in the language asked for.
+ * `2026-11`. Every topic opens in the page, and its `body` is blocks, each
+ * one kind under one key:
+ *
+ *   p       a paragraph.
+ *   head    a heading inside the topic.
+ *   steps   a numbered list, and list a plain one, of { b, t, url } — a
+ *   list    lead in bold, the sentence after it, and where the lead is a
+ *           link, its address.
+ *   table   { heads, rows }, the flashcards' lesson table: the first column
+ *           Estonian, the last what it means.
+ *   facts   [ { k, v } ], a label beside its fact.
+ *   ladder  { levels, rows, mark, note }: which course covers which level.
+ *           A row is { name, span: [from, to] }, a bar, or { name, dots },
+ *           a dot at each level; `mark` is the level washed, `note` what
+ *           asks for it.
+ *   rows    [ { name, why, url } ], rows that lead elsewhere on the site —
+ *           a lesson of the flashcards.
+ *
+ * `level` is the levels a way covers, `0–A2`, said on its row; `url` is the
+ * way's own site, the topic's one button. Both are left out where a topic
+ * has none. Every string is in the language asked for.
  *
  * Signed out it is 401 `signed-out` and nothing else, so the page draws its
  * door; without a database, 503 `no-database`, the same as every route that
@@ -120,7 +135,22 @@ function fold(value) {
 function guideIn(file, lang) {
   const say = (text) => (typeof text === 'string' ? text : text[lang] || text.en);
   const item = (it) => ({ ...(it.b ? { b: say(it.b) } : {}), t: say(it.t), ...(it.url ? { url: it.url } : {}) });
-  const block = (b) => (b.p ? { p: say(b.p) } : b.steps ? { steps: b.steps.map(item) } : { list: b.list.map(item) });
+  /* One translator a kind of block. tools/validate.mjs holds every block to
+     exactly one of these keys, so the first key is the kind. */
+  const KINDS = {
+    p: say,
+    head: say,
+    steps: (items) => items.map(item),
+    list: (items) => items.map(item),
+    table: (t) => ({ heads: t.heads.map(say), rows: t.rows.map((row) => row.map(say)) }),
+    facts: (rows) => rows.map((f) => ({ k: say(f.k), v: say(f.v) })),
+    ladder: (l) => ({ ...l, rows: l.rows.map((r) => ({ ...r, name: say(r.name) })), note: say(l.note) }),
+    rows: (rows) => rows.map((r) => ({ name: say(r.name), why: say(r.why), url: r.url }))
+  };
+  const block = (b) => {
+    const kind = Object.keys(b)[0];
+    return { [kind]: KINDS[kind](b[kind]) };
+  };
   return {
     tab: file.tab,
     checked: file.checked,
@@ -128,7 +158,10 @@ function guideIn(file, lang) {
       id: topic.id,
       name: say(topic.name),
       covers: say(topic.covers),
-      ...(topic.url ? { url: topic.url } : { body: topic.body.map(block), links: topic.links })
+      ...(topic.level ? { level: say(topic.level) } : {}),
+      ...(topic.url ? { url: topic.url } : {}),
+      body: topic.body.map(block),
+      links: topic.links
     }))
   };
 }

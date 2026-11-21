@@ -1542,7 +1542,8 @@
     "azeriFlashTitle": "Eston dili, azərbaycanca izahla",
     "azeriFlashSay": "Söz dəstləri, qrammatika dərsləri, dialoqlar və mahnılar.",
     "azeriFlashOpen": "Kartları aç",
-    "azeriWays": "Başqa yollar"
+    "azeriWays": "Dil, və onu başqa harada öyrənmək olar",
+    "azeriGoTo": "{site} saytına keç"
   },
   "en": {
     "langName": "English",
@@ -3087,7 +3088,8 @@
     "azeriFlashTitle": "Estonian, explained in English",
     "azeriFlashSay": "Decks of words, grammar lessons, conversations and songs.",
     "azeriFlashOpen": "Open the flashcards",
-    "azeriWays": "Other ways"
+    "azeriWays": "The language, and where else to learn it",
+    "azeriGoTo": "Go to {site}"
   },
   "et": {
     "langName": "Eesti",
@@ -4632,7 +4634,8 @@
     "azeriFlashTitle": "Eesti keel, selgitused aserbaidžaani, vene või inglise keeles",
     "azeriFlashSay": "Sõnakomplektid, grammatikatunnid, vestlused ja laulud.",
     "azeriFlashOpen": "Ava sõnakaardid",
-    "azeriWays": "Teised võimalused"
+    "azeriWays": "Keel ja kus veel seda õppida",
+    "azeriGoTo": "Mine lehele {site}"
   },
   "fi": {
     "langName": "Suomi",
@@ -6177,7 +6180,8 @@
     "azeriFlashTitle": "Viroa, selitykset englanniksi, venäjäksi tai azeriksi",
     "azeriFlashSay": "Sanapakkoja, kielioppitunteja, keskusteluja ja lauluja.",
     "azeriFlashOpen": "Avaa sanakortit",
-    "azeriWays": "Muita tapoja"
+    "azeriWays": "Kieli ja missä muualla sitä voi opiskella",
+    "azeriGoTo": "Siirry sivulle {site}"
   },
   "pt": {
     "langName": "Português",
@@ -7722,7 +7726,8 @@
     "azeriFlashTitle": "Estónio, explicado em inglês, russo ou azeri",
     "azeriFlashSay": "Baralhos de palavras, lições de gramática, conversas e canções.",
     "azeriFlashOpen": "Abrir os cartões",
-    "azeriWays": "Outras formas"
+    "azeriWays": "A língua, e onde mais a aprender",
+    "azeriGoTo": "Ir para {site}"
   },
   "ru": {
     "langName": "Русский",
@@ -9267,7 +9272,8 @@
     "azeriFlashTitle": "Эстонский с объяснениями на русском",
     "azeriFlashSay": "Наборы слов, уроки грамматики, диалоги и песни.",
     "azeriFlashOpen": "Открыть карточки",
-    "azeriWays": "Другие способы"
+    "azeriWays": "Язык и где ещё его учить",
+    "azeriGoTo": "Перейти на {site}"
   },
   "es": {
     "langName": "Español",
@@ -10812,7 +10818,8 @@
     "azeriFlashTitle": "Estonio, explicado en inglés, ruso o azerí",
     "azeriFlashSay": "Mazos de palabras, lecciones de gramática, conversaciones y canciones.",
     "azeriFlashOpen": "Abrir las tarjetas",
-    "azeriWays": "Otras formas"
+    "azeriWays": "La lengua, y dónde más aprenderla",
+    "azeriGoTo": "Ir a {site}"
   },
   "tr": {
     "langName": "Türkçe",
@@ -12357,7 +12364,8 @@
     "azeriFlashTitle": "Estonca; İngilizce, Rusça veya Azerbaycanca açıklamalarla",
     "azeriFlashSay": "Kelime desteleri, dil bilgisi dersleri, diyaloglar ve şarkılar.",
     "azeriFlashOpen": "Kartları aç",
-    "azeriWays": "Başka yollar"
+    "azeriWays": "Dil ve onu başka nerede öğrenebileceğin",
+    "azeriGoTo": "{site} sitesine git"
   },
   "uk": {
     "langName": "Українська",
@@ -13902,7 +13910,8 @@
     "azeriFlashTitle": "Естонська з поясненнями англійською, російською або азербайджанською",
     "azeriFlashSay": "Набори слів, уроки граматики, діалоги й пісні.",
     "azeriFlashOpen": "Відкрити картки",
-    "azeriWays": "Інші способи"
+    "azeriWays": "Мова і де ще її вчити",
+    "azeriGoTo": "Перейти на {site}"
   },
   "fr": {
     "langName": "Français",
@@ -15447,7 +15456,8 @@
     "azeriFlashTitle": "L'estonien, expliqué en anglais, en russe ou en azéri",
     "azeriFlashSay": "Des paquets de mots, des leçons de grammaire, des conversations et des chansons.",
     "azeriFlashOpen": "Ouvrir les cartes",
-    "azeriWays": "Autres moyens"
+    "azeriWays": "La langue, et où l’apprendre ailleurs",
+    "azeriGoTo": "Aller sur {site}"
   },
   "de": {
     "langName": "Deutsch",
@@ -16992,6 +17002,7 @@
     "azeriFlashTitle": "Estnisch, erklärt auf Englisch, Russisch oder Aserbaidschanisch",
     "azeriFlashSay": "Wortstapel, Grammatiklektionen, Gespräche und Lieder.",
     "azeriFlashOpen": "Karteikarten öffnen",
-    "azeriWays": "Andere Wege"
+    "azeriWays": "Die Sprache, und wo man sie sonst lernt",
+    "azeriGoTo": "Zu {site}"
   }
 }

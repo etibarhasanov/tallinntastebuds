@@ -74,7 +74,8 @@
  *     place that does not exist
  *   - a tab of the guide on /azeri — azeri/data/guide/<tab>.json — with a
  *     sentence that is not written in all four of its languages, a topic
- *     that neither opens nor leads anywhere, a repeated id, or a link that
+ *     with nothing to open, a block of a kind the route does not know, a
+ *     table or a ladder that does not add up, a repeated id, or a link that
  *     is not https
  *   - wrangler.toml pointing the preview deployments and the live site at the
  *     same D1 database, or at no database of their own
@@ -2046,13 +2047,18 @@ if (existsSync(CLIPS_DIR)) {
    forgotten in the fourth — the route would then answer it in English to
    somebody reading Azerbaijani, and nothing would say so. So every piece of
    text is held to all four, or is a plain string where it is a name that is
-   the same in each; a topic has a body to open or an address to lead to, and
-   never neither; and every address is https, since they are the offices a
-   reader is sent to. TABS and GUIDE_LANGS are functions/api/azeri.js's. */
+   the same in each; every topic has a body to open, each block of it one of
+   the kinds guideIn() in functions/api/azeri.js translates, and whole —
+   a table a cell for every head, a ladder's bars on levels it has; and every
+   address out is https, since they are the offices a reader is sent to, or
+   a path on this site where a row leads to the flashcards. TABS and
+   GUIDE_LANGS are functions/api/azeri.js's. */
 {
   const GUIDE_TABS = ['estonia', 'study', 'estonian'];
   const GUIDE_LANGS = ['az', 'en', 'ru', 'et'];
   const HTTPS_URL = /^https:\/\/[^\s]+$/;
+  const SITE_PATH = /^\/[a-z][^\s]*$/;
+  const GUIDE_BLOCKS = ['p', 'head', 'steps', 'list', 'table', 'facts', 'ladder', 'rows'];
   for (const tab of GUIDE_TABS) {
     const where = `azeri/data/guide/${tab}.json`;
     let guide = null;
@@ -2080,22 +2086,91 @@ if (existsSync(CLIPS_DIR)) {
       seen.add(topic.id);
       said(topic.name, `${at}: name`, true);
       said(topic.covers, `${at}: covers`);
-      if (topic.url !== undefined) {
-        linked(topic.url, `${at}: url`);
-        if (topic.body !== undefined) fail(where, `${at} has both a body and an address — it is one or the other`);
-        return;
-      }
-      if (!Array.isArray(topic.body) || !topic.body.length) { fail(where, `${at} has neither a body nor an address`); return; }
+      if (topic.level !== undefined) said(topic.level, `${at}: level`, true);
+      if (topic.url !== undefined) linked(topic.url, `${at}: url`);
+      if (!Array.isArray(topic.body) || !topic.body.length) { fail(where, `${at} has no body to open`); return; }
       topic.body.forEach((block, b) => {
         const here = `${at}: block ${b + 1}`;
-        const items = isPlainObject(block) ? (block.steps || block.list) : null;
-        if (isPlainObject(block) && block.p !== undefined) { said(block.p, here); return; }
-        if (!Array.isArray(items) || !items.length) { fail(where, `${here} is not a paragraph, steps or a list`); return; }
-        items.forEach((item, i) => {
-          if (!isPlainObject(item)) { fail(where, `${here}, item ${i + 1} is not an object`); return; }
-          if (item.b !== undefined) said(item.b, `${here}, item ${i + 1}: b`, true);
-          said(item.t, `${here}, item ${i + 1}: t`);
-          if (item.url !== undefined) linked(item.url, `${here}, item ${i + 1}: url`);
+        const kinds = isPlainObject(block) ? Object.keys(block) : [];
+        const kind = kinds[0];
+        const value = isPlainObject(block) ? block[kind] : undefined;
+        if (kinds.length !== 1 || !GUIDE_BLOCKS.includes(kind)) {
+          fail(where, `${here} is not one of ${GUIDE_BLOCKS.join(', ')}, under one key`);
+          return;
+        }
+        const many = (what) => {
+          if (Array.isArray(value) && value.length) return true;
+          fail(where, `${here} is a ${kind} with no ${what}`);
+          return false;
+        };
+        if (kind === 'p' || kind === 'head') { said(value, here); return; }
+        if (kind === 'steps' || kind === 'list') {
+          if (!many('items')) return;
+          value.forEach((item, i) => {
+            if (!isPlainObject(item)) { fail(where, `${here}, item ${i + 1} is not an object`); return; }
+            if (item.b !== undefined) said(item.b, `${here}, item ${i + 1}: b`, true);
+            said(item.t, `${here}, item ${i + 1}: t`);
+            if (item.url !== undefined) linked(item.url, `${here}, item ${i + 1}: url`);
+          });
+          return;
+        }
+        if (kind === 'facts') {
+          if (!many('facts')) return;
+          value.forEach((f, i) => {
+            said(f && f.k, `${here}, fact ${i + 1}: k`);
+            said(f && f.v, `${here}, fact ${i + 1}: v`);
+          });
+          return;
+        }
+        if (kind === 'rows') {
+          if (!many('rows')) return;
+          value.forEach((r, i) => {
+            said(r && r.name, `${here}, row ${i + 1}: name`);
+            said(r && r.why, `${here}, row ${i + 1}: why`);
+            if (!r || typeof r.url !== 'string' || !(HTTPS_URL.test(r.url) || SITE_PATH.test(r.url))) {
+              fail(where, `${here}, row ${i + 1} leads nowhere: its url is neither https nor a path on this site`);
+            }
+          });
+          return;
+        }
+        if (kind === 'table') {
+          const heads = isPlainObject(value) ? value.heads : null;
+          const rows = isPlainObject(value) ? value.rows : null;
+          if (!Array.isArray(heads) || !heads.length || !Array.isArray(rows) || !rows.length) {
+            fail(where, `${here} is a table without heads or rows`);
+            return;
+          }
+          heads.forEach((h, i) => said(h, `${here}, head ${i + 1}`, true));
+          rows.forEach((row, r) => {
+            if (!Array.isArray(row) || row.length !== heads.length) {
+              fail(where, `${here}, row ${r + 1} has not one cell for each of the ${heads.length} heads`);
+              return;
+            }
+            row.forEach((cell, c) => said(cell, `${here}, row ${r + 1}, cell ${c + 1}`, true));
+          });
+          return;
+        }
+        /* The ladder: every level it names is one of its own, a bar runs
+           forward, and the washed column is a level that is there. */
+        const levels = isPlainObject(value) && Array.isArray(value.levels) ? value.levels : [];
+        if (!levels.length || !levels.every(isNonEmptyString) || new Set(levels).size !== levels.length) {
+          fail(where, `${here} is a ladder without its levels, each once`);
+          return;
+        }
+        const known = (l) => levels.includes(l);
+        if (!known(value.mark)) fail(where, `${here}: mark ${JSON.stringify(value.mark)} is not one of its levels`);
+        said(value.note, `${here}: note`);
+        if (!Array.isArray(value.rows) || !value.rows.length) { fail(where, `${here} is a ladder with no rows`); return; }
+        value.rows.forEach((r, i) => {
+          const row = `${here}, row ${i + 1}`;
+          if (!isPlainObject(r)) { fail(where, `${row} is not an object`); return; }
+          said(r.name, `${row}: name`, true);
+          const span = Array.isArray(r.span) && r.span.length === 2 && r.span.every(known)
+            && levels.indexOf(r.span[0]) <= levels.indexOf(r.span[1]);
+          const dots = Array.isArray(r.dots) && r.dots.length > 0 && r.dots.every(known);
+          if ((r.span !== undefined) === (r.dots !== undefined) || !(span || dots)) {
+            fail(where, `${row} needs a span of two of its levels, in order, or dots at levels it has — one, not both`);
+          }
         });
       });
       if (!Array.isArray(topic.links)) { fail(where, `${at} has no "links", which may be empty but is always there`); return; }
