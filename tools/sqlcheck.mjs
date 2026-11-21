@@ -78,7 +78,7 @@ const ALL = process.argv.includes('--all');
    in numbers, the way the ones here do. Everything under api/admin/ is the
    owner's alone and is read a few times a day: ADMIN below. */
 const KNOWN = [
-  { file: 'api/_lib.js', has: 'SELECT * FROM google_venues', why: "googleTable()'s whole read, ~1,180 rows: once a day per isolate, and after the week's ranking or an export load; between them only the rows changed_at names" },
+  { file: 'api/_lib.js', has: 'SELECT * FROM google_venues', why: "googleTable()'s whole read, ~1,180 rows: once a day per colo, the copy kept in the Cache API for the isolates after it, and after the week's ranking or an export load; between them only the rows changed_at names" },
   { file: 'api/venues.js', has: 'FROM google_venues', why: "roll() with no ids and no map id, the whole ~1,180 rows: only /api/admin/venues asks for it, the owner's" },
   { file: 'api/_refresh.js', has: 'FROM google_venues', why: 'the refresh of Google places: a scheduled job and the owner, ~1,200 rows' },
   { file: 'api/_rank.js', has: 'google_venues', why: 'the weekly re-rank, once a week' },
@@ -116,7 +116,7 @@ const SESSION = 'nobody yet: found by the audit of 19 Nov 2026, outside the list
 const ROWS = [
   /* Allowed for now, by the owner on 19 November 2026. */
   { file: 'api/_lib.js', has: 'SELECT * FROM google_venues WHERE changed_at > ?', why: "googleTable(): the rows changed since the isolate's last look, a handful a day and the whole ~1,180 after an export load" },
-  { file: 'api/_lib.js', has: 'SELECT * FROM google_venues', why: "googleTable()'s whole read, ~1,180 rows, once a day per isolate" },
+  { file: 'api/_lib.js', has: 'SELECT * FROM google_venues', why: "googleTable()'s whole read, ~1,180 rows, once a day per colo" },
   { file: 'api/_rank.js', has: 'FROM google_ranks r JOIN google_venues v', why: 'the week\'s top: r.rank <= TOP, a hundred rows, bound as ?2' },
   { file: 'api/_refresh.js', has: 'SELECT place_id FROM google_venues WHERE hidden = 0', why: "the day's fill: LIMIT is the day's room under BUDGET.details.day, thirty-two at most" },
   { file: 'api/_visitors.js', has: 'SELECT day, kind, id, n FROM visitor_counts WHERE day >= ? AND day <= ?', why: "the owner's pages: the days missing from the colo, read once each and then kept — a few hundred rows a day of the range" },

@@ -9311,7 +9311,20 @@ through another isolate — two rows and the new one, where searching the
 table by name would have been every row, a name being nothing an index can
 find. And the whole table once a day regardless, for a correction run by
 hand, which stamps nothing. A few thousand rows a day per isolate, where it
-was about 750,000. The column and its index are applied by hand —
+was about 750,000.
+
+**One read a colo.** An isolate is Cloudflare's to throw away, and each new
+one began with no copy and read all 1,177 rows, so on 2026-11-21 the table
+was still the dearest on the meter, 12,504 rows by the afternoon, for a
+table that had changed in thirty. So the copy is kept in the colo as well,
+in the Cache API, filed under `venues_all_at` the way a list's copies are
+filed under `lists_at`. A new isolate reads the two marks, takes the colo's
+copy, reads the rows changed since that copy's last look if `venues_at`
+moved, and puts the result back for the next one. The table is read whole
+once a colo — after the ranking or an export, when its day is up, or when
+the colo lets the copy go — and never by an isolate merely for being new.
+The copy is about 824 KB of JSON and parses in under two milliseconds. The
+column and its index are applied by hand —
 `db/schema.sql` says so beside them — and until they are, the copy is read
 whole each time something changed.
 
