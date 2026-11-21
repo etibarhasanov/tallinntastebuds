@@ -354,7 +354,12 @@ const SIZES = {
   feedback: 2, feedback_hearts: 2, meta: 1, flashcard_decks: 1, flashcard_cards: 170,
   flashcard_known: 3956, flashcard_reports: 4, chess_games: 4, chess_moves: 42,
   chess_notes: 6, chess_asks: 1, posts: 1, post_texts: 4, walks: 5, walk_checks: 9,
-  rides: 15, ride_sections: 1920, ride_cells: 39, usage_people: 37, flashcard_days: 15,
+  rides: 28, ride_cells: 39, usage_people: 37, flashcard_days: 15,
+  /* Counted on 2026-11-20, and by the read it then let through: it stood
+     here as 1,920 from two days before, and a ride down streets nobody has
+     ridden adds some three hundred rows. Past the line already, so a walk
+     of it asks whatever it has grown to since. */
+  ride_sections: 3537,
   /* WITHOUT ROWID: the counter's table on the day it stopped the site, and a
      ring that is sixty rows for ever. */
   visitor_counts: 18439, visitor_live: 60,
@@ -902,7 +907,9 @@ const CASES = [
   ['ask', "SELECT r.id, t.key, json_extract(t.value,'$[0]') - LAG(json_extract(t.value,'$[0]')) OVER (PARTITION BY r.id ORDER BY t.key) dt FROM rides r, json_each(r.track) t"],
   /* A whole table under the line runs; one over it, or with no size, asks. */
   ['allow', 'SELECT COUNT(*) n, SUM(meters) m FROM rides'],
-  ['allow', 'SELECT COUNT(*) cells, SUM(stops) stops FROM ride_sections'],
+  /* Which ride_sections was until it grew: this read 3,537 rows on
+     2026-11-20, priced at the 1,920 the table had been. */
+  ['ask', 'SELECT COUNT(*) cells, SUM(stops) stops FROM ride_sections'],
   ['ask', 'SELECT * FROM visitor_counts'],
   ['ask', "SELECT kind, SUM(n) FROM visitor_counts WHERE day >= '2026-11-01' GROUP BY kind"],
   ['ask', 'SELECT * FROM flow_counts'],
