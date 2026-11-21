@@ -116,13 +116,12 @@
  * way's own site, the topic's one button. Both are left out where a topic
  * has none. Every string is in the language asked for.
  *
- * The home is the same answer with two things more, and its topics are the
+ * The home is the same answer with one thing more, and its topics are the
  * questions people ask:
  *
- *   { tab: 'home', checked, say, sections: [ { tab, line } ], topics }
+ *   { tab: 'home', checked, sections: [ { tab, line } ], topics }
  *
- * `say` is the sentence under the tabs, saying who the corner is for, and
- * `sections` the other tabs in order, each with the sentence saying who it
+ * `sections` is the other tabs in order, each with the sentence saying who it
  * is for, `{tab}` in it where the tab's name goes as the link — the name is
  * the tab's own, which the page already has. A question has
  * no `covers`, and its `links` are one address on this site, mostly a tab
@@ -185,7 +184,6 @@ function guideIn(file, lang) {
   return {
     tab: file.tab,
     checked: file.checked,
-    ...(file.say ? { say: say(file.say) } : {}),
     ...(file.sections ? { sections: file.sections.map((s) => ({ tab: s.tab, line: say(s.line) })) } : {}),
     topics: file.topics.map((topic) => ({
       id: topic.id,

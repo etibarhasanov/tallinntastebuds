@@ -871,8 +871,10 @@
   /* A tab of the guide: the line saying what it is, the flashcards where
      the tab is Estonian, the topics — a list beside an article on a wide
      screen — and under them the line saying whose word is final. The home
-     is drawn here too, once it has answered: its sentence, a sentence
-     leading to each of the other tabs, and the questions as its topics. */
+     is drawn here too, once it has answered: a sentence leading to each of
+     the other tabs, and the questions as its topics. Its sentence saying who
+     the corner is for is the page's description in a search and not drawn:
+     the owner took it off the page on 2026-11-21. */
   function drawGuide(host) {
     if (SAY_KEYS[state.tab]) host.appendChild(el('p', { className: 'lists-say', text: t(SAY_KEYS[state.tab]) }));
     if (state.tab === 'estonian') {
@@ -880,7 +882,6 @@
       host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriWays') }));
     }
     if (state.tab === 'home' && state.guide) {
-      host.appendChild(el('p', { className: 'lists-say azeri-home-say', text: state.guide.say }));
       host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriStart') }));
       host.appendChild(sections(state.guide.sections));
       host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriQuestions') }));

@@ -374,13 +374,11 @@
 
 /* ------------------------------------------------------------- the home */
 
-/* The sentence saying who the corner is for, at a line length worth
-   reading on a desktop, and under it where to start: a sentence for each
-   of the other tabs, a hairline down its left, the tab's name in it as the
-   link — in the ink, bold, underlined in the accent. Sentences rather than
-   a card of rows since 2026-11-21: rows straight under the tabs read as the
-   same menu twice. */
-.azeri-home-say { max-width: 62ch; }
+/* Where to start: a sentence for each of the other tabs, at a line length
+   worth reading on a desktop, a hairline down its left, the tab's name in
+   it as the link — in the ink, bold, underlined in the accent. Sentences
+   rather than a card of rows since 2026-11-21: rows straight under the tabs
+   read as the same menu twice. */
 .azeri-start { list-style: none; max-width: 62ch; margin: 0 0 22px; padding: 0; }
 .azeri-start li { padding: 7px 0 7px 14px; margin-bottom: 4px; border-left: 2px solid var(--hairline); line-height: 1.5; }
 .azeri-start a {
