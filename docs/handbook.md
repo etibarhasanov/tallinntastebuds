@@ -16928,21 +16928,34 @@ it was already walking.
 
 ### Wide, it is a wall of films
 
-On a phone the shelf is a list, a line or two a film. From 900px the page
+Every film carries the picture YouTube keeps for its video — the studio's
+own title card, for most — or its year where there is no video, and
+pressing the picture plays the film. On a phone the shelf is a list, a line
+or two a film, the picture a strip at the left of each. From 900px the page
 stops being a phone's column in the middle of a monitor: the header and the
 main open out to 1180px, the search and the switch share a line, and the
-shelf is a grid of cards, four across at full width, each under the picture
-YouTube keeps for its video — the studio's own title card, for most — or
-under its year where there is no video. Pressing the picture plays the film.
-The film that is opened takes a whole row of the grid, the player on the left
+shelf is a grid of cards, four across at full width, each under its picture.
+The film that is opened takes a whole row of the grid, its screen on the left
 at about 640px and what the film is on the right, and the cards after it
 close the gap it leaves.
 
+**Opening a film keeps its picture.** The picture moves to where the player
+will be — as wide as the card on a phone, above the words; the screen on the
+left, wide — and pressing it, or **Watch**, turns it into the player where it
+stands. Until 2026-11-21 an opened film put its picture away and a phone drew
+none at all, and the owner, opening one on a wide screen, found a card with
+an empty half where the picture had been; both versions were shown as
+mockups, at 390px and wide, before this one was built. A film with nothing
+on YouTube opens on its words alone.
+
 It is the same nodes drawn the same way, and the difference is all in
-`assets/azeri.css`. The pictures come from `i.ytimg.com` and only a wide
-screen asks for them: on a phone the frame is not drawn, and an image that
-is not drawn and is marked lazy is not fetched, so a phone on mobile data
-pays nothing for them.
+`assets/azeri.css`. The pictures come from `i.ytimg.com`, YouTube's 320px one
+at about 9 KB, and they are lazy: a phone fetches the rows it scrolls to,
+about 190 KB for a whole page of twenty, and the opened film's picture is the
+one its row already fetched.
+
+In Azerbaijani the button is **Bax**, the owner's word for it, rather than
+*İzlə*.
 
 ### A guide to Estonia, beside the films
 

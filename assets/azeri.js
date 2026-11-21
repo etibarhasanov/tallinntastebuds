@@ -90,14 +90,16 @@
  * page and the map follows. Under the frame, whose list it is and the way
  * to the whole of it.
  *
- * WIDE, IT IS A WALL OF FILMS. On a phone the shelf is a list, a line or
- * two a film. From 900px it is a grid of cards, each under the picture
- * YouTube keeps for its video — or under its year, where there is no video
- * — and the film that is opened takes the whole row, the player on the left
- * at a size worth watching and what the film is on the right. The pictures
- * are asked for only there: on a phone the frame they would sit in is not
- * drawn, and an image that is not drawn and is marked lazy is not fetched.
- * The layout is all in assets/azeri.css; this file draws one set of nodes.
+ * WIDE, IT IS A WALL OF FILMS. Every film carries the picture YouTube
+ * keeps for its video, or its year where there is no video. On a phone the
+ * shelf is a list, a line or two a film with the picture a strip at its
+ * left. From 900px it is a grid of cards, each under its picture, and the
+ * film that is opened takes the whole row, its screen on the left at a
+ * size worth watching and what the film is on the right. Opened, on either,
+ * the picture stands where the player will and turns into it when pressed,
+ * so opening a film never loses its picture. The pictures are lazy, so a
+ * phone fetches the rows it scrolls to and no more. The layout is all in
+ * assets/azeri.css; this file draws one set of nodes.
  */
 (function () {
   'use strict';
@@ -632,10 +634,11 @@
     if (again) again.scrollIntoView({ block: 'nearest' });
   }
 
-  /* The picture over a card on a wide screen: YouTube's own for the video
-     the button plays, pressed to play it, or the film's year where there is
-     nothing to play. Not drawn on a phone — assets/azeri.css — and lazy, so
-     not fetched there either. */
+  /* A film's picture: YouTube's own for the video the button plays,
+     pressed to play it, or the film's year where there is nothing to play.
+     Over a card on a wide screen, a strip at the row's left on a phone, and
+     in an opened film the screen its player will be — assets/azeri.css.
+     Lazy, so a phone fetches only the rows scrolled to. */
   function thumb(film, main) {
     var id = main ? youtubeId(main.link.url) : '';
     if (!id) return el('span', { className: 'azeri-thumb is-empty', 'aria-hidden': 'true', text: years(film) || '·' });
@@ -675,7 +678,7 @@
     var wrap = el('div', { className: 'azeri-film' + (isOpen ? ' is-open' : ''), id: 'film-' + film.id },
       [thumb(film, main), head]);
     if (main) wrap.appendChild(watchButton(film, main.link, main.key, main.lead));
-    if (isOpen) wrap.appendChild(detail(film));
+    if (isOpen) wrap.appendChild(detail(film, main));
     return wrap;
   }
 
@@ -740,10 +743,16 @@
     return b;
   }
 
-  function detail(film) {
-    var playing = !!(state.playing && youtubeId(state.playing));
-    var box = el('div', { className: 'azeri-detail' + (playing ? ' has-player' : '') });
-    if (playing) box.appendChild(player(film));
+  /* An opened film opens on its screen: the player while something plays,
+     and before that the picture, which turns into the player where it
+     stands when pressed — above the words on a phone, beside them wide. A
+     film with nothing on YouTube has no picture to show, and is its words. */
+  function detail(film, main) {
+    var screen = state.playing && youtubeId(state.playing) ? player(film)
+      : main && youtubeId(main.link.url) ? thumb(film, main)
+      : null;
+    var box = el('div', { className: 'azeri-detail' + (screen ? ' has-screen' : '') });
+    if (screen) box.appendChild(screen);
 
     /* The row says the year and the director where there is one, and the kind
        where there is not; open, the kind is said if the row did not. */
