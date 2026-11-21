@@ -310,16 +310,40 @@ function rowsTouched(part, keys) {
  * and the plan is turned into rows with the sizes in SIZES:
  *
  *   SCAN t                 the whole table, SIZES[t]
- *   SEARCH t … (a=?)       one row where every primary-key column is pinned,
+ *   SEARCH t … (a=?)       one row where every primary-key column is pinned —
+ *                          by the table's own key, or by the index SQLite
+ *                          makes for a TEXT one, sqlite_autoindex_t_1 —
  *                          SEEK where an index is only entered by its front,
  *                          and the whole table where the bound is a range —
  *                          `day >= ?` is every day since
+ *   … a IN (x, y, z)       a search that many times over, and the list a row
+ *                          a value besides: the plan says one SEARCH however
+ *                          long the list written into the statement is
+ *   SEARCH … AUTOMATIC     an index SQLite builds for this statement alone,
+ *                          which it does by reading the whole table
+ *   SCAN n-ROW VALUES      rows written into the statement, n of them: what
+ *                          they are joined to runs n times, and they are no
+ *                          rows read themselves
  *   SCAN … VIRTUAL TABLE   json_each and its kind, UNPACKED rows a time: a
  *                          ride's line is a thousand points
  *   one inside another     multiplied, which is the whole of what went wrong
  *
  * It is an estimate and errs dear: a range is priced as the table, and a
- * subquery's answer as everything it read. What that costs is a prompt, and
+ * subquery's answer as everything it read.
+ *
+ * Until 2026-11-21 it did not know two shapes, and priced them as if they
+ * were others. A list of keys written into a statement as VALUES and
+ * joined to a table by its key — LOOKUP in functions/api/_sections.js, the
+ * cheapest lookup the site has, billed a row for each key found — plans as
+ * `SCAN 50-ROW VALUES CLAUSE`, which was read as an unpacked JSON array of
+ * UNPACKED, and its search on a TEXT key's autoindex was read as an index
+ * entered by its front: 1,000 times 100, so every such read asked, and
+ * nobody could measure the site's own lookup without a prompt. And an IN
+ * list of five thousand keys was priced at a hundred rows, since its plan
+ * is one SEARCH, and would have run unasked. The first is priced by its
+ * rows now and the second by its list, and an automatic index, which a
+ * VALUES list joined to a column with no index would have slipped through
+ * at its new price, as the table it reads. What that costs is a prompt, and
  * the prompt carries the number. What the estimate cannot see — a table that
  * grew past its line in SIZES, a search that filters behind its key — the
  * meter sees afterwards, and one read that comes back past READ_MAX makes
@@ -439,6 +463,16 @@ function priceOf(db, part, keys) {
     unsized = table;
     return Infinity;
   };
+  /* Each column a written-out IN list pins, and the longest list it is
+     given. A list whose own parentheses hold more parentheses is a
+     subquery, which the plan shows and prices where it is made — and the
+     search it feeds runs once a value too, which nothing here can count,
+     so a column fed by one is not priced as a key it pins. */
+  const lists = new Map();
+  for (const [, column, list] of part.matchAll(/([a-z_0-9]+)\s+in\s*\(([^()]*)\)/g)) {
+    lists.set(column, Math.max(lists.get(column) || 0, list.split(',').length));
+  }
+  const subqueried = new Set([...part.matchAll(/([a-z_0-9]+)\s+in\s*\(\s*select\b/g)].map((m) => m[1]));
   const searched = (table, how) => {
     const bound = /\(([^()]*)\)\s*$/.exec(how);
     /* Nothing to seek by: one end of the key for a bare MIN or MAX, and
@@ -446,8 +480,14 @@ function priceOf(db, part, keys) {
     if (!bound) return / where /.test(part) ? sized(table) : 1;
     const terms = bound[1].split(' AND ');
     if (terms.some((term) => /[<>]/.test(term))) return sized(table);
-    const whole = /PRIMARY KEY/.test(how) && terms.length >= (keys.get(table) || ['rowid']).length;
-    return whole ? 1 : Math.min(SEEK, table in SIZES ? sized(table) : SEEK);
+    if (/ AUTOMATIC /.test(how)) return sized(table);
+    const key = keys.get(table) || ['rowid'];
+    const pinned = terms.map((term) => term.split('=')[0].trim());
+    const byKey = /PRIMARY KEY/.test(how) || (how.includes(` sqlite_autoindex_${table}_`) &&
+      key.every((column) => pinned.includes(column)) && !pinned.some((column) => subqueried.has(column)));
+    const each = byKey && terms.length >= key.length ? 1 : Math.min(SEEK, table in SIZES ? sized(table) : SEEK);
+    const listed = Math.max(1, ...pinned.map((column) => lists.get(column) || 1));
+    return listed > 1 ? listed * (each + 1) : each;
   };
   /* A lone walk with a LIMIT and nothing to filter, sort or add up stops
      where the LIMIT does. */
@@ -470,7 +510,9 @@ function priceOf(db, part, keys) {
       if (step) {
         const [, kind, name, how] = step;
         let each;
+        const written = /^(\d+)(?:-ROW VALUES CLAUSE| CONSTANT ROWS)$/.exec(name + how);
         if (name === 'CONSTANT') each = 1;
+        else if (written) each = Number(written[1]);
         else if (/VIRTUAL TABLE/.test(how)) each = UNPACKED;
         else if (names.has(name)) each = kind === 'SCAN' ? sized(names.get(name)) : searched(names.get(name), how);
         else each = made.get(name) || UNPACKED;
@@ -920,6 +962,22 @@ const CASES = [
   /* Two small tables with nothing joining them are one big read. */
   ['ask', 'SELECT COUNT(*) FROM list_items a, list_items b'],
   ['allow', "SELECT name FROM sqlite_master WHERE type = 'table'"],
+  /* A list of keys written in as VALUES and joined by the key is a row a
+     key: LOOKUP in functions/api/_sections.js, priced at 100,000 and asked
+     about until 2026-11-21. Too many keys still asks, and a list joined to
+     a column with no index is an automatic index, which reads the table. */
+  ['allow', `SELECT s.cell, s.rides FROM (VALUES ${Array(50).fill('(?)').join(', ')}) v CROSS JOIN ride_sections s ON s.cell = v.column1`],
+  ['allow', "WITH v(k) AS (VALUES ('a'), ('b')) SELECT COUNT(*) FROM v CROSS JOIN ride_sections s ON s.cell = v.k"],
+  ['ask', `SELECT COUNT(*) FROM (VALUES ${Array(5000).fill("('a')").join(', ')}) v CROSS JOIN ride_sections s ON s.cell = v.column1`],
+  ['ask', 'SELECT COUNT(*) FROM (VALUES (1), (2)) v CROSS JOIN visitor_counts c ON c.n = v.column1'],
+  /* One row by a TEXT key is one row, through the index SQLite makes for
+     it: this was 39 times 81 until then, and asked. */
+  ['allow', "SELECT u.username FROM lists l JOIN users u ON u.id = l.owner WHERE l.id = 'x'"],
+  /* A written-out IN list is its length in searches, however short the plan
+     makes it look: five thousand keys ran unasked at 100 rows until then. */
+  ['allow', "SELECT COUNT(*) FROM ride_sections WHERE cell IN ('a', 'b', 'c')"],
+  ['ask', `SELECT COUNT(*) FROM ride_sections WHERE cell IN (${Array(5000).fill("'a'").join(', ')})`],
+  ['ask', `SELECT COUNT(*) FROM saves WHERE rowid IN (${Array.from({ length: 5000 }, (_, i) => i).join(', ')})`],
   /* An apostrophe inside a literal is content, not a comment, and the write
      after it is still a write. This got through the first version. */
   ['deny', "SELECT 'it--s'; UPDATE saves SET count = 1 WHERE id = 'x'"],
