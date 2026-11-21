@@ -16858,7 +16858,7 @@ with an account or without one, read in Azerbaijani, English, Russian or
 Estonian. It has seven tabs, straight under the corner's name. **Home**
 says who the corner is for, what is in each of the other six, and answers
 the questions people ask. **Azerbaijani films** is the country's cinema.
-**Community** is the corner's people writing to each other: posts, comments
+**Posts**, *Paylaşımlar*, is the corner's people writing to each other: posts, comments
 and upvotes, read by anybody and written by an account. **Estonia**,
 **Studying** and **Estonian** are a guide for somebody arriving in Estonia
 from there, which is who the corner is for: what to sort out and in what
@@ -17207,7 +17207,7 @@ uses for it.
 
 What the guide deliberately does not do: search, questions and answers,
 events, mentors, or editing from the admin page. The questions and answers
-went to a tab of their own, **Community** below, where the corner's people
+went to a tab of their own, **Posts** — **Community** below — where the corner's people
 answer each other; the guide stays the part that is only words.
 
 ### Community
@@ -17218,6 +17218,15 @@ so. It was drawn as a mockup first — the tab with its dot, the posts, a post
 with its comments, the form and every empty and failed state — with sections
 a post was filed under, and the answer was *no sections, the rest as drawn*.
 So it is one stream, newest first, and nothing is filed anywhere.
+
+**The tab says Posts.** It said **Community**, *İcma*, for its first day,
+and the owner renamed it **Posts**, *Paylaşımlar*, on 2026-11-21 — what a
+reader finds under it rather than a word for who writes there. Community is
+still its name everywhere a reader does not look: the tab's id and its
+address, `?tab=community`, the route `/api/azeri/community`, the `azeri_*`
+tables, the `azeriCom*` strings and the presses it reports, so nothing that
+links to it moved. The three sentences that named it say *the posts* now:
+the error, the line over Sign in, and the form's title, *Share something*.
 
 **Read by anybody, written by an account.** The corner opened to anybody the
 same day, with the owner's rule beside it — reading and watching are
@@ -17284,12 +17293,12 @@ post's title, *3 new* beside a post's comments, and a wash on each new
 comment. A visit is a look that comes more than half an hour after the last
 one, `VISIT_MS`, so opening a post and coming back to the list does not take
 the marks away. While another tab of the corner is read, a dot on
-**Community** and a number before the browser's title — *(3) An Azerbaijani
-corner in Estonia* — say how many posts by others have come since Community
+**Posts** and a number before the browser's title — *(3) An Azerbaijani
+corner in Estonia* — say how many posts by others have come since the tab
 was last opened, up to ten, and how many comments on one's own posts. They
 are asked once each time a tab is shown, `GET /api/azeri/community?news=1`
 beside that tab's own ask, and never again while the page sits open: a dot
-is not worth reads all day. Opening Community puts both out. They are a
+is not worth reads all day. Opening the tab puts both out. They are a
 member's: somebody signed out gets no dot, and the ask reads nothing for
 them. Nothing outside the corner says it — not the map, the rail, an email
 or the phone — since the corner is linked from nowhere.

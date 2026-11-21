@@ -5,13 +5,14 @@
  * is in each of the other six, and answers the questions people ask.
  * Azerbaijani films is the country's cinema: the 2,615 of the Azerbaijani
  * Wikipedia's list, which tools/azfilms.mjs collects and /api/azeri hands
- * out twenty at a time. Community is the corner's people writing to each
- * other — posts, comments and upvotes, out of /api/azeri/community. Estonia,
- * Studying and Estonian are a guide for somebody arriving here from there —
- * what to sort out and in what order, how to get into a university, and
- * where to learn the language. Azerbaijani places is where to eat it here,
- * on a map. Nothing on it asks anybody to sign in, Watch included, but to
- * write in Community: an account on this site is for writing something.
+ * out twenty at a time. Community, whose tab says Posts — Paylaşımlar — is
+ * the corner's people writing to each other: posts, comments and upvotes,
+ * out of /api/azeri/community. Estonia, Studying and Estonian are a guide
+ * for somebody arriving here from there — what to sort out and in what
+ * order, how to get into a university, and where to learn the language.
+ * Azerbaijani places is where to eat it here, on a map. Nothing on it asks
+ * anybody to sign in, Watch included, but to write a post: an account on
+ * this site is for writing something.
  * **The Azerbaijani corner** in docs/handbook.md.
  *
  * FOUR LANGUAGES, NOT ELEVEN. The page's words are in data/ui.json in all
