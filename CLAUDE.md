@@ -507,6 +507,15 @@ its models are in `TallinnTasteBuds/Models/`.
 - Added on 2026-11-18, with Where you rode: `GET /api/rides?mine=1&lines=1`,
   the same answer with `line` on each ride, `[lat, lng]` pairs thinned by
   the site, which the app draws together on one map.
+- `data/map.json`'s `closed`, written down on 2026-11-21 after it went
+  wrong: `false`, `true` for good, or `"temporary"`, which the app shows as
+  **Temporarily closed** with `closedTempNote`. The app read `closed` as true
+  or false only, and every build before the one that learnt `"temporary"`
+  shows such a place as open — found, suggested and picked at random. A new
+  value in a field the app reads is as much a change to the promise as a
+  renamed field: the builds that learnt `"temporary"` read any other word as
+  shut for good, and the app's weekly snapshot stops on one it does not
+  know, so the app learns a new word before the site writes it.
 - Added on 2026-11-18, with the train by bike: `GET /api/v1/route`, asked
   first with the same query as `/api/route` and answering the same fields
   beside `version`, and by bike `trains`, each `seconds`, `meters`, `leave`
