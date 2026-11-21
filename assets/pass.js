@@ -193,7 +193,7 @@ window.TTBPass = (function () {
      appeared whenever this request was blocked would not be for members at
      all, it would be for whoever worked out that blocking it was enough. */
   function admit(deal, placeId) {
-    return fetch('/api/pass?r=' + encodeURIComponent(placeId), {
+    return fetch('/api/v1/pass?r=' + encodeURIComponent(placeId), {
       headers: { accept: 'application/json' }
     }).then(function (res) {
       if (res.status === 401) throw new Error('sign-in');

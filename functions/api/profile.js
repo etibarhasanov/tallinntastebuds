@@ -1,5 +1,5 @@
 /**
- * Tallinn Tastebuds — GET /api/profile?name=<name>.
+ * Tallinn Tastebuds — GET /api/v1/profile?name=<name>.
  *
  * One person's public lists and the number of times they have been kept. Read
  * only: there is nothing on a profile that is not already a row somebody else

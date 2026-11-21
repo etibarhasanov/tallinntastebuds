@@ -15,7 +15,7 @@ an hourly code defends against is a screenshot going round a group chat, and
 it does that completely.
 
 **Every discount is for members.** `functions/api/pass.js` answers
-`GET /api/pass?r=<id>` with `401` where there is no session, and
+`GET /api/v1/pass?r=<id>` with `401` where there is no session, and
 `assets/pass.js` turns that into a sign-in card instead of a code — for a
 fixed deal as much as a drawn one. The map's button reads **Sign in to use
 it** and opens the sheet with `?then=` back to the pass. The offer, the pill
@@ -113,7 +113,7 @@ many are switched on.
    The validator checks the alphabet, the length and uniqueness, and nothing
    about how the key was made, so a key typed by hand passes and is weak.
 3. **Leave `live: false`** and `node tools/validate.mjs`.
-4. **Test it dormant, on a local server.** The guest page needs `/api/pass`
+4. **Test it dormant, on a local server.** The guest page needs `/api/v1/pass`
    to answer before it draws anything, so it is `npx wrangler pages dev .`
    against the preview database — the **api** skill's steps — or Playwright
    with that route stubbed: `{ "draw": <number> }` for a member and `401` for
@@ -194,11 +194,11 @@ into its code (`p=25` in the QR), and everybody else gets the deal's own.
   a session does not run without the owner's yes.
 - Before any of it works the column has to exist in production:
   `ALTER TABLE users ADD COLUMN student_until TEXT`. Until
-  it does, `/api/pass` answers `student: false` for everyone and the deal
+  it does, `/api/v1/pass` answers `student: false` for everyone and the deal
   pays its everyday rate — nothing breaks.
 - The validator holds `rate` to 1–99, wants `offer.en` and warns on a live
   deal missing a language, and refuses `student` beside a `roll`.
-- Drive it with `/api/pass` stubbed to `{ "draw": 0, "student": true }` and
+- Drive it with `/api/v1/pass` stubbed to `{ "draw": 0, "student": true }` and
   `false`: the lede changes, the QR ends `&p=<rate>` only for the student,
   `staff.html` shows two labelled rows, and the verify page prints the
   student line for `p=<rate>` and **Not valid** for a student code with the
@@ -222,7 +222,7 @@ name and the offer under Google's line. The Discount chip lists it, seated
 by `seatDeals()` out of the find bar's roll and wearing the plain pin, so
 drive the chip as well as the card. And the admin page's
 **Discount** tab cannot see it, so it is switched by hand here. Drive the
-card with `/api/places` and `/api/venues` stubbed to return the row, or under
+card with `/api/v1/find` and `/api/venues` stubbed to return the row, or under
 `pages dev` with the row in the local database. **A discount at a place that
 is not on the map** in the README is the reasoning.
 
@@ -291,7 +291,7 @@ driven in a browser, and the staff link.
   window is the same account or none. Sign in as somebody else to be
   somebody else.
 - Driving any deal on a plain `http.server` and concluding the pass page is
-  broken: there is no Function there to answer `/api/pass`, so every
+  broken: there is no Function there to answer `/api/v1/pass`, so every
   discount shows the "not available" card. `wrangler pages dev`, or a stub.
 - Reading the account in front of a discount as what protects it. It is not
   — the key is still in a public file. It decides who the offer is *for*.

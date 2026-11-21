@@ -407,7 +407,7 @@ What this process adds:
   locally, into `.wrangler/`, so an account made under it has an id that
   exists on one machine and nowhere else, and naming it in a file everybody
   shares would name nobody. Make the house per session instead — sign up
-  `house-preview` with `POST /api/account`, read its id out of the local
+  `house-preview` with `POST /api/v1/account`, read its id out of the local
   database with `wrangler d1 execute tallinntastebuds-preview --local
   --command "SELECT id, username FROM users"`, and start the server again
   with `--binding ADMINS=<id> --binding SAVE_SALT=dev`, the salt because

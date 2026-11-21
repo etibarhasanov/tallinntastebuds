@@ -167,7 +167,7 @@ function signedOut(request, body) {
 }
 
 /* ------------------------------------------------------------------- who
- * GET /api/account — who is signed in, and what they have saved.
+ * GET /api/v1/account — who is signed in, and what they have saved.
  */
 export async function onRequestGet(context) {
   const { request, env } = context;

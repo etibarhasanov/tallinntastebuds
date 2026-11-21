@@ -1572,7 +1572,7 @@ async function report(context, body) {
 
   /* The fingerprint is the whole of who this row belongs to, so without the
      salt there is nothing to file it under. Fail closed rather than write a
-     row every press adds to — see /api/saves, which takes the same bargain for
+     row every press adds to — see /api/v1/saves, which takes the same bargain for
      the same reason. */
   if (!env.SAVE_SALT) return json({ error: 'no-salt' }, 503);
 

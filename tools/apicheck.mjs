@@ -21,8 +21,9 @@
  *   - every answer carries `Access-Control-Allow-Origin: *` and `API-Version`;
  *   - a place that has closed is not in a search and is `closed` by its id;
  *   - every address the file lists under `apps` answers through the site's
- *     own route — the apps' v1 addresses are aliases, not copies — and
- *     /api/v1/admin/… is not one of them.
+ *     own route — the apps' v1 addresses are aliases, not copies — its old
+ *     address under /api/ is a 410 naming it, but /api/google, where Google
+ *     sends a sign-in back, and /api/v1/admin/… is not one of them.
  *
  * A field the answer has and the file does not is not a failure: that is v1
  * gaining, which is allowed. Without --check it is printed, so whoever added
@@ -243,20 +244,39 @@ for (const [path, status, code] of errors) {
   check('the places with no database still answer', places.status === 200);
 }
 
-/* The apps' addresses: each is the site's own route, called — the same
-   answer as the old address, which answers as ever. */
+/* The apps' addresses: each is the site's own route, called, and its old
+   address under /api/ a 410 that says where it went — the MOVED block in
+   functions/_middleware.js — but /api/google, which Google's console sends
+   every sign-in back to. */
+const throughMiddleware = (path) => middleware({
+  request: new Request(SITE + path), env: {},
+  next: async () => new Response('the route')
+});
 for (const name of frozen.apps) {
   const old = name === 'find' ? 'places' : name === 'me/lists' ? 'lists' : name;
   const mod = await import(pathToFileURL(join(ROOT, 'functions', 'api', old + '.js')).href);
   const own = mod.onRequestGet || mod.onRequestPost || mod.onRequest;
   check('/api/v1/' + name + ' has a route behind it in functions/api/' + old + '.js', typeof own === 'function');
+  const res = await throughMiddleware('/api/' + old);
+  if (name === 'google') {
+    check('/api/google still answers, where Google sends a sign-in back', res.status === 200);
+    continue;
+  }
+  const body = await res.json().catch(() => null);
+  check('/api/' + old + ' is gone and names /api/v1/' + name, res.status === 410 && body && body.use === '/api/v1/' + name,
+    'it answered ' + res.status + ' ' + JSON.stringify(body));
+}
+{
+  const res = await throughMiddleware('/api/rides/abc123?x=1');
+  const body = await res.json().catch(() => null);
+  check('/api/rides/<id> is gone and names /api/v1/rides/<id>', res.status === 410 && body && body.use === '/api/v1/rides/abc123?x=1');
 }
 for (const [name, old] of [['account', 'account'], ['find', 'places'], ['me/lists', 'lists']]) {
   const mod = await import(pathToFileURL(join(ROOT, 'functions', 'api', old + '.js')).href);
   const env = { ASSETS };
-  const before = await (await mod.onRequestGet({ request: new Request(SITE + '/api/' + old), env, params: {} })).text();
+  const own = await (await mod.onRequestGet({ request: new Request(SITE + '/api/v1/' + name), env, params: {} })).text();
   const { res } = await ask('/api/v1/' + name);
-  check('/api/v1/' + name + ' answers what /api/' + old + ' does', (await res.text()) === before);
+  check('/api/v1/' + name + ' answers what functions/api/' + old + '.js does', (await res.text()) === own);
 }
 {
   const { res } = await ask('/api/v1/admin/stats');
@@ -278,4 +298,4 @@ if (failures.length) {
   for (const f of failures) console.error('  FAIL  ' + f);
   process.exit(1);
 }
-console.log('OK — /api/v1 keeps every shape data/api-v1.json froze, and its apps\' addresses are the site\'s own routes.');
+console.log('OK — /api/v1 keeps every shape data/api-v1.json froze, its apps\' addresses are the site\'s own routes, and their old ones are gone.');

@@ -72,7 +72,7 @@
  *
  * Only that the surface closed. A page can sign somebody in or out, save a
  * place, make a list, and the map underneath was drawn before any of that,
- * so on close the map asks /api/account again — what mount()'s onclose is
+ * so on close the map asks /api/v1/account again — what mount()'s onclose is
  * for. While a page is open the rest of the map is inert: not focusable, not
  * pressable, not read by a screen reader, so that the keyboard and the
  * reader are on the page the eyes are.

@@ -54,11 +54,11 @@
   var MAX_LISTS = 10;
 
   var API = '/api/posts';
-  var ACCOUNT_API = '/api/account';
+  var ACCOUNT_API = '/api/v1/account';
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
-  var PLACES_URL = '/api/places';
-  var LISTS_API = '/api/lists';
+  var PLACES_URL = '/api/v1/find';
+  var LISTS_API = '/api/v1/me/lists';
   var PAGE = '/write';
 
   var DEFAULT_LANG = 'en';
@@ -467,7 +467,7 @@
      own and Google's export, the roll a list is built from — so a member
      writing about their ten places can pin the bar I have never been to. That
      roll is a hundred kilobytes, and a post needs ten of it, so it is never
-     fetched here: the picker asks /api/places by name once three letters are
+     fetched here: the picker asks /api/v1/find by name once three letters are
      typed, and a post opened to edit asks for the cards it already names by
      id. Whatever either answers is kept by id for placeCard(). */
   var PICK_MIN = 3;

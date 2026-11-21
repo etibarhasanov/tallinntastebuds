@@ -4,7 +4,7 @@
  * Underscore-prefixed, so this is a module and never a route. It holds the one
  * thing three files all need: the shape of a list as the page wants it.
  *
- *   functions/api/lists.js     answers GET /api/lists?id=<id> with it
+ *   functions/api/lists.js     answers GET /api/v1/me/lists?id=<id> with it
  *   functions/list/[id].js     seeds it into the page it serves, so a shared
  *                              link draws without a second round trip
  *   functions/mcp.js           hands it to an assistant, through the lists

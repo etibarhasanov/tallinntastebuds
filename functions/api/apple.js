@@ -1,5 +1,5 @@
 /**
- * Tallinn Tastebuds — /api/apple, Sign in with Apple from the iPhone app.
+ * Tallinn Tastebuds — /api/v1/apple, Sign in with Apple from the iPhone app.
  *
  * One POST and no trip: the app shows Apple's own sheet, Apple hands it a
  * signed token, and the app sends that here with the nonce it asked for it

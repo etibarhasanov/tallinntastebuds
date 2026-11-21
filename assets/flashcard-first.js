@@ -2,7 +2,7 @@
  * that wants the answer has arrived.
  *
  * window.TTBFlashFirst = { url, response } — the address boot() in
- * assets/flashcard.js would have asked /api/flashcard on the way in, and the
+ * assets/flashcard.js would have asked /api/v1/flashcard on the way in, and the
  * fetch() already under way for it.
  *
  * WHY IT EXISTS. That one request — the decks, the deck the address names, who
@@ -71,7 +71,7 @@
   if (asked) query.set('deck', asked);
   if (door) query.set('hello', '1');
 
-  var url = '/api/flashcard?' + query.toString();
+  var url = '/api/v1/flashcard?' + query.toString();
   var response = fetch(url, { headers: { accept: 'application/json' } });
   response.catch(function () { /* boot() reads the failure off the original */ });
 

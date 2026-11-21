@@ -39,7 +39,7 @@
  *                            of every card and the Estonian of its sentence,
  *                            every sentence and every form in a grammar
  *                            lesson, every line of a song and every sentence
- *                            of a conversation. What /api/say
+ *                            of a conversation. What /api/v1/say
  *                            holds a request to, so that it never needs the
  *                            cards to answer whether a text is on one.
  *
@@ -70,7 +70,7 @@
  * functions/flashcard/mcp.js reads words.json beside the index and a deck's
  * or a lesson's own file. functions/api/_visitors.js reads the index for the ids a
  * visitor's report may say it was about. Nothing in a browser reads any of
- * them: the page asks /api/flashcard, which answers with what it read. One
+ * them: the page asks /api/v1/flashcard, which answers with what it read. One
  * app does, since 2026-11-19: Kohuke fetches a deck's, a lesson's, a song's
  * or a conversation's own file, and the index for the names of the decks,
  * wherever it can put the route's answer together without the route — so
@@ -87,7 +87,7 @@
  *                            Estonian, what it means in each language and
  *                            the wrong answers to stand beside the right
  *                            one — levelFile() below. What ?level=1 on
- *                            /api/flashcard reads, so that a test of
+ *                            /api/v1/flashcard reads, so that a test of
  *                            twenty-five questions out of a dozen decks is
  *                            one file and not a dozen.
  *
@@ -141,7 +141,7 @@ function asForm(form) {
   return form.replace(/ · /g, ', ');
 }
 
-/* Every string the voice may say, out of all four lists — the rule /api/say
+/* Every string the voice may say, out of all four lists — the rule /api/v1/say
    applied to the whole file before this tool existed, and exact: nothing a
    person typed is ever in it. Sorted, so that the file changes only when the
    words do. */

@@ -121,7 +121,7 @@ window.TTBTrack = (function () {
     if (typeof window.clarity === 'function') window.clarity('event', name);
   }
 
-  /* A refusal from /api/account, reported as a press of its own:
+  /* A refusal from /api/v1/account, reported as a press of its own:
      account_err_ and the error the route sent, its dashes as underscores —
      `taken`, `password`, `slow_down` — and `generic` where it sent none,
      which is a network that failed as often as a server that did. The map

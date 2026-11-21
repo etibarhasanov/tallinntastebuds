@@ -25,9 +25,9 @@ import { foldWords } from './api/_lib.js';
 import { MIN_ITEMS } from './api/_mostkept.js';
 import { SITE } from './_shell.js';
 
-/* The version of /api/v1 — the `version` every answer under it carries and
-   the API-Version header beside it: ./api/v1/[[path]].js and the one route
-   that has a file of its own there, ./api/v1/route.js. */
+/* The version of /api/v1 — the `version` every public answer under it
+   carries and the API-Version header beside it: ./api/v1/[[path]].js, and
+   of the apps' routes the one that says it too, ./api/route.js. */
 export const VERSION = 1;
 
 /* The language a write-up falls back to when the one asked for is missing,

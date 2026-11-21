@@ -139,7 +139,7 @@ visitor can see: the page does not exist yet.
      `mine` null, `queue` empty, and every POST `503 no-database`.
    - `json()` from `_lib.js` for every answer; `no-store` throughout.
 3. The house, locally: under `npx wrangler pages dev .`, sign up an account
-   through `POST /api/account` — `house-preview` — read its `users.id` out of
+   through `POST /api/v1/account` — `house-preview` — read its `users.id` out of
    the local database, and restart the server with `--binding ADMINS=<id>`.
    This step first said to write that id into `ADMINS` in `wrangler.toml`, and
    was wrong: `pages dev` binds D1 **locally** unless told otherwise, so an

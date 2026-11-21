@@ -47,25 +47,28 @@
  *     at least six months out — and from that day every answer here carries
  *     `Deprecation: true` and `Sunset: <date>`, the two headers RFC 8594 and
  *     RFC 9745 name for it, so a client that logs its headers is told.
- *   - The routes the apps sign in, save and write through are v1 too, at
- *     /api/v1/<name> — THE APPS' ROUTES below — so a new build of each app
+ *   - The routes the pages and the apps sign in, save and write through are
+ *     v1 too, at /api/v1/<name> — THE APPS' ROUTES below — so everything
  *     asks for one version of everything. Their old addresses under /api/
- *     answer the same until the installed apps that ask for them are gone.
+ *     were taken out on 2026-11-21 and answer a 410 saying where each went.
  *
  * WHAT IS NOT HERE, ON PURPOSE
  *
- * Google's half. /api/places merges about eleven hundred rows out of the
- * Google Places export into the roll, and /mcp lends an assistant Google's
- * opening hours; this hands out neither. They are Google's data under
- * Google's terms, which allow showing them on this site and not handing them
- * on to anybody who asks. A place here is a place on the map, in the map's
- * own words, with the phone and website the map holds and nothing borrowed —
- * and on a list, a row somebody added off Google comes with the name, the
- * address and the point the list itself stores, `approved: false`.
+ * Google's half. /api/v1/find, the site's own search, merges about eleven
+ * hundred rows out of the Google Places export into the roll, and /mcp
+ * lends an assistant Google's opening hours; this hands out neither. They
+ * are Google's data under Google's terms, which allow showing them on this
+ * site and not handing them on to anybody who asks. A place here is a place
+ * on the map, in the map's own words, with the phone and website the map
+ * holds and nothing borrowed — and on a list, a row somebody added off
+ * Google comes with the name, the address and the point the list itself
+ * stores, `approved: false`.
  *
- * And no routing, no geocoding: /api/route and /api/geocode pass the question
- * on to other people's free services (OSRM, Peatus, Photon), and opening them
- * to everybody would be spending those services' patience on strangers.
+ * And no routing, no geocoding for other sites: /api/v1/route and
+ * /api/v1/geocode are the site's own and carry none of the CORS headers
+ * below, since they pass the question on to other people's free services
+ * (OSRM, Peatus, Photon), and opening them to everybody would be spending
+ * those services' patience on strangers.
  *
  * WHAT IT COSTS
  *
@@ -106,6 +109,7 @@ import * as lookup from '../lookup.js';
 import * as ask from '../ask.js';
 import * as flashcard from '../flashcard.js';
 import * as say from '../say.js';
+import * as route from '../route.js';
 
 /* The day v1 stops answering, once a v2 has been published — an ISO date at
    least six months after v2 went live. null while v1 is the current version,
@@ -114,7 +118,7 @@ const SUNSET = null;
 
 /* Five minutes, everywhere: the map moves when a deploy moves it and a list
    when its author presses something, and five minutes is how stale
-   /api/places is already allowed to be. */
+   /api/v1/find is already allowed to be. */
 const MAX_AGE = 300;
 
 const MAX_QUERY = 200;
@@ -413,10 +417,10 @@ function index() {
 }
 
 /* ------------------------------------------------------ the apps' routes
- * Everything the iPhone app, Kohuke and Rattatee ask for, at its v1 address.
- * Each is the site's own route, called as it is — the same handler, the same
- * cookie, the same answer, the same errors — so a build of an app that has
- * moved to /api/v1 and one that has not are talking to one piece of code.
+ * Everything the site's pages, the iPhone app, Kohuke and Rattatee ask for,
+ * at its v1 address. Each is the site's own route, called as it is — the
+ * handler in ../<name>.js, the same cookie, the same answer, the same
+ * errors — so the code is where it always was and only the address moved.
  *
  * Two are renamed, because v1's public reads above already hold the name:
  *
@@ -426,20 +430,20 @@ function index() {
  *   /api/lists    is   /api/v1/me/lists   your lists, and every write to one
  *
  * Every other is the old name under /api/v1/: /api/v1/account, /api/v1/saves
- * and so on down APPS. Two are not in APPS because they have files of their
- * own, which Pages finds before this catch-all: /api/v1/route is ./route.js —
- * everything /api/route answers, and by bike the trains as well — and
- * /api/v1/rides/<id> is ./rides/[id].js, one ride to its rider, a second
- * segment this table has no room for. The old addresses stay where they are and answer
- * exactly as before, until no installed app asks for them — **The public
- * API** in docs/handbook.md says how that is decided. Nothing under
- * /api/admin/ is here, deliberately: functions/_middleware.js locks that
- * prefix to the owner, and an alias of it would be a way round the lock.
+ * and so on down APPS. One is not in APPS because it has a file of its own,
+ * which Pages finds before this catch-all: /api/v1/rides/<id> is
+ * ./rides/[id].js, one ride to its rider, a second segment this table has no
+ * room for. The old addresses under /api/ answer a 410 naming the new one —
+ * the MOVED block in functions/_middleware.js — since 2026-11-21, once the
+ * apps' builds and then the pages had moved. Nothing under /api/admin/ is
+ * here, deliberately: the middleware locks that prefix to the owner, and an
+ * alias of it would be a way round the lock.
  *
  * Google's sign-in starts at /api/v1/google as well as at /api/google, and
  * still comes back to /api/google: the address Google returns to is
  * GOOGLE_PATH in ../_google.js, registered in Google's console, and moving
- * it is a change there first.
+ * it is a change there first. So /api/google is the one old address that
+ * still answers.
  *
  * None of this goes through the colo copy or the CORS headers the public
  * reads carry: these read sessions, and a cookie-bearing answer is nobody
@@ -448,7 +452,7 @@ function index() {
 const APPS = new Map([
   ['account', account], ['apple', apple], ['google', google], ['saves', saves],
   ['find', find], ['profile', profile], ['pass', pass], ['discover', discover],
-  ['walk', walk], ['rides', rides], ['geocode', geocode],
+  ['walk', walk], ['rides', rides], ['route', route], ['geocode', geocode],
   ['lookup', lookup], ['ask', ask], ['flashcard', flashcard], ['say', say]
 ]);
 

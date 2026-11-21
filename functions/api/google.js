@@ -39,14 +39,14 @@
  * system's sign-in sheet, and every ending of it is `tallinntastebuds://signin`
  * rather than `?then=`: the same `google=` outcomes, and a `ticket` in place
  * of the session cookie where somebody signed in, which the app trades for
- * the session at /api/account. It never links — a session found in the sheet
+ * the session at /api/v1/account. It never links — a session found in the sheet
  * is the browser's, not the app's. THE APP'S WAY BACK IN in ./_google.js is
  * the whole argument.
  *
  * AND WHEN IT IS OFF
  *
  * Without a usable GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET — googleReady()
- * in ./_google.js, both halves or neither — /api/account answers
+ * in ./_google.js, both halves or neither — /api/v1/account answers
  * `google: false` and every sheet draws the username and password alone, so
  * nothing sends anybody here. A request that arrives anyway, hand-typed or
  * from a page that loaded before the bindings went, is sent home with nothing

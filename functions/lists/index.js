@@ -62,7 +62,7 @@
  * WHAT HAPPENS WHEN IT CANNOT
  *
  * The same as its neighbour: the untouched page, and assets/lists.js asks
- * /api/lists?all=1 as it would have anyway. No database bound, the wrong
+ * /api/v1/me/lists?all=1 as it would have anyway. No database bound, the wrong
  * database, a query that threw — all of them are the plain shell, and the page
  * says the honest thing once the script has asked. This route is an
  * improvement on the load, never a requirement for it.

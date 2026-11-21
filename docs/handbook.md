@@ -19,7 +19,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, fifty-five small Functions, no build step and no npm install. Adding a
+Static files, fifty-four small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -27,8 +27,8 @@ how many other people kept it too — and the lists, which are somebody else's
 top ten rather than mine: a name they chose, places they picked out of a much
 longer catalogue, and a sentence about each one, with a link they can send to
 a friend. A list can be kept the same way a place can, and opened on the map
-as pins. Both live in a Cloudflare D1 database, behind `/api/saves` and
-`/api/lists`. Saving a place takes no account; making a list needs one,
+as pins. Both live in a Cloudflare D1 database, behind `/api/v1/saves` and
+`/api/v1/me/lists`. Saving a place takes no account; making a list needs one,
 because it goes out under a name, and keeping one needs the same account for a
 different reason. See **Saves** and **Lists**.
 
@@ -785,7 +785,7 @@ location.* and nothing to do about it. The owner's answer was that they could
 enter their location themselves, so the locate button has a sheet behind it
 now — **Where are you?** — with one field: a street, a district or a landmark,
 and under it the same five suggestions the add-a-place form draws out of
-`/api/geocode`, as rows. Picking one puts the dot there through the same
+`/api/v1/geocode`, as rows. Picking one puts the dot there through the same
 `drawHere()` in `assets/app.js` a reading from the device goes through, so the
 list turns to **Nearest you**, the find bar prints its distances and the chat
 measures *near me* from it without any of them knowing the difference. Enter
@@ -1073,7 +1073,7 @@ Tallinn* on the map.
 
 ### Where the roll comes from, and why not from the database
 
-`/api/places`, once, on the first keystroke — the map's own places merged over
+`/api/v1/find`, once, on the first keystroke — the map's own places merged over
 `google_venues`, deduplicated and cached five minutes, which is the same answer
 the lists page's picker has been searching all along. It is not asked for on
 the way in: somebody who opens the map and never types has no use for three
@@ -1083,7 +1083,7 @@ hundred kilobytes of it, sixty on the wire.
 It was built that way because a `?q=` route asking D1 could not fold an accent
 — nobody types *Põhjala* with the tilde, and no `LIKE` drops it — and that
 reason was about SQL rather than about the server. Since November 2026
-`/api/places?q=` searches the same roll in the Function's memory, by this
+`/api/v1/find?q=` searches the same roll in the Function's memory, by this
 bar's own rules, written out a second time in `functions/api/_find.js`, and
 the iOS app, its list picker and the blog editor's picker ask that. **One
 search of the city** under **The roll a list is built from** is the route.
@@ -1147,7 +1147,7 @@ eleven hundred, the `name` is there for whoever reads the file, and
 { "id": "ChIJWULez_qTkkYRBdct4TQvjjE", "name": "One Sixty Smokehouse", "serves": ["burger"] }
 ```
 
-`/api/places` puts the words on the row as `serves`, and both copies of the
+`/api/v1/find` puts the words on the row as `serves`, and both copies of the
 search count them as part of what the place is: found by them, ranked as
 squarely as by Google's category, and among the places that *say* the word
 rather than under them — the word of somebody who ate there is worth at
@@ -1192,7 +1192,7 @@ like any other, so the arrows reach them and Enter presses one; a press
 reports `find_word`. `findVocabulary()`, `findWords()` and `findWordRow()`
 in `assets/app.js`. The column's field does not offer them, and neither
 does the iOS app, which gets the tags and the endings through
-`/api/places?q=` and would draw the words itself.
+`/api/v1/find?q=` and would draw the words itself.
 
 ### What is searched on each side, which is nearly the same thing now
 
@@ -1201,7 +1201,7 @@ labels **in all eleven languages**, and the dishes in `mustOrder` — the four
 columns **Searching the list** describes, reused rather than rebuilt — and,
 once the roll is in, a fifth the column's field does not have: what Google
 files the place as cooking, in the directory's cuisine ids and the eleven
-languages `data/cuisines.json` says them in. `/api/places` lends that to a
+languages `data/cuisines.json` says them in. `/api/v1/find` lends that to a
 place of mine off the Google row `map_id` joins to it, the way the chat's
 Function does for its own narrowing (**One Ask, two rolls**), so *korean*,
 *korea* and *корейская* all reach Ariran whether or not the write-up says
@@ -1266,7 +1266,7 @@ across the whole city instead.
 they go best first by what Google's reviewers say of them: Google's score,
 pulled towards the city's average of 4.4 as if fifty more people had reviewed
 it (`findScore()`), so a 5.0 from twenty reviews does not open the list over a
-4.9 from four hundred. A place of mine has no score of its own; `/api/places`
+4.9 from four hundred. A place of mine has no score of its own; `/api/v1/find`
 lends it the one on the export row tied to it by `map_id` — sixty-six of the
 seventy-odd have one — and a place with none comes after every place that has.
 **Everything after those three goes by the export's `rank`** — the position
@@ -1565,9 +1565,9 @@ words. `showLooked()` in `assets/app.js`. Open the dropdown again on the
 same words and Google's places are rows under **From Google Maps**, or under
 the usual heading when the words already reach them by name.
 
-**What Google answers is kept.** `/api/lookup` writes every place into
+**What Google answers is kept.** `/api/v1/lookup` writes every place into
 `google_venues`, so the next person typing *kumu* finds Kumu in the roll
-`/api/places` already sends, and never sees the button — one call to Google
+`/api/v1/find` already sends, and never sees the button — one call to Google
 per place, not per visitor. A place the export already has, or one the owner
 hid, stays as it was except for one column: its status, which Google has just
 said. That is how a place Google had called temporarily closed comes back.
@@ -1612,7 +1612,7 @@ cache. The rating, the hours and the phone come the first time somebody opens
 the place, through the refresh that keeps every row current (**Keeping it
 current** under **Google venues**).
 
-**When it cannot.** No `GOOGLE_MAPS_API_KEY`, and `GET /api/lookup` answers
+**When it cannot.** No `GOOGLE_MAPS_API_KEY`, and `GET /api/v1/lookup` answers
 `ready: false` and the button never appears — the dead end is what it was.
 Google with nothing in Tallinn for the words: *Google Maps has nothing in
 Tallinn for "Kumu" either.* (`findGoogleNone`), or, with rows of the bar's
@@ -1862,7 +1862,7 @@ badge on the right of every row off the side of the screen, and the map
 pannable sideways for the rest of the visit.
 
 It is a conversation, and the model is told the whole of it: every question
-goes to `/api/ask` with the exchanges before it — what was asked and what was
+goes to `/api/v1/ask` with the exchanges before it — what was asked and what was
 answered, ids and clauses, the last ten — so *somewhere cheaper* or *is the
 second one open late* mean what they would to a person, and the reply reads
 like one. One place is a whole answer when one is what fits, and the model is
@@ -2008,7 +2008,7 @@ now runs the other way; see **Every row says why**.
 tokens a question against a free allowance that would then last an afternoon.
 So the browser sends what it read the question as — the wish `assets/ask.js`
 produces: types, cheap or fancy, open now, where to be near, and the words
-left over — and `/api/ask` narrows the export with the same scoring it
+left over — and `/api/v1/ask` narrows the export with the same scoring it
 narrows my places with, hands the model the forty likeliest, and hands the
 browser those same forty so it can draw and pin whichever the model names.
 The cut is generous on purpose: its one job is "plausibly what was asked
@@ -2083,7 +2083,7 @@ weaker in Estonian and Armenian, and everything else Cloudflare left on the
 free plan costs two to eight times as much a token, so the allowance is
 stretched by sending fewer tokens rather than by changing the name. Every
 reply carries the model's name as `model` beside `note`, so after a swap one
-`curl` to `/api/ask` says which model answered and whether it was heard —
+`curl` to `/api/v1/ask` says which model answered and whether it was heard —
 the comment has the line — and the Workers AI page of the Cloudflare
 dashboard shows the day's Neurons when it is worth knowing where an
 afternoon went.
@@ -2094,7 +2094,7 @@ them is a legitimate pool for a question about a mood; what the scoring has
 to guarantee is only that when a question *does* name something — khinkali,
 ramen, a date — the places that answer it are in the slice, and first. There
 is no test in the repository for that; it was checked by hand, question by
-question, and the way to check it again is the same — `/api/ask` answers
+question, and the way to check it again is the same — `/api/v1/ask` answers
 with `picks` in the order the model chose, and a named dish that is not in
 the first three is the scoring having missed.
 
@@ -2109,7 +2109,7 @@ model gave was thrown away, quietly, and the keyword reader answered in its
 place. Nobody could tell, because the reader is right about most questions
 people type; it took *how does it work* coming back with three restaurants,
 and *All Tallinn* giving the same answer as the map, to notice. Both shapes
-are read now, and `/api/ask` reports which of the two answered in **`note`**
+are read now, and `/api/v1/ask` reports which of the two answered in **`note`**
 — `workers-ai`, `workers-ai-none`, `workers-ai-spent`, `no-ai` — so the next
 time this goes quiet it is one request to find rather than a year. There is
 no test in the repository that feeds the route the chat-completion shape;
@@ -2119,7 +2119,7 @@ model or to `unwrap()`.
 Which leaves the other half: what happens when the model is not there. That
 happens — the allowance runs out, a model gets moved behind the paid plan
 (`kimi-k2.6` and `glm-5.2` both did in July 2026), the network is gone, or it
-answers with something unparseable. `/api/ask` answers `source: "none"`, and
+answers with something unparseable. `/api/v1/ask` answers `source: "none"`, and
 the chat says *Nothing on the map answers that* and draws no rows. It does
 not guess. There used to be a keyword reader in the browser for exactly this
 moment, and it is what made the chat look broken: it matched substrings and
@@ -2172,7 +2172,7 @@ The map's own places carry no hours — there is no such field in
 `data/restaurants.json` — but sixty-six of the eighty are also rows in
 [Google venues](#google-venues), joined on `google_venues.map_id`, and those
 rows carry the week, and Google's word for what the place cooks. So
-`/api/ask` reads both — the cuisine goes onto the line the model reads and
+`/api/v1/ask` reads both — the cuisine goes onto the line the model reads and
 into the scoring, see **One Ask, two rolls** — and answers with which places
 are open **right now and until when**, whether or not it has an opinion about
 the question. "Open until 23:00" under a row is the one thing the panel
@@ -2257,8 +2257,8 @@ So *near* is now the fourth thing the reader in `assets/ask.js` looks for,
 beside cheap, fancy and open now, with its words in `data/ui.json` under
 `askWordsNear` in all eleven languages — *close to*, *nearest*, *lähedal*,
 *рядом с*, *perto de*. What follows the phrase is what they want to be near, and
-`/api/ask` turns it into a point with the same lookup the add-a-place form
-uses — `/api/geocode`'s Photon call, biased to Tallinn and bounded to it,
+`/api/v1/ask` turns it into a point with the same lookup the add-a-place form
+uses — `/api/v1/geocode`'s Photon call, biased to Tallinn and bounded to it,
 cached upstream for a day — taking the first suggestion: the street for a
 street, the district for a district, the door for a name Photon knows. With a
 point, the *where* on every line the model reads ends with the straight-line
@@ -2381,7 +2381,7 @@ that number was the model's: the brief told it to quote the distance off its
 line and never to invent one, and a small model quotes a distance the way it
 quotes anything. One answer had *1.2 km away* under a place in Lasnamäe and
 *1.3 km away* under one on Endla, six kilometres apart, and the next answer
-had nothing under any row. So `/api/ask` now sends each pick back with
+had nothing under any row. So `/api/v1/ask` now sends each pick back with
 `far`, the kilometres it measured for the line the model read; the browser
 prints it — `askMetres` and `askKm` in `data/ui.json`, to the nearest fifty
 metres under a kilometre and to one decimal past it, in the visitor's own
@@ -2820,9 +2820,10 @@ answer.
 export, their hours, their ratings. Those are Google's under Google's terms,
 which allow showing them on this site and not passing them to whoever asks;
 `/mcp` lends an assistant the hours of my own places, this lends nobody
-anything. Nor directions or address search, which are other people's free
-services passed through (`/api/route`, `/api/geocode`). A place here is the
-map's own row, with the phone and website the map holds.
+anything. Nor directions or address search: `/api/v1/route` and
+`/api/v1/geocode` are the site's own and carry none of the public reads'
+CORS headers, since they pass other people's free services through. A place
+here is the map's own row, with the phone and website the map holds.
 
 **What it costs.** The places are `data/restaurants.json` through
 `mapPlaces()`, no database. The lists read D1: `publicLists()` is kept five
@@ -2850,41 +2851,48 @@ that reads its headers is told. On the date, v1 goes.
 
 ### The apps' routes, at their v1 addresses
 
-Everything the three apps ask for answers under `/api/v1` too, so a new build
-of each asks one version for everything: `/api/v1/account`, `/apple`,
-`/google`, `/saves`, `/profile`, `/pass`, `/discover`, `/walk`, `/rides`,
-`/route`, `/geocode`, `/lookup`, `/ask`, `/flashcard`, `/say`, and two
-renamed because the public reads above hold the name:
+Everything the site's pages and the three apps sign in, save and read
+through answers under `/api/v1`, so everything asks one version for
+everything: `/api/v1/account`, `/apple`, `/google`, `/saves`, `/profile`,
+`/pass`, `/discover`, `/walk`, `/rides`, `/route`, `/geocode`, `/lookup`,
+`/ask`, `/flashcard`, `/say`, and two renamed because the public reads above
+hold the name:
 
-| Old | v1 |
+| Was | Is |
 |---|---|
 | `/api/places` | `/api/v1/find` — the city search, the map and Google's rows merged |
 | `/api/lists` | `/api/v1/me/lists` — your lists, and every write to one |
 
-Each is the site's own route called as it is — the same handler, the same
-cookie, the same answer — so an app on the old addresses and one on the new
-are talking to one piece of code, and `apicheck` holds the two to the same
-bytes. One has a file of its own instead: `/api/v1/route` is
-`functions/api/v1/route.js`, everything `/api/route` answers with `version`
-added, and by bike `trains` — **By bike, a train too** and **Why a version**.
-None of them carry the public reads' CORS or caching: they read a session. Nothing under `/api/admin/` is aliased — the middleware locks that
-prefix to the owner, and an alias would be a way round the lock — and the
-check says so.
+Each is the site's own route called as it is — the handler in
+`functions/api/<name>.js`, the same cookie, the same answer — through `APPS`
+in `functions/api/v1/[[path]].js`, and `apicheck` holds each alias to the
+bytes its handler answers. One has a file of its own instead: a ride's own
+page, `/api/v1/rides/<id>`, is `functions/api/v1/rides/[id].js`, a second
+segment the table has no room for. `/api/v1/route` alone of them says
+`version` too, and by bike carries `trains` — **By bike, a train too** and
+**Why a version**. None of them carry the public reads' CORS or caching:
+they read a session. Nothing under `/api/admin/` is aliased — the middleware
+locks that prefix to the owner, and an alias would be a way round the lock —
+and the check says so.
 
-Google's sign-in starts at either address and comes back to `/api/google`
-whichever it started at: that is `GOOGLE_PATH` in `functions/api/_google.js`,
-registered in Google's console, and moving it is a change there first.
+Google's sign-in starts at either `/api/google` or `/api/v1/google` and comes
+back to `/api/google` whichever it started at: that is `GOOGLE_PATH` in
+`functions/api/_google.js`, registered in Google's console, and moving it is
+a change there first. So `/api/google` is the one old address that still
+answers.
 
-**The old addresses go when the phones have moved.** Every old `/api/…`
-address answers exactly as before. The site's own pages still call them, and
-they deploy with the routes so they can move at any time; the installed apps
-cannot. The order is: each app's next build moves to `/api/v1`; it ships; the
-old addresses stay until App Store Connect says next to nobody is still on a
-build from before it — nothing on the site counts an app's requests, so the
-store's numbers by version are the measure, and `wrangler pages deployment
-tail` is how to see an old address still being asked — and only then come
-out, in one PR that moves the pages first. Until
-that PR, **What the app reads** in `CLAUDE.md` is a promise at both addresses.
+**The old addresses went once the phones had moved.** Each of these answered
+at `/api/<name>` first, and from 2026-11-18 at `/api/v1/<name>` as well, the
+day the three apps' builds moved to `/api/v1` — `versioned()` in each app's
+`Core/API.swift`. On 2026-11-21 the owner said no phone was still on a
+build from before that, and the site's pages moved and the old addresses
+came out in one pull request: each is now a `410` with
+`{ "error": "gone", "use": "/api/v1/<name>" }`, the query carried — the
+`MOVED` block in `functions/_middleware.js` — and `apicheck` holds every name
+in `apps` in `data/api-v1.json` to it. The handlers did not move. A build
+from before 2026-11-18 that is still installed somewhere signs nobody in and
+saves nothing; Rattatee's keeps a ride it could not send and tries it again
+with a doubling wait.
 
 ## The map on your site
 
@@ -3001,7 +3009,7 @@ for one leads its street line with *Temporarily closed* (`venuesShutFor`),
 its name in the muted ink and its pin's outline broken; it stands under
 every open row the words reach, on both halves of the dropdown, so "pizza"
 still opens on somewhere to go; and picked, a Google one lands with the
-dashed ring round its pin and the flag over its name. `/api/places` carries
+dashed ring round its pin and the flag over its name. `/api/v1/find` carries
 those rows with `closed: true` for this bar alone: `?q=`, the app and both
 pickers leave them out as they did. The column's own field still
 narrows the list to it, badge and all: that field is a search of the list,
@@ -3109,7 +3117,7 @@ the save mark: an arrow, kept up top so it does not scroll away with the
 write-up. **It shows the way on our own map before it hands anybody to
 Google, and so does the Directions button under the name**, which went
 straight to Google for as long as the arrow did not. A press takes the visitor's dot — or one quiet reading, which must not
-fly the map off the place — asks `GET /api/route` for the way, and
+fly the map off the place — asks `GET /api/v1/route` for the way, and
 `showRoute()` in `assets/app.js` draws it on the map, fits the map to it and
 steps the sheet out of the way (`body.route-on`) so the line has the whole
 screen. What is left is a bar, and the bar has four tabs: **Walk · Bike ·
@@ -3135,7 +3143,7 @@ row slides sideways rather than pushing the cross off the bar.
   *14:05 · 17*, *14:12 · 3 → 17* — pressing one draws that one instead. A
   journey that is all walking is left out, because Walk says that better.
 
-**A walk, a ride or a drive comes with up to three ways.** `/api/route` asks
+**A walk, a ride or a drive comes with up to three ways.** `/api/v1/route` asks
 the router for alternatives and answers the first way as it always did, with
 up to two more under `others`. Where there is more than one, each is a small
 button under the sentence — *9 min · 2.1 km*, *11 min · 2.6 km* — in the row
@@ -3202,7 +3210,7 @@ green, a bus amber and a car red, and both the line on the map and the tab
 that is pressed wear it, so the tab says what the line's colour means. The
 four are tokens, `--way-foot` to `--way-car`, restated in each style so they
 read on its ground. Every line used to be the blue of the dot, and a bus ride
-its timetable's colour; `/api/route` still sends that colour on a ride, and
+its timetable's colour; `/api/v1/route` still sends that colour on a ride, and
 nothing on the page reads it now.
 
 **The way follows the dot.** A walk, a ride or a drive was drawn from where
@@ -3220,8 +3228,8 @@ worse than a line that starts a stop behind.
 **By bike, a train too.** An Elron train takes a bike, and from the right
 corner of the city it is the quicker way: the owner rode to Ülemiste on
 2026-11-17, took the train two stops and rode on, and saved the ride with a
-name saying so. So the Bike tab asks `/api/v1/route` rather than
-`/api/route`, and its answer carries `trains` beside the ways — peatus.ee
+name saying so. So by bike `/api/v1/route` answers `trains` beside the
+ways — peatus.ee
 asked once for bike and rail together, which says which station, which train
 and when, and the bike router asked for the ride to the station and the ride
 on, so those are the same streets and the same turns as any bike way. A
@@ -3239,15 +3247,18 @@ fare: the Tallinn card makes the train free for some and not for others, and
 the bar does not guess which.
 
 **Why a version.** Both apps read a bike route's ways out of `/api/route`
-and nothing else, and a train slipped into `others` would be offered on an
-installed phone as a ride along the rail. So `/api/route` answers exactly
-what it always has, and `/api/v1/route` is the same answer with
-`"version": 1`, an `API-Version: 1` header and the trains. Version 1 only
+and nothing else, and a train slipped into `others` would have been offered
+on an installed phone as a ride along the rail. So for its first days the
+trains were answered only at `/api/v1/route` — the same answer with
+`"version": 1`, an `API-Version: 1` header and the trains — and the page and
+both apps asked it first and `/api/route` where it did not answer, telling
+the two apart by `version`. Since 2026-11-21 `/api/route` is gone — **The
+apps' routes, at their v1 addresses** — so `functions/api/route.js` answers
+at `/api/v1/route` alone, trains and all, and keeps `version` on every
+answer, refusals included, because an installed build still reads an answer
+without it as an older deployment and asks the old address. Version 1 only
 ever gains fields; a rename or a removal is `/api/v2`, with this one still
-answering beside it. The page asks the versioned one first and, where it
-does not answer — a deployment from before it, a 5xx with no body — asks
-`/api/route` and offers no train; a new build of either app does the same,
-so a new app reads an old site and an old app reads a new one.
+answering beside it.
 
 No turn-by-turn and no live countdown; the route is
 `functions/api/route.js`, which rounds both ends, caches a walk, a ride or a drive a day
@@ -3330,7 +3341,7 @@ ridden than any router's guess, and the site keeps the ones saved from an
 account and counts the rest without keeping them. **It does not record
 them.** A ride is recorded in Rattatee, the iPhone app, which can do
 it with the screen locked and the phone in a pocket, and saved through
-`POST /api/rides`; the website gives directions, and what the rides are for
+`POST /api/v1/rides`; the website gives directions, and what the rides are for
 here is steering those directions — **Doors**, below.
 
 **The website had a recorder of its own, and on 2026-11-18 the owner took
@@ -3368,7 +3379,7 @@ pressed Bike, and saw one of their own rides drawn under the way — a line
 that made no sense beside the suggestion and said where they had been. A
 bike route joins one place to another; it is not a map of where members
 ride. So `drawRidden()` and `TTBRide.under()` went, with their two strings.
-`GET /api/rides?bbox=` stays, because the iPhone app reads it — **What the
+`GET /api/v1/rides?bbox=` stays, because the iPhone app reads it — **What the
 app reads** in `CLAUDE.md` — and what a ride is for now is **Doors**, below:
 it steers the suggestion instead of standing beside it.
 
@@ -3489,9 +3500,9 @@ and the ones you kept, a fold with the count on it, each ride a row — what
 you called it, or *Bike ride*, then how far, how long and the day. Nothing
 on it records one, and somebody with no rides has no card: the only
 sentence an empty one could say is where to go and record, and that is an
-app, not a button here. It reads `GET /api/rides?mine=1`, which answers the
+app, not a button here. It reads `GET /api/v1/rides?mine=1`, which answers the
 session's own rides with their names and no lines, uncached — and so does
-`GET /api/rides` with nothing asked, which is how the iPhone app asks. A row
+`GET /api/v1/rides` with nothing asked, which is how the iPhone app asks. A row
 on the website opens nothing yet: the page that opens one is the app's.
 
 **One ride, opened, in the iPhone app.** The app's Me tab has **Your rides**:
@@ -3500,13 +3511,13 @@ riding time and the number of rides against the range before, a line of
 kilometres, **Where you rode** — every ride of the range drawn on one map,
 each a see-through line, so a street ridden more than once comes out darker
 — and every ride a row that opens it. The map asks `GET
-/api/rides?mine=1&lines=1`: the list again with a `line` on each ride,
+/api/v1/rides?mine=1&lines=1`: the list again with a `line` on each ride,
 thinned to a point every fifty metres or so (`THIN` in
 `functions/api/rides.js`), since the map is the size of a card and two
 hundred whole lines are megabytes. Only with `lines=1`, so the list the
 account page and an installed app ask for is the size it was. The page
 that opens one ride is `GET
-/api/rides/<id>` (`functions/api/rides/[id].js`): the ride's line on a map,
+/api/v1/rides/<id>` (`functions/api/rides/[id].js`): the ride's line on a map,
 its distance, time and average, and — where it has a `track` — the fastest
 kilometre, the top speed over two hundred metres, how long was spent
 standing, the speed along the way and each kilometre's time, all worked out
@@ -3523,7 +3534,7 @@ as not yours. Rattatee's ride page asks it too, for a ride saved signed in,
 and reads only the stored line, to draw over the phone's own — the phone
 has the whole ride and works the sums out of it, with the same
 `rideInsight()` ported to Swift. The same page renames a ride and deletes it, `POST
-/api/rides` with `rename` or `drop`, each touching only a ride filed under
+/api/v1/rides` with `rename` or `drop`, each touching only a ride filed under
 the session; a deleted ride is gone from under the Bike tab too. The track
 is never answered raw — the times a point was passed are the rider's, and
 only the speeds made of them reach even the rider. The privacy page says
@@ -3721,8 +3732,8 @@ doors are the site's own, in `data/doors.json`, and the bike route is the
 two together.
 
 **Found by distance, not by shape.** `node tools/doors.mjs` reads the saved
-rides off `GET /api/rides?bbox=`, cuts each into stretches of two hundred
-metres, twice, and puts each stretch's ends to `/api/route` by bike. A
+rides off `GET /api/v1/rides?bbox=`, cuts each into stretches of two hundred
+metres, twice, and puts each stretch's ends to `/api/v1/route` by bike. A
 stretch the router needs a hundred metres and half as much again for, by
 the shortest way it offers, is a door; it is then tightened to the part that makes the saving, and kept only
 where both ends are on the router's network, so the way in and the way on
@@ -3751,7 +3762,7 @@ twice it, and a way the router pushes is not one a stretch can be dismissed
 for lying along. The tool and the route measure the same way, with the same
 number.
 
-**A run adds to the file.** `/api/rides` answers the newest forty rides of
+**A run adds to the file.** `/api/v1/rides` answers the newest forty rides of
 a box and a rider can delete theirs, so a run that wrote only what it found
 lost the Merimetsa door the day its ride was no longer answered. The doors
 already in `data/doors.json` are kept, the new ones are joined to them, and
@@ -3844,7 +3855,7 @@ why it is not here yet.
 
 **What it costs.** A lookup in `ride_sections` on a bike route, on the key
 for each square and direction under the ways, and it is the one thing in
-`/api/route` that opens the database. It is billed a row for each square
+`/api/v1/route` that opens the database. It is billed a row for each square
 somebody has ridden that way and nothing for one nobody has: six hundred
 rows at the very worst however many rides there are — a longer trip is
 sampled more coarsely to stay under it — so five million a day is 8,300
@@ -3987,8 +3998,8 @@ and again every hundred and fifty after. The owner's word for what it
 should do: see which way the person wants to go, and if they keep going,
 find the way from that direction.
 
-**`heading` is that direction.** `GET /api/route` and `/api/v1/route` take
-it beside `from` and `to`, in degrees from north, and the router is told
+**`heading` is that direction.** `GET /api/v1/route` takes it beside
+`from` and `to`, in degrees from north, and the router is told
 the way must leave the first point within 45° of it — its `bearings` — so
 the line goes on ahead of the rider and turns where it next can. It is
 rounded to 15° so riders on one street share a cached answer. A heading
@@ -4200,7 +4211,7 @@ in** under **Flashcards**. `data/ui.json` is still served, because a browser
 holding yesterday's script still asks for it.
 
 **And the Functions read it the same way, since October 2026.** The routes
-that answer with a page's words — `/api/flashcard`, `/api/chess` and the
+that answer with a page's words — `/api/v1/flashcard`, `/api/chess` and the
 three under `/api/admin/` — pick the language out of the index and read that
 one file, through `languageIndex()` and `wordsIn()` in
 `functions/api/_lib.js`; so do the route that writes the flashcards' head
@@ -4291,7 +4302,7 @@ restaurant is a person they can count rather than a browser, and what it buys
 the site is a reason to sign up that is not a wall in front of a bookmark.
 
 The gate is one request. `functions/api/pass.js` answers
-`GET /api/pass?r=<place-id>` with `401` where there is no session, and
+`GET /api/v1/pass?r=<place-id>` with `401` where there is no session, and
 `assets/pass.js` turns that into the sign-in card rather than a code. The map
 does not have to ask — it already knows who is signed in — so the panel's
 button reads **Sign in to use it**, or **Sign in to draw** on a deal with a
@@ -4510,7 +4521,7 @@ account may do better or worse. That is the whole game — one draw an hour,
 and the next hour is another go — and the line under the countdown says so:
 **Good until 15:00, then a new draw**.
 
-**The draw rides in on the same request as the door.** `/api/pass` hands back
+**The draw rides in on the same request as the door.** `/api/v1/pass` hands back
 one number for the account the session names, and nothing else:
 
 ```
@@ -4615,7 +4626,7 @@ student a wait for a person to look. The column holds the last day it
 holds, `users.student_until`. A date and not a yes or no, because people
 stop being students and a flag stays set until somebody remembers to clear
 it; the date runs out on its own, read in Tallinn's timezone, the day itself
-included. A value that is not a date reads as not a student. `/api/pass` reads it on the same request that
+included. A value that is not a date reads as not a student. `/api/v1/pass` reads it on the same request that
 opens the door and answers `student: true` or `false` beside the draw, so the
 page never decides it: the pass page reads the server's answer. A
 database the `ALTER TABLE users ADD COLUMN student_until TEXT` has not
@@ -4630,14 +4641,14 @@ then says **You count as a student until …**, with **Change the date** and
 **I'm not a student**, which clears it. Until 2026-11-18 this was an ask the
 owner confirmed by copying it across from `users.student_asked`; that step
 came out, and the column stays, written equal to `student_until` beside it,
-so `GET /api/account`'s `asked` keeps its meaning for anything reading it. The
+so `GET /api/v1/account`'s `asked` keeps its meaning for anything reading it. The
 owner can still set or clear one by hand,
 `UPDATE users SET student_until = '2027-08-31' WHERE id = '<id>'`, which the
 write gate asks about like any other write. The date is held to today and the five years after it, in Tallinn; one that has passed
 shows the form again, saying when it ran out. The card is private, on
 purpose: it is not on `/edit` or `/u/<name>`, because whether somebody is a
 student is not a line for strangers. `action: 'student'` in
-`functions/api/account.js` is the write, and `GET /api/account` answers
+`functions/api/account.js` is the write, and `GET /api/v1/account` answers
 `student: { until, asked }` for the card, or leaves it out where the columns
 are missing, and the card is not drawn.
 
@@ -4791,7 +4802,7 @@ none of those doors is open on the next visit. So:
   `assets/app.js`.
 - **Places I saved seats them.** With that filter on and a saved id the map
   cannot place, `seatSaved()` asks for the find bar's own roll —
-  `/api/places`, once, and only then — and puts a stand-in on the map for
+  `/api/v1/find`, once, and only then — and puts a stand-in on the map for
   each, the way the find bar does, contact half and all once it is opened.
   They show while that filter is on and never under a chip: a chip narrows my
   places, and a saved Google café is not one of them. A hand-added place has
@@ -4867,7 +4878,7 @@ short rail**. It was the top pill on the rail until 2026-11-05, and the row
 keeps what the pill did: once somebody is signed in it wears their name, with
 *Signed in as …* under it, and tells them whose list the map is holding;
 signed out it says *Account*, with the line about keeping saves safe. It is
-**left out until `/api/account` says the database behind it is bound**, so on
+**left out until `/api/v1/account` says the database behind it is bound**, so on
 a deployment without the bindings there is no sign-up sheet to find — with
 one exception, which is a browser that has saved something. Saving needs no
 Function and no database, and since the marks moved off the filter row the
@@ -5298,7 +5309,7 @@ normally and is simply unguarded, so run it.
 
 ### How it behaves when it is not there
 
-Every failure is quiet and none of them costs anybody the map. If `/api/saves`
+Every failure is quiet and none of them costs anybody the map. If `/api/v1/saves`
 is not deployed, the binding is missing or points at the other environment's
 database, the salt is unset or the visitor is offline, the counts simply do not
 appear — the bookmark is still a button, the map
@@ -5312,7 +5323,7 @@ exactly as they were and says so in a toast.
 
 ### Where the counts come from, and why not from a `COUNT(*)`
 
-`GET /api/saves` returns every place's count in one request — the map asks once
+`GET /api/v1/saves` returns every place's count in one request — the map asks once
 on the way in rather than eighty times — and it reads them from
 `save_counts`, one row per place, rather than aggregating the `saves` table.
 
@@ -5478,7 +5489,7 @@ that only ever answered "not available".
 
 So it is gone: no address field on the sign-up sheet, no *forgotten your
 password*, no `email-add`, `email-confirm`, `recover-start` or `recover-finish`
-on `/api/account`, and no `CF_ACCOUNT_ID`, `CF_EMAIL_TOKEN` or `MAIL_FROM`. The
+on `/api/v1/account`, and no `CF_ACCOUNT_ID`, `CF_EMAIL_TOKEN` or `MAIL_FROM`. The
 sentence about a lost password was already the truth in this configuration and
 is now the truth in every configuration.
 
@@ -5853,7 +5864,7 @@ page says what to do instead — which is the step directly above the button.
 #### Turning it on
 
 `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in the Pages project, per
-environment, and the pair or neither: `/api/account` reports Google as
+environment, and the pair or neither: `/api/v1/account` reports Google as
 unavailable without both, and every sheet draws no button. Nothing else
 changes, and a deployment without them is the site exactly as it was.
 
@@ -5943,7 +5954,7 @@ given. A `location:` of the site's own root with no `client_id` at all is the
 guard at the top of `onRequestGet` in `functions/api/google.js` sending a
 hand-typed request home, which is `googleReady()` saying no *or* a missing
 `DB` binding *or* a database disagreeing with its `ENVIRONMENT` — the three
-share one landing, and `/api/account` tells them apart (`google: false` with
+share one landing, and `/api/v1/account` tells them apart (`google: false` with
 `ready: true` is the first of them).
 
 **From a phone, Google's own error page carries the same bytes**, which
@@ -6004,7 +6015,7 @@ And `db/schema.sql` applied to production, for the `identities` table.
 purpose.** Nothing in this repository applies the schema — a person runs it,
 and a push is live within the minute — so there is always a window where the
 code is deployed and the table is not. The one read that would fall into it is
-`hasGoogle()` on every signed-in request to `/api/account`, and it is wrapped:
+`hasGoogle()` on every signed-in request to `/api/v1/account`, and it is wrapped:
 no table means nothing is connected, which is the truth about a database with
 no identities in it. Unguarded it would have taken that whole answer down for
 the length of the window — no name on the rail, no saves, no lists, an account
@@ -6023,7 +6034,7 @@ the trip would sign in the sheet and not the app. The app starts the trip at
 `/api/google?app=<challenge>` — the SHA-256 of a verifier it keeps — and the
 trip ends at `tallinntastebuds://signin?google=in|new&ticket=…` instead of on
 a page: a sealed, two-minute ticket naming the account and the challenge.
-`POST /api/account` with `action: "ticket"`, the ticket and the verifier
+`POST /api/v1/account` with `action: "ticket"`, the ticket and the verifier
 answers as a sign-in does, cookie and all. A ticket without the verifier its
 challenge was made from opens nothing. An `app` trip only ever signs in: the
 sheet carries the browser's cookies, and reading a session off them would
@@ -6031,7 +6042,7 @@ connect the Google account to whoever is signed in to the site in Safari.
 The redirect URI registered with Google is the one it always was.
 **THE APP'S WAY BACK IN** in `functions/api/_google.js` is the argument.
 
-**Apple, with no trip at all.** `POST /api/apple` takes the token Apple's own
+**Apple, with no trip at all.** `POST /api/v1/apple` takes the token Apple's own
 sheet hands the app and the nonce it was asked for under, checks the
 signature against Apple's published keys, and that the token was made for
 the app's bundle id, has not run out and carries that nonce — then signs in,
@@ -6047,7 +6058,7 @@ site — a web sign-in with Apple is a different integration, with a Services
 ID and a key — so an account made this way is reached from a browser by
 setting a password on it first. `functions/api/_apple.js` says the rest.
 
-`GET /api/account` answers `appGoogle` and `appApple`, and the app draws each
+`GET /api/v1/account` answers `appGoogle` and `appApple`, and the app draws each
 button only where its flag is true.
 
 ### How it is kept safe
@@ -6497,8 +6508,8 @@ here.
 ### What it costs to open
 
 Four requests, all at once, and one paint when the last of them lands:
-`data/ui.json` and `data/places.json` off the static side, `/api/account` and
-`/api/lists` off the Functions. There was a fifth, `/api/lists?all=1`, for the
+`data/ui.json` and `data/places.json` off the static side, `/api/v1/account` and
+`/api/v1/me/lists` off the Functions. There was a fifth, `/api/lists?all=1`, for the
 three of everybody's lists the foot of the page used to name; those became a
 door and the door has gone too. The list answer is asked in the same breath as
 the one that says whether there is anybody to ask about — waiting would be a
@@ -6513,7 +6524,7 @@ somebody who is not you, and they stay a separate module all the way down;
 for exactly that reason. This page simply no longer asks the second one, and
 has nothing on it that would.
 
-The number on the Insights row costs no request of its own: `/api/account`
+The number on the Insights row costs no request of its own: `/api/v1/account`
 carries it as `views`, one read of `profile_counts` over the owner's last
 seven days.
 
@@ -6616,7 +6627,7 @@ The columns split in two, and the split is the point:
 | **Google's** — `name`, `category`, `cuisine`, `rating`, `reviews`, `price`, `status`, `address`, `postal_code`, `city`, `phone`, `website`, `opening_hours`, `tags`, `latitude`, `longitude`, `maps_url` | overwritten by every refresh, without asking |
 | **Derived from Google's** — `rank` | the same, and for the same reason |
 | **Mine** — `map_id`, `hidden`, `note` | never touched by a refresh |
-| **The find bar's** — `found_at`, `kind` | written once, by `/api/lookup`, on a row it inserts; `kind` is `eat` on every row of the export |
+| **The find bar's** — `found_at`, `kind` | written once, by `/api/v1/lookup`, on a row it inserts; `kind` is `eat` on every row of the export |
 
 Not every row came out of the export any more. A row the find bar looked up
 on Google Maps carries `found_at`, and a `kind` of `see`, `shop` or `other`
@@ -7086,7 +7097,7 @@ future run.
 
 ### Where they are read
 
-The picker in the lists page. It asks `/api/places`, and that route hands back
+The picker in the lists page. It asks `/api/v1/find`, and that route hands back
 one roll made of two: the map's own places out of `data/places.json`, and
 these, out of the table. About 1,125 in all — see **The roll a list is built
 from**.
@@ -7102,7 +7113,7 @@ See **Finding anywhere in Tallinn**.
 And the map, for a place on somebody's list that is not on mine. That card asks
 for four more columns nothing else needs — `phone`, `website`, `opening_hours`
 and `maps_url` — so `venuesByIds()` in `functions/api/_lib.js` selects them and
-`/api/places` does not: the picker fetches all 1,112 rows at once, and the
+`/api/v1/find` does not: the picker fetches all 1,112 rows at once, and the
 difference is ninety kilobytes of numbers no row on that page prints.
 
 And the panel for a place of mine, for the one row `map_id` joins to it —
@@ -7900,7 +7911,7 @@ argument among several: `/lists` needs no account to read, so a stranger meets
 the lists on the way in rather than behind a sign-in form, and since the
 account page stopped carrying a door of its own this is where a stranger meets
 them at all. It is hidden only where
-`/api/account` says the database behind the lists is not bound, because a door
+`/api/v1/account` says the database behind the lists is not bound, because a door
 onto "Lists are switched off on this copy of the site" is a button that can
 only disappoint — the same rule the account row behind More keeps.
 
@@ -7962,7 +7973,7 @@ line each is somebody telling you where to go.
 Under that box is a second one, optional and shorter: what to order there —
 one dish, in the owner's own words. It is `list_items.must_order` in the
 database, saved the same way the note is — typed, held until Save, sent as
-its own write (`action: 'mustOrder'` against `/api/lists`, in
+its own write (`action: 'mustOrder'` against `/api/v1/me/lists`, in
 `functions/api/lists.js`) so a keystroke in one box never carries the other
 box's value along with it. A list reads it under the note, labelled, and only
 when there is one — no line printed for a place nobody named a dish for. It
@@ -9196,7 +9207,7 @@ to narrow to, and taken off.
 
 ### The roll a list is built from
 
-The picker asks `/api/places`, which is the one place the two rolls are put
+The picker asks `/api/v1/find`, which is the one place the two rolls are put
 together — `functions/api/places.js`:
 
 ```
@@ -9258,7 +9269,7 @@ was about 750,000. The column and its index are applied by hand —
 `db/schema.sql` says so beside them — and until they are, the copy is read
 whole each time something changed.
 
-**One search of the city.** `/api/places?q=<words>` answers with the twenty
+**One search of the city.** `/api/v1/find?q=<words>` answers with the twenty
 rows of the roll the words reach best, from two letters typed, and it is the
 one search every client but the map's find bar asks: the iOS app, the picker
 in the app that adds a place to a list, and the blog editor's picker. It
@@ -9408,14 +9419,14 @@ name typed into a form is not a description, a phone number or a week.
 ### The place nobody has
 
 The picker searches about eleven hundred places — my eighty and the Google
-export behind `/api/places` — and between them they still miss things:
+export behind `/api/v1/find` — and between them they still miss things:
 somewhere that opened last month, somewhere Google files as not a restaurant.
 Search for it, find nothing, and the picker offers two doors, in this order:
 **Look for "…" on Google Maps**, and **Can't find it? Add it yourself**.
 
 **Google first.** The first door is the map's own button —
 [Look for it on Google Maps](#look-for-it-on-google-maps) — pressed from the
-sheet: `/api/lookup` asks Google, keeps what it answers in `google_venues`,
+sheet: `/api/v1/lookup` asks Google, keeps what it answers in `google_venues`,
 and up to five rows come back under **From Google Maps**, or among the
 ordinary rows when the words already reach them by name. A tap puts one on
 the list as a Google place, so it arrives with its address, its week and its
@@ -9642,7 +9653,7 @@ anybody's name, and a bookmark drawer is allowed to be a drawer.
 
 ### What is not cached
 
-Nothing on `/api/lists`, and nothing `/list/<id>` serves. It is the one place
+Nothing on `/api/v1/me/lists`, and nothing `/list/<id>` serves. It is the one place
 in this codebase that does not reach for the edge, deliberately: a public list
 is read by strangers, which argues for a cache, and it is also read by its
 owner in the middle of writing it, which argues against one. Losing an edit
@@ -9773,7 +9784,7 @@ average, walked at 80 metres a minute, and every total says "about". Up to
 twelve places the order is the true shortest one, found by Held–Karp — the
 best way to have visited each set of places and be standing at each of them,
 built up a place at a time; past twelve it is nearest-next with every crossed
-pair of legs uncrossed. Asking `/api/route` for the real walk between every
+pair of legs uncrossed. Asking `/api/v1/route` for the real walk between every
 pair would be forty-five requests for a top ten, to move "about 5.4 km" by a
 few hundred metres. The order starts from the list's first place, or from
 where **Start from where I am** was pressed, and stays put: it is not
@@ -9883,7 +9894,7 @@ to their profile — and under it opens that person's own walk: the places in
 the order they really checked them, which is often not the order the route
 suggested, with the real gap between each pair and the straight-line distance
 where both ends are still on the list to measure. `GET
-/api/walk?list=<id>&who=<name>` answers it, asked when a name is pressed
+/api/v1/walk?list=<id>&who=<name>` answers it, asked when a name is pressed
 rather than carried by every load, since a board holds fifty names and most
 readers press none of them. Only a finished walk opens, which is the rule the
 board is drawn by already: being on it is what made these times public, and a
@@ -9948,7 +9959,7 @@ control, and the walk of it has the bar so there is a way back.
 
 **What it costs.** One read of the list, two or four small reads of the two
 tables, per view, and one more — off `walk_checks`' own primary key — each
-time a name on the board is pressed; nothing cached, for the reason nothing in `/api/lists` is.
+time a name on the board is pressed; nothing cached, for the reason nothing in `/api/v1/me/lists` is.
 The tables reach a database by hand —
 `wrangler d1 execute tallinntastebuds --remote --file=db/schema.sql` — and
 until they have, the view draws without its buttons. Deleting an account
@@ -10046,7 +10057,7 @@ ALTER TABLE users ADD COLUMN about TEXT NOT NULL DEFAULT '';
 
 `db/schema.sql` lists it last because that is where SQLite puts an added
 column, which is what keeps that file readable against the real table. It is
-read on `/api/profile` and once more on `GET /api/account`, on the id already
+read on `/api/v1/profile` and once more on `GET /api/v1/account`, on the id already
 in hand, so the editor opens with what is in it —
 `sessionUser()` does not carry it, because every signed-in request on this
 site goes through that function and not one of the others prints this.
@@ -10058,9 +10069,9 @@ site asks for a column that is not there yet. Everywhere else that window is
 survived by the feature simply not being reachable; here it would have been
 survived by nothing, because the account page and every profile would answer
 500 and take somebody's saves, lists and byline down with a line of
-autobiography nearly nobody has written. So `GET /api/account` and
+autobiography nearly nobody has written. So `GET /api/v1/account` and
 `readProfile()` both fall back to the same query without the optional field.
-Run the `ALTER` and the line starts saving; until then `/api/account` sends
+Run the `ALTER` and the line starts saving; until then `/api/v1/account` sends
 no line and the editor offers a field for one anyway, which is the one thing
 in that window that is not quite honest — pressing Save there fails and says
 so. The rest of every page is exactly what it was before this existed, which
@@ -10226,8 +10237,8 @@ person, by primary key.
 inside a `try`, and the second failure would have taken the line down along
 with the handles. So `readingExtras()` in `functions/api/_profile.js` asks for
 both, then for `about` alone, then for neither, and remembers which answered —
-`readingPins()`'s bargain, one tier wider, shared by `/api/profile` and `GET
-/api/account` so the two pages cannot disagree about which columns this
+`readingPins()`'s bargain, one tier wider, shared by `/api/v1/profile` and `GET
+/api/v1/account` so the two pages cannot disagree about which columns this
 database has. Until the `ALTER` is run the fields are simply not offered;
 after it they are. An isolate that has already decided holds that until it is
 recycled, so run the line with the deploy rather than after it.
@@ -10406,7 +10417,7 @@ are at the foot of `lists.css`, under *the editor*.
   with one Save, and Save is the page's one filled action (rule 5) — on a
   page whose whole job is editing, saving is the thing it is asking for.
   Save sends only the parts that changed, as the same four actions
-  `/api/account` has always taken, one after the other; each is whole on its
+  `/api/v1/account` has always taken, one after the other; each is whole on its
   own, so a Save refused halfway leaves the parts before it saved and says
   which part stopped it. What is drawn afterwards is what came back.
 - **A row is closed until you open it.** A closed row is its title and what
@@ -10743,7 +10754,7 @@ lists with the private ones added back — it is what a stranger sees, which is
 the only thing a profile is useful for knowing. The private half is on
 `/account.html`, where every list you wrote is named, and your name in the
 header is the way there — the profile's card no longer draws a link of its
-own, and `/api/profile` no longer says whether the person reading is the
+own, and `/api/v1/profile` no longer says whether the person reading is the
 person on it; there was nothing left for the page to do with the answer.
 
 ### The number, and what it is not
@@ -10759,7 +10770,7 @@ page reads as a verdict on them rather than as a number that has not started
 yet, and the first keep is how anybody finds out the number is there at all.
 
 It is honest exactly as far as an account is, which is the same thing
-`/api/saves` says about its own numbers: one row per (list, account), so
+`/api/v1/saves` says about its own numbers: one row per (list, account), so
 nobody inflates it by pressing twice, and anybody willing to make ten accounts
 can add ten. That is worth being plainer about here than it was when only a
 list carried the number, because **Public lists** now orders a page on
@@ -10824,7 +10835,7 @@ above.
 
 Nothing is cached, for the reason a list is not: the number changes when
 somebody presses Save, and a profile is most often opened by the person who
-has just been told about it. `GET /api/profile` is the same answer for a page
+has just been told about it. `GET /api/v1/profile` is the same answer for a page
 the Function did not get to seed.
 
 ### Turning it on
@@ -11051,7 +11062,7 @@ reader has said is wrong. `functions/api/flashcard.js` is the only thing that
 writes any of them.
 
 **And it is read one deck at a time.** Three Functions used to read the whole
-file — `/api/flashcard`, the route that writes a deck's head, and `/api/say`
+file — `/api/v1/flashcard`, the route that writes a deck's head, and `/api/v1/say`
 — each through `dataFile()`, which parses it once and keeps it five minutes
 per isolate. Measured in Node on an ordinary machine in October 2026, when
 the file was 1.30 MB on disk and half of that indentation, the parse took
@@ -11072,7 +11083,7 @@ somebody's rows — what they got wrong and what they know — which read the
 files of the decks those rows name when they are eight or fewer and the
 source once when they are more: each file is a subrequest, the free plan
 caps those, and someone with words in every deck would otherwise make fifty.
-Nothing in a browser reads any of it — the shelf comes from `/api/flashcard`
+Nothing in a browser reads any of it — the shelf comes from `/api/v1/flashcard`
 as it always did. The validator fails the build
 on a file there that is not what the tool would write, and reserves the two
 ids the folder's own files take, `index` and `spoken`. `data/decks.json`
@@ -11265,7 +11276,7 @@ waiting behind a button that said it was on.
 
 So the two addresses are taken in the page, which is what `assets/blog.js`
 already does between its index and a post, for the same reason. `go()` asks
-`/api/flashcard` for the decks or for one deck, puts the answer exactly where
+`/api/v1/flashcard` for the decks or for one deck, puts the answer exactly where
 the first load puts it, and pushes the address the link was carrying; the back
 button arrives as `popstate` and takes the same road without pushing anything.
 
@@ -11475,7 +11486,7 @@ file, **One language at a time** under **Languages**; this page took the
 other road first.)
 
 So the flashcards fetch it no more. The words ride in the same answer as the
-decks: `assets/flashcard.js` sends `/api/flashcard` what it would have picked
+decks: `assets/flashcard.js` sends `/api/v1/flashcard` what it would have picked
 a language from, in the order every page picks — `?lang=`, then `ttb.lang`,
 then the browser's own — and `wordsFor()` in `functions/api/_lib.js`
 takes the first `data/lang/index.json` lists and answers with that language's
@@ -12469,7 +12480,7 @@ route sums over `data/decks.json` rather than over the table for exactly this.
 
 **What it does not do.** No test to jump a stage, which is the half of
 Duolingo's arrangement deliberately left out: four hundred words known is the
-test. No lock on a deck asked for by its address — `/api/flashcard?deck=` goes
+test. No lock on a deck asked for by its address — `/api/v1/flashcard?deck=` goes
 on answering one whatever stage it is in, since the page has to draw the card
 that says so, and `functions/flashcard.js` writes the same deck's words into
 the `<main>` a crawler is served out of the same file. What the route does hold
@@ -12779,7 +12790,7 @@ answering: the press goes quiet, one line says the voice is not answering just
 now, and the card works exactly as it did before any of this.
 
 **Nothing is stored.** No row, no bucket, no file in the repository. The page
-hands `/api/say?take=…&text=…` to an `<audio>`, the route asks Tartu for those
+hands `/api/v1/say?take=…&text=…` to an `<audio>`, the route asks Tartu for those
 words and hands back what it says, and Cloudflare's cache keeps it for thirty
 days, keyed on the voice, the pace and the words. So *Tere* goes to Tartu once
 per data centre a month and everybody else hears it from the edge. A card whose
@@ -12840,7 +12851,7 @@ button says which state it is in.
 in had no route to `api.tartunlp.ai`, so the page was driven with the route
 stubbed and the first real word said aloud was the owner's — on an iPhone and
 a computer, both of which played it. If the voice ever
-comes back silent, `curl -sS -o t.wav 'https://tallinntastebuds.ee/api/say?text=Tere'`
+comes back silent, `curl -sS -o t.wav 'https://tallinntastebuds.ee/api/v1/say?text=Tere'`
 is the one request that says whether it is the route or Tartu.
 
 ### Grammar, which is read rather than turned over
@@ -13157,7 +13168,7 @@ fourth, Genialistid's *Täna ma ei skoori*, came with its lyrics and its video.
 the song line by line: the Estonian, what it means in the language the page is
 being read in, and a speaker beside it that says the line slowly in Mari's
 voice, the same one the cards use, since a singer is the worst person to learn
-where one word ends and the next begins from. `/api/say` speaks a line of a
+where one word ends and the next begins from. `/api/v1/say` speaks a line of a
 song for the reason it speaks a card's sentence: it is in `data/decks.json`,
 exactly. At the foot, **Heard it**, which is Got it under another name and
 marks the tile *Heard*, and **The words, as cards**, which opens the song's
@@ -13916,7 +13927,7 @@ and each is fenced or prefixed so it can be found by looking:
 | `data/ui.json` | the hundred and one `flash*` keys, in all eleven languages — `grep -n '"flash' data/ui.json` is the list, and the two above are in it |
 | `docs/handbook.md` | this section, its line in **Contents**, its ten lines in **Files**, the `data/decks.json` and `data/decks/` lines under **What the validator checks**, the analytics block, and the subdomain paragraph under **The custom domain** |
 | `CLAUDE.md` | the row in the process table, the `data/decks.json` row in the generated-files table, and the clause in the opening sentence |
-| `.claude/skills/api/SKILL.md` | the `/api/flashcard` and `/api/say` rows, and the flashcards clause in the `/*` row |
+| `.claude/skills/api/SKILL.md` | the `/api/v1/flashcard` and `/api/v1/say` rows, and the flashcards clause in the `/*` row |
 | `.claude/skills/site/SKILL.md` | the `flashcard.html` in the stamped-pages list |
 
 And in Cloudflare: remove `flashcard.tallinntastebuds.ee` from the Pages
@@ -13992,9 +14003,9 @@ gone — is this section drawn natively: the decks, the lessons, the songs and
 the conversations, for people who read English, Azerbaijani or Russian.
 
 **It is an interface and nothing else.** There is no second backend and no
-second database. Kohuke asks `/api/flashcard` for what this page asks it
-for, `/api/say` for the voice, and `/api/account`, `/api/google` and
-`/api/apple` for who is asking, with the site's own `ttb_s` cookie kept by
+second database. Kohuke asks `/api/v1/flashcard` for what this page asks it
+for, `/api/v1/say` for the voice, and `/api/v1/account`, `/api/google` and
+`/api/v1/apple` for who is asking, with the site's own `ttb_s` cookie kept by
 the phone. So an account is one account: somebody who learnt forty words on
 the page has learnt them in the app, and a deck added to `data/decks.json`
 is in the app on the next deploy with nothing sent to Apple. Its screens are
@@ -14024,7 +14035,7 @@ route's answer together on the phone, wherever the shelf it already has
 says what somebody knows of the thing: a lesson, a song or a conversation
 always, with read or heard off its row; a deck where its row says none of
 its cards are known, or all of them, or as many as the copy the phone kept
-— which it marks card by card as they are answered. `/api/flashcard` is
+— which it marks card by card as they are answered. `/api/v1/flashcard` is
 still asked for the shelf, for every answer, for the two gathered decks,
 for a deck somebody wrote, for a deck in a stage that has not opened, and
 for a deck whose cards were answered somewhere the phone did not see,
@@ -14808,7 +14819,7 @@ gives the App Store this address as its policy, and most of the page was
 already true of it, since an account there is an account here. **In the
 iPhone app** says what is not: that the app loads no analytics, that Apple
 draws its map where CARTO draws this one, that a position is sent here when
-somebody asks for the way to a place and what `/api/route` passes on, that
+somebody asks for the way to a place and what `/api/v1/route` passes on, that
 going round a list, recording a ride and the chat work there as they do
 here and when the app reads the position more closely for them, that Apple
 is a third way in and what is kept of it, that a save made in the app goes
@@ -14940,8 +14951,8 @@ reader presses to open the place on the map. *My ten favourite places* is
 somebody's ten, not mine, so the bar I have never filmed is as pinnable as
 the one I have, and `/?spot=` with a Google key opens it as the find bar
 would. The roll is never downloaded for it: the picker asks
-`/api/places?q=` once three letters are typed, a quarter of a second
-after the last key — **One search of the city**, and the blog and the editor ask `/api/places?ids=` for
+`/api/v1/find?q=` once three letters are typed, a quarter of a second
+after the last key — **One search of the city**, and the blog and the editor ask `/api/v1/find?ids=` for
 just the Google venues a post's cards name — the map's they already have out
 of `data/map.json`. *My ten favourite places* is ten of those with a paragraph
 between each, or one list of them. Writing in Google Docs or Word and pasting works the
@@ -15047,7 +15058,7 @@ else — `[Best beer bars](/list/top-bars-hxzz7m)` on its own — which
 sentence stays a link, so no post written before this changed.
 
 **Asked when it is read, not when it was written.** The post stores the id
-and nothing else, and the page asks `GET /api/lists?id=` for each list when
+and nothing else, and the page asks `GET /api/v1/me/lists?id=` for each list when
 the post opens, once a page load. So a list that grows grows in every post
 that carries it, and one made private or deleted since leaves the post, the
 way a card for a place that is gone does. While it is being read the row is
@@ -15454,7 +15465,7 @@ in colour, which is the tenth design rule.
 
 Anyone can press it, signed in or not, filed the way a save is. One row per
 (feedback, owner), so nobody runs a number up by pressing twice, and the same
-caveat `/api/saves` carries about its own counts applies: anybody willing to
+caveat `/api/v1/saves` carries about its own counts applies: anybody willing to
 clear their storage ten times can add ten. Nothing here is ranked against
 anything outside this page, so what that buys is a bigger number and not a
 better position anywhere.
@@ -15708,7 +15719,7 @@ press answered `{ok:false}`. Neither file can import the other — the
 arrangement **The pins** has — so a door added to the rail is counted once
 it is written into both. One listener on the rail rather than five on the
 buttons, since the lists door is a link that leaves the page and is hidden
-until `/api/account` answers. Because the rows kept the pills'
+until `/api/v1/account` answers. Because the rows kept the pills'
 ids, Ask pressed behind More today and Ask pressed on the old column are one
 number, and the table reads the rail's whole history without a column for
 which shape it was.
@@ -16199,7 +16210,7 @@ own presses out. The rows already counted stay as they are: nothing in a
 counts table says who made a row, so there is nothing to take back out.
 
 Clarity records in the browser, before any session is read, so the server cannot drop them; it tells the browser instead. When
-`GET /api/account` or a page under `/admin/` sees the owner's session it
+`GET /api/v1/account` or a page under `/admin/` sees the owner's session it
 sets `ttb_owner=1`, a cookie kept a year and scoped to the domain the way
 the session is, and in a browser carrying it `assets/analytics.js` does
 not load it and `assets/track.js`, `app.js` and `lists.js` send nothing to
@@ -16441,7 +16452,7 @@ never takes the day's counts down with it.
 
 The press the map sends when a question is typed says that somebody asked
 and nothing else — not whether anything answered, and not how often the
-day's allowance ran out. So `POST /api/ask` counts its own questions into
+day's allowance ran out. So `POST /api/v1/ask` counts its own questions into
 `visitor_counts`, under the kind `ask`, once the answer has gone and never
 for the owner. Ten ids, a list in `functions/api/_visitors.js`:
 
@@ -19898,7 +19909,7 @@ page again, scrolled where it was. A list on a shelf opens over the map the
 way every page does (**The map is the shell**), and closing it lands back
 here.
 
-**Where the shelves come from.** One request, `GET /api/discover`, answers
+**Where the shelves come from.** One request, `GET /api/v1/discover`, answers
 three of them: the two shelves of lists are the directory's own query under
 two of its orders, so a list is on a shelf exactly when it is on `/lists`,
 and the places are `press_counts` read for its order alone — the five open
@@ -19943,12 +19954,12 @@ with **Be the first**. A list in both is the reader's own. Every row is a link
 to that list's Route view, `?walk=1`, which is where a walk is started and
 where signing in is asked for; nothing on this page starts one.
 
-The routes everybody gets ride in `GET /api/discover` as `routes`, at most
+The routes everybody gets ride in `GET /api/v1/discover` as `routes`, at most
 `ROUTES` of them, since they are the same for all and can be kept with the
 shelves; `route` is still sent as the first of them for a page from before the
-swipe. The reader's own are `GET /api/walk?mine=1`, which answers `walks`, at
+swipe. The reader's own are `GET /api/v1/walk?mine=1`, which answers `walks`, at
 most `GOING`, and `mine`, the first, as it did when there was one; it is asked
-only once `/api/account` has said somebody is signed in, and again each time a
+only once `/api/v1/account` has said somebody is signed in, and again each time a
 page over the map closes, which is when a walk may have moved. With no route to
 offer the card is not drawn.
 
@@ -20074,7 +20085,7 @@ from, as it always did. A link to another site leaves the same way.
 
 **What the map is told** is only that the surface closed. A page can sign
 somebody in or out, save a place, make a list, and the map underneath was
-drawn before any of that, so on close the map asks `/api/account` again.
+drawn before any of that, so on close the map asks `/api/v1/account` again.
 While a page is open the rest of the map is `inert`: not focusable, not
 pressable, not read by a screen reader. The surface is a dialog named after
 the page inside it.
@@ -20231,7 +20242,7 @@ before.
 
 The lists pill is the one the rail has to wait for. It leads the cascade and
 it is the one button not in the markup until the network says so: it is
-drawn by an answer from `/api/account`, as the account pill above it was
+drawn by an answer from `/api/v1/account`, as the account pill above it was
 while there was one. So the introduction holds for that answer, up to
 `RAIL_WAIT_MS` (1.4 seconds), and then runs with the lists at its head. A
 pill that opens after the ones below it and closes before they do reads as
@@ -20504,7 +20515,7 @@ under the brand rather than putting it where the nudge asked for.
 
 **It is asked again when a pill arrives.** The lists door is the one that
 comes and goes — the account was the other, while it was a pill — and
-`/api/account` draws it after the map has settled, so the rail was being
+`/api/v1/account` draws it after the map has settled, so the rail was being
 placed while it was a pill short and then grew under the answer, which
 re-centred it over the corner it had just been measured clear of. On a window
 with room to spare nobody saw it; on one without, the first pill landed on
@@ -20575,7 +20586,7 @@ them taken out rather than left switched off.
 ### What it draws, and what it does not
 
 - **Three pills and the arrow**, and the lists pill is the one it always
-  was, hidden until `/api/account` answers exactly as before. **More** is a
+  was, hidden until `/api/v1/account` answers exactly as before. **More** is a
   button, `#btn-more`, counted on `/admin/stats` as `more` and
   introduced in the cascade with a label of its own — *More* — and a title
   saying what is behind it.
@@ -20614,7 +20625,7 @@ stayed there for its whole month. The owner moved it behind More on
 does what the pill did — it wears the name of whoever is signed in, with
 *Signed in as …* under it, or *Account* with the line about keeping saves
 safe; signed out it opens the sign-in sheet, signed in it leaves for
-`/account.html` — and stands under the same rule, there once `/api/account`
+`/account.html` — and stands under the same rule, there once `/api/v1/account`
 says accounts work or once this browser has saved something, `accountDoor()`
 in `assets/app.js`. It is still counted as the rail's `account`, and a
 sign-up it starts is still filed under the `rail` door, so the account's
@@ -21178,7 +21189,7 @@ The map, `assets/app.js`:
 | `account_from_rail`, `_nudge`, `_deal`, `_keep`, `_expired`, `_link`, `_google`, `_make`, `_ride` | — what put the sign-in sheet up in front of somebody with no account: the account row behind More (the pill, before 2026-11-05), the offer, a discount's Sign in, Keep on a list, a session that ran out under a press, a `?account=` link from another page, the way back from Google, the Make a list that stood at the foot of Discover until 2026-11-14, or Sign in on the website's bike ride recorder, until it was taken out on 2026-11-18. One name per door because the site's own count keeps names and not parameters |
 | `account_sheet_up`, `_in` | — the sheet up, and on which view: making an account or signing in. Not reported again for moving between views. `_google` was the view that named a new Google account, until November 2026 — **Signing in with Google** |
 | `account_try_up`, `_in` | — its button pressed |
-| `account_err_<error>` | `view` — refused, and the word `/api/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |
+| `account_err_<error>` | `view` — refused, and the word `/api/v1/account` answered with, dashes as underscores (`taken`, `username`, `password`, `no_match`, `slow_down`…), `network` where the request never came back and `generic` where the answer said nothing. Sent by `TTBTrack.refused()` in `assets/track.js`, which the other two forms share |
 | `account_done_up`, `_in` | — an account made or signed into through that view; beside `account_create` and `account_login`, which cannot say which view |
 | `account_leave_up`, `_in`, `account_left_err` | the last with `view` — the sheet shut without an account, and whether a refusal was on screen as it went |
 | `google_out`, `google_out_inapp` | — counted by `/api/google` itself, not by a page: a sign-in sent to Google, and the same from the in-app browser of Instagram, Facebook or TikTok, where Google refuses to sign anybody in. Into the sign-up funnel only, never the press kind — **Signing up** under **Visitors** |
@@ -21684,7 +21695,7 @@ Caucasian kitchens, Google's top tens — are written for the questions under
 as text** under [The blog](#the-blog).
 
 **Kept in the colo.** Each of these pages is put in the Cache API —
-`caches.default`, the same per-location cache `/api/saves` keeps its counts
+`caches.default`, the same per-location cache `/api/v1/saves` keeps its counts
 in — once it is rendered, so the next visit to the same address in the same
 colo is a cache read rather than a fetch out of the deployment, a database
 read and a render; `KEPT IN THE COLO` in `functions/_shell.js` is the

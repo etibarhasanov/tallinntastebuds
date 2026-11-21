@@ -3,7 +3,7 @@
  * tools/decks.mjs writes.
  *
  * data/decks.json is the file anybody edits, and it is over a megabyte. Two
- * routes read it whole — /api/flashcard for the shelf and for one deck, and
+ * routes read it whole — /api/v1/flashcard for the shelf and for one deck, and
  * functions/flashcard.js for a deck's text — and on a fresh isolate each paid
  * about four milliseconds to parse it, out of the ten the Workers free plan
  * gives a request, before the database was asked anything. tools/decks.mjs
@@ -23,7 +23,7 @@
  * exists, so an id somebody guessed is never a fetch; and shippedDecks(),
  * several decks at once for the two decks gathered out of somebody's rows,
  * which is the one reader that may still read the source whole. All three go
- * through the five-minute per-isolate cache every data file does. /api/say
+ * through the five-minute per-isolate cache every data file does. /api/v1/say
  * reads the voice's list out of the same folder on its own, and
  * ./_visitors.js reads the index's ids through the reader every data file
  * goes through.

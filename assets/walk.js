@@ -137,7 +137,7 @@
 (function () {
   'use strict';
 
-  var API = '/api/walk';
+  var API = '/api/v1/walk';
 
   /* The longest comment. The server's — MAX_NOTE in functions/api/walk.js —
      said again so the field stops somebody at the keystroke. */
@@ -1369,7 +1369,7 @@
    * Called by renderOne() in assets/lists.js every time the page is drawn
    * with the Walk view on, with:
    *
-   *   list         the list, as /api/lists answers it
+   *   list         the list, as /api/v1/me/lists answers it
    *   lang         the language the page is in
    *   t, el, card, heading, button, countLabel
    *                the page's own, so a card here is the card everywhere
@@ -1390,7 +1390,7 @@
       unwatch();
       w = {
         list: ctx.list,
-        data: null,       // what /api/walk last answered; null until it has
+        data: null,       // what /api/v1/walk last answered; null until it has
         own: null,        // the walker's own order as place ids, or null for the shortest
         short: null,      // the shortest order, remembered — see shortOrder()
         here: null,       // where the phone last said it was

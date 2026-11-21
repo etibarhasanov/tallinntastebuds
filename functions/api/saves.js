@@ -1,7 +1,7 @@
 /**
  * Tallinn Tastebuds — the saves.
  *
- * Two things live at /api/saves: GET hands back how many people have saved
+ * Two things live at /api/v1/saves: GET hands back how many people have saved
  * each place, POST records or withdraws one. They are the only way anything
  * outside Cloudflare can reach the database, which is the whole security
  * story: D1 has no public endpoint of its own. There is no host, no port and

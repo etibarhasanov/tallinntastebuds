@@ -40,7 +40,7 @@
  * turn: the browser runs none of the rules, it draws the moves it was handed.
  * The public game also carries its notes, below.
  * With `?lang=` the page's words come beside it through wordsFor(), all ten
- * languages, the way /api/flashcard carries its own; the twenty-second poll
+ * languages, the way /api/v1/flashcard carries its own; the twenty-second poll
  * leaves that off and gets the board alone. Every POST answers the same shape
  * without the words, so the page redraws from what the server now believes
  * rather than from what it sent.
@@ -54,7 +54,7 @@
  * house_colour. On the house's turn only the house. On the other side's turn,
  * in a public game anybody but the house — a member filed under their id, a
  * visitor under the device id the browser files its saves under, which has to
- * be a v4 UUID and is refused `400 client` exactly as /api/saves refuses it;
+ * be a v4 UUID and is refused `400 client` exactly as /api/v1/saves refuses it;
  * in a private game the challenger alone; in a duel the member whose colour
  * it is, the house included when it is one of the two. The house is found by
  * reading the session once and asking adminIds() whether that id is one of

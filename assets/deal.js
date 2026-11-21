@@ -233,7 +233,7 @@
       if (why === 'sign-in') { signIn(data, deal); return; }
       /* crypto.subtle is absent outside a secure context, which in practice
          means someone opened the file straight off the disk. Anything else
-         is /api/pass not answering — a deploy without its bindings, a
+         is /api/v1/pass not answering — a deploy without its bindings, a
          connection that dropped — and the page says so rather than showing a
          code, because a discount that appeared whenever that request failed
          would not be for members at all. */

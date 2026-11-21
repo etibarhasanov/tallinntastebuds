@@ -305,7 +305,7 @@ export function page(html, status, indexable) {
 /* ------------------------------------------------------ KEPT IN THE COLO
  *
  * A page rendered here is put in the Cache API — caches.default, the same
- * per-colo cache /api/saves keeps its counts in — so the next visit to the
+ * per-colo cache /api/v1/saves keeps its counts in — so the next visit to the
  * same address in the same colo is a cache read rather than a fetch out of
  * the deployment, a database read and a render. The map did this first, and
  * the header of functions/index.js is the long version; this is the part the

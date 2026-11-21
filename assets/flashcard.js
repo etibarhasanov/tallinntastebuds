@@ -180,7 +180,7 @@
  *
  * A second copy of a form is not free. What makes it survivable is that it is
  * a copy of the *form* and not of the *API*. It posts the same two fields to the
- * same /api/account with the same actions, reads the same errors out of the
+ * same /api/v1/account with the same actions, reads the same errors out of the
  * same map, and prints the same strings out of data/ui.json — accountUsername,
  * accountPassword, accountNoReset, accountGoogle and the rest. Nothing about
  * accounts is decided here.
@@ -226,12 +226,12 @@
  *
  * WHAT IT READS, WHICH IS ONE THING
  *
- *   /api/flashcard             the decks, how far you have got in each, and
+ *   /api/v1/flashcard          the decks, how far you have got in each, and
  *                              every word on this page in the one language it
  *                              is being read in
- *   /api/flashcard?deck=       one deck, whole, with its cards, and the same
- *   /api/account               posted to, to sign in or create an account
- *   /api/say?text=             a card's Estonian aloud, only when a speaker
+ *   /api/v1/flashcard?deck=    one deck, whole, with its cards, and the same
+ *   /api/v1/account            posted to, to sign in or create an account
+ *   /api/v1/say?text=          a card's Estonian aloud, only when a speaker
  *                              under the card is pressed — see sayLine()
  *
  * Most other pages fetch data/ui.json whole on the way in — eleven languages of
@@ -247,8 +247,8 @@
 (function () {
   'use strict';
 
-  var ACCOUNT_API = '/api/account';
-  var FLASH_API = '/api/flashcard';
+  var ACCOUNT_API = '/api/v1/account';
+  var FLASH_API = '/api/v1/flashcard';
 
   /* The same two keys the map writes and every other page reads. Walking from
      the map to here should not feel like leaving. */
@@ -447,7 +447,7 @@
     });
   }
 
-  /* An answer from /api/flashcard, become the page. Everything here happens on
+  /* An answer from /api/v1/flashcard, become the page. Everything here happens on
      the way in as well, which is why it is a function: boot() calls it with
      the first answer once it has set the language and the words up, and go()
      calls it with every answer after that.
@@ -3028,7 +3028,7 @@
    * word — leib and leiba are one thing on the page and two in the mouth —
    * and the people turning these over have mostly never heard any of them.
    *
-   * The sound is nobody's file. /api/say asks the University of Tartu's
+   * The sound is nobody's file. /api/v1/say asks the University of Tartu's
    * Estonian voice for the words when the button is pressed, and Cloudflare
    * keeps what comes back, so the second person to press Tere hears it from
    * the edge — see the header of functions/api/say.js. This side only hands
@@ -3046,7 +3046,7 @@
    * was answered, the deck was left — is stopped by render() itself, which is
    * the one place every one of those passes through.
    */
-  var SAY_API = '/api/say';
+  var SAY_API = '/api/v1/say';
 
   /* Which recording of a word to ask for. The route answers with thirty days
      of cache, so a browser that has heard a word keeps it by its address for a
@@ -4790,7 +4790,7 @@
 
     /* Who is signed in, the decks, and — where the address names one — that
        deck whole with its cards, and every word this page prints, in one
-       answer. /api/account is not read on the way in at all: the only thing
+       answer. /api/v1/account is not read on the way in at all: the only thing
        this page ever wanted from it was a name to put in the sign-up field,
        and the form asks for that now rather than offering one. */
     /* Where this device left off, if the address does not say: the deck, the

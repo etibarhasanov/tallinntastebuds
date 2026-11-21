@@ -117,7 +117,7 @@
     stylePinned: false,
     lastPick: null,
     active: [],          // selected type ids, OR semantics; empty means "All"
-    saves: {},           // place id -> how many people, from /api/saves
+    saves: {},           // place id -> how many people, from /api/v1/saves
     saved: [],           // the places this browser (or account) has saved
     /* Somebody else's list, when the map was opened on one: /?list=<id>.
        Null on every other visit, and the map is exactly what it was.
@@ -215,7 +215,7 @@
        Null on arrival and for every visit that never presses Enter there. */
     results: null,       // { q, ids: [...] }, or null
     /* Who is signed in, and whether accounts work here at all. Both come
-       from /api/account and both are absent until it answers. */
+       from /api/v1/account and both are absent until it answers. */
     account: { ready: false, google: false, user: null, linked: false, password: true },
     selected: null,      // restaurant id, or null
     /* The place you last opened, kept lit on the map after the panel shuts.
@@ -1565,7 +1565,7 @@
       muted: cssVar('--muted') || '#536879',
       paper: cssVar('--paper') || '#f2f8ff',
       here: cssVar('--here') || '#c1420b',
-      /* The way there, keyed by /api/route's own mode — routeStretch(). */
+      /* The way there, keyed by /api/v1/route's own mode — routeStretch(). */
       foot: cssVar('--way-foot') || '#1a8f4c',
       bike: cssVar('--way-bike') || '#7ab317',
       bus: cssVar('--way-bus') || '#e08a1e',
@@ -2081,7 +2081,7 @@
    *
    * Unlike everything else in this file, a save is not this browser's to
    * keep: it is a count of other people, so it lives in a Cloudflare D1
-   * database behind /api/saves and this is the client half of it. See
+   * database behind /api/v1/saves and this is the client half of it. See
    * functions/api/saves.js for the server half and the README for the honest
    * account of how unique a save actually is.
    *
@@ -2248,7 +2248,7 @@
      works as a button and simply shows no number. A map that will not draw
      because a save count is late would be a bad trade. */
   function loadSaves() {
-    return fetch('/api/saves', { headers: { accept: 'application/json' } })
+    return fetch('/api/v1/saves', { headers: { accept: 'application/json' } })
       .then(function (res) { return res.ok ? res.json() : {}; })
       .then(function (counts) {
         state.saves = counts && typeof counts === 'object' ? counts : {};
@@ -2302,7 +2302,7 @@
 
   /* The saved Google venues on the map, while Places I saved is on.
 
-     Out of the find bar's roll — /api/places, the map's places and every
+     Out of the find bar's roll — /api/v1/find, the map's places and every
      Google venue with its kinds and its pin, the temporarily closed saying so — rather than a request of
      its own, because it is the same rows in the shape foundStandIn() already
      turns into a stand-in, and the bar may well have asked for it already.
@@ -2472,11 +2472,9 @@
      place too. Where the visitor is comes from the dot if the map already has
      one and from one reading otherwise, taken quietly — a reading asked for
      here must not fly the map to the visitor and off the place they are
-     looking at. The route is /api/v1/route, which is /api/route with a
-     version on it and, by bike, the trains — bike to a station, the train,
-     bike on — and /api/route itself where the versioned one does not
-     answer, which costs the trains and nothing else; peatus.ee answers for
-     the bus and the train.
+     looking at. The route is /api/v1/route: the ways and, by bike, the
+     trains — bike to a station, the train, bike on — with peatus.ee
+     answering for the bus and the train.
 
      The small link under it is the way out, and which app it leaves for
      follows the tab: Google for a walk, a bike or a bus, which knows the footpaths
@@ -2515,20 +2513,10 @@
       routeFrom = L.latLng(from.lat, from.lng);
       routeAsked = Date.now();
       var ask = '?mode=' + mode + '&from=' + from.lat + ',' + from.lng + '&to=' + place.lat + ',' + place.lng;
+      /* A refusal is a word in JSON like any answer, and reads below as no
+         way; a body that is not JSON is the catch at the end. */
       return fetch('/api/v1/route' + ask)
-        .then(function (res) {
-          /* A refusal with a word in it is the route's answer, the same one
-             /api/route would give; anything else — a deployment from before
-             the version, a 5xx with no body — is asked again of the route
-             without it. */
-          if (res.ok || res.status === 400 || res.status === 404 || res.status === 422) {
-            return res.json().then(function (body) { return body && body.version ? body : Promise.reject(); });
-          }
-          return Promise.reject();
-        })
-        .catch(function () {
-          return fetch('/api/route' + ask).then(function (res) { return res.ok ? res.json() : null; });
-        })
+        .then(function (res) { return res.json(); })
         .then(function (way) {
           if (way && way.error) way = null;
           if (token !== routeToken) return;
@@ -2640,7 +2628,7 @@
      train, unlike a street, leaves at a time.
 
      And by bike the first way can be one people have ridden — `ridden` on
-     it, put together from the saved rides by /api/route. Its button and its
+     it, put together from the saved rides by /api/v1/route. Its button and its
      sentence say so, since that is the only reason it is first: it is
      seldom the shortest. */
   function drawRoute(n, mode, still) {
@@ -2738,7 +2726,7 @@
     if (routeLine.getLayers().length) fitRoute();
   }
 
-  /* The legs that are rides: /api/route names a ride's line and leaves a
+  /* The legs that are rides: /api/v1/route names a ride's line and leaves a
      walk's name off. */
   function tripRides(trip) {
     return trip.legs.filter(function (leg) { return leg.name !== undefined; });
@@ -2970,7 +2958,7 @@
 
     saveBusy = true;
     saveToken().then(function (token) {
-      return fetch('/api/saves', {
+      return fetch('/api/v1/saves', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
@@ -3070,7 +3058,7 @@
    * paintAccountRow().
    */
 
-  var ACCOUNT_URL = '/api/account';
+  var ACCOUNT_URL = '/api/v1/account';
 
   /* --------------------------------------------------------- the offer
    * A save made while signed out is the one moment when an account is worth
@@ -3137,7 +3125,7 @@
     });
   }
 
-  /* Whether /api/account has said anything at all, either way. The rail's
+  /* Whether /api/v1/account has said anything at all, either way. The rail's
      introduction waits a moment on this — see introduceRail — because the
      button it opens with is the one button on the rail that is not in the
      markup until the network says so. */
@@ -3245,7 +3233,7 @@
   }
 
   /* The account lives behind More now, as its first row, and the row wears
-     the name of whoever is signed in. So when the answer from /api/account,
+     the name of whoever is signed in. So when the answer from /api/v1/account,
      a save or a new name arrives with the sheet open, the sheet is drawn
      again; shut, there is nothing of the sheet to paint, because
      renderMore() reads it all as the sheet opens. */
@@ -3289,7 +3277,7 @@
    *
    * Both parameters are read once, during boot and before syncUrl takes them
    * back off the address bar, because the sheet cannot open until
-   * /api/account has said accounts work at all — by which time they are gone.
+   * /api/v1/account has said accounts work at all — by which time they are gone.
    */
   var accountAsked = '';
   var accountThen = '';
@@ -3308,7 +3296,7 @@
 
   /* What /api/google says happened, read here for the same reason the two
      above are: syncUrl takes it back off the address bar long before
-     /api/account has answered, and until it has there is neither a sheet to
+     /api/v1/account has answered, and until it has there is neither a sheet to
      open nor a name to say. See the header of functions/api/google.js for
      what each of them means. */
   var googleSaid = '';
@@ -3363,7 +3351,7 @@
     return url.pathname + url.search + url.hash;
   }
 
-  /* Called once /api/account has answered, because until it has there is no
+  /* Called once /api/v1/account has answered, because until it has there is no
      knowing whether a sheet can be offered at all. */
   function openAskedAccount() {
     if (!accountAsked || !state.account.ready) return;
@@ -3394,7 +3382,7 @@
     openAccount(view, '', 'link');
   }
 
-  /* The other half of the round trip, once /api/account has answered.
+  /* The other half of the round trip, once /api/v1/account has answered.
    *
    * Nothing here is a question — the work happened on the server and this is
    * the site saying what came of it. Which is why a failure is a line on the
@@ -3594,7 +3582,7 @@
       el('ul', { className: 'menu' }, [
         /* The account first, as it was at the head of the rail: who you are,
            then what the map can do. It wears the name of whoever is signed
-           in, and stands only where the pill used to — once /api/account
+           in, and stands only where the pill used to — once /api/v1/account
            has said accounts work, or this browser has saved something, since
            this is the only way back to those saves — see accountDoor().
            Signed out it opens the sign-in sheet; signed in it leaves for
@@ -3635,7 +3623,7 @@
    * laptop with no fix, or somebody planning tomorrow from a hotel room got
    * "Couldn't get your location." and nothing to do about it. This is the
    * thing to do about it: a street, a district or a landmark, typed, picked
-   * off the suggestions /api/geocode draws — the same five rows the
+   * off the suggestions /api/v1/geocode draws — the same five rows the
    * add-a-place form offers — and the dot goes there, through the same
    * drawHere() a reading from the device goes through, so everything that
    * reads the dot reads this one without knowing the difference.
@@ -3753,7 +3741,7 @@
 
     function lookUp(q) {
       var mine = ++whereInflight;
-      getJSON('/api/geocode?q=' + encodeURIComponent(q)).then(function (a) {
+      getJSON('/api/v1/geocode?q=' + encodeURIComponent(q)).then(function (a) {
         return a && Array.isArray(a.results) ? a.results : [];
       }, function (err) {
         /* A 429 is Photon asking for a moment, and says so; anything else
@@ -4037,7 +4025,7 @@
 
   /* ------------------------------------------- signing in or signing up */
   function renderAccountAuth(form) {
-    /* Where /api/account says accounts are not usable here — the Function not
+    /* Where /api/v1/account says accounts are not usable here — the Function not
        deployed, the database not bound — there is no form to draw: a sign-in
        that can only fail is worse than no sign-in at all, which is why the
        rail button used to be hidden outright in this state. It is not hidden
@@ -4069,7 +4057,7 @@
        second action competing with the one below — it is the other answer to
        the same question, and the rule between them is what says so.
 
-       Only where /api/account said the round trip would lead somewhere. A
+       Only where /api/v1/account said the round trip would lead somewhere. A
        deployment with no Google client set is a deployment where this button
        could only end on an error page of Google's. */
     if (state.account.google) {
@@ -4495,7 +4483,7 @@
    *
    * One listener on the rail rather than four on the buttons, because the
    * lists door is a link that leaves the page and is hidden until
-   * /api/account answers. Delegation takes all four, whenever they are
+   * /api/v1/account answers. Delegation takes all four, whenever they are
    * shown, and takes the next one for free.
    *
    * The ids are the ones RAIL_PILLS in functions/api/stats.js names, which is
@@ -5358,7 +5346,7 @@
   /* Whether the cascade has already run. */
   var railIntroduced = false;
   /* The pill at the head of the rail, the lists, is the one that is not in
-     the markup until the network says so: it waits on /api/account, which
+     the markup until the network says so: it waits on /api/v1/account, which
      says whether the database behind the lists is bound. So the
      introduction waits on that answer too, rather than starting without it
      and letting it catch up out of turn — a pill that opens after the ones
@@ -5398,7 +5386,7 @@
   /* A pill with nothing to say does not get to open: the radio's label is the
      station name, and a station with no name in radio.json would otherwise
      expand the button around an empty span. Same rule takes care of the
-     account button, which is hidden until /api/account has answered. */
+     account button, which is hidden until /api/v1/account has answered. */
   function hintText(btn) {
     var label = btn && btn.querySelector('.rail-label');
     return label ? (label.textContent || '').replace(/^\s+|\s+$/g, '') : '';
@@ -5984,7 +5972,7 @@
    *
    * WHERE THE ANSWER COMES FROM, AND WHERE IT DOES NOT
    *
-   * /api/ask puts the question, a slice of my places and a slice of Google's
+   * /api/v1/ask puts the question, a slice of my places and a slice of Google's
    * city to a language model on Cloudflare's free allowance and hands back
    * one to three ids, each with a clause saying why — mine first, and one of
    * Google's where the map has nothing that fits. That is the only thing
@@ -6018,7 +6006,7 @@
    * name, a price or a dish on this page. See the header of
    * functions/api/ask.js for why that is the whole design.
    */
-  var ASK_URL = '/api/ask';
+  var ASK_URL = '/api/v1/ask';
 
   /* data/cuisines.json, fetched the first time a question is asked and not
      before: the map never draws a cuisine, so ten kilobytes of labels for
@@ -6333,7 +6321,7 @@
       rating: typeof row.rating === 'number' ? row.rating : null,
       reviews: typeof row.reviews === 'number' ? row.reviews : null,
       /* `eat`, unless the find bar looked this up on Google Maps and it is a
-         museum, a shop or anything else — /api/lookup — which wears the
+         museum, a shop or anything else — /api/v1/lookup — which wears the
          plain map pin rather than a knife and fork. */
       kind: row.kind || 'eat',
       google: true,
@@ -7588,7 +7576,7 @@
      the place to go afterwards: signing in lands on the pass rather than back
      here. The offer above it is shown either way; it is what somebody is
      deciding on, and it is on the row and the pill already. Until
-     /api/account has answered there is no knowing which button this is, and
+     /api/v1/account has answered there is no knowing which button this is, and
      it is the plain one; the pass page asks again and offers the same sheet,
      one hop later. */
   function dealBlock(place, deal) {
@@ -8816,7 +8804,7 @@
    *
    * WHERE THE ROLL COMES FROM, AND WHY NOT FROM THE DATABASE PER KEYSTROKE
    *
-   * /api/places, once, on the first keystroke — the map's own places merged
+   * /api/v1/find, once, on the first keystroke — the map's own places merged
    * over google_venues, deduplicated and cached five minutes. It is not asked
    * for on the way in: somebody who opens the map and never types has no use
    * for it, and it is the largest answer this page could ask for.
@@ -8828,7 +8816,7 @@
    * write it: SQLite has no accent folding, nobody types Põhjala with the
    * tilde or Šašlõkk with the caron, and no LIKE drops the marks. So the
    * roll is folded here, in the browser. Since November 2026 the server
-   * folds the same roll in its own memory and answers /api/places?q= by the
+   * folds the same roll in its own memory and answers /api/v1/find?q= by the
    * rules below — functions/api/_find.js, which copies fold(), hasWords(),
    * wordAt(), findTier(), findSays(), findScore() and the order of
    * findHits() for the iOS app and the pickers. This bar is the one reader
@@ -8841,7 +8829,7 @@
    * the type labels in all eleven languages, and the dishes — so "pagariäri"
    * and "bakery" both find the bakery whichever language the page is being
    * read in; and, once the roll is in, what Google files each of them as
-   * cooking, in the same eleven languages, which /api/places lends a place of
+   * cooking, in the same eleven languages, which /api/v1/find lends a place of
    * mine off its linked row so that "thai" reaches my Thai place whether or
    * not its write-up says the word. A Google venue used to be matched on a
    * name and a street and nothing else, so "pizza" found the pizzerias with
@@ -8944,7 +8932,7 @@
   var FIND_MINE = 3;
   var FIND_CITY = 16;
 
-  /* The roll behind /api/places once it has arrived, the folded haystack
+  /* The roll behind /api/v1/find once it has arrived, the folded haystack
      beside it, and what has been drawn — the last so the arrow keys have
      something to walk without reading the DOM back. */
   var findRoll = null;
@@ -9004,7 +8992,7 @@
     if (findAsking) return findAsking;
     findAsking = loadCuisines().then(function (cuisines) {
       findCuisines = cuisines;
-      return getJSON('/api/places');
+      return getJSON('/api/v1/find');
     }).then(function (answer) {
       var rows = [];
       var list = Array.isArray(answer) ? answer : (answer && answer.places) || [];
@@ -9102,7 +9090,7 @@
      how many people gave it, the same number /admin/google prints as
      "Best overall" and ranked() in tools/googlevenues.mjs works out. A place
      of mine past the first three is lent its linked row's rank by
-     /api/places, so it stands where the export would put it rather than
+     /api/v1/find, so it stands where the export would put it rather than
      ahead of everything for being mine; one the export has no row for goes
      under every ranked row, by the score. Neither number is printed on a row
      of the bar (see findRow()); they only decide the order.
@@ -9934,7 +9922,7 @@
    * be offered only when nothing matched, from two letters; the owner asked
    * for it under results too, and never before five, in November 2026:
    * "raamat" finds three bookshops in the export and Google knows the rest.
-   * /api/lookup asks Google, restricted to
+   * /api/v1/lookup asks Google, restricted to
    * Tallinn, and keeps every place it answers in google_venues, so the next
    * person typing the same word finds it in the roll and never sees the
    * button. A museum or a shop is kept too, filed as not somewhere to eat:
@@ -9958,7 +9946,7 @@
   function findCanLookAsk() {
     if (findCanLookAsked) return;
     findCanLookAsked = true;
-    getJSON('/api/lookup').then(function (answer) {
+    getJSON('/api/v1/lookup').then(function (answer) {
       findCanLook = !!(answer && answer.ready);
     }).catch(function () {
       findCanLook = false;
@@ -9974,7 +9962,7 @@
     var looked = findLooked = { q: typed, state: 'asking', rows: [] };
     renderFound();
 
-    fetch('/api/lookup', {
+    fetch('/api/v1/lookup', {
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'content-type': 'application/json' },
@@ -11179,7 +11167,7 @@
       list.keeps = Math.max(0, (list.keeps || 0) + (want ? 1 : -1));
       paint();
 
-      fetch('/api/lists', {
+      fetch('/api/v1/me/lists', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ action: want ? 'keep' : 'unkeep', id: list.id })
@@ -12162,7 +12150,7 @@
    *
    * WHAT ARRIVES, AND WHAT IS INVENTED
    *
-   * The list comes off /api/lists?id=<id>, which is the same answer the list
+   * The list comes off /api/v1/me/lists?id=<id>, which is the same answer the list
    * page reads and already carries everything needed: the name, the address
    * and the coordinates for each place, filled in from the catalogue by the
    * Function, plus whether that place is also on my map.
@@ -12194,7 +12182,7 @@
 
   function loadList(id) {
     if (!id) return Promise.resolve(null);
-    return fetch('/api/lists?id=' + encodeURIComponent(id), { headers: { accept: 'application/json' } })
+    return fetch('/api/v1/me/lists?id=' + encodeURIComponent(id), { headers: { accept: 'application/json' } })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (out) {
         return out && out.list && out.list.items ? out.list : null;
@@ -12289,7 +12277,7 @@
       intro: list.intro || '',
       by: list.by || null,
       /* How many people have kept it, and whether this reader is one of them.
-         Both come out of /api/lists and neither is cached — see the module
+         Both come out of /api/v1/me/lists and neither is cached — see the module
          comment in functions/api/lists.js for why a keep is the one thing on
          this site that may not be a minute behind. */
       keeps: list.keeps || 0,
@@ -13809,7 +13797,7 @@
 
       /* Read before anything else touches the address bar: syncUrl below
          rebuilds the query out of state and takes ?account= and ?then= off it,
-         and the sheet they ask for cannot open until /api/account has
+         and the sheet they ask for cannot open until /api/v1/account has
          answered — which is long after that. See readAccountLink. */
       var arrived = new URLSearchParams(window.location.search);
       readAccountLink(arrived);
@@ -13931,7 +13919,7 @@
            roll and opened the way a row of the bar opens it.
 
            A key the roll does not carry is asked for by itself, from
-           /api/venues?ids=, before the link gives up on it. /api/places is
+           /api/venues?ids=, before the link gives up on it. /api/v1/find is
            kept five minutes in the browser, so a place somebody has just
            found with Look for it on Google Maps is missing from the copy
            their own browser holds — and the first thing a person does with

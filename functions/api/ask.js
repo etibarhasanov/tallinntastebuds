@@ -1,8 +1,8 @@
 /**
  * Tallinn Tastebuds — the chat box on the map, answered.
  *
- * POST /api/ask   { q, lang, wish, here, history }
- *                 ->  { ok, source, note, model, picks, say, open, venues, at }
+ * POST /api/v1/ask  { q, lang, wish, here, history }
+ *                    ->  { ok, source, note, model, picks, say, open, venues, at }
  *
  * Somebody types "somewhere cheap and asian, still open" into the map and this
  * turns it into one to three places, each with a line saying why — off my own
@@ -110,7 +110,7 @@
  *
  * So a question that says near — close to, lähedal, рядом; the words are in
  * data/ui.json beside cheap and open — is read by the browser for what it
- * wants to be near, and that goes to Photon through the lookup /api/geocode
+ * wants to be near, and that goes to Photon through the lookup /api/v1/geocode
  * already has for the add-a-place form, and comes back as a point in Tallinn
  * or as nothing. With a point, every line the model reads ends with its
  * straight-line distance from there, the nearest score as a named type
@@ -197,7 +197,7 @@ import { json, mapPlaces, nearTallinn, foldWords, km, venueCard, venueHours, wro
    vocabulary says only "asian". The table itself is read too, by the dish
    rule, as the one list this site has of words that mean food. */
 import { kitchensOf, KITCHENS } from './venues.js';
-/* The one lookup behind /api/geocode's suggestions, asked here for where a
+/* The one lookup behind /api/v1/geocode's suggestions, asked here for where a
    visitor said they are. See WHERE THE VISITOR IS above. */
 import { suggest } from './geocode.js';
 /* WHAT IS COUNTED above: the count, and the owner it leaves out. */
@@ -215,7 +215,7 @@ import { adminUser } from './_admin.js';
    Which model answered is in every reply as `model`, beside `note`, so a
    change here is checked from outside with one request —
 
-     curl -s -X POST https://tallinntastebuds.ee/api/ask \
+     curl -s -X POST https://tallinntastebuds.ee/api/v1/ask \
        -H 'content-type: application/json' -d '{"q":"cheap ramen"}' \
        | grep -o '"note":"[^"]*","model":"[^"]*"'
 
@@ -585,7 +585,7 @@ async function visitorAt(wish, here) {
 
 /* The visitor's own dot as the browser sent it — a point, checked rather
    than trusted. Anything that is not two finite numbers inside the Tallinn
-   box is no point at all: the box is the same one /api/geocode bounds
+   box is no point at all: the box is the same one /api/v1/geocode bounds
    Photon to, so the two sources of a point agree on what "in Tallinn"
    means, and a visitor asking from another city is told what a visitor
    with no dot is told rather than shown a column of distances that are all

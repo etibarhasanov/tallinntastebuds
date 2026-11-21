@@ -16,7 +16,7 @@
  *   readLive()      the last half hour, a minute at a time — GET /api/admin/live
  *   readFound()     how people found the site, over a range — GET /api/admin/found
  *   countAsk()      a question put to the chat on the map — called from
- *                   POST /api/ask
+ *                   POST /api/v1/ask
  *   countUse()      something done with one of the products — called from
  *                   the write routes of each
  *

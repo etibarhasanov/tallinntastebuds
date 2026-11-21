@@ -1,7 +1,7 @@
 /**
  * Tallinn Tastebuds — one recorded ride, to the person who rode it.
  *
- * GET /api/rides/<id>
+ * GET /api/v1/rides/<id>
  *
  *   { ready, user, ride: { id, name, meters, seconds, at, line, insight } }
  *
@@ -11,7 +11,7 @@
  *   of it: `average`, `timed`, `top`, `stopped`, `fastest` ({ km, seconds }),
  *   `splits` ([{ km, meters, seconds }]) and `speed` ([{ at, kmh }]). The
  *   iPhone app's ride page draws it; the list it is opened from is GET
- *   /api/rides in ../rides.js.
+ *   /api/v1/rides in ../rides.js.
  *
  *   Errors: 401 signed-out, 404 not-found, 503 not-ready.
  *

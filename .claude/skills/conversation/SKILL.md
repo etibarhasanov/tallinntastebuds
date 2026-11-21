@@ -169,7 +169,7 @@ tile at 390 px: what happens, not what the sheet is called.
    turn; it also fails a `data/decks/` or a `sitemap.xml` that was not
    rewritten. Commit the folder and the sitemap with the source.
 5. **Drive it.** `npx wrangler pages dev .` where it runs; where it cannot
-   reach Cloudflare — this sandbox cannot — a stub of `GET /api/flashcard`
+   reach Cloudflare — this sandbox cannot — a stub of `GET /api/v1/flashcard`
    that answers the file's `talks` and one `?deck=` whole, under
    `python3 -m http.server` or a Node server, is enough, since the page asks
    that route for everything. Open Start — the Conversations card and its

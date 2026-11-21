@@ -2,7 +2,7 @@
  * Tallinn Tastebuds — an Estonian word or sentence off a flashcard, said
  * aloud.
  *
- * GET /api/say?text=Ma%20tahan%20musta%20leiba
+ * GET /api/v1/say?text=Ma%20tahan%20musta%20leiba
  *   → 200 audio/wav, the sentence in Mari's voice
  *   → 206 audio/wav, a slice of it, when the request asks for a Range —
  *                                     which an iPhone always does: answer()
@@ -182,7 +182,9 @@ export async function onRequestGet(context) {
      included. It carries everything that changes the sound, the voice and the
      pace, so a change to either is a new recording at the edge the day it
      deploys; the browser's copy is SAY_TAKE's to replace, and changing either
-     of these means bumping that too. */
+     of these means bumping that too. Its path is the route's old address,
+     kept when the route moved to /api/v1/say so that no recording at the
+     edge had to be made again. */
   const key = new Request(new URL('/api/say?voice=' + VOICE + '&speed=' + SPEED + '&text=' + encodeURIComponent(text), request.url).toString());
   const cache = caches.default;
   const kept = await cache.match(key);

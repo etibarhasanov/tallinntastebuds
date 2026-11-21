@@ -45,7 +45,7 @@
  *
  * The page fetches nothing but /api/chess. The first ask carries `lang=` and
  * comes back with the words and the codes the switch is drawn from, the way
- * /api/flashcard's does; picking a language asks again, without reloading, so
+ * /api/v1/flashcard's does; picking a language asks again, without reloading, so
  * a game somebody is halfway through thinking about is still on the board. A
  * poll every twenty seconds asks for the board alone, only while the page is
  * on screen, and asks at once when it comes back on screen — a tab left open

@@ -50,7 +50,7 @@
  * ONE SAVE FOR ALL OF IT
  *
  * Everything on the page is one draft, and Save sends what changed and
- * nothing else — up to six writes to /api/account, the four actions the
+ * nothing else — up to six writes to /api/v1/account, the four actions the
  * account page's boxes made, the languages and the line's versions in other
  * languages, one after the other. Each of
  * those writes is whole on its own, so a Save that fails halfway leaves the
@@ -86,13 +86,13 @@
  *
  * WHAT IT READS
  *
- *   /data/lang/      the strings, one language to a file
- *   /api/account     who is signed in, and everything on their page
+ *   /data/lang/         the strings, one language to a file
+ *   /api/v1/account     who is signed in, and everything on their page
  *
  * And, once the name is known, whether assets/faces/<name>.jpg exists — the
  * face on a profile is a photograph committed to the repository rather than
  * anything stored, see faceOf() in functions/api/_profile.js, so the page
- * asks the file itself rather than making /api/profile answer for it.
+ * asks the file itself rather than making /api/v1/profile answer for it.
  */
 (function () {
   'use strict';
@@ -105,7 +105,7 @@
      **Languages** in docs/handbook.md. */
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
-  var ACCOUNT_API = '/api/account';
+  var ACCOUNT_API = '/api/v1/account';
 
   var STYLE_KEY = 'ttb.style';
   var LANG_KEY = 'ttb.lang';

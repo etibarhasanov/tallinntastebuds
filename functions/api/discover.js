@@ -1,5 +1,5 @@
 /**
- * Tallinn Tastebuds — GET /api/discover
+ * Tallinn Tastebuds — GET /api/v1/discover
  *
  * What the front page offers a phone before the map: the newest public lists,
  * the most opened ones, and which places on the map get opened least. One
@@ -69,13 +69,13 @@
  *
  * They are the same for everybody, which is why they can live in this answer.
  * The reader's own walks, where they have some going, are per person and are
- * asked of /api/walk?mine=1 by a signed-in page alone.
+ * asked of /api/v1/walk?mine=1 by a signed-in page alone.
  *
  * WHO MAY ASK, AND WHAT IT COSTS
  *
  * Anybody, signed in or not, and the answer is the same for all of them — it
  * reads no session, which is what lets it be kept: five minutes in the
- * browser and five in the colo, the way GET /api/saves keeps its counts. A
+ * browser and five in the colo, the way GET /api/v1/saves keeps its counts. A
  * list made a minute ago is on the shelf within five, and nothing here is
  * worth a purge.
  *
@@ -109,7 +109,7 @@ const TTL = 300;
 const EMPTY = { fresh: [], popular: [], quiet: [], route: null, routes: [] };
 
 function discoverKey(request) {
-  return new Request(new URL('/api/discover', request.url).toString());
+  return new Request(new URL('/api/v1/discover', request.url).toString());
 }
 
 /* A row of the directory, as a card on a shelf prints it. */

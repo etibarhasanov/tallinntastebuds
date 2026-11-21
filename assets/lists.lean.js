@@ -9,9 +9,9 @@
   var STYLES = ['red', 'green', 'blue', 'plum'];
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
-  var API = '/api/lists';
+  var API = '/api/v1/me/lists';
   var DRAFT = 'new';
-  var WHO_API = '/api/profile';
+  var WHO_API = '/api/v1/profile';
 
   var MAX_TITLE = 60;
   var MAX_INTRO = 200;
@@ -71,8 +71,8 @@
     draft: false,      // /list/new: a list on the screen and nowhere else yet
     walking: false,    // and whether it is shown as a walk — see walkView()
     profile: null,     // the person being shown
-    places: null,      // /api/places, loaded the first time the picker opens
-    canLook: false,    // whether /api/lookup can ask Google Maps at all
+    places: null,      // /api/v1/find, loaded the first time the picker opens
+    canLook: false,    // whether /api/v1/lookup can ask Google Maps at all
     looked: null,      // what the last press of Look for it on Google Maps came back with
     hay: null          // id -> folded searchable text
   };
@@ -2353,7 +2353,7 @@
 
     if (state.places) { paintPicker(); return; }
 
-    getJSON('/api/lookup').then(function (answer) {
+    getJSON('/api/v1/lookup').then(function (answer) {
       state.canLook = !!(answer && answer.ready);
       if (state.canLook && state.places && !dom.pickerScrim.hidden) paintPicker();
     }).catch(function () { /* no button */ });
@@ -2362,7 +2362,7 @@
     dom.pickerBody.appendChild(el('p', { className: 'picker-note', textContent: t('accountWorking') }));
 
     Promise.all([
-      getJSON('/api/places'),
+      getJSON('/api/v1/find'),
       ask(API + '?added=1').then(function (a) {
         return (a.out && a.out.added) || [];
       }).catch(function () { return []; })
@@ -2471,7 +2471,7 @@
     var looked = state.looked = { q: typed, state: 'asking', rows: [] };
     paintPicker();
 
-    fetch('/api/lookup', {
+    fetch('/api/v1/lookup', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ q: typed })
@@ -2753,7 +2753,7 @@
       var mine = ++inflight;
       if (andTakeFirst) { find.disabled = true; say('listsAddFinding'); }
 
-      ask('/api/geocode?q=' + encodeURIComponent(q)).then(function (a) {
+      ask('/api/v1/geocode?q=' + encodeURIComponent(q)).then(function (a) {
         if (mine !== inflight) return;
         if (andTakeFirst) find.disabled = false;
 

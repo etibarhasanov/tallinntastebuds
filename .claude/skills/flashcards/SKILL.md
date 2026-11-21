@@ -245,7 +245,7 @@ than a check:
 - **What an assistant can look up** is `data/decks/words.json`, which the
   tool writes with every card's words folded for a search. Nothing to do
   for a card added; it is why the tool's run rewrites one more file.
-- **What `/api/say` will speak** is `data/decks/spoken.json`, which the tool
+- **What `/api/v1/say` will speak** is `data/decks/spoken.json`, which the tool
   writes out of the file: a front, a card's sentence, a lesson's sentence or
   form, a song's line. A new *kind* of text is a line in `spoken()` in
   `tools/decks.mjs` and a run of the tool, or its speaker answers
@@ -256,7 +256,7 @@ needs stamping for a content change.
 
 ## The page
 
-- **It fetches one thing**: `/api/flashcard`. The words ride in the answer,
+- **It fetches one thing**: `/api/v1/flashcard`. The words ride in the answer,
   in one of `DECK_LANGS`' three; the `flash*` keys are in `data/ui.json` in
   all eleven like every page's, and the page can be read in three of them.
   **Three languages, not eleven** under **Flashcards** is why.
@@ -335,7 +335,7 @@ needs stamping for a content change.
   route for everything, so `python3 -m http.server` shows an empty page: use
   `npx wrangler pages dev .` and open `/flashcard?d=<id>` — in a cloud session
   with no Cloudflare token, **The house, and driving without a token** in the
-  `/chess` skill is how it starts — or Playwright with `/api/flashcard` stubbed
+  `/chess` skill is how it starts — or Playwright with `/api/v1/flashcard` stubbed
   from the file.
 - **Look at**: the deck's tile on the shelf under its heading, a card turned
   over with its forms and its sentence, a lesson's tables, a song's word

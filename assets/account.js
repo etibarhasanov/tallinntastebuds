@@ -141,8 +141,8 @@
  *
  *   /data/lang/         the strings, one file for the language the map wrote down
  *   /data/places.json   id -> name and address, for the saves
- *   /api/account        who is signed in, and what they have saved
- *   /api/lists          the lists they wrote, and the ones they kept
+ *   /api/v1/account     who is signed in, and what they have saved
+ *   /api/v1/me/lists    the lists they wrote, and the ones they kept
  *
  * All four at once and one paint at the end. Nothing here waits on anything
  * else, and a page that drew twice would draw a card and then move it.
@@ -169,10 +169,10 @@
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var PLACES_URL = '/data/places.json';
-  var ACCOUNT_API = '/api/account';
+  var ACCOUNT_API = '/api/v1/account';
   var VENUES_API = '/api/venues?ids=';
-  var LISTS_API = '/api/lists';
-  var RIDES_API = '/api/rides?mine=1';
+  var LISTS_API = '/api/v1/me/lists';
+  var RIDES_API = '/api/v1/rides?mine=1';
 
   /* The same two keys the map writes and the lists page reads. Walking from
      the map to here should not feel like leaving. */
@@ -211,7 +211,7 @@
   var state = {
     ui: {},            // one language's strings; see loadWords()
     lang: DEFAULT_LANG,
-    reached: true,   // whether /api/account answered at all
+    reached: true,   // whether /api/v1/account answered at all
     ready: false,    // whether accounts work on this deployment
     user: null,
     linked: false,   // whether this account was reached through Google
@@ -628,7 +628,7 @@
   /* ------------------------------------------------------------------ saves
    * The one thing on this page that works with no account at all, so it is
    * drawn the same way in all three states and reads the same two sources the
-   * map does: whatever /api/account said for a signed-in person, and
+   * map does: whatever /api/v1/account said for a signed-in person, and
    * localStorage for a browser that has not signed in.
    *
    * Each row opens that place on the map rather than describing it here. A
@@ -811,7 +811,7 @@
      Nothing here records one. The website's own recorder, assets/ride.js,
      was taken out on 2026-11-18: the site gives directions and takes
      nobody's movements, and a ride is recorded in Rattatee, the iPhone app,
-     which saves it through /api/rides. So the card has no button along its
+     which saves it through /api/v1/rides. So the card has no button along its
      foot and no empty state — "No rides yet" could only send somebody to a
      button that is not there.
 
@@ -932,7 +932,7 @@
    * Three states, read off the one date. A date still to come says until
    * when, with the two ways out of it: change it, or not a student. One that
    * has passed, and none at all, are the form. Not drawn on a database
-   * without the columns, which /api/account answers by leaving `student`
+   * without the columns, which /api/v1/account answers by leaving `student`
    * out.
    *
    * Private, so it is on this page and not on /edit: whether somebody is a

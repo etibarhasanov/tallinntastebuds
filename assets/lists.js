@@ -74,12 +74,12 @@
   var STYLES = ['red', 'green', 'blue', 'plum'];
   var DEFAULT_STYLE = 'red';
   var STYLE_KEY = 'ttb.style';
-  var API = '/api/lists';
+  var API = '/api/v1/me/lists';
   /* The address of a list that has not been made yet — see draftList(). No
      list can ever be called this: every id is a slug, a dash and six random
      characters. */
   var DRAFT = 'new';
-  var WHO_API = '/api/profile';
+  var WHO_API = '/api/v1/profile';
 
   /* What the server accepts, said again here so a field can stop somebody at
      the keystroke rather than at the round trip. The server is the one that
@@ -220,8 +220,8 @@
     draft: false,      // /list/new: a list on the screen and nowhere else yet
     walking: false,    // and whether it is shown as a walk — see walkView()
     profile: null,     // the person being shown
-    places: null,      // /api/places, loaded the first time the picker opens
-    canLook: false,    // whether /api/lookup can ask Google Maps at all
+    places: null,      // /api/v1/find, loaded the first time the picker opens
+    canLook: false,    // whether /api/v1/lookup can ask Google Maps at all
     looked: null,      // what the last press of Look for it on Google Maps came back with
     hay: null          // id -> folded searchable text
   };
@@ -4201,7 +4201,7 @@
   /* ---------------------------------------------------------------- picker
    * Every place in Tallinn, narrowed to the one being added.
    *
-   * /api/places is fetched the first time this opens and never again. It is
+   * /api/v1/find is fetched the first time this opens and never again. It is
    * the map's own places and the Google export behind them — see
    * functions/api/places.js — and it is the one big answer on this page, so it
    * is not part of the load: somebody reading a list never asks for it, and
@@ -4227,7 +4227,7 @@
 
     /* Whether Look for it on Google Maps can be offered, asked alongside the
        roll and allowed to fail by itself: without it the button never draws. */
-    getJSON('/api/lookup').then(function (answer) {
+    getJSON('/api/v1/lookup').then(function (answer) {
       state.canLook = !!(answer && answer.ready);
       if (state.canLook && state.places && !dom.pickerScrim.hidden) paintPicker();
     }).catch(function () { /* no button */ });
@@ -4235,7 +4235,7 @@
     clear(dom.pickerBody);
     dom.pickerBody.appendChild(el('p', { className: 'picker-note', textContent: t('accountWorking') }));
 
-    /* Both rolls the picker searches: the eight hundred behind /api/places,
+    /* Both rolls the picker searches: the eight hundred behind /api/v1/find,
        and whatever this account has added by hand — so a place typed in for
        one list can go on the next one without being typed again.
 
@@ -4244,7 +4244,7 @@
        places is a working picker even if the four somebody added did not
        arrive. */
     Promise.all([
-      getJSON('/api/places'),
+      getJSON('/api/v1/find'),
       ask(API + '?added=1').then(function (a) {
         return (a.out && a.out.added) || [];
       }).catch(function () { return []; })
@@ -4379,7 +4379,7 @@
    * The picker's half of the map's own button — ON GOOGLE MAPS above
    * findLookUp() in assets/app.js, and **Look for it on Google Maps** in
    * docs/handbook.md. A press, never a search that fires by itself: each one is a
-   * call against a budget. /api/lookup keeps what Google answers in
+   * call against a budget. /api/v1/lookup keeps what Google answers in
    * google_venues, so the row a tap then puts on the list is a Google place
    * like any other, with a card behind it, rather than a name and a pin
    * somebody typed. Before this the sheet's only answer to a place the roll
@@ -4395,7 +4395,7 @@
     var looked = state.looked = { q: typed, state: 'asking', rows: [] };
     paintPicker();
 
-    fetch('/api/lookup', {
+    fetch('/api/v1/lookup', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ q: typed })
@@ -4433,7 +4433,7 @@
    * The place neither roll has.
    *
    * The picker searches about eleven hundred places — my seventy-nine and the
-   * Google export behind /api/places — and between them they still miss
+   * Google export behind /api/v1/find — and between them they still miss
    * things: somewhere that opened last month, somewhere Google files as not a
    * restaurant. Before this, the answer to "it is not in the list" was nothing
    * at all, and the list simply could not be finished.
@@ -4670,7 +4670,7 @@
 
     /* The lookup.
      *
-     * Debounced rather than sent per keystroke: /api/geocode goes out to
+     * Debounced rather than sent per keystroke: /api/v1/geocode goes out to
      * Photon, which is built to answer a prefix but is still somebody else's
      * machine, and a request per keystroke on "Telliskivi" is ten requests
      * for one address. A pause in the typing is the signal that a prefix is
@@ -4784,7 +4784,7 @@
       var mine = ++inflight;
       if (andTakeFirst) { find.disabled = true; say('listsAddFinding'); }
 
-      ask('/api/geocode?q=' + encodeURIComponent(q)).then(function (a) {
+      ask('/api/v1/geocode?q=' + encodeURIComponent(q)).then(function (a) {
         /* An answer to a prefix somebody has already typed past is not an
            answer to the question on screen any more. */
         if (mine !== inflight) return;

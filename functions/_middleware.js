@@ -86,6 +86,19 @@
  * and /google, are a 404 to everybody.
  *
  * ---------------------------------------------------------------------------
+ * AND THE APPS' ROUTES, WHICH ANSWER ONLY UNDER /api/v1/
+ *
+ * Every route the site's pages and its three apps sign in, save and read
+ * through answered at /api/<name> until 2026-11-21, and at /api/v1/<name>
+ * as well from 2026-11-18, when the apps' builds moved there. Once the
+ * pages had moved too the old addresses were taken out: the MOVED block
+ * answers each with a 410 naming where it went, so a build or a script
+ * still asking there is told rather than handed a page. The handlers stay
+ * where they were, in functions/api/<name>.js, and the v1 catch-all calls
+ * them — functions/api/v1/[[path]].js. /api/google is not on the list: it
+ * is where Google's sign-in comes back to, registered in Google's console.
+ *
+ * ---------------------------------------------------------------------------
  * AND THE REPOSITORY'S OWN FILES, WHICH ARE NOT THE SITE
  *
  * There is no build, so the deployment is the repository: docs/handbook.md, the
@@ -208,6 +221,34 @@ async function notFound(context) {
 const GONE_HOSTS = ['splitwise.' + CANONICAL_HOST];
 /* -------------------------------------------------------------- end GONE */
 
+/* ----------------------------------------------------------------- MOVED */
+/* The apps' routes by the names they had under /api/, each answered at
+   /api/v1/ under the same name — but two, whose names v1's public reads
+   already hold. data/api-v1.json's `apps` is the same list by the new
+   names, and `node tools/apicheck.mjs --check` holds the two together. */
+const MOVED = new Set([
+  'account', 'apple', 'saves', 'places', 'lists', 'profile', 'pass', 'discover',
+  'walk', 'rides', 'route', 'geocode', 'lookup', 'ask', 'flashcard', 'say'
+]);
+const RENAMED = { places: 'find', lists: 'me/lists' };
+
+/* Where an old address is now, the rest of the path carried — a ride's own
+   page was /api/rides/<id> — or null for an address that did not move. */
+function movedTo(bare) {
+  const m = /^\/api\/([^/]+)(\/.*)?$/.exec(bare);
+  const name = m && m[1].toLowerCase();
+  if (!name || !MOVED.has(name)) return null;
+  return '/api/v1/' + (RENAMED[name] || name) + (m[2] || '');
+}
+
+function gone(to) {
+  return new Response(JSON.stringify({ error: 'gone', use: to }), {
+    status: 410,
+    headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
+  });
+}
+/* ------------------------------------------------------------- end MOVED */
+
 /* ------------------------------------------------------------ FLASHCARDS */
 /* The page at that hostname's root is not the static file, it is the route
    that writes the deck's own words into it. Called rather than rewritten to —
@@ -318,6 +359,11 @@ async function route(context) {
     return Response.redirect('https://' + CANONICAL_HOST + '/', 301);
   }
   /* ------------------------------------------------------------ end GONE */
+
+  /* --------------------------------------------------------------- MOVED */
+  const moved = movedTo(bare);
+  if (moved) return gone(moved + url.search);
+  /* ----------------------------------------------------------- end MOVED */
 
   /* ---------------------------------------------------------- FLASHCARDS */
   if (url.hostname === FLASH_HOST) {
