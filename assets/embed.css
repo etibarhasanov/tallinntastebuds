@@ -158,15 +158,3 @@
 .embed-by b { color: var(--accent); font-weight: 650; }
 
 .embed-body .leaflet-control-attribution { background: var(--attrib-bg); font-size: 10px; }
-
-/* A pin: the map's drop, in the style's accent, darker when it is open. */
-.embed-pin {
-  width: 22px;
-  height: 22px;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  background: var(--pin-accent);
-  border: 2px solid var(--paper);
-  box-shadow: var(--lift);
-}
-.embed-pin.is-on { width: 28px; height: 28px; background: var(--ink); }

@@ -15,6 +15,10 @@
  * in a new tab rather than inside the host's frame. **The map on your site**
  * in docs/handbook.md.
  *
+ * Its pins are the map's own — the mouth on a place on the map, a list's
+ * marker on a row the map does not have, assets/pins.js deciding which — and
+ * past NAMES_ZOOM they carry their names where the names fit.
+ *
  * Plain browser JavaScript, one IIFE, ES5, like every file in assets/.
  */
 (function () {
@@ -35,6 +39,15 @@
   /* The middle of Tallinn, for a map with nothing on it yet — TALLINN in
      functions/api/_lib.js. */
   var TALLINN = [59.437, 24.7536];
+
+  /* The pins' sizes, PIN_BOX, PIN_D, PIN_D_WORDS and PIN_D_SELECTED in
+     assets/app.js: the box Leaflet anchors, every pin, a place of mine with
+     only words to it, and the open one. The stylesheet scales all four down
+     on a narrow frame, as it does on the map. */
+  var PIN_BOX = 46;
+  var PIN_D = 22;
+  var PIN_D_WORDS = 17;
+  var PIN_D_OPEN = 34;
 
   var params = new URLSearchParams(window.location.search);
   var state = { lang: DEFAULT_LANG, ui: {}, dark: false, map: null, pins: [], on: null };
@@ -136,11 +149,24 @@
   /* -------------------------------------------------------------- data
    * Whatever the address asks for, as one shape: a title, a line under it,
    * and the places, each { id, name, address, lat, lng, price, types, photo,
-   * note, url }. A list's rows the map has are filled out of /api/v1/places
-   * — the photo, the price and the kinds of place — and a row somebody added
-   * off Google keeps what the list holds.
+   * note, url, wears, depth }. A list's rows the map has are filled out of
+   * /api/v1/places — the photo, the price and the kinds of place — and a row
+   * somebody added off Google keeps what the list holds.
+   *
+   * `wears` is the pin, by pinOf()'s first two rules in assets/app.js: a
+   * place on the map is the mark, and a list's row the map does not have
+   * wears the marker the list's author chose. The third rule, a Google row
+   * drawn as the kind of place it is, never arises: the public API hands out
+   * no Google row but a list's. `depth` is pinDepth()'s three readings of
+   * how much there is to see of a place of mine.
    */
   function langQuery() { return 'lang=' + encodeURIComponent(state.lang); }
+
+  function depthOf(place) {
+    if (place.reel) return 'reel';
+    if (place.photo) return 'photos';
+    return 'words';
+  }
 
   function fromList(id) {
     return getJSON(API + '/lists/' + encodeURIComponent(id)).then(function (body) {
@@ -150,6 +176,7 @@
       var known = ids.length
         ? getJSON(API + '/places?limit=100&' + langQuery() + '&ids=' + ids.map(encodeURIComponent).join(','))
         : Promise.resolve({ places: [] });
+      var listPin = TTBPins.ofList(list);
       return known.then(function (found) {
         var byId = {};
         found.places.forEach(function (p) { byId[p.id] = p; });
@@ -168,7 +195,9 @@
               types: p ? p.types : [],
               photo: p ? p.photo : null,
               note: r.note || '',
-              url: r.url
+              url: r.url,
+              wears: r.place_id ? 'mark' : listPin,
+              depth: depthOf(p || r)
             };
           })
         };
@@ -184,7 +213,8 @@
         places: body.places.map(function (p) {
           return {
             id: p.id, name: p.name, address: p.address, lat: p.lat, lng: p.lng,
-            price: p.price, types: p.types, photo: p.photo, note: '', url: p.url
+            price: p.price, types: p.types, photo: p.photo, note: '', url: p.url,
+            wears: 'mark', depth: depthOf(p)
           };
         })
       };
@@ -213,29 +243,70 @@
 
   /* -------------------------------------------------------------- the map */
 
+  /* The opening view is every pin, fitted exactly rather than to a whole
+     zoom level: Leaflet's own snap rounded the fit down, which on the
+     Azerbaijan corner's Azerbaijani places put twenty-five in the middle
+     third of the frame at 10, where 10.9 fills it. zoomSnap 0 is what the map at /
+     runs on too — **The map zooms by the pixel** — and the price is the same:
+     between two levels the tiles are drawn scaled, a little soft.
+
+     The fit keeps the pins out from under the chip, which stands on the
+     map's top edge, and above the credit along its bottom one. */
+  var FIT_PAD = 20;
+  var CREDIT_H = 40;
+
   function makeMap() {
     if (state.map) return state.map;
-    state.map = L.map('embed-map', { zoomControl: false }).setView(TALLINN, 13);
+    state.map = L.map('embed-map', { zoomControl: false, zoomSnap: 0 }).setView(TALLINN, 13);
     TTBBasemap.layer(L, { dark: state.dark }).addTo(state.map);
     state.map.on('click', closeCard);
+    /* After a pan, at the end of a zoom, and once the opening fit is made:
+       Leaflet ends all three with the same event. */
+    state.map.on('moveend', paintNames);
     return state.map;
   }
 
-  function pinIcon(on) {
-    var size = on ? 28 : 22;
+  /* The box Leaflet anchors and the face inside it that takes the pointer —
+     pinIcon() in assets/app.js, and dressed by dressPin() below the same
+     way, so the stylesheet that draws the map's pins draws these. */
+  function pinIcon() {
     return L.divIcon({
-      className: '',
-      html: '<div class="embed-pin' + (on ? ' is-on' : '') + '"></div>',
-      iconSize: [size, size],
-      iconAnchor: [size / 2, size]
+      className: 'pin-mark',
+      html: '<span class="pin-face"></span>',
+      iconSize: [PIN_BOX, PIN_BOX],
+      iconAnchor: [PIN_BOX / 2, PIN_BOX / 2],
+      tooltipAnchor: [0, 0]
     });
+  }
+
+  /* One pin, for what it is and whether it is open: dressPin() in
+     assets/app.js, less what this map never has — no cluster, no place kept
+     after its card was shut. The open one grows, takes the lit tone and
+     stands on top. Under it, a place of mine stands above a list's marker,
+     because nothing here clusters, and Telliskivi Šašlõkk under the
+     Shaurma Kebab next door was a mouth nobody could see. */
+  function dressPin(pin) {
+    var node = pin.marker.getElement();
+    if (!node) return;
+    var place = pin.place;
+    var on = place.id === state.on;
+    var mine = place.wears === 'mark';
+    TTBPins.dress(node, place.wears);
+    ['reel', 'photos', 'words'].forEach(function (kind) {
+      node.classList.toggle('is-' + kind, place.depth === kind);
+    });
+    node.classList.toggle('is-chosen', on);
+    node.style.setProperty('--pin-d', (on ? PIN_D_OPEN : mine && place.depth === 'words' ? PIN_D_WORDS : PIN_D) + 'px');
+    if (on) node.style.setProperty('--pin-tone', 'var(--accent-lit)');
+    else node.style.removeProperty('--pin-tone');
+    pin.marker.setZIndexOffset(on ? 2000 : mine ? 1000 : 0);
   }
 
   function draw(found, names) {
     var map = makeMap();
     state.pins.forEach(function (pin) { map.removeLayer(pin.marker); });
     state.pins = found.places.map(function (place) {
-      var marker = L.marker([place.lat, place.lng], { icon: pinIcon(false), title: place.name, keyboard: true });
+      var marker = L.marker([place.lat, place.lng], { icon: pinIcon(), title: place.name, keyboard: true });
       marker.on('click', function () { openCard(place, names); });
       /* keyboard: true makes the pin focusable and calls it a button, and
          that is all it does: in Leaflet 1.9.4 the only thing that answers a
@@ -250,20 +321,116 @@
         openCard(place, names);
       });
       marker.addTo(map);
-      return { place: place, marker: marker };
+      var face = marker.getElement().querySelector('.pin-face');
+      face.textContent = place.wears === 'mark' ? '' : TTBPins.glyph(place.wears);
+      var pin = { place: place, marker: marker, named: '' };
+      dressPin(pin);
+      return pin;
     });
-    if (state.pins.length) {
-      map.fitBounds(L.latLngBounds(state.pins.map(function (p) { return [p.place.lat, p.place.lng]; })), {
-        padding: [40, 40], maxZoom: 16
-      });
-    }
+    /* The chip first: the fit measures it. */
     $('embed-title').textContent = found.title;
     $('embed-sub').textContent = found.sub;
-    $('embed-chip').hidden = false;
+    var chip = $('embed-chip');
+    chip.hidden = false;
+    if (state.pins.length) {
+      map.fitBounds(L.latLngBounds(state.pins.map(function (p) { return [p.place.lat, p.place.lng]; })), {
+        paddingTopLeft: [FIT_PAD, chip.offsetTop + chip.offsetHeight + FIT_PAD],
+        paddingBottomRight: [FIT_PAD, CREDIT_H],
+        maxZoom: 16,
+        animate: false
+      });
+    }
   }
 
-  function mark(id) {
-    state.pins.forEach(function (pin) { pin.marker.setIcon(pinIcon(pin.place.id === id)); });
+  function paintPins() {
+    state.pins.forEach(dressPin);
+    paintNames();
+  }
+
+  /* ------------------------------------------------------------ the names
+   * Closer in, a pin carries its name, where the name fits: labelPlan() in
+   * assets/app.js, which has named the map's pins this way since zoom 14.
+   * Here it is 13, a level sooner, because a list is a hundred places at
+   * the very most and the map is twelve hundred.
+   *
+   * Laid out greedily, the open place first and always named whatever it
+   * lands on, since it is the one being asked about. Every other name has to
+   * fit whole inside the frame and land on no pin, no name already placed,
+   * and neither the chip nor the card; one that would is left off until a
+   * zoom or a pan gives it room. The width is guessed from the length of the
+   * name, as the map guesses it, because measuring means drawing it first.
+   */
+  var NAMES_ZOOM = 13;
+  var NAME_H = 24;
+
+  /* Padding and the display face at 13px, as labelBox() in assets/app.js
+     has it. */
+  function nameWidth(name) {
+    return 20 + name.length * 7.3;
+  }
+
+  function hits(a, b) {
+    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+  }
+
+  /* A box the names keep off: the chip along the top, the card along the
+     bottom, either only while it is showing. */
+  function standing(id, size) {
+    var node = $(id);
+    if (node.hidden) return null;
+    return { x: 0, y: node.offsetTop - 4, w: size.x, h: node.offsetHeight + 8 };
+  }
+
+  function paintNames() {
+    var map = state.map;
+    if (!map) return;
+    var size = map.getSize();
+    var close = map.getZoom() >= NAMES_ZOOM;
+    var taken = [standing('embed-chip', size), standing('embed-card', size)].filter(Boolean);
+    var spots = {};
+    state.pins.forEach(function (pin) {
+      var pt = map.latLngToContainerPoint([pin.place.lat, pin.place.lng]);
+      var r = (pin.place.id === state.on ? PIN_D_OPEN : PIN_D) / 2 + 2;
+      spots[pin.place.id] = pt;
+      taken.push({ x: pt.x - r, y: pt.y - r, w: r * 2, h: r * 2 });
+    });
+
+    var queue = state.pins.slice().sort(function (a, b) {
+      return (b.place.id === state.on) - (a.place.id === state.on);
+    });
+    var named = {};
+    queue.forEach(function (pin) {
+      var on = pin.place.id === state.on;
+      if (!on && !close) return;
+      var pt = spots[pin.place.id];
+      var w = nameWidth(pin.place.name);
+      var box = { x: pt.x - w / 2, y: pt.y - 19 - NAME_H, w: w, h: NAME_H };
+      if (!on) {
+        if (box.x < 4 || box.x + box.w > size.x - 4 || box.y < 4 || box.y + box.h > size.y) return;
+        for (var i = 0; i < taken.length; i++) if (hits(box, taken[i])) return;
+      }
+      taken.push(box);
+      named[pin.place.id] = on ? 'on' : 'quiet';
+    });
+
+    /* Bound again only where it changed. The name goes in as a text node: a
+       row off Google carries whatever the business called itself there, and
+       Leaflet writes a string with innerHTML. */
+    state.pins.forEach(function (pin) {
+      var now = named[pin.place.id] || '';
+      if (now === pin.named) return;
+      pin.named = now;
+      pin.marker.unbindTooltip();
+      if (!now) return;
+      pin.marker.bindTooltip(document.createTextNode(pin.place.name), {
+        className: 'pin-tip pin-tip-' + now,
+        direction: 'top',
+        offset: [0, now === 'on' ? -23 : -18],
+        opacity: 1,
+        interactive: true,
+        permanent: true
+      });
+    });
   }
 
   /* -------------------------------------------------------------- the card */
@@ -275,7 +442,6 @@
 
   function openCard(place, names) {
     state.on = place.id;
-    mark(place.id);
     var photo = $('embed-photo');
     photo.hidden = !place.photo;
     if (place.photo) photo.src = place.photo;
@@ -301,6 +467,28 @@
        somebody else's to scroll, and a pin out of view would drag the map's
        container off its tiles. */
     $('embed-name').focus({ preventScroll: true });
+    /* After the card is showing, so its name is laid out clear of it. */
+    paintPins();
+    keepInView(place);
+  }
+
+  /* The open pin, panned out from under its own card into the strip between
+     the chip and the card, with room above it and either side of it for its
+     name — or left where it is when there is no strip: on a phone a card
+     with a photograph fills the frame, and moving the map under it would
+     show nothing. */
+  function keepInView(place) {
+    var map = state.map;
+    var size = map.getSize();
+    var chip = $('embed-chip');
+    var top = chip.offsetTop + chip.offsetHeight + NAME_H + PIN_D_OPEN;
+    var bottom = $('embed-card').offsetTop - PIN_D_OPEN / 2 - 8;
+    if (bottom <= top) return;
+    var pt = map.latLngToContainerPoint([place.lat, place.lng]);
+    var dy = pt.y < top ? pt.y - top : pt.y > bottom ? pt.y - bottom : 0;
+    var side = Math.min(size.x / 2, Math.max(FIT_PAD, nameWidth(place.name) / 2 + 4));
+    var dx = pt.x < side ? pt.x - side : pt.x > size.x - side ? pt.x - size.x + side : 0;
+    if (dx || dy) map.panBy([dx, dy]);
   }
 
   /* Focus inside the card is about to be hidden with it, so it goes back to
@@ -310,13 +498,13 @@
     var was = state.on;
     var card = $('embed-card');
     state.on = null;
-    mark(null);
     if (card.contains(document.activeElement)) {
       state.pins.forEach(function (pin) {
         if (pin.place.id === was) pin.marker.getElement().focus({ preventScroll: true });
       });
     }
     card.hidden = true;
+    paintPins();
   }
 
   /* -------------------------------------------------------------- the boot */
