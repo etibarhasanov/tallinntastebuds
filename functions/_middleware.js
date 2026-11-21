@@ -181,7 +181,8 @@ const RETIRED = new Set(['/stats', '/stats.html', '/google', '/google.html']);
    And one directory the site reads but does not serve: /azeri/data/, the
    films and the guide of the Azerbaijani corner and the tool's working
    files beside them. /api/azeri hands them out a page of twenty films, or
-   a tab in one language, at a time, rather than to a phone whole — the
+   a tab in one language, at a time, rather than to a phone whole, and
+   functions/azeri.js reads the home's to write it into the page — the
    header of functions/api/azeri.js. */
 const DOCS_ONLY = ['/db/', '/exports/', '/tools/', '/azeri/data/'];
 const CONFIG_ONLY = new Set(['/wrangler.toml']);

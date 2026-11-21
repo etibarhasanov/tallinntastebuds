@@ -7,8 +7,9 @@
  * data/blog.json, Google's six lists out of tools/googlelists.mjs and the
  * faces out of assets/faces/, and writes sitemap.xml: the map at each of its
  * eleven addresses, every open place at its own, the directory, the blog and
- * every post on it, the flashcards and every deck of them, the six lists, and
- * a profile for every face.
+ * every post on it, the Azerbaijani corner in its four languages, the
+ * flashcards and every deck of them, the six lists, and a profile for every
+ * face.
  *
  *   node tools/sitemap.mjs           rewrite sitemap.xml
  *   node tools/sitemap.mjs --check   report that it is out of date, exit 1
@@ -69,6 +70,14 @@
  * ids that never move, and pages that answer the questions people actually
  * type — the top ten restaurants by Google's own rating. They are as fixed as the map itself, and there is no
  * reason for a crawler to wait to meet them through the directory.
+ *
+ * The Azerbaijani corner, /azeri, is here four times, because nothing on the
+ * map links to it and it was for members until 2026-11-21: its home in
+ * each of the four languages it is written in — Azerbaijani at the bare
+ * address, the language it opens in, and the others at ?lang= — each naming
+ * all four, the way the map's addresses do. functions/azeri.js writes the home into the page as text at
+ * each of them. Its other tabs are not listed: the home links each of them,
+ * in the text a crawler reads, and the guide's topics hang off those.
  *
  * A profile is in the database and this file cannot list what it does not
  * know, so the profiles here are the ones the repository knows exist: one
@@ -136,6 +145,12 @@ const SITE = 'https://tallinntastebuds.ee';
    the language index.html is written in. The same constant is DEFAULT_LANG
    in assets/app.js and in functions/index.js. */
 const DEFAULT_LANG = 'en';
+/* The four languages the corner is written in, sorted by code — GUIDE_LANGS
+   in functions/api/azeri.js and LANGS in functions/azeri.js, in another
+   order — and the one at its bare address, DEFAULT_LANG there. Change one,
+   change the others. */
+const CORNER_LANGS = ['az', 'en', 'et', 'ru'];
+const CORNER_HOME = 'az';
 
 /* The one thing an address here could carry that XML would read as markup,
    and ?spot=…&lang=… carries it. */
@@ -193,6 +208,10 @@ export function render(langs, placeIds, shelfIds, faces, postIds) {
   /* The privacy policy, in English — the version that counts; the nine
      translations are the same page at ?lang= and say so at the top. */
   entries.push(entry(SITE + '/privacy'));
+  const cornerAt = (code) => SITE + '/azeri' + (code === CORNER_HOME ? '' : '?lang=' + code);
+  const corner = [{ lang: 'x-default', href: cornerAt(CORNER_HOME) }]
+    .concat(CORNER_LANGS.map((code) => ({ lang: code, href: cornerAt(code) })));
+  for (const code of CORNER_LANGS) entries.push(entry(cornerAt(code), corner));
   for (const name of faces) entries.push(entry(SITE + '/u/' + name));
   /* The flashcards. A rail pill on the map links to /flashcard now, so that
      one address is found the way any linked page is; this file is still very
@@ -284,7 +303,8 @@ function main() {
   writeFileSync(OUT, next);
   console.log(
     `${OUT} — ${count} addresses: the map in ${langs.length} languages, ${ids.length} places, ` +
-    `/lists, /blog and ${posts.length} posts, /chess, /flashcard and ${shelf.length} decks, lessons, songs and conversations, ` +
+    `/lists, /blog and ${posts.length} posts, /chess, /privacy, the Azerbaijani corner in ${CORNER_LANGS.length} languages, ` +
+    `/flashcard and ${shelf.length} decks, lessons, songs and conversations, ` +
     `${GOOGLE_LISTS.length} Google lists, and ${faces.length} ${faces.length === 1 ? 'profile' : 'profiles'} with a face.`
   );
 }

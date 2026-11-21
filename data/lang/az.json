@@ -1487,6 +1487,7 @@
   "azeriTitle": "Estoniyada Azərbaycan guşəsi",
   "azeriCorner": "Azərbaycan guşəsi",
   "azeriBy": "Tallinn Tastebuds tərəfindən",
+  "azeriHome": "Əsas",
   "azeriFilms": "Azərbaycan filmləri",
   "azeriSearch": "Film, rejissor, aktyor axtar",
   "azeriShelfFeature": "Bədii filmlər",
@@ -1547,6 +1548,8 @@
   "azeriFlashSay": "Söz dəstləri, qrammatika dərsləri, dialoqlar və mahnılar.",
   "azeriFlashOpen": "Kartları aç",
   "azeriWays": "Dil, və onu başqa harada öyrənmək olar",
+  "azeriInCorner": "Bu guşədə",
+  "azeriQuestions": "Tez-tez verilən suallar",
   "azeriGoTo": "{site} saytına keç"
  },
  "blurbs": {

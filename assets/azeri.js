@@ -1,7 +1,8 @@
 /* Tallinn Tastebuds — /azeri, a corner about Azerbaijan, open to anybody.
  *
- * WHAT IT IS. A page for anybody, account or not, linked from nowhere on
- * the site, and five tabs on it, straight under the corner's name.
+ * WHAT IT IS. A page for anybody, account or not, and six tabs on it,
+ * straight under the corner's name. Home says who the corner is for, what
+ * is in each of the other five, and answers the questions people ask.
  * Azerbaijani films is the country's cinema: the 2,615 of the Azerbaijani
  * Wikipedia's list, which tools/azfilms.mjs collects and /api/azeri hands
  * out twenty at a time. Estonia, Studying and Estonian are a guide for
@@ -28,17 +29,29 @@
  * ready, the shelf is not drawn before then either, and the first ask to
  * the route goes out beside the words, not after them.
  *
- * A TAB IS AN ADDRESS, AND NOT A LOAD. /azeri is the films and
- * /azeri?tab=estonia a tab of the guide, and the tabs are links to those
- * addresses. They were followed, once: every press loaded the page again,
- * so the name, the tabs and the switch went blank and came back on each,
- * since they wait for the words. Now a press is caught, the address moves
- * with pushState, and only what is under the tabs is drawn again; Back and
- * Forward walk the tabs through popstate, and a press with a key held still
- * opens the link in a new tab. Each is reported to the site's count as a
- * page view, as the load was. A topic that is opened is written into the
- * address beside its tab, &topic=housing, so the address somebody copies
- * opens what they were reading.
+ * A TAB IS AN ADDRESS, AND NOT A LOAD. /azeri is the home, /azeri?tab=films
+ * the films and /azeri?tab=estonia a tab of the guide, and the tabs are
+ * links to those addresses. They were followed, once: every press loaded the
+ * page again, so the name, the tabs and the switch went blank and came back
+ * on each, since they wait for the words. Now a press on any link to the
+ * corner — a tab, a row of the home, the link an answer ends in — is
+ * caught, the address moves with pushState, and only what is under the tabs
+ * is drawn again; Back and Forward walk the tabs through popstate, and a
+ * press with a key held still opens the link in a new tab. Each is reported
+ * to the site's count as a page view, as the load was. A topic that is
+ * opened is written into the address beside its tab, &topic=housing, so the
+ * address somebody copies opens what they were reading.
+ *
+ * THE HOME. The guide's shape, so it is drawn by the guide's code: the
+ * route answers it as a tab, home.json beside the guide's three, with a
+ * sentence saying who the corner is for and a line for each of the other
+ * tabs besides. The lines are rows under "In this corner", each named by
+ * its tab and pressed as its tab is; the questions are topics with no line
+ * under the name, and an answer is a sentence or two and the one link into
+ * the tab that says the rest. functions/azeri.js writes the same words into
+ * the page as text for the reader that runs no script — a search engine
+ * among them — and this file empties #shelf before it draws, as it always
+ * did.
  *
  * THE GUIDE. A tab is asked for whole, once, in the language the page is
  * read in — and again when that changes, since the answer carries one
@@ -109,7 +122,7 @@
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var LANGS = ['az', 'en', 'ru', 'et'];
-  var TABS = ['films', 'estonia', 'study', 'estonian', 'food'];
+  var TABS = ['home', 'films', 'estonia', 'study', 'estonian', 'food'];
   var SAY_KEYS = { estonia: 'azeriEstoniaSay', study: 'azeriStudySay' };
   /* The flashcards, at the address the map's own door to them has: this
      host's /flashcard, which answers wherever the site does. The button
@@ -147,8 +160,8 @@
     lang: 'az',
     ui: {},
     names: {},
-    tab: 'films',    // which of TABS the address names
-    guide: null,     // a tab of the guide, as the route answered it
+    tab: 'home',     // which of TABS the address names
+    guide: null,     // the home or a tab of the guide, as the route answered it
     topic: null,     // the id of the topic opened, if one is
     kind: 'feature',
     q: '',
@@ -242,10 +255,11 @@
     return 'az';
   }
 
-  /* The tab the address names, and the films where it names none. */
-  function pickTab() {
-    var asked = new URLSearchParams(window.location.search).get('tab');
-    return TABS.indexOf(asked) !== -1 ? asked : 'films';
+  /* The tab an address names — the page's own where none is given — and
+     the home where it names none. */
+  function pickTab(search) {
+    var asked = new URLSearchParams(search === undefined ? window.location.search : search).get('tab');
+    return TABS.indexOf(asked) !== -1 ? asked : 'home';
   }
 
   /* The tabs are links in the markup, which cannot know which of them it
@@ -262,22 +276,29 @@
     }
   }
 
-  /* A press on a tab draws that tab under the tabs, and the address moves
+  /* A press on a link to the corner — a tab, a row of the home, the link
+     an answer ends in — draws that tab under the tabs, and the address moves
      with it, rather than the link loading the page again: A TAB IS AN
-     ADDRESS, AND NOT A LOAD, at the top. A press with a key held, or with
-     another button, is the browser's — a new tab, a new window. */
-  function wireTabs() {
-    var tabs = document.querySelectorAll('.azeri-tab');
-    for (var i = 0; i < tabs.length; i++) {
-      tabs[i].addEventListener('click', function (e) {
-        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-        e.preventDefault();
-        var tab = e.currentTarget.getAttribute('data-tab');
-        if (tab === state.tab) return;
-        window.history.pushState(null, '', e.currentTarget.getAttribute('href'));
-        showTab(tab);
-      });
-    }
+     ADDRESS, AND NOT A LOAD, at the top. One listener on the document, since
+     the rows and the answers are drawn after it is set. A press with a key
+     held, or with another button, is the browser's — a new tab, a new
+     window — and so is a link to anywhere else, the skip link's #main
+     included. A tab pressed while it is on, with no topic in its address,
+     is nothing to draw again; from further down the page the reader is
+     taken back up to the tabs, where the new one starts. */
+  function wireLinks() {
+    document.addEventListener('click', function (e) {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a || a.target || a.getAttribute('href').charAt(0) !== '/') return;
+      if (a.origin !== window.location.origin || a.pathname.replace(/\.html$/, '') !== '/azeri') return;
+      e.preventDefault();
+      var tab = pickTab(a.search);
+      if (tab === state.tab && !new URLSearchParams(a.search).get('topic')) return;
+      window.history.pushState(null, '', a.getAttribute('href'));
+      showTab(tab);
+      if (!a.classList.contains('azeri-tab')) window.scrollTo(0, 0);
+    });
     /* Back to the same tab is the skip link's #main being walked off, and
        there is nothing to draw again. */
     window.addEventListener('popstate', function () {
@@ -313,9 +334,11 @@
     };
     each('data-i18n', function (n, k) { n.textContent = t(k); });
     each('data-i18n-aria-label', function (n, k) { n.setAttribute('aria-label', t(k)); });
-    /* The skip link is written for the films; under a tab of the guide it
-       leads to topics, and under the places to the map. */
-    if (state.tab !== 'films') document.querySelector('.skip-link').textContent = t(state.tab === 'food' ? 'azeriSkipMap' : 'azeriSkipTopics');
+    /* The skip link is written for the topics, of the home and the guide;
+       under the films it leads to the films, and under the places to the
+       map. */
+    var skip = state.tab === 'films' ? 'azeriSkip' : state.tab === 'food' ? 'azeriSkipMap' : null;
+    if (skip) document.querySelector('.skip-link').textContent = t(skip);
     document.title = t('azeriTitle') + ' | Tallinn Tastebuds';
   }
 
@@ -335,8 +358,8 @@
       applyStaticStrings();
       drawSwitch();
       /* The films carry both of their languages and the places' map is
-         asked for in the new one when it is drawn again; a tab of the
-         guide was answered in one, so it is asked for again. */
+         asked for in the new one when it is drawn again; the home and a tab
+         of the guide were answered in one, so they are asked for again. */
       if (state.tab === 'films' || state.tab === 'food') draw();
       else askGuide();
     }).catch(function () { /* the page stays in the language it has */ });
@@ -396,7 +419,8 @@
     });
   }
 
-  /* A tab of the guide, whole, in the language the page is read in. */
+  /* The home or a tab of the guide, whole, in the language the page is
+     read in. */
   function askGuide() {
     state.guide = null;
     send(API + '?tab=' + state.tab + '&lang=' + state.lang, function (out) {
@@ -405,8 +429,8 @@
     });
   }
 
-  /* What is under the tabs, asked for: a page of the films or a tab of the
-     guide. The places ask the route for nothing and are drawn at once, and
+  /* What is under the tabs, asked for: a page of the films, or the home or
+     a tab of the guide. The places ask the route for nothing and are drawn at once, and
      an answer to the tab before that is still on its way is let go, as a
      newer ask would let it go — or it would draw the map a second time. */
   function askShown() {
@@ -777,12 +801,20 @@
 
   /* A tab of the guide: the line saying what it is, the flashcards where
      the tab is Estonian, the topics — a list beside an article on a wide
-     screen — and under them the line saying whose word is final. */
+     screen — and under them the line saying whose word is final. The home
+     is drawn here too, once it has answered: its sentence, the other tabs
+     as rows, and the questions as its topics. */
   function drawGuide(host) {
     if (SAY_KEYS[state.tab]) host.appendChild(el('p', { className: 'lists-say', text: t(SAY_KEYS[state.tab]) }));
     if (state.tab === 'estonian') {
       host.appendChild(flashcards());
       host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriWays') }));
+    }
+    if (state.tab === 'home' && state.guide) {
+      host.appendChild(el('p', { className: 'lists-say azeri-home-say', text: state.guide.say }));
+      host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriInCorner') }));
+      host.appendChild(sections(state.guide.sections));
+      host.appendChild(el('p', { className: 'eyebrow azeri-ways', text: t('azeriQuestions') }));
     }
     var list = el('div', { className: 'azeri-list card is-guide' });
     if (state.loading) {
@@ -794,6 +826,31 @@
     }
     host.appendChild(list);
     if (state.guide) host.appendChild(el('p', { className: 'azeri-credit', text: t('azeriGuideCredit') }));
+  }
+
+  /* The home's rows, one for each of the other tabs, with the line saying
+     what is in it. A row is named and addressed by its tab, read off the
+     tab itself, so the two cannot say different things; a press on it is
+     drawn by wireLinks() as a press on the tab is, and counted under the
+     tab's own name. */
+  function sections(list) {
+    var menu = el('div', { className: 'menu azeri-menu' });
+    list.forEach(function (section) {
+      var tab = document.querySelector('.azeri-tab[data-tab="' + section.tab + '"]');
+      if (!tab) return;
+      var go = el('span', { className: 'menu-go', 'aria-hidden': 'true' });
+      go.innerHTML = CHEVRON;
+      var a = el('a', { className: 'menu-row', href: tab.getAttribute('href') }, [
+        el('span', { className: 'menu-say' }, [
+          el('span', { className: 'menu-name', text: tab.textContent }),
+          el('span', { className: 'menu-why', text: section.why })
+        ]),
+        go
+      ]);
+      a.addEventListener('click', function () { track(tab.getAttribute('data-track')); });
+      menu.appendChild(el('div', { className: 'menu-item' }, [a]));
+    });
+    return el('div', { className: 'card azeri-home-menu' }, [menu]);
   }
 
   /* ---------------------------------------------------------- the places */
@@ -837,7 +894,8 @@
   }
 
   /* A topic: a film's row with a chevron where Watch is, and the levels it
-     covers before the chevron, where a menu row keeps its count. */
+     covers before the chevron, where a menu row keeps its count. A question
+     of the home is the name alone, with no line under it. */
   function topicRow(topic) {
     var go = el('span', { className: 'menu-go', 'aria-hidden': 'true' });
     go.innerHTML = CHEVRON;
@@ -845,7 +903,7 @@
     var head = el('button', { type: 'button', className: 'azeri-row has-go', 'aria-expanded': String(isOpen) }, [
       el('span', { className: 'azeri-words' }, [
         el('span', { className: 'azeri-name', text: topic.name }),
-        el('span', { className: 'azeri-meta', text: topic.covers })
+        topic.covers ? el('span', { className: 'azeri-meta', text: topic.covers }) : null
       ]),
       topic.level ? el('span', { className: 'azeri-level', text: topic.level }) : null,
       go
@@ -879,9 +937,11 @@
     return t('monthYear', { month: t('months').split('|')[Number(parts[1]) - 1] || parts[1], year: parts[0] });
   }
 
-  /* A link out of the guide, counted under the topic it was pressed in. */
+  /* A link out of the guide, counted under the topic it was pressed in: to
+     an office in a tab of its own, or — the link an answer of the home ends
+     in — to an address on this site, where it is. */
   function outLink(text, url, topic) {
-    var a = el('a', { href: url, target: '_blank', rel: 'noopener', text: text });
+    var a = el('a', url.charAt(0) === '/' ? { href: url, text: text } : { href: url, target: '_blank', rel: 'noopener', text: text });
     a.addEventListener('click', function () { track('azeri_source', { topic: topic.id }); });
     return a;
   }
@@ -981,11 +1041,14 @@
      the rule itself is written. Its name is drawn again as a heading for the
      wide screen, where the article stands beside the list rather than under
      its own row; a phone does not show it. A kind of block this script does
-     not know is left out rather than drawn wrong. */
+     not know is left out rather than drawn wrong. A question of the home is
+     an answer instead: no month, and its one link straight under it, into
+     the tab that says the rest, rather than under a heading of links out. */
   function article(topic) {
+    var home = state.tab === 'home';
     var box = el('div', { className: 'azeri-detail azeri-article' }, [
       el('h2', { className: 'azeri-heading', text: topic.name }),
-      el('p', { className: 'azeri-kind', text: t('azeriChecked', { when: checkedMonth() }) })
+      home ? null : el('p', { className: 'azeri-kind', text: t('azeriChecked', { when: checkedMonth() }) })
     ]);
     topic.body.forEach(function (block) {
       var kind = Object.keys(block)[0];
@@ -999,8 +1062,8 @@
     }
     if (topic.links.length) {
       var links = el('p', { className: 'azeri-links' });
-      topic.links.forEach(function (l) { links.appendChild(outLink(l.name, l.url, topic)); });
-      box.appendChild(el('div', { className: 'azeri-sources' }, [
+      topic.links.forEach(function (l) { links.appendChild(outLink(home ? l.name + ' \u203a' : l.name, l.url, topic)); });
+      box.appendChild(home ? links : el('div', { className: 'azeri-sources' }, [
         el('span', { className: 'azeri-kind', text: t('azeriSources') }),
         links
       ]));
@@ -1019,7 +1082,7 @@
      until the words are in — draw() stands back while state.ready is
      false — so an answer that beats them waits to be drawn with them. */
   state.lang = pickLanguage();
-  wireTabs();
+  wireLinks();
   askShown();
   Promise.all([
     getJSON(LANGS_URL).then(function (names) { state.names = names; }).catch(function () {}),

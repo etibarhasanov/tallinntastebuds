@@ -1487,6 +1487,7 @@
   "azeriTitle": "Aserbaidžaani nurgake Eestis",
   "azeriCorner": "Aserbaidžaani nurgake",
   "azeriBy": "Tallinn Tastebudsilt",
+  "azeriHome": "Avaleht",
   "azeriFilms": "Aserbaidžaani filmid",
   "azeriSearch": "Otsi filme, režissööre, näitlejaid",
   "azeriShelfFeature": "Mängufilmid",
@@ -1547,6 +1548,8 @@
   "azeriFlashSay": "Sõnakomplektid, grammatikatunnid, vestlused ja laulud.",
   "azeriFlashOpen": "Ava sõnakaardid",
   "azeriWays": "Keel ja kus veel seda õppida",
+  "azeriInCorner": "Selles nurgakeses",
+  "azeriQuestions": "Korduma kippuvad küsimused",
   "azeriGoTo": "Mine lehele {site}"
  },
  "blurbs": {

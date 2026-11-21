@@ -1487,6 +1487,7 @@
   "azeriTitle": "Estonya'da Azerbaycan köşesi",
   "azeriCorner": "Azerbaycan Köşesi",
   "azeriBy": "Tallinn Tastebuds'tan",
+  "azeriHome": "Ana sayfa",
   "azeriFilms": "Azerbaycan filmleri",
   "azeriSearch": "Film, yönetmen, oyuncu ara",
   "azeriShelfFeature": "Uzun metrajlı filmler",
@@ -1547,6 +1548,8 @@
   "azeriFlashSay": "Kelime desteleri, dil bilgisi dersleri, diyaloglar ve şarkılar.",
   "azeriFlashOpen": "Kartları aç",
   "azeriWays": "Dil ve onu başka nerede öğrenebileceğin",
+  "azeriInCorner": "Bu köşede",
+  "azeriQuestions": "Sık sorulan sorular",
   "azeriGoTo": "{site} sitesine git"
  },
  "blurbs": {

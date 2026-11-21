@@ -1487,6 +1487,7 @@
     "azeriTitle": "Estoniyada Azərbaycan guşəsi",
     "azeriCorner": "Azərbaycan guşəsi",
     "azeriBy": "Tallinn Tastebuds tərəfindən",
+    "azeriHome": "Əsas",
     "azeriFilms": "Azərbaycan filmləri",
     "azeriSearch": "Film, rejissor, aktyor axtar",
     "azeriShelfFeature": "Bədii filmlər",
@@ -1547,6 +1548,8 @@
     "azeriFlashSay": "Söz dəstləri, qrammatika dərsləri, dialoqlar və mahnılar.",
     "azeriFlashOpen": "Kartları aç",
     "azeriWays": "Dil, və onu başqa harada öyrənmək olar",
+    "azeriInCorner": "Bu guşədə",
+    "azeriQuestions": "Tez-tez verilən suallar",
     "azeriGoTo": "{site} saytına keç"
   },
   "en": {
@@ -3037,6 +3040,7 @@
     "azeriTitle": "An Azerbaijani corner in Estonia",
     "azeriCorner": "Azerbaijani Corner",
     "azeriBy": "by Tallinn Tastebuds",
+    "azeriHome": "Home",
     "azeriFilms": "Azerbaijani films",
     "azeriSearch": "Search films, directors, actors",
     "azeriShelfFeature": "Feature films",
@@ -3097,6 +3101,8 @@
     "azeriFlashSay": "Decks of words, grammar lessons, conversations and songs.",
     "azeriFlashOpen": "Open the flashcards",
     "azeriWays": "The language, and where else to learn it",
+    "azeriInCorner": "In this corner",
+    "azeriQuestions": "Questions people ask",
     "azeriGoTo": "Go to {site}"
   },
   "et": {
@@ -4587,6 +4593,7 @@
     "azeriTitle": "Aserbaidžaani nurgake Eestis",
     "azeriCorner": "Aserbaidžaani nurgake",
     "azeriBy": "Tallinn Tastebudsilt",
+    "azeriHome": "Avaleht",
     "azeriFilms": "Aserbaidžaani filmid",
     "azeriSearch": "Otsi filme, režissööre, näitlejaid",
     "azeriShelfFeature": "Mängufilmid",
@@ -4647,6 +4654,8 @@
     "azeriFlashSay": "Sõnakomplektid, grammatikatunnid, vestlused ja laulud.",
     "azeriFlashOpen": "Ava sõnakaardid",
     "azeriWays": "Keel ja kus veel seda õppida",
+    "azeriInCorner": "Selles nurgakeses",
+    "azeriQuestions": "Korduma kippuvad küsimused",
     "azeriGoTo": "Mine lehele {site}"
   },
   "fi": {
@@ -6137,6 +6146,7 @@
     "azeriTitle": "Azerbaidžanilainen nurkkaus Virossa",
     "azeriCorner": "Azerbaidžanilainen nurkkaus",
     "azeriBy": "Tallinn Tastebudsilta",
+    "azeriHome": "Etusivu",
     "azeriFilms": "Azerbaidžanilaiset elokuvat",
     "azeriSearch": "Hae elokuvia, ohjaajia, näyttelijöitä",
     "azeriShelfFeature": "Pitkät elokuvat",
@@ -6197,6 +6207,8 @@
     "azeriFlashSay": "Sanapakkoja, kielioppitunteja, keskusteluja ja lauluja.",
     "azeriFlashOpen": "Avaa sanakortit",
     "azeriWays": "Kieli ja missä muualla sitä voi opiskella",
+    "azeriInCorner": "Tässä nurkassa",
+    "azeriQuestions": "Usein kysyttyä",
     "azeriGoTo": "Siirry sivulle {site}"
   },
   "pt": {
@@ -7687,6 +7699,7 @@
     "azeriTitle": "Um cantinho do Azerbaijão na Estónia",
     "azeriCorner": "Cantinho do Azerbaijão",
     "azeriBy": "por Tallinn Tastebuds",
+    "azeriHome": "Início",
     "azeriFilms": "Filmes azerbaijanos",
     "azeriSearch": "Procurar filmes, realizadores, atores",
     "azeriShelfFeature": "Longas-metragens",
@@ -7747,6 +7760,8 @@
     "azeriFlashSay": "Baralhos de palavras, lições de gramática, conversas e canções.",
     "azeriFlashOpen": "Abrir os cartões",
     "azeriWays": "A língua, e onde mais a aprender",
+    "azeriInCorner": "Neste canto",
+    "azeriQuestions": "Perguntas frequentes",
     "azeriGoTo": "Ir para {site}"
   },
   "ru": {
@@ -9237,6 +9252,7 @@
     "azeriTitle": "Азербайджанский уголок в Эстонии",
     "azeriCorner": "Азербайджанский уголок",
     "azeriBy": "от Tallinn Tastebuds",
+    "azeriHome": "Главная",
     "azeriFilms": "Азербайджанские фильмы",
     "azeriSearch": "Искать фильмы, режиссёров, актёров",
     "azeriShelfFeature": "Художественные",
@@ -9297,6 +9313,8 @@
     "azeriFlashSay": "Наборы слов, уроки грамматики, диалоги и песни.",
     "azeriFlashOpen": "Открыть карточки",
     "azeriWays": "Язык и где ещё его учить",
+    "azeriInCorner": "В этом уголке",
+    "azeriQuestions": "Частые вопросы",
     "azeriGoTo": "Перейти на {site}"
   },
   "es": {
@@ -10787,6 +10805,7 @@
     "azeriTitle": "Un rincón azerbaiyano en Estonia",
     "azeriCorner": "Rincón azerbaiyano",
     "azeriBy": "por Tallinn Tastebuds",
+    "azeriHome": "Inicio",
     "azeriFilms": "Películas azerbaiyanas",
     "azeriSearch": "Buscar películas, directores, actores",
     "azeriShelfFeature": "Largometrajes",
@@ -10847,6 +10866,8 @@
     "azeriFlashSay": "Mazos de palabras, lecciones de gramática, conversaciones y canciones.",
     "azeriFlashOpen": "Abrir las tarjetas",
     "azeriWays": "La lengua, y dónde más aprenderla",
+    "azeriInCorner": "En este rincón",
+    "azeriQuestions": "Preguntas frecuentes",
     "azeriGoTo": "Ir a {site}"
   },
   "tr": {
@@ -12337,6 +12358,7 @@
     "azeriTitle": "Estonya'da Azerbaycan köşesi",
     "azeriCorner": "Azerbaycan Köşesi",
     "azeriBy": "Tallinn Tastebuds'tan",
+    "azeriHome": "Ana sayfa",
     "azeriFilms": "Azerbaycan filmleri",
     "azeriSearch": "Film, yönetmen, oyuncu ara",
     "azeriShelfFeature": "Uzun metrajlı filmler",
@@ -12397,6 +12419,8 @@
     "azeriFlashSay": "Kelime desteleri, dil bilgisi dersleri, diyaloglar ve şarkılar.",
     "azeriFlashOpen": "Kartları aç",
     "azeriWays": "Dil ve onu başka nerede öğrenebileceğin",
+    "azeriInCorner": "Bu köşede",
+    "azeriQuestions": "Sık sorulan sorular",
     "azeriGoTo": "{site} sitesine git"
   },
   "uk": {
@@ -13887,6 +13911,7 @@
     "azeriTitle": "Азербайджанський куточок в Естонії",
     "azeriCorner": "Азербайджанський куточок",
     "azeriBy": "від Tallinn Tastebuds",
+    "azeriHome": "Головна",
     "azeriFilms": "Азербайджанські фільми",
     "azeriSearch": "Шукати фільми, режисерів, акторів",
     "azeriShelfFeature": "Художні",
@@ -13947,6 +13972,8 @@
     "azeriFlashSay": "Набори слів, уроки граматики, діалоги й пісні.",
     "azeriFlashOpen": "Відкрити картки",
     "azeriWays": "Мова і де ще її вчити",
+    "azeriInCorner": "У цьому куточку",
+    "azeriQuestions": "Часті запитання",
     "azeriGoTo": "Перейти на {site}"
   },
   "fr": {
@@ -15437,6 +15464,7 @@
     "azeriTitle": "Un coin azerbaïdjanais en Estonie",
     "azeriCorner": "Coin azerbaïdjanais",
     "azeriBy": "par Tallinn Tastebuds",
+    "azeriHome": "Accueil",
     "azeriFilms": "Films azerbaïdjanais",
     "azeriSearch": "Chercher des films, réalisateurs, acteurs",
     "azeriShelfFeature": "Longs métrages",
@@ -15497,6 +15525,8 @@
     "azeriFlashSay": "Des paquets de mots, des leçons de grammaire, des conversations et des chansons.",
     "azeriFlashOpen": "Ouvrir les cartes",
     "azeriWays": "La langue, et où l’apprendre ailleurs",
+    "azeriInCorner": "Dans ce coin",
+    "azeriQuestions": "Questions fréquentes",
     "azeriGoTo": "Aller sur {site}"
   },
   "de": {
@@ -16987,6 +17017,7 @@
     "azeriTitle": "Eine aserbaidschanische Ecke in Estland",
     "azeriCorner": "Aserbaidschanische Ecke",
     "azeriBy": "von Tallinn Tastebuds",
+    "azeriHome": "Start",
     "azeriFilms": "Aserbaidschanische Filme",
     "azeriSearch": "Filme, Regie, Darsteller suchen",
     "azeriShelfFeature": "Spielfilme",
@@ -17047,6 +17078,8 @@
     "azeriFlashSay": "Wortstapel, Grammatiklektionen, Gespräche und Lieder.",
     "azeriFlashOpen": "Karteikarten öffnen",
     "azeriWays": "Die Sprache, und wo man sie sonst lernt",
+    "azeriInCorner": "In dieser Ecke",
+    "azeriQuestions": "Häufige Fragen",
     "azeriGoTo": "Zu {site}"
   }
 }

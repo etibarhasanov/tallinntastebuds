@@ -19,7 +19,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, fifty-four small Functions, no build step and no npm install. Adding a
+Static files, fifty-five small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -16821,14 +16821,16 @@ the table.
 `/azeri` — *Estoniyada Azərbaycan guşəsi*, an Azerbaijani corner in
 Estonia: a corner of the site for Azerbaijanis living here, open to anybody
 with an account or without one, read in Azerbaijani, English, Russian or
-Estonian and linked from nowhere. It has five tabs, straight under the
-corner's name. **Azerbaijani films** is the country's cinema. **Estonia**,
-**Studying** and **Estonian** are a guide for somebody arriving in Estonia
-from there, which is who the corner is for: what to sort out and in what
-order, how to get into a university, and where to learn the language.
-**Azerbaijani places** is where to eat it here, on a map. Nothing in the apps
-reads any of it, and nothing on the map, the rail or Discover points at it:
-the address is given to somebody, or it is not found.
+Estonian. It has six tabs, straight under the corner's name. **Home** says
+who the corner is for, what is in each of the other five, and answers the
+questions people ask. **Azerbaijani films** is the country's cinema.
+**Estonia**, **Studying** and **Estonian** are a guide for somebody arriving
+in Estonia from there, which is who the corner is for: what to sort out and
+in what order, how to get into a university, and where to learn the
+language. **Azerbaijani places** is where to eat it here, on a map. Nothing
+in the apps reads any of it, and nothing on the map, the rail or Discover
+points at it: the address is given to somebody, or found by a search — the
+home is written into the page as text and named in `sitemap.xml`.
 
 The heading said *Azərbaycan* until 2026-11-21, a country's name over a page
 whose readers are somewhere else; the owner chose *Estoniyada Azərbaycan
@@ -16840,6 +16842,67 @@ under it. *Estoniyada Azərbaycan guşəsi* is the page's title in the
 browser's tab, `azeriTitle`, and the heading is kept for a screen reader
 alone, as the corner's name. The owner was shown the top with and without
 the eyebrow and chose without.
+
+### Home
+
+The tab the bare `/azeri` opens on, first of the six, since 2026-11-21: the
+owner asked for a home page that says what the corner is and what its
+sections are, and answers some questions with links, in no more than fifty
+sentences, to help the corner be found and to serve the community. It has
+thirty-eight, and the line under it two more. From the top:
+
+- one sentence saying who the corner is for, in the reading width a
+  paragraph keeps on a desktop;
+- **In this corner**, the other five tabs as rows in a card, each its tab's
+  own name and a line saying what is in it, pressed as the tab is — drawn in
+  the page, not loaded, and counted under the tab's own name;
+- **Questions people ask**, twelve of them, rows like the guide's topics with
+  no line under the name. Each opens into a sentence or two and the one link
+  into the tab and the topic that say the rest — *The first 30 days ›*,
+  `/azeri?tab=estonia&topic=first-days` — and an opened question is written
+  into the address, `?topic=flat`, as a topic is. From 900px the questions
+  stand down the left and the opened one beside them, the first open on
+  arrival, as the guide's do;
+- the guide's line saying it is not official advice.
+
+It is drawn by the guide's code because it is the guide's shape: the route
+answers it as a tab, `azeri/data/guide/home.json`, with `say` and `sections`
+beside the `topics`, and the page draws the sentence and the rows above the
+same list of topics. Every answer is written out of what the guide already
+says — no figure that changes, the guide's rule, and B1 for citizenship
+because the guide says it — so a question whose topic is rewritten is a
+question to read again. The validator holds the file to the guide's rules,
+and to its own: every question has no line under it and exactly one link,
+a path on this site, and a link into the corner names a tab it has and a
+topic that tab has, so renaming a topic's id fails the build rather than
+leaving an answer that opens on nothing.
+
+**It is the one part of the corner written into the page.** For a reader
+that runs no script — a search engine that does not, an assistant fetching
+the page — `functions/azeri.js` serves `/azeri` and writes the home into the
+shelf as text, through `fill()` and `unscripted()` in `functions/_shell.js`,
+which keeps it off the screen of a browser that runs scripts; and the twelve
+questions again as an `FAQPage` in JSON-LD. One language per address, as the
+policy and the map: the bare `/azeri` is Azerbaijani, the language the
+corner opens in, and `?lang=en`, `?lang=ru` and `?lang=et` the others, each
+naming all four as alternates; the script reads `?lang=` first, so a crawler
+that runs it sees the same language the address says. `sitemap.xml` names
+the four. The other tabs get their head and their canonical from the same
+Function and nothing written in: a search over 2,615 films, a guide that
+opens a topic at a time and a map are the script's, and the home links each
+of them in the text a crawler reads.
+
+The owner was shown it as a mockup at 390px and on a desktop, with its
+loading, error and two signed-out states, before any of it was built, said
+yes to it, and said that nobody should need to sign in for any of it — the
+rule the corner had been opened under the same morning. The words *Home*,
+*In this corner* and *Questions people ask* are `azeriHome`,
+`azeriInCorner` and `azeriQuestions` in all eleven languages; everything
+else on it is in the file, in the corner's four.
+
+What it does not do: search the corner, take a question from a reader, or
+link a group or a chat of the community — none was named, and one can be a
+question with an answer like any other.
 
 ### Where the films come from
 
@@ -17031,9 +17094,10 @@ true. Each topic says
 the month it was last read against its sources, the tab's `checked`, and the
 line under every list says it is not official advice and whose word is final.
 
-A tab is an address — `/azeri?tab=estonia` — and an opened topic is written
-into it beside the tab, `&topic=housing`, so the address somebody copies into
-a chat opens what they were reading. **A tab is not a load.** The tabs are
+A tab is an address — `/azeri?tab=estonia`, and the bare `/azeri` the home —
+and an opened topic is written into it beside the tab, `&topic=housing`, so
+the address somebody copies into a chat opens what they were reading. **A
+tab is not a load.** The tabs are
 links, and for their first weeks a press followed one and loaded the page
 again; since the name and the tabs wait unseen for the words (below), every
 press blanked the top of the page and drew it back. The owner asked on
@@ -17042,7 +17106,10 @@ with `pushState`, and only what is under the tabs is drawn again: Back and
 Forward walk the tabs through `popstate`, a press with a key held still opens
 the link in a new tab, and each is reported to the site's count as the page
 view the load used to be, through `TTBTrack.view()`, the way the blog's
-in-page walks are.
+in-page walks are. Since the home, any link into the corner is caught the
+same way — a row of the home, the link an answer ends in — by one listener
+on the document, `wireLinks()`, and one pressed from further down the page
+takes the reader back up to the tabs.
 
 **Five tabs wrap on a phone.** The first says **Azerbaijani films** rather
 than *Films*, beside the last, and five do not fit a 390px phone in one line
@@ -17065,7 +17132,8 @@ topics were only links, and is the two columns now that each has something
 to read.
 
 **The text is three files written by hand**, `azeri/data/guide/estonia.json`,
-`study.json` and `estonian.json`, and it is content rather than interface,
+`study.json` and `estonian.json` — four with the home's, **Home** above — and
+it is content rather than interface,
 so like a deck's it is not in `data/ui.json`: every sentence is an object
 keyed by language, `az`, `en`, `ru` and `et`, and a name that is the same in
 each — TalTech, eesti.ee — is a plain string. A topic has a `body` of blocks
@@ -17151,10 +17219,12 @@ shown the corner opened with **Watch** still asking for an account — a card
 in the film's row where the player would be, or a button saying **Sign in
 to watch** — and chose neither: a film plays for anybody who presses it.
 
-It is still linked from nowhere and not indexed, in the page's head and in
-`_headers`: the address is given to somebody. Putting it in front of search
-engines, or on the map's rail, is a decision of its own and was not taken
-with this one.
+It was still linked from nowhere and kept out of every index that morning:
+putting it in front of search engines was a decision of its own. The owner
+took it the same day, with the home — **Home** above — so the page's head
+and `_headers` no longer say `noindex`, `functions/azeri.js` writes the home
+into the page, and `sitemap.xml` names it. The map's rail still does not
+point at it.
 
 Its files are under `/azeri/data/`, which `functions/_middleware.js` answers
 with the not-found page, and `GET /api/azeri` reads them through
@@ -17164,12 +17234,14 @@ about size: the route answers twenty films, or a tab in one language, where
 the files are a 290 KB index, the films a hundred to a file, and every
 sentence of the guide in four languages.
 
-The route reads nothing from the database. A tab of the guide is asked for
-whole, once, with `tab` and `lang`, and the answer carries the one
-language; opening a topic asks for nothing, and changing the language asks
-again. The files are 26 to 48 KB with all four languages in them, a
-fraction of a millisecond to parse, kept five minutes per isolate like the
-films'.
+The route reads nothing from the database, and since nobody's session is
+in an answer, every answer is `public, max-age=300` — the five minutes the
+files are kept per isolate anyway. A tab of the guide is asked for whole,
+once, with `tab` and `lang`, and the answer carries the one language;
+opening a topic asks for nothing, and changing the language asks again. The
+files are 26 to 48 KB with all four languages in them, a fraction of a
+millisecond to parse, kept five minutes per isolate like the films'. The
+home is the same, and smaller.
 
 The places tab asks the route nothing: the frame's `/embed` reads
 `/api/v1/lists/<id>`, the list's row and its places, the same read whoever
@@ -21395,7 +21467,7 @@ Feedback, `assets/feedback.js`:
 | `feedback_open` | — the Feedback row behind More on the map, and the word at the foot of Discover |
 | `radio_play`, `radio_stop`, `home`, `account_open` | as on the map |
 
-Azerbaijan, `assets/azeri.js`:
+Azerbaijan, `assets/azeri.js` and the tabs in `azeri.html`:
 
 | event | parameters |
 | --- | --- |
@@ -21406,9 +21478,9 @@ Azerbaijan, `assets/azeri.js`:
 | `azeri_film` | `film` — a film opened |
 | `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) — a film played in the page, or a link out where it is not YouTube's |
 | `azeri_youtube` | `film` — Open on YouTube, under the player |
-| `azeri_films`, `azeri_estonia`, `azeri_study`, `azeri_estonian`, `azeri_food` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters |
-| `azeri_topic` | `tab`, `topic` — a topic of the guide opened |
-| `azeri_source` | `topic` — a link out of an opened topic: an office, a university, a site in the list of them, or a row into one of the flashcards' lessons |
+| `azeri_home`, `azeri_films`, `azeri_estonia`, `azeri_study`, `azeri_estonian`, `azeri_food` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters — and a row of the home, under the name of the tab it opens |
+| `azeri_topic` | `tab`, `topic` — a topic of the guide opened, or a question of the home, `tab` being `home` |
+| `azeri_source` | `topic` — a link out of an opened topic: an office, a university, a site in the list of them, or a row into one of the flashcards' lessons; or the link an answer of the home ends in, into a tab of the corner or the feedback page |
 | `azeri_way` | `way` — **Go to** a place to learn Estonian, the button at the foot of its topic on the Estonian tab |
 | `azeri_flashcards` | Open the flashcards, on the Estonian tab |
 | `azeri_list` | Open the whole list, under the map on the Azerbaijani places tab |

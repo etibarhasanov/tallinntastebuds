@@ -1487,6 +1487,7 @@
   "azeriTitle": "An Azerbaijani corner in Estonia",
   "azeriCorner": "Azerbaijani Corner",
   "azeriBy": "by Tallinn Tastebuds",
+  "azeriHome": "Home",
   "azeriFilms": "Azerbaijani films",
   "azeriSearch": "Search films, directors, actors",
   "azeriShelfFeature": "Feature films",
@@ -1547,6 +1548,8 @@
   "azeriFlashSay": "Decks of words, grammar lessons, conversations and songs.",
   "azeriFlashOpen": "Open the flashcards",
   "azeriWays": "The language, and where else to learn it",
+  "azeriInCorner": "In this corner",
+  "azeriQuestions": "Questions people ask",
   "azeriGoTo": "Go to {site}"
  },
  "blurbs": {

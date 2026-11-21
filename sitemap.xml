@@ -234,6 +234,38 @@
     <loc>https://tallinntastebuds.ee/privacy</loc>
   </url>
   <url>
+    <loc>https://tallinntastebuds.ee/azeri</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tallinntastebuds.ee/azeri"/>
+    <xhtml:link rel="alternate" hreflang="az" href="https://tallinntastebuds.ee/azeri"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tallinntastebuds.ee/azeri?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="et" href="https://tallinntastebuds.ee/azeri?lang=et"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tallinntastebuds.ee/azeri?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/azeri?lang=en</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tallinntastebuds.ee/azeri"/>
+    <xhtml:link rel="alternate" hreflang="az" href="https://tallinntastebuds.ee/azeri"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tallinntastebuds.ee/azeri?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="et" href="https://tallinntastebuds.ee/azeri?lang=et"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tallinntastebuds.ee/azeri?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/azeri?lang=et</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tallinntastebuds.ee/azeri"/>
+    <xhtml:link rel="alternate" hreflang="az" href="https://tallinntastebuds.ee/azeri"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tallinntastebuds.ee/azeri?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="et" href="https://tallinntastebuds.ee/azeri?lang=et"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tallinntastebuds.ee/azeri?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://tallinntastebuds.ee/azeri?lang=ru</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tallinntastebuds.ee/azeri"/>
+    <xhtml:link rel="alternate" hreflang="az" href="https://tallinntastebuds.ee/azeri"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tallinntastebuds.ee/azeri?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="et" href="https://tallinntastebuds.ee/azeri?lang=et"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tallinntastebuds.ee/azeri?lang=ru"/>
+  </url>
+  <url>
     <loc>https://tallinntastebuds.ee/u/etibar</loc>
   </url>
   <url>

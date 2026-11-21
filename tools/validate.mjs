@@ -72,11 +72,12 @@
  *     before its start, no video or photo (or both), a file that is not in
  *     the repo, a video too big for Cloudflare Pages to serve, or a link to a
  *     place that does not exist
- *   - a tab of the guide on /azeri — azeri/data/guide/<tab>.json — with a
- *     sentence that is not written in all four of its languages, a topic
- *     with nothing to open, a block of a kind the route does not know, a
- *     table or a ladder that does not add up, a repeated id, or a link that
- *     is not https
+ *   - the home or a tab of the guide on /azeri — azeri/data/guide/<tab>.json
+ *     — with a sentence that is not written in all four of its languages, a
+ *     topic with nothing to open, a block of a kind the route does not know,
+ *     a table or a ladder that does not add up, a repeated id, a link of the
+ *     guide's that is not https, or a question of the home whose one link
+ *     names a tab or a topic the corner does not have
  *   - wrangler.toml pointing the preview deployments and the live site at the
  *     same D1 database, or at no database of their own
  *
@@ -2041,31 +2042,50 @@ if (existsSync(CLIPS_DIR)) {
 }
 
 /* ---------------------------------------------------- azeri/data/guide/*.json
-   The guide on /azeri: Estonia, Studying and Estonian, a file to a tab, which
-   /api/azeri answers in one of four languages. It is written by hand, and
-   what goes wrong by hand is a sentence added in three languages and
-   forgotten in the fourth — the route would then answer it in English to
-   somebody reading Azerbaijani, and nothing would say so. So every piece of
-   text is held to all four, or is a plain string where it is a name that is
-   the same in each; every topic has a body to open, each block of it one of
-   the kinds guideIn() in functions/api/azeri.js translates, and whole —
-   a table a cell for every head, a ladder's bars on levels it has; and every
-   address out is https, since they are the offices a reader is sent to, or
-   a path on this site where a row leads to the flashcards. TABS and
-   GUIDE_LANGS are functions/api/azeri.js's. */
+   The home and the guide on /azeri: Home, Estonia, Studying and Estonian, a
+   file to a tab, which /api/azeri answers in one of four languages. It is
+   written by hand, and what goes wrong by hand is a sentence added in three
+   languages and forgotten in the fourth — the route would then answer it in
+   English to somebody reading Azerbaijani, and nothing would say so. So
+   every piece of text is held to all four, or is a plain string where it is
+   a name that is the same in each; every topic has a body to open, each
+   block of it one of the kinds guideIn() in functions/api/azeri.js
+   translates, and whole — a table a cell for every head, a ladder's bars on
+   levels it has; and every address out is https, since they are the offices
+   a reader is sent to, or a path on this site where a row leads to the
+   flashcards. The home is the guide's shape with its sentence and its
+   sections besides, and its topics are questions: no line under the name,
+   and links into the corner itself — so an address of the corner has to
+   name a tab it has, and a topic that tab has, or the answer would open on
+   nothing. TABS and GUIDE_LANGS are functions/api/azeri.js's; CORNER_TABS
+   is the page's own, TABS in assets/azeri.js. */
 {
-  const GUIDE_TABS = ['estonia', 'study', 'estonian'];
+  const GUIDE_TABS = ['home', 'estonia', 'study', 'estonian'];
+  const CORNER_TABS = ['home', 'films', 'estonia', 'study', 'estonian', 'food'];
   const GUIDE_LANGS = ['az', 'en', 'ru', 'et'];
   const HTTPS_URL = /^https:\/\/[^\s]+$/;
   const SITE_PATH = /^\/[a-z][^\s]*$/;
   const GUIDE_BLOCKS = ['p', 'head', 'steps', 'list', 'table', 'facts', 'ladder', 'rows'];
+  const guides = new Map();
   for (const tab of GUIDE_TABS) {
-    const where = `azeri/data/guide/${tab}.json`;
-    let guide = null;
-    try { guide = JSON.parse(readFileSync(join(ROOT, 'azeri', 'data', 'guide', `${tab}.json`), 'utf8')); } catch (e) {
-      fail(where, 'is missing or is not JSON — the tab would say it is not answering');
-      continue;
+    try { guides.set(tab, JSON.parse(readFileSync(join(ROOT, 'azeri', 'data', 'guide', `${tab}.json`), 'utf8'))); } catch (e) {
+      fail(`azeri/data/guide/${tab}.json`, 'is missing or is not JSON — the tab would say it is not answering');
     }
+  }
+  /* An address of the corner, /azeri?tab=estonia&topic=housing: a tab the
+     page has, and where it names a topic, one that tab's file has. */
+  const inCorner = (url) => {
+    const at = new URL(url, 'https://tallinntastebuds.ee');
+    const tab = at.searchParams.get('tab') || 'home';
+    const topic = at.searchParams.get('topic');
+    if (!CORNER_TABS.includes(tab)) return false;
+    if (!topic) return true;
+    const guide = guides.get(tab);
+    return !!guide && Array.isArray(guide.topics) && guide.topics.some((t) => t && t.id === topic);
+  };
+  for (const [tab, guide] of guides) {
+    const where = `azeri/data/guide/${tab}.json`;
+    const home = tab === 'home';
     const said = (text, at, plainToo) => {
       if (plainToo && isNonEmptyString(text)) return;
       for (const lang of GUIDE_LANGS) {
@@ -2077,6 +2097,18 @@ if (existsSync(CLIPS_DIR)) {
     };
     if (guide.tab !== tab) fail(where, `"tab" is ${JSON.stringify(guide.tab)}, not the file's own name`);
     if (!MONTH.test(guide.checked || '')) fail(where, '"checked" is not a YYYY-MM month');
+    if (home) {
+      said(guide.say, '"say"');
+      const sections = Array.isArray(guide.sections) ? guide.sections : [];
+      if (!sections.length) fail(where, 'has no "sections" — the home is what says what is in the corner');
+      sections.forEach((section, i) => {
+        if (!isPlainObject(section) || !CORNER_TABS.includes(section.tab) || section.tab === 'home') {
+          fail(where, `section ${i + 1} is not one of the corner's other tabs, ${CORNER_TABS.slice(1).join(', ')}`);
+          return;
+        }
+        said(section.why, `section ${section.tab}: why`);
+      });
+    }
     if (!Array.isArray(guide.topics) || !guide.topics.length) { fail(where, 'has no topics'); continue; }
     const seen = new Set();
     guide.topics.forEach((topic, n) => {
@@ -2085,7 +2117,8 @@ if (existsSync(CLIPS_DIR)) {
       if (seen.has(topic.id)) fail(where, `${at} is there twice`);
       seen.add(topic.id);
       said(topic.name, `${at}: name`, true);
-      said(topic.covers, `${at}: covers`);
+      if (!home) said(topic.covers, `${at}: covers`);
+      else if (topic.covers !== undefined) fail(where, `${at} is a question and has a "covers" line, which the home does not draw`);
       if (topic.level !== undefined) said(topic.level, `${at}: level`, true);
       if (topic.url !== undefined) linked(topic.url, `${at}: url`);
       if (!Array.isArray(topic.body) || !topic.body.length) { fail(where, `${at} has no body to open`); return; }
@@ -2174,9 +2207,13 @@ if (existsSync(CLIPS_DIR)) {
         });
       });
       if (!Array.isArray(topic.links)) { fail(where, `${at} has no "links", which may be empty but is always there`); return; }
+      if (home && topic.links.length !== 1) fail(where, `${at} is a question with ${topic.links.length} links, not the one its answer ends in`);
       topic.links.forEach((link, i) => {
-        if (!isPlainObject(link) || !isNonEmptyString(link.name)) fail(where, `${at}: link ${i + 1} has no name`);
-        linked(link && link.url, `${at}: link ${i + 1}`);
+        if (!isPlainObject(link)) { fail(where, `${at}: link ${i + 1} is not an object`); return; }
+        said(link.name, `${at}: link ${i + 1}: name`, true);
+        if (!home) { linked(link.url, `${at}: link ${i + 1}`); return; }
+        if (typeof link.url !== 'string' || !SITE_PATH.test(link.url)) fail(where, `${at}: link ${i + 1} is not a path on this site`);
+        else if (link.url.startsWith('/azeri?') && !inCorner(link.url)) fail(where, `${at}: link ${i + 1}, ${link.url}, names a tab or a topic the corner does not have`);
       });
     });
   }
@@ -2862,16 +2899,17 @@ for (const ref of staleStamps()) {
 }
 
 /* --------------------------------------------------------------- the head
-   Five pages are served through a Function that swaps the block between
+   Seven pages are served through a Function that swaps the block between
    their PAGE-HEAD markers for a head of that address's own — the map in the
    language ?lang= names, a list, a person, the directory, a deck, a
-   post on the blog. rehead()
+   post on the blog, the privacy policy and the Azerbaijani corner in the
+   language their addresses name. rehead()
    in functions/_shell.js leaves a page alone when it cannot find both
    markers, so a page that lost one would go on answering at every address
    with its static head and nothing would say so. Exactly one of each, the
    opening one first. */
 
-for (const page of ['index.html', 'lists.html', 'flashcard.html', 'blog.html']) {
+for (const page of ['index.html', 'lists.html', 'flashcard.html', 'blog.html', 'privacy.html', 'azeri.html']) {
   const html = readFileSync(join(ROOT, page), 'utf8');
   const open = html.indexOf('<!--PAGE-HEAD-->');
   const close = html.indexOf('<!--/PAGE-HEAD-->');
@@ -2882,10 +2920,12 @@ for (const page of ['index.html', 'lists.html', 'flashcard.html', 'blog.html']) 
   }
 }
 
-/* Four of those pages have a second thing written into them, outside the
+/* Most of those pages have a second thing written into them, outside the
    head: what the page is about, as text, into an element the page ships
    empty — the map's places into #list-body, a list or the directory or a
-   person into the list page's <main>, a deck and a post into theirs. fill() in functions/_shell.js matches
+   person into the list page's <main>, a deck, a post and the policy into
+   theirs, and the corner's home into the shelf under its tabs — EMPTY in
+   functions/_shell.js is the list. fill() in functions/_shell.js matches
    the element's exact markup and does nothing when it is not there, so the
    spelling is held here rather than trusted. */
 for (const [page, empty] of Object.entries(EMPTY)) {

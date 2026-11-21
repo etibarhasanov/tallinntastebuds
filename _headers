@@ -221,18 +221,17 @@
   Cache-Control: public, max-age=0, must-revalidate
   X-Robots-Tag: noindex, follow
 
-# The Azerbaijani corner. Stored as azeri.html and served at /azeri. Open to
-# anybody since 2026-11-21, and still linked from nowhere — the address is
-# given to somebody rather than found — so neither indexed nor followed. The
-# page carries the meta robots tag to match; this is the half that binds for
-# anything that does not parse the HTML to find it.
+# The Azerbaijani corner. Stored as azeri.html and served at /azeri by
+# functions/azeri.js, which writes its head and its home into it — and, like
+# the blog's, these rules reach only the file, on the one road that still
+# reaches it: the route handing the request back when it cannot read the
+# page. Open to anybody since 2026-11-21, and since its home the same day
+# meant to be found, so nothing here keeps it out of an index any more.
 /azeri.html
   Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex, nofollow
 
 /azeri
   Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex, nofollow
 
 # Scripts and stylesheets are content-addressed by tools/stamp.mjs — the URL
 # in the HTML carries a hash of the file — so a year-long cache would be safe
