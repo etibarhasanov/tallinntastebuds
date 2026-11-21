@@ -3,11 +3,12 @@
  * The page is the lists page's shape — its ground, its header, its cards,
  * the tokens of every style — and this file is only what the corner needs
  * on top of that: the tabs, the search and its chips, the switches, the
- * rows with their play buttons, an opened film and the player in it, the
- * topics of the guide and an opened one, the places' map, and the door
- * for somebody signed out. Each was drawn as a mockup first and the owner
- * said yes to that; every colour here is a token, so the swatch on the map
- * recolours the page with nothing in this file to change.
+ * rows with their pictures and play buttons, an opened film and the
+ * picture that turns into its player, the topics of the guide and an
+ * opened one, the places' map, and the door for somebody signed out. Each
+ * was drawn as a mockup first and the owner said yes to that; every colour
+ * here is a token, so the swatch on the map recolours the page with nothing
+ * in this file to change.
  */
 
 /* The corner's name beside the mark, in the wordmark's own type, and the
@@ -166,6 +167,36 @@
   border-top: 1px solid var(--hairline);
 }
 .azeri-film:first-child { border-top: 0; }
+/* A film's picture: a strip at the left of its row, pressed to play the
+   film, or its year where there is nothing to play. Opened, the strip steps
+   aside and the same picture stands as wide as the card, where the player
+   will be. */
+.azeri-thumb {
+  flex: 0 0 88px;
+  aspect-ratio: 16 / 9;
+  margin-left: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: var(--hairline);
+  cursor: pointer;
+  overflow: hidden;
+}
+.azeri-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.azeri-thumb:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.azeri-thumb.is-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  opacity: .55;
+}
+.azeri-film.is-open > .azeri-thumb { display: none; }
+.azeri-detail > .azeri-thumb { display: block; width: 100%; margin: 0 0 12px; border-radius: var(--radius); }
 .azeri-row {
   flex: 1 1 0;
   min-width: 0;
@@ -386,17 +417,15 @@
 
 /* ------------------------------------------------------- on a wide screen */
 
-/* The picture over a card. Only a wide screen draws it. */
-.azeri-thumb { display: none; }
-
 /* From 900px the page stops being a phone's column in the middle of a
    monitor: the header and the main open out, as the chess page's do, and the
    shelf is a wall of cards — the picture YouTube keeps for the film's video,
    its name and its button under it — four across at full width and fewer as
    the window narrows. The film that is opened takes a whole row of the wall,
-   with the player on the left at a size worth watching and what the film is
-   on the right; `dense` lets the cards after it close the gap it leaves in
-   the row above. Everything is the same nodes the phone's list is made of. */
+   with its screen on the left at a size worth watching — the picture, then
+   the player it turns into — and what the film is on the right; `dense`
+   lets the cards after it close the gap it leaves in the row above.
+   Everything is the same nodes the phone's list is made of. */
 @media (min-width: 900px) {
   .azeri-body .lists-brand, .azeri-body .lists-main { max-width: 1180px; padding-left: 24px; padding-right: 24px; }
   .azeri-tabs { font-size: 17px; margin-bottom: 20px; }
@@ -446,52 +475,32 @@
     box-shadow: var(--shadow);
     overflow: hidden;
   }
-  .azeri-thumb {
-    display: block;
-    flex: 0 0 100%;
-    aspect-ratio: 16 / 9;
-    padding: 0;
-    border: 0;
-    background: var(--hairline);
-    cursor: pointer;
-    overflow: hidden;
-  }
-  .azeri-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .25s var(--ease); }
+  .azeri-thumb { flex: 0 0 100%; margin-left: 0; border-radius: 0; }
+  .azeri-thumb img { transition: transform .25s var(--ease); }
   .azeri-thumb:hover img { transform: scale(1.04); }
-  .azeri-thumb:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-  .azeri-thumb.is-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: default;
-    color: var(--muted);
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: .04em;
-    opacity: .55;
-  }
+  .azeri-thumb.is-empty { font-size: 30px; }
   .azeri-row { padding: 12px 14px 14px; }
   .azeri-name { font-size: 16px; }
   .azeri-meta { font-size: 13px; white-space: normal; }
   .azeri-play { margin: 14px 12px 0 0; }
 
-  /* The opened film: the whole row, its picture put away — the player, or
-     the words, is what is looked at now. */
+  /* The opened film: the whole row, its picture moved off the top of the
+     card into the screen on the left, where pressing it plays the film. */
   .azeri-film.is-open { grid-column: 1 / -1; }
-  .azeri-film.is-open .azeri-thumb { display: none; }
   .azeri-film.is-open .azeri-row { padding: 18px 22px 12px; }
   .azeri-film.is-open .azeri-name { font-size: 22px; }
   .azeri-film.is-open .azeri-play { margin: 22px 22px 0 0; }
   .azeri-detail { padding: 0 22px 22px; font-size: 15px; max-width: 76ch; }
-  .azeri-detail.has-player {
+  .azeri-detail.has-screen {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
     column-gap: 28px;
     align-content: start;
     max-width: none;
   }
-  .azeri-detail.has-player > * { grid-column: 2; }
-  .azeri-detail.has-player > .azeri-player { grid-column: 1; grid-row: 1 / span 12; margin: 0; }
+  .azeri-detail.has-screen > * { grid-column: 2; }
+  .azeri-detail.has-screen > .azeri-player,
+  .azeri-detail.has-screen > .azeri-thumb { grid-column: 1; grid-row: 1 / span 12; margin: 0; }
 
   .azeri-pager { justify-content: center; gap: 22px; margin-top: 26px; }
   .azeri-pager .link-btn { font-size: 14px; padding: 11px 20px; }
