@@ -5849,6 +5849,49 @@
     } catch (e) { /* Back then leaves the site, as it did before */ }
   }
 
+  /* The name in the corner, pressed on the map itself. It is a link to "/"
+     so that it is the way home from every other page and from a new tab,
+     and the shell leaves it alone here because home is already this
+     document — so the browser followed it, and the whole map was torn down
+     and built again behind the loading card just to arrive where the
+     visitor was standing. Answered in place instead: everything a press
+     opened goes — the place, the list, the chips, the chat, a story, the
+     sheets — and the page a bare address opens on comes up, on an entry of
+     its own so Back is the map as it was. Already on it, the press is
+     nothing. A modifier key is still the browser's, for a new tab. */
+  function wireHome() {
+    var link = dom.brand.querySelector('.brand-home');
+    if (!link || !discover) return;
+    link.addEventListener('click', function (ev) {
+      if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      ev.preventDefault();
+      if (discover.up()) return;
+      /* The front page's step goes on first, as a copy of the one the
+         visitor is standing on, and everything after it tidies inside that
+         step: letting go of a list would push one of its own, and on a
+         desktop closing a place hands the column back to the list and
+         rewrites the address. Done the other way round, those reached the
+         step behind, and Back no longer found the place or the list. */
+      try {
+        window.history.pushState({ discover: true }, '', window.location.href);
+      } catch (e) { /* the page still comes up */ }
+      closeStories();
+      closeMore();
+      closeAccount();
+      forgetResults({ redraw: false });
+      forgetAnswer({ redraw: false });
+      if (state.list) letGoOfList();
+      state.active = [];
+      applyFilters();
+      closePanel({ history: false });
+      state.marked = null;
+      paintMarkers();
+      fitToPins();
+      syncUrl();
+      standOnDiscover(true);
+    });
+  }
+
   function leaveDiscover() {
     if (!discover || !discover.up()) return;
     standOnDiscover(false);
@@ -13844,6 +13887,7 @@
       mountRadio();
       mountShell();
       mountDiscover();
+      wireHome();
       renderStoryRing();
       wireControls();
       wireStories();
