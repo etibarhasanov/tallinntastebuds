@@ -15786,6 +15786,24 @@ The one figure not held is the day's database reads at the top, a row per
 table read today, which is worth nothing a day old: it is read on every open,
 about twenty rows by the key, and put on the held answer on the way out.
 
+The same day went onto the other three pages that read the counts —
+`/admin/visitors`, `/admin/found` and `/admin/flows` — the same afternoon:
+`ownersDay()` in `functions/api/_lib.js` puts the date in each route's key and
+`OWNERS_TTL` holds the copy until it has passed. **Right now** on
+`/admin/visitors` is not among them and stays live; **Today so far** is
+today's as of the count. Each answer
+carries `asOf`, when it was worked out, and each page says so under its
+chips — under **Today so far** on `/admin/visitors`, which is the card it
+matters to, and in the line under the drawing on `/admin/flows`:
+
+> Counted today at 11:09, Tallinn time. Counted again after 02:00 tomorrow.
+
+`assets/counted.js` turns `asOf` into that line, in Tallinn's clock because
+it is the owner's, the next count being midnight UTC — 02:00 in winter, 03:00
+in summer. A count shown on another day, or between Tallinn's midnight and
+that hour, when the next is today, names both days instead:
+`numbersCountedToday` and `numbersCountedOn` in `data/ui.json`.
+
 And no statement behind it answers more than a hundred rows, which is the
 owner's line for this page. `press_counts` is asked by its key a kind at a
 time — the map's places by their ids, a hundred to a statement; the top
@@ -16773,8 +16791,8 @@ one range to the next. Until anything has been counted, the four figures and
 the tagged links are all there is, with a sentence saying counting starts
 the day the page went live — nothing from before it can be recovered, since
 none of it was kept. `GET /api/admin/found` is `/api/admin/visitors`' shape:
-the words come with the numbers, five minutes of edge cache on the range and
-the language, `private, no-store` to the browser, and `ready: false` without
+the words come with the numbers, the UTC day of edge cache on the range,
+the language and the day, `private, no-store` to the browser, and `ready: false` without
 the table.
 
 ---
@@ -18617,7 +18635,7 @@ assets/faces/              a photograph per username, for the few who have one
 functions/api/stats.js     POST /api/stats — one press in; a Google place
                            pressed may also refresh it. The ranking out is
                            functions/api/admin/stats.js, with the page's words
-                           and five minutes of cache
+                           and a day of cache
 assets/links.js            the three sites a profile can link to, the handles
                            they take and the addresses they build — said once
                            for the profile and the account page

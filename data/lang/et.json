@@ -1217,6 +1217,8 @@
   "numbersGoogle": "Google’i kataloog",
   "numbersAdmin": "Haldus",
   "numbersFlows": "Kes kasutab",
+  "numbersCountedToday": "Loetud täna kell {time} Tallinna aja järgi. Uuesti loetakse homme pärast kella {next}.",
+  "numbersCountedOn": "Loetud {date} kell {time} Tallinna aja järgi. Uuesti loetakse {nextDate} pärast kella {next}.",
   "foundLead": "Loetud sellel saidil, ilma küpsisteta. Otsingumootorid ei anna kunagi edasi sõnu, mida keegi sisestas, nii et siin on see, mis kohale jõuab: milline mootor, millisele lehele jõuti, lingid teistelt saitidelt, sinu enda lingid ja mida siin otsiti.",
   "foundSkip": "Numbrite juurde",
   "foundFromSearch": "Otsingust",

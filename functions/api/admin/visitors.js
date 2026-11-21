@@ -3,7 +3,7 @@
  *
  *   GET ?days=&lang=&device=
  *                      one range of visitor_counts, the page's words beside
- *                      it, and five minutes of edge cache on the three. What
+ *                      it, and the UTC day of edge cache on the three. What
  *                      /admin/visitors draws. `device` is `phone` for the
  *                      phones' half of the counts and `other` for every
  *                      device less the phones — BY DEVICE in ../_visitors.js
@@ -42,14 +42,9 @@
  * The page says the numbers are not in yet.
  */
 
-import { json, wrongDatabase, wordsFor, privately } from '../_lib.js';
+import { json, wrongDatabase, wordsFor, privately, OWNERS_TTL, ownersDay } from '../_lib.js';
 import { SPANS, readVisitors, askedDevice, lessPhone } from '../_visitors.js';
 import { LOOK } from '../stats.js';
-
-/* Five minutes in the colo, for the reason ./stats.js holds its ranking that
-   long: it is what the page may be stale by, and the only thing between the
-   page and D1. */
-const TTL = 300;
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -74,7 +69,10 @@ export async function onRequestGet(context) {
   const [visitors, deals] = await Promise.all([readVisitors(env, span, ui, spoken, device, request.url), readDeals(env, device)]);
   if (!visitors) return json(empty, 200);
 
-  const res = json({ ready: true, ...visitors, ...deals, device: device, lang: lang, ui: ui }, 200, TTL);
+  /* The day in the colo — ownersDay() in ../_lib.js: what the page may be
+     stale by, and the only thing between the page and D1. Right now is the
+     one part that is not, and is ./live.js. */
+  const res = json({ ready: true, asOf: new Date().toISOString(), ...visitors, ...deals, device: device, lang: lang, ui: ui }, 200, OWNERS_TTL);
   context.waitUntil(cache.put(key, res.clone()));
   return privately(res);
 }
@@ -107,8 +105,8 @@ async function readDeals(env, device) {
 }
 
 /* The route, the language, the range and the device, and never the rest of
-   the address — see statsKey() in ./stats.js. A hundred and sixty keys per
-   colo at most. `shape` is
+   the address — see statsKey() in ./stats.js — and the day, ownersDay().
+   Thirty-two keys per colo a day for one language. `shape` is
    the answer's own version: moved on when the answer gains a field the page
    cannot draw without, so a colo's copy from before the deploy is not handed
    to the page that came with it. */
@@ -120,5 +118,5 @@ function visitorsKey(request, lang, span, device) {
   url.searchParams.set('days', String(span));
   url.searchParams.set('device', device || 'all');
   url.searchParams.set('shape', SHAPE);
-  return new Request(url.toString());
+  return ownersDay(url);
 }

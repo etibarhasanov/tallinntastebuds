@@ -584,8 +584,11 @@
 
   /* Today so far, whatever the range: four figures — the one place the page
      answers "who came today". */
+  /* Today so far, and under it when "so far" was — assets/counted.js: the
+     answer is counted once a day, and this card is the one it matters to. */
   function today() {
     var d = state.data.today;
+    var counted = TTBCounted.words(state.data.asOf, state.lang);
     return card([
       el('h2', { className: 'lists-title', textContent: t('visitorsTodayHead') }),
       el('dl', { className: 'ins-kpis vis-kpis vis-kpis-4' }, [
@@ -593,7 +596,8 @@
         figure(t('visitorsNew'), num(d.fresh), null),
         figure(t('visitorsSignIns'), num(d.login), null),
         figure(t('visitorsSignUps'), num(d.signup), null)
-      ])
+      ]),
+      counted ? el('p', { className: 'ins-note', textContent: t(counted.key, counted.vars) }) : null
     ]);
   }
 

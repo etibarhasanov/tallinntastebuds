@@ -312,9 +312,11 @@
     }
 
     var stack = el('div', { className: 'lists-stack' });
+    var counted = TTBCounted.words(d.asOf, state.lang);
     stack.appendChild(card([
       ranges(),
       devices(),
+      counted ? el('p', { className: 'ins-note', textContent: t(counted.key, counted.vars) }) : null,
       figures(),
       d.span === 1 ? el('p', { className: 'ins-note', textContent: t('visitorsSoFar') }) : null,
       d.device ? el('p', { className: 'ins-note', textContent: t('devicesNote') }) : null

@@ -1217,6 +1217,8 @@
   "numbersGoogle": "Googlen hakemisto",
   "numbersAdmin": "Hallinta",
   "numbersFlows": "Ketkä käyttävät",
+  "numbersCountedToday": "Laskettu tänään klo {time} Tallinnan aikaa. Lasketaan uudelleen huomenna klo {next} jälkeen.",
+  "numbersCountedOn": "Laskettu {date} klo {time} Tallinnan aikaa. Lasketaan uudelleen {nextDate} klo {next} jälkeen.",
   "foundLead": "Laskettu tällä sivustolla, ilman evästeitä. Hakukoneet eivät koskaan välitä sanoja, joita joku kirjoitti, joten tässä on se, mikä perille tulee: mikä hakukone, mille sivulle saavuttiin, linkit muilta sivustoilta, omat linkkisi ja mitä täältä haettiin.",
   "foundSkip": "Siirry lukuihin",
   "foundFromSearch": "Hausta",

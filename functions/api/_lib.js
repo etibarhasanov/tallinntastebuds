@@ -34,12 +34,28 @@ export function json(body, status, maxAge) {
    Cache API stores nothing marked private, so the copy put in the colo is
    built public with a maxAge; this is the same body on its way to the
    browser, told `private, no-store` so nothing in between can pass it on.
-   The three routes under /api/admin/ that cache do this, and it lived in
+   The four routes under /api/admin/ that cache do this, and it lived in
    each of them until the third. */
 export function privately(res) {
   const out = new Response(res.body, res);
   out.headers.set('cache-control', 'private, no-store');
   return out;
+}
+
+/* The owner's four pages that read the counts — /admin/stats, /visitors,
+   /found and /flows — are worked out once a UTC day per colo and held until
+   midnight: the owner reads them to see how the site is used, not to watch
+   it move, and said so on 2026-11-21. ownersDay() puts the date in the
+   route's cache key, so the first open after midnight is the day's one
+   read and the copy only has to outlast its day, OWNERS_TTL. The answer
+   carries `asOf`, when it was worked out, which assets/counted.js turns into
+   the line under each page's chips. Before, it was five minutes, and every
+   open past them read the tables again. */
+export const OWNERS_TTL = 86400;
+
+export function ownersDay(url) {
+  url.searchParams.set('day', new Date().toISOString().slice(0, 10));
+  return new Request(url.toString());
 }
 
 /* A hash of the answer itself, so the tag changes when and only when the
