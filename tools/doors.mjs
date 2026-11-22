@@ -2,14 +2,18 @@
 /**
  * Tallinn Tastebuds — the doors: where a saved ride is shorter than the map.
  *
- * Reads the saved rides and the bike router off the live site, finds every
- * stretch somebody cycled between two points the router can only join the
- * long way round, and writes data/doors.json. functions/api/route.js reads
+ * Reads the rides saved since it last ran off the live site, asks the bike
+ * router about them, finds every stretch somebody cycled between two points
+ * the router can only join the long way round, and writes data/doors.json. functions/api/route.js reads
  * that file and sends a bike route through a door where it is clearly
  * shorter. **Doors** in docs/handbook.md is the reasoning.
  *
- *   node tools/doors.mjs           find the doors and rewrite data/doors.json
- *   node tools/doors.mjs --dry     find them and print them, write nothing
+ *   node tools/doors.mjs           look at the rides saved since the last
+ *                                  run, and rewrite data/doors.json and
+ *                                  data/doors-checked.json
+ *   node tools/doors.mjs --dry     the same, printed, and nothing written
+ *   node tools/doors.mjs --all     look at every ride again, as after a
+ *                                  change to how a door is found
  *
  * It is not one of the generators tools/generate.mjs runs, and the validator
  * does not hold the file to it: what it writes depends on the rides people
@@ -22,7 +26,7 @@
  * A ride is cut into stretches of CHUNK metres, twice, the second time
  * starting half a stretch along so a door that straddles a cut in one pass
  * sits inside a stretch of the other. Each stretch's two ends are put to
- * /api/v1/route by bike. Where the router's way is longer than the ridden one
+ * the bike router. Where the router's way is longer than the ridden one
  * by GAIN metres and by RATIO, the rider went a way the router does not
  * know: a gap in a fence, a level crossing, a path nobody has drawn.
  *
@@ -71,9 +75,9 @@
  *
  * AND THE DOORS IT ALREADY HAD
  *
- * /api/v1/rides answers the newest forty rides of a box, and a ride can be
+ * A run looks only at the rides saved since the last one, and a ride can be
  * deleted by its rider. A door found last month is no less a door for its
- * ride having gone, so the doors already in data/doors.json are kept and
+ * ride not being looked at again, so the doors already in data/doors.json are kept and
  * the new ones joined to them, one door for two that are the same. A door
  * that should not be one is a line taken out of the file by hand, and it
  * stays out for as long as the ride that made it is not found again.
@@ -90,15 +94,39 @@
  * way before it is stored — pieces() in functions/api/_sections.js, which
  * this borrows — so the cut here is for the rides saved before that.
  *
+ * A RIDE IS LOOKED AT ONCE
+ *
+ * Until 2026-11-22 every run looked at every ride the site answered, the
+ * ones the last run had looked at included: 37 rides, 136 km, some 1,400
+ * questions and the best part of an hour, to find what a run a week before
+ * had found already. Nothing came of the second look — a door is never
+ * taken out by a run, so the most it could do was find a door again — and
+ * so a ride is looked at once. data/doors-checked.json keeps where the last
+ * run stopped — the moment the newest ride it looked at was saved, and that
+ * ride's id for a tie — and a run asks GET /api/v1/rides?since= for the
+ * rides saved after it, oldest first, a page at a time. The site answers
+ * that off an index on when a ride was saved, so a run with nothing new
+ * reads one row and a run with five new rides six. --all starts from
+ * nothing again, which is for the day the way a door is found changes.
+ *
  * WHAT IT ASKS, AND HOW OFTEN
  *
- * The rides come from GET /api/v1/rides?bbox=, the same public answer the
- * iPhone app reads: the lines with their first and last 200 m already off,
- * and nobody's name. That route answers its newest forty for a box, so the
- * city is asked for in TILES by TILES boxes rather than one. The router is
- * asked through /api/v1/route, a request every PAUSE milliseconds — it is free
- * public infrastructure behind that route, and a day's cache in front of it
- * means running this twice costs the second run next to nothing.
+ * The rides come from GET /api/v1/rides?since=, the same public lines
+ * ?bbox= gives anybody: their first and last 200 m already off, and
+ * nobody's name. Until 2026-11-22 they came from ?bbox=, Tallinn in three
+ * by three boxes, and so only the newest forty of a box and none of the
+ * other three cities a ride can be saved in; asked by when, it is every
+ * ride saved since, wherever it was ridden.
+ *
+ * The router is asked directly, a request every PAUSE milliseconds, and
+ * not through the site's /api/v1/route, which it was until 2026-11-22. That
+ * route is a bike route somebody would be given: through the doors already
+ * in the file, off the streets in KEEP_OFF, with ways round either side, and
+ * with a lookup in ride_sections — rows read for every one of the hundreds
+ * of stretches a run asks about. A door is where the ridden line beats the
+ * map, so the map is what it is held against: the router's own ways, its
+ * alternatives among them, and nothing the site makes of them. It is free
+ * public infrastructure, so it is asked with the site's name and slowly.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -108,12 +136,13 @@ import { pieces } from '../functions/api/_sections.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'data', 'doors.json');
+const CHECKED = join(ROOT, 'data', 'doors-checked.json');
 const SITE = 'https://tallinntastebuds.ee';
 
-/* The city, a little inside nearTallinn()'s box in functions/api/_lib.js,
-   and how many boxes a side it is asked for in. */
-const CITY = { south: 59.35, west: 24.55, north: 59.52, east: 24.95 };
-const TILES = 3;
+/* The router functions/api/route.js asks by bike, and the name the site
+   asks it under. */
+const ROUTER = 'https://routing.openstreetmap.de/routed-bike/route/v1/bike/';
+const AGENT = 'TallinnTastebuds/1.0 (+https://tallinntastebuds.ee)';
 
 const CHUNK = 200;
 const GAIN = 100;
@@ -168,19 +197,22 @@ function onLines(line, others) {
 
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 
-async function rides() {
-  const seen = new Map();
-  const dLat = (CITY.north - CITY.south) / TILES;
-  const dLng = (CITY.east - CITY.west) / TILES;
-  for (let i = 0; i < TILES; i++) {
-    for (let j = 0; j < TILES; j++) {
-      const box = [CITY.south + i * dLat, CITY.west + j * dLng, CITY.south + (i + 1) * dLat, CITY.west + (j + 1) * dLng];
-      const res = await fetch(SITE + '/api/v1/rides?bbox=' + box.map((v) => v.toFixed(2)).join(','));
-      if (!res.ok) throw new Error('/api/v1/rides answered ' + res.status);
-      for (const ride of (await res.json()).rides || []) seen.set(ride.id, ride.line);
+/* The rides saved after `from` — { at, id } — oldest first, every page of
+   them, and where the last of them leaves off. */
+async function rides(from) {
+  const found = [];
+  let at = from;
+  for (;;) {
+    const res = await fetch(SITE + '/api/v1/rides?since=' + at.at + (at.id ? '&after=' + at.id : ''));
+    if (!res.ok) throw new Error('/api/v1/rides?since= answered ' + res.status);
+    const body = await res.json();
+    if (!body.ready) throw new Error('/api/v1/rides?since= is not ready');
+    for (const ride of body.rides) {
+      found.push(ride);
+      at = { at: ride.at, id: ride.id };
     }
+    if (!body.next) return { found, until: at };
   }
-  return [...seen.values()].filter((line) => Array.isArray(line) && line.length >= 2);
 }
 
 /* The router's way between two points by bike: how short it can make it,
@@ -196,15 +228,21 @@ async function routed(a, b) {
   for (let attempt = 0; attempt < 3 && !found; attempt++) {
     await sleep(PAUSE);
     try {
-      const res = await fetch(SITE + '/api/v1/route?mode=bike&from=' + a[0].toFixed(4) + ',' + a[1].toFixed(4) +
-        '&to=' + b[0] + ',' + b[1]);
-      if (res.status === 404) break;
+      const res = await fetch(ROUTER + a[1] + ',' + a[0] + ';' + b[1] + ',' + b[0] +
+        '?overview=full&geometries=geojson&alternatives=true', { headers: { 'User-Agent': AGENT } });
       if (!res.ok) continue;
-      const way = await res.json();
-      const ways = [way].concat(way.others || []);
+      const body = await res.json();
+      if (body.code === 'NoRoute') break;
+      if (body.code !== 'Ok' || !Array.isArray(body.routes) || !body.routes.length) continue;
+      const ways = body.routes.map((r) => ({
+        meters: r.distance,
+        seconds: r.duration,
+        line: r.geometry.coordinates.map(([lng, lat]) => [lat, lng])
+      }));
+      const line = ways[0].line;
       found = {
         meters: Math.round(Math.min(...ways.map((w) => Math.max(w.meters, w.seconds * PACE)))),
-        snap: Math.max(metres(a, way.line[0]), metres(b, way.line[way.line.length - 1])),
+        snap: Math.max(metres(a, line[0]), metres(b, line[line.length - 1])),
         lines: ways.filter((w) => w.meters >= w.seconds * PACE * PUSHED).map((w) => w.line)
       };
     } catch (e) { /* asked again */ }
@@ -264,8 +302,16 @@ function piecesOf(line) {
   return pieces(line).filter((piece) => piece.length >= 2);
 }
 
-const lines = (await rides()).flatMap(piecesOf);
-console.log(lines.length + ' ridden pieces');
+/* Where the last run stopped — A RIDE IS LOOKED AT ONCE — and the rides
+   saved since. */
+let from = { at: 0, id: '' };
+if (!process.argv.includes('--all')) {
+  try { from = JSON.parse(readFileSync(CHECKED, 'utf8')); } catch (e) { /* no file yet: every ride */ }
+}
+const { found: fresh, until } = await rides(from);
+const lines = fresh.flatMap((ride) => Array.isArray(ride.line) ? piecesOf(ride.line) : []);
+console.log(fresh.length + ' rides saved since ' + (from.at ? new Date(from.at).toISOString() : 'the start') +
+  ': ' + lines.length + ' ridden pieces');
 
 /* The doors the file already has first — AND THE DOORS IT ALREADY HAD —
    then each one found, joined to its twin where it has one. */
@@ -305,5 +351,6 @@ console.log(out.length + ' doors, ' + had + ' of them in the file already');
 
 if (!process.argv.includes('--dry')) {
   writeFileSync(OUT, '[\n' + out.map((door) => '  ' + JSON.stringify(door)).join(',\n') + (out.length ? '\n' : '') + ']\n');
-  console.log('wrote data/doors.json');
+  writeFileSync(CHECKED, JSON.stringify(until) + '\n');
+  console.log('wrote data/doors.json and data/doors-checked.json');
 }

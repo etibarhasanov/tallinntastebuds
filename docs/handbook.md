@@ -3777,7 +3777,7 @@ two together.
 
 **Found by distance, not by shape.** `node tools/doors.mjs` reads the saved
 rides off `GET /api/v1/rides?bbox=`, cuts each into stretches of two hundred
-metres, twice, and puts each stretch's ends to `/api/v1/route` by bike. A
+metres, twice, and puts each stretch's ends to the bike router itself. A
 stretch the router needs a hundred metres and half as much again for, by
 the shortest way it offers, is a door; it is then tightened to the part that makes the saving, and kept only
 where both ends are on the router's network, so the way in and the way on
@@ -3814,6 +3814,24 @@ two that are one — ends within thirty metres, or most of the shorter lying
 along the longer — are the shorter. A door taken out by hand stays out for
 as long as its ride is not found again.
 
+**A ride is looked at once.** Until 2026-11-22 a run looked at every ride
+`?bbox=` answered for nine boxes of Tallinn, the last run's included: 37
+rides and 136 km, some 1,400 questions through `/api/v1/route` and the best
+part of an hour, to find what the run before had found. Nothing could come
+of the second look, since a run never takes a door out, and the boxes saw
+only the newest forty rides each and none of the other three cities. So
+`data/doors-checked.json` keeps where the last run stopped — when the
+newest ride it looked at was saved, and that ride's id — and a run asks
+`GET /api/v1/rides?since=` for the rides saved after it, oldest first, a
+page of twenty at a time, wherever they were ridden. The site answers that
+off `idx_rides_created`, on `rides (created_at, id)`, so a run with nothing
+new reads one row and one with five new rides six. `--all` starts from
+nothing again, for the day the way a door is found changes. And the router
+is asked directly rather than through `/api/v1/route`: that is a route
+somebody would be given, through the doors already found and off the
+streets kept off, and every one of its answers read `ride_sections` — rows
+spent hundreds of times a run on a lookup a door has no use for.
+
 **A ride is not all ridden.** The ride of 2026-11-17 that went two stops by
 train is one line with a straight 3.2 km segment from Ülemiste to Lilleküla
 across the rail yard, which the router can only go round — a door, by every
@@ -3823,12 +3841,16 @@ for doors in each piece alone. The rides answer carries no times, and needs
 none for this: a recorder writes a point every few metres, so a gap that
 long is a train or a pause, never riding.
 
-**Anybody's ride opens one, and nobody approves it.** A ride needs no
-account, so a door does not either. That is the owner's decision for as
-long as the riders are few and known; a door that should not be one — a
-ride over a railway where there is no crossing — is a line taken out of
-`data/doors.json`, and the day strangers record is the day this paragraph
-is looked at again.
+**A kept ride opens one, and nobody approves it.** A door is found in the
+rides `/api/v1/rides` answers, and since 2026-11-20 those are the rides
+saved by somebody signed in: a ride saved with no account is counted into
+`ride_sections` and let go (**Recorded rides**), so there
+is no line of it for `tools/doors.mjs` to read, and it opens no door. Any
+signed-in rider's kept ride can, and nobody approves the door it makes.
+That is the owner's decision for as long as the riders are few and known;
+a door that should not be one — a ride over a railway where there is no
+crossing — is a line taken out of `data/doors.json`, and the day strangers
+record is the day this paragraph is looked at again.
 
 **Used wherever it wins.** `viaDoor()` in
 `functions/api/route.js` looks at the doors as the crow flies first, asks

@@ -24,6 +24,15 @@
  *   `ready: false` and no rides where the table is not applied — WHEN THE
  *   TABLE IS NOT THERE.
  *
+ * GET  /api/v1/rides?since=<ms>[&after=<id>]
+ *
+ *   { ready, rides: [ { id, meters, seconds, at, line } ], next }
+ *
+ *   The rides saved after a moment, oldest first, SINCE_PAGE at a time,
+ *   `next` the { at, id } to ask the page after with, or null. The same
+ *   public lines ?bbox= answers, for tools/doors.mjs, which asks only for
+ *   the rides it has not looked at — since() below.
+ *
  * GET  /api/v1/rides?mine=1, or /api/v1/rides with nothing asked
  *
  *   { ready, user, rides: [ { id, name, meters, seconds, at, timed } ] }
@@ -288,6 +297,10 @@ const MAX_NAME = 60;
 const NEAR = 40;
 const MAX_BOX = 0.4;
 
+/* How many rides a page of ?since= answers. Fewer than PAGE in ./_lib.js
+   because each carries its whole line, which is a few hundred points. */
+const SINCE_PAGE = 20;
+
 /* The latest a point may say it was passed, a day into the ride, and the
    worst accuracy it may claim, a kilometre. Bounds on what is stored, not
    judgements: the page keeps only fixes within thirty metres. */
@@ -312,6 +325,7 @@ const THIN = 50;
 export async function onRequestGet(context) {
   const { env, request } = context;
   const query = new URL(request.url).searchParams;
+  if (query.has('since')) return json(...await since(env, query.get('since'), query.get('after')));
   if (query.get('mine') === '1' || !query.has('bbox')) {
     return json(await mine(context, query.get('lines') === '1'), 200);
   }
@@ -332,6 +346,48 @@ export async function onRequestGet(context) {
     return json({ ready: true, rides }, 200, 300);
   } catch (e) {
     return json({ ready: false, rides: [] }, 200);
+  }
+}
+
+/* The rides saved after a moment — GET ?since=<ms>[&after=<id>] — oldest
+   first, a page of SINCE_PAGE, answered as [body, status, maxAge] for
+   json(). The same rides and the same fields ?bbox= gives anybody, with
+   `at` beside them and no name, and `next` the cursor of the page after
+   this one, or null on the last: ask again with since=next.at and
+   after=next.id. It is for tools/doors.mjs, which keeps when it last looked
+   and asks for nothing older — A RIDE IS LOOKED AT ONCE there.
+
+   WHAT IT COSTS: a range on idx_rides_created (created_at, id) in
+   db/schema.sql, so a page reads the rides it answers and one more row,
+   however many rides the table holds; one asked with nothing newer reads
+   one row. Asked by hand now and then — a run of the tool — and never by a
+   page or an app, so the day's worst is a run or two: a few dozen rows. */
+async function since(env, rawSince, rawAfter) {
+  const at = Number(rawSince);
+  const after = typeof rawAfter === 'string' && /^[0-9a-f]{12}$/.test(rawAfter) ? rawAfter : '';
+  if (!Number.isInteger(at) || at < 0) return [{ error: 'malformed' }, 400];
+  if (!env.DB || await wrongDatabase(env)) return [{ ready: false, rides: [], next: null }, 200];
+  try {
+    const { results } = await env.DB
+      .prepare(
+        'SELECT id, meters, seconds, line, created_at AS at FROM rides ' +
+        'WHERE (created_at, id) > (?, ?) ORDER BY created_at, id LIMIT ?'
+      )
+      .bind(at, after, SINCE_PAGE + 1)
+      .all();
+    const page = results.slice(0, SINCE_PAGE);
+    const rides = page.map((row) => ({
+      id: row.id,
+      meters: row.meters,
+      seconds: row.seconds,
+      at: row.at,
+      line: arrayOf(row.line)
+    }));
+    const last = page[page.length - 1];
+    const next = results.length > SINCE_PAGE ? { at: last.at, id: last.id } : null;
+    return [{ ready: true, rides, next }, 200, 60];
+  } catch (e) {
+    return [{ ready: false, rides: [], next: null }, 200];
   }
 }
 

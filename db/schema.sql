@@ -2285,6 +2285,11 @@ CREATE TABLE IF NOT EXISTS rides (
 CREATE INDEX IF NOT EXISTS idx_rides_box ON rides (south, north);
 -- One person's rides today, for the cap.
 CREATE INDEX IF NOT EXISTS idx_rides_user ON rides (user_id, created_at);
+-- The rides saved after a moment, oldest first, for GET ?since= — which
+-- tools/doors.mjs asks so that a run looks only at rides it has not seen.
+-- `id` second, so two rides saved in one millisecond are told apart by the
+-- cursor rather than one of them skipped. Added on 2026-11-22.
+CREATE INDEX IF NOT EXISTS idx_rides_created ON rides (created_at, id);
 
 -- One row is one ride passing through one square of the city, 1/50 by 1/25 of
 -- a degree — about 2.2 km a side — so the rides near a way are found
