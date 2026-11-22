@@ -851,13 +851,13 @@
     return t('askKm', { n: k < 100 ? k.toFixed(1) : String(Math.round(k)) });
   }
 
-  /* A length of time as a rider reads one: minutes under an hour, hours and
-     two-figure minutes past it. */
+  /* A length of time as a rider reads one, every number with its unit —
+     "9:43" alone was read as a clock by the owner, on the first day: minutes
+     under an hour, hours and minutes past it. */
   function hours(seconds) {
     var m = Math.round(seconds / 60);
     if (m < 60) return t('walkMin', { n: m });
-    var rest = m % 60;
-    return t('ridesHours', { h: Math.floor(m / 60), m: (rest < 10 ? '0' : '') + rest });
+    return t('ridesHours', { h: Math.floor(m / 60), m: m % 60 });
   }
 
   /* All your rides added up, over the list of them: the account's one row of
@@ -878,8 +878,7 @@
     var speeds = [figure((totals.meters / totals.seconds * 3.6).toFixed(1), t('ridesTotalsAverage'))];
     if (totals.top) speeds.push(figure(totals.top.toFixed(1), t('ridesTotalsTop')));
     if (totals.fastest) {
-      var sec = totals.fastest % 60;
-      speeds.push(figure(Math.floor(totals.fastest / 60) + ':' + (sec < 10 ? '0' : '') + sec, t('ridesTotalsFastest')));
+      speeds.push(figure(t('ridesMinSec', { m: Math.floor(totals.fastest / 60), s: totals.fastest % 60 }), t('ridesTotalsFastest')));
     }
     return el('div', { className: 'ride-totals' }, [
       el('p', { className: 'counter-title', textContent: t('ridesTotalsTitle') }),

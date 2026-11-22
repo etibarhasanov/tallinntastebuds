@@ -52,7 +52,7 @@
  *   { ready, user, totals: { rides, meters, seconds, stopped, top, fastest,
  *     longest, since } }
  *
- *   The totals alone, for Rattatee's Account tab, which wants them and not
+ *   The totals alone, for Rattatee's My rides, which wants them and not
  *   the list: one row read rather than two hundred. `top` in km/h and
  *   `fastest` in seconds, each null until a ride has one; `since` when the
  *   first was counted. `totals` is null signed out and before a ride has
