@@ -11055,7 +11055,7 @@ else is switched on or off.
 
 A site about eating in Tallinn is read mostly by people who cannot read the
 menu. **flashcard.tallinntastebuds.ee** is the other half of that: fifty-three
-decks of Estonian, two thousand five hundred cards, the
+decks of Estonian, two thousand five hundred and thirty-two cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
@@ -11312,6 +11312,22 @@ two hundred words into *The words in between* is a way of losing them:
 **What somebody is like** and **Holidays and celebrations**. Each is a subject
 the glossary carries thirty words of and this file carried none. The other
 seven hundred went into the decks that were already the right place for them.
+
+**Head to toe began at the neck**, because the glossary's words for the body
+are the ones a beginner's book teaches after the obvious ones: the head, the
+eyes, the ears and the mouth were on **When something is wrong**, under *Going
+deeper*, four hundred words away from anybody who opened the body's own deck.
+On 22 November 2026 it took eleven of them over whole, sentence and all, and
+twenty-one it had never had — the eyebrow, the eyelid, the lip, the wrist, the
+thumb, the heel, the brain — and was put in the order its name promises, from
+*keha* and *pea* down to *varvas* and then in to the organs. The eleven are on
+both decks on purpose, the way the verbs of two words are: a card is known
+deck by deck, so somebody who learnt *silm* here answers it once more at the
+doctor's. *Keel* came in a second time, as the tongue beside the language —
+Azerbaijani and Russian spend one word on both as well — and *kurk* as the
+throat beside the cucumber, which is why a conversation's word is matched to
+a deck by what it means rather than by which comes first:
+**[Conversations, which are read](#conversations-which-are-read)**.
 
 ### The back of the card is in three languages
 
@@ -12926,7 +12942,7 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **1,003 of the 2,500 cards** carry
+would be a stray clause with no translation. **1,014 of the 2,532 cards** carry
 one: every card in the twenty-three newer decks, in **Verbs of two words** and in **Family and relatives**
 bar the ones that are a whole sentence already, every card but the question in
 the comparatives' deck, every card in the songs' decks —
@@ -13604,10 +13620,13 @@ twins. Where a word means two things in one sheet, the entry says both, with
 the phrase it is in — *kui*, if, when, than, how. `node tools/decks.mjs`
 writes each conversation's file with the words it uses and nothing else,
 taken out of the two, and finds the deck each is taught in by itself: the
-first deck on the shelf with a card whose front is the word's base, a deck of
-the shelf's own before a song's. The source never names one, since nine
-hundred hand-kept pointers would go stale the first time a deck moved, and
-the validator fails one that does.
+deck on the shelf with a card whose front is the word's base, a deck of the
+shelf's own before a song's, and where two decks have one — *keel* is a
+language on one and a tongue on another — the one whose card shares the
+earliest word of what the glossary says it means: `deckFor()` in
+`tools/decks.mjs`. The source never names one, since nine hundred hand-kept
+pointers would go stale the first time a deck moved, and the validator fails
+one that does.
 
 **The text is the sheets', with four things done to it.** The Estonian is as
 printed, except that one speaker label was wrong — a line of the waiter's in
@@ -19159,7 +19178,7 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            fifty-three decks of Estonian, 2,500 cards under four
+data/decks.json            fifty-three decks of Estonian, 2,532 cards under four
                            headings, the songs' and the cases', eleven lessons of
                            grammar, four songs, thirty-eight conversations and the
                            glossary their words share; content

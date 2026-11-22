@@ -1700,8 +1700,9 @@ CREATE TABLE IF NOT EXISTS meta (
 --
 -- Four tables, and only one of them holds anything anybody typed. The words
 -- the site ships with are not here at all: data/decks.json is fifty-three decks
--- and two thousand five hundred cards of Estonian, deployed as a file and read
--- as the files tools/decks.mjs writes from it, one per deck, because content
+-- and two thousand five hundred and thirty-two cards of Estonian, deployed as a
+-- file and read as the files tools/decks.mjs writes from it, one per deck,
+-- because content
 -- that changes when somebody edits the
 -- repository belongs in the repository. What is here is the three things a file
 -- cannot hold — the decks people write for themselves, how far each person has

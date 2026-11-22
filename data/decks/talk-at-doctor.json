@@ -510,7 +510,7 @@
     "az": "daha yaxşı",
     "ru": "лучше"
    },
-   "deck": "around"
+   "deck": "describing"
   },
   "käsi": {
    "base": "käsi",
@@ -519,7 +519,7 @@
     "az": "əl",
     "ru": "рука"
    },
-   "deck": "health"
+   "deck": "body"
   },
   "valutab": {
    "base": "valutama",
@@ -678,7 +678,7 @@
     "az": "əli",
     "ru": "руку"
    },
-   "deck": "health"
+   "deck": "body"
   },
   "vahel": {
    "base": "vahel",
@@ -1213,7 +1213,7 @@
     "az": "gözlər",
     "ru": "глаза"
    },
-   "deck": "health"
+   "deck": "body"
   },
   "kinni": {
    "base": "kinni",
