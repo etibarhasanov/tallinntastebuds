@@ -80,7 +80,7 @@ const ALL = process.argv.includes('--all');
 const KNOWN = [
   { file: 'api/_lib.js', has: 'SELECT * FROM google_venues', why: "googleTable()'s whole read, ~1,180 rows: once a day per colo, the copy kept in the Cache API for the isolates after it, and after the week's ranking or an export load; between them only the rows changed_at names" },
   { file: 'api/venues.js', has: 'FROM google_venues', why: "roll() with no ids and no map id, the whole ~1,180 rows: only /api/admin/venues asks for it, the owner's" },
-  { file: 'api/_refresh.js', has: 'FROM google_venues', why: 'the refresh of Google places: a scheduled job and the owner, ~1,200 rows' },
+  { file: 'api/_refresh.js', has: 'FROM google_venues', why: "the refresh of Google places, ~1,200 rows: the day's queue, made once a UTC day by the fill's first knock (dayQueue()), and the owner's Google tab" },
   { file: 'api/_rank.js', has: 'google_venues', why: 'the weekly re-rank, once a week' },
   { file: 'api/_rank.js', has: 'FROM google_reranks', why: 'one row a week, 52 a year' },
   { file: 'api/_lists.js', has: 'UPDATE lists SET opens', why: "the week's counts, once a week: every list, its press_counts row and its keeps — 25 lists and 6 keeps, about sixty rows, on 21 Nov 2026" },
@@ -118,7 +118,7 @@ const ROWS = [
   { file: 'api/_lib.js', has: 'SELECT * FROM google_venues WHERE changed_at > ?', why: "googleTable(): the rows changed since the isolate's last look, a handful a day and the whole ~1,180 after an export load" },
   { file: 'api/_lib.js', has: 'SELECT * FROM google_venues', why: "googleTable()'s whole read, ~1,180 rows, once a day per colo" },
   { file: 'api/_rank.js', has: 'FROM google_ranks r JOIN google_venues v', why: 'the week\'s top: r.rank <= TOP, a hundred rows, bound as ?2' },
-  { file: 'api/_refresh.js', has: 'SELECT place_id FROM google_venues WHERE hidden = 0', why: "the day's fill: LIMIT is the day's room under BUDGET.details.day, thirty-two at most" },
+  { file: 'api/_refresh.js', has: 'SELECT place_id FROM google_venues WHERE hidden = 0', why: "the day's queue: LIMIT is QUEUE_LENGTH, twice BUDGET.details.day, sixty-four, once a UTC day" },
   { file: 'api/_visitors.js', has: 'SELECT day, kind, id, n FROM visitor_counts WHERE day >= ? AND day <= ?', why: "the owner's pages: the days missing from the colo, read once each and then kept — a few hundred rows a day of the range" },
   { file: 'api/_visitors.js', has: 'SELECT day, kind, id, n FROM visitor_counts WHERE day >= ?', why: "the owner's pages: yesterday and today, a few hundred rows a day" },
   { file: 'api/_visitors.js', has: "FROM visitor_counts WHERE day = ?1 AND kind = 'shown'", why: "the flag counter: one day's 'shown' rows, one a country, a few dozen; through the colo for five minutes" },

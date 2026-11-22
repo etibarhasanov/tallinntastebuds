@@ -6889,6 +6889,23 @@ minutes of anybody being on the site. The knocks are idempotent, so two that
 land together are settled by the claim on the row and neither spends past
 the day.
 
+**The day's queue.** Choosing the rows is a walk of the whole table — the
+tier of a row below four hundred asks `google_scores` whether it is busy,
+which no index answers — and each knock used to walk it again: on
+2026-11-22 four knocks between noon and a quarter to one, a scan to count
+the closed rows asked about today (1,190 rows read to answer 2) and another
+to choose, and `google_venues` was the dearest table on the meter by ten
+times. Nothing about which rows are due changes in an afternoon but the rows
+the afternoon asks about, so the first knock of a UTC day walks the table
+once for sixty-four of them, twice the day's budget, and keeps their keys in
+`meta` under `fill_queue`; every knock after it takes from the front and
+writes back what is left. A row an open asked about first answers `fresh`
+and costs nothing, and a row that falls due later in the day waits for
+tomorrow's queue. Run against the export with Google stubbed, the same
+afternoon asked about the same thirty-two places in the same order, with two
+walks of the table where it had taken eleven and one count where it had
+taken six. `dayQueue()` in `functions/api/_refresh.js`.
+
 **How often a place is asked about.** It was every thirty days for every
 row, which spent the month evenly on a city that is not read evenly. The
 hundred at the top are the ones a ranking is printed for and the ones whose
