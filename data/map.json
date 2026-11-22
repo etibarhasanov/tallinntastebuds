@@ -1507,6 +1507,29 @@
   "closed": false
  },
  {
+  "id": "pohjala-tap-room",
+  "name": "Põhjala Tap Room",
+  "address": "Peetri 5, 10415 Tallinn",
+  "lat": 59.45027,
+  "lng": 24.727208,
+  "price": 2,
+  "types": [
+   "pub",
+   "casual"
+  ],
+  "mustOrder": [
+   "OG donuts"
+  ],
+  "reel": "",
+  "photos": [
+   "01.webp"
+  ],
+  "website": "https://pohjalabeer.com/taproom",
+  "phone": "+372 5666 2800",
+  "added": "2026-11-22",
+  "closed": false
+ },
+ {
   "id": "puhaste-taproom",
   "name": "Pühaste Taproom",
   "address": "Rotermanni 2, 10111 Tallinn",

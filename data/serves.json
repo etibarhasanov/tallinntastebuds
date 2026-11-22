@@ -42,6 +42,7 @@
     { "id": "pudel", "name": "Pudel", "serves": ["guinness"] },
     { "id": "pulla-bakery", "name": "Pulla Bakery", "serves": ["sourdough", "buns"] },
     { "id": "pohja-konn", "name": "Põhja Konn", "serves": ["craft beer", "balcony"] },
+    { "id": "pohjala-tap-room", "name": "Põhjala Tap Room", "serves": ["craft beer", "donuts", "doughnuts"] },
     { "id": "puhaste-taproom", "name": "Pühaste Taproom", "serves": ["craft beer", "ipa"] },
     { "id": "q-pizza-jaam", "name": "Q Pizza Jaam", "serves": ["sandwiches", "bread"] },
     { "id": "radio-restoran", "name": "Radio", "serves": ["crispy chicken", "padron peppers"] },

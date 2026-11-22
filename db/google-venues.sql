@@ -2864,6 +2864,8 @@ UPDATE google_venues SET map_id = 'vesta' WHERE place_id = 'ChIJZUwQYwCTkkYRm3zZ
 
 UPDATE google_venues SET map_id = 'chakra' WHERE place_id = 'ChIJ36bd22OTkkYRprjnM4kbNfM' AND map_id IS NULL;
 
+UPDATE google_venues SET map_id = 'pohjala-tap-room' WHERE place_id = 'ChIJ-X-2JUyTkkYRBM2xOwYptwY' AND map_id IS NULL;
+
 UPDATE google_venues SET map_id = 'burger-box' WHERE place_id = 'ChIJWbJy5nyTkkYRvZaeKKNvrCE' AND map_id IS NULL;
 
 UPDATE google_venues SET map_id = 'varav-coffee-toast' WHERE place_id = 'ChIJ4-IA81qTkkYRa9bzDnN6RRA' AND map_id IS NULL;

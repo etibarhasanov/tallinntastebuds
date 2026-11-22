@@ -480,6 +480,14 @@
     "map": true
   },
   {
+    "id": "pohjala-tap-room",
+    "name": "Põhjala Tap Room",
+    "address": "Peetri 5, 10415 Tallinn",
+    "lat": 59.45027,
+    "lng": 24.727208,
+    "map": true
+  },
+  {
     "id": "porgandipomm",
     "name": "Porgandipomm",
     "address": "Manufaktuuri kvartal, Tallinn",

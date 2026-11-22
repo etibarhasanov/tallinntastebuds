@@ -2316,6 +2316,42 @@
     "closed": false
   },
   {
+    "id": "pohjala-tap-room",
+    "name": "Põhjala Tap Room",
+    "address": "Peetri 5, 10415 Tallinn",
+    "lat": 59.45027,
+    "lng": 24.727208,
+    "price": 2,
+    "types": [
+      "pub",
+      "casual"
+    ],
+    "blurb": {
+      "az": "Põhjala-nın öz taproom-u, köhnə Noblessner tərsanəsindəki pivə zavodunun içində. Pivə dəmləndiyi yerdən bir neçə metr aralıda süzülür, OG donutlar üçün isə qarında yer saxlamağa dəyər.",
+      "en": "Põhjala's own tap room, inside their brewery in the old Noblessner shipyard. The beer is poured a few metres from where it is brewed, and the OG donuts are the reason to save room.",
+      "et": "Põhjala enda taproom, otse nende pruulikojas vanas Noblessneri laevatehases. Õlu valatakse paari meetri kaugusel sellest, kus see pruulitakse, ja OG sõõrikute pärast tasub kõhtu ruumi jätta.",
+      "fi": "Põhjalan oma taproom, heidän panimossaan vanhalla Noblessnerin telakalla. Olut lasketaan muutaman metrin päässä siitä, missä se pannaan, ja OG-munkkien takia kannattaa jättää tilaa.",
+      "pt": "A taproom da própria Põhjala, dentro da cervejeira no antigo estaleiro de Noblessner. A cerveja é servida a poucos metros de onde é feita, e os donuts OG são a razão para guardar espaço.",
+      "ru": "Собственный тэпрум Põhjala, прямо в их пивоварне на старой верфи Noblessner. Пиво наливают в паре метров от того места, где его варят, а ради OG-пончиков стоит оставить место.",
+      "es": "La taproom de la propia Põhjala, dentro de su cervecera en el antiguo astillero de Noblessner. La cerveza se sirve a pocos metros de donde se elabora, y los donuts OG son el motivo para dejar sitio.",
+      "tr": "Põhjala'nın kendi taproom'u, eski Noblessner tersanesindeki bira fabrikasının içinde. Bira, üretildiği yerin birkaç metre ötesinde dolduruluyor ve OG donutlar için yer ayırmaya değer.",
+      "uk": "Власний тапрум Põhjala, просто в їхній броварні на старій верфі Noblessner. Пиво наливають за кілька метрів від того місця, де його варять, а заради OG-пончиків варто залишити місце.",
+      "fr": "La taproom de Põhjala, dans leur brasserie de l'ancien chantier naval de Noblessner. La bière est servie à quelques mètres de là où elle est brassée, et les donuts OG sont la raison de garder de la place.",
+      "de": "Põhjalas eigener Taproom, mitten in ihrer Brauerei auf der alten Noblessner-Werft. Das Bier wird ein paar Meter von dort gezapft, wo es gebraut wird, und die OG-Donuts sind der Grund, Platz zu lassen."
+    },
+    "mustOrder": [
+      "OG donuts"
+    ],
+    "reel": "",
+    "photos": [
+      "01.webp"
+    ],
+    "website": "https://pohjalabeer.com/taproom",
+    "phone": "+372 5666 2800",
+    "added": "2026-11-22",
+    "closed": false
+  },
+  {
     "id": "puhaste-taproom",
     "name": "Pühaste Taproom",
     "address": "Rotermanni 2, 10111 Tallinn",
