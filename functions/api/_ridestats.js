@@ -11,7 +11,7 @@
  * all of it out for its save card and its ride page already. So since
  * 2026-11-22 a save may carry that `summary`, and a signed-in save keeps it
  * here as a row of `ride_stats` and adds it into the account's one row of
- * `ride_totals`, which the account page and the app's Account tab show to
+ * `ride_totals`, which the account page and the app's My rides show to
  * that account and to nobody else.
  *
  * ONLY AN ACCOUNT'S RIDES ADD UP
@@ -72,7 +72,7 @@
  * two written: about seven a save, beside the hundred or more a save
  * already writes into ride_sections. The
  * totals are read by the key, one row, on the account page's ?mine=1 and
- * on Rattatee's ?totals=1, which it asks when its Account tab opens and not
+ * on Rattatee's ?totals=1, which it asks when its My rides opens and not
  * more than once a minute. At a thousand saves and five thousand opens a
  * day that is six thousand rows read of five million and seven thousand
  * written of a hundred thousand. A drop reads under ten rows, each by a
@@ -151,9 +151,10 @@ export function summaryOf(raw, atLeast, fastest) {
 /* The numbers of a save that sent none, out of its kept runs — each { line,
    track, meters } as ./rides.js makes them — and the seconds it said, held
    to the same sense as a summary: a top speed past TOP_KMH or a kilometre
-   quicker than `fastest` allows is a fix that jumped, not a bike, and is
-   left out. The first rides worked out this way, on 2026-11-22, had one at
-   253 km/h. */
+   quicker than `fastest` allows is not a bike, and is left out. The first
+   rides worked out this way, on 2026-11-22, had one at 253 km/h, which was
+   rideInsight() counting a pause's metres in no time — mended there the
+   same day; this is the backstop. */
 export function summaryFromRuns(runs, seconds, fastest) {
   const meters = runs.reduce((sum, run) => sum + run.meters, 0);
   /* `span` is how long the timed runs lasted by their clocks, first point

@@ -3567,7 +3567,7 @@ the day was that a rider signs in and their rides add up from then on.
 over the list in two rows of the Discover counter's figures — distance,
 riding time and rides, then the average, the top speed and the fastest
 kilometre — with the time standing, the longest ride and the first ride's
-day under them; `?totals=1` answers them alone, for Rattatee's Account tab.
+day under them; `?totals=1` answers them alone, for Rattatee's My rides.
 Each kept run's `seconds` is now its share of the whole ride's distance,
 not of the kept line's, so a run inside town no longer carries a day's
 riding at four kilometres an hour. The phone's numbers for the parts the
@@ -3578,7 +3578,16 @@ and finds the three bests again by their indexes; deleting the account
 deletes both. `functions/api/_ridestats.js` is the whole of it, cost
 included: one row read and about seven written a save, one read a look.
 The 37 rides kept before it were added by hand the same day, worked out of
-their kept lines the way a save with no summary is.
+their kept lines the way a save with no summary is — and corrected within the
+hour, when one of them came out at 253 km/h. No point of it moved that fast:
+`rideInsight()` counted the metres of a leg slower than walking a bike and
+not its seconds, so a pause the phone was carried 231 m through was 231 m in
+no time, and every red light took a few seconds off its kilometre. It counts
+neither now, here and in Rattatee's `Insight`, which copies it; 21 of the 37
+rides' top speeds and fastest kilometres moved, one account's best from 36.3
+to 34.4 km/h. The same pause was 231 m in the square it ended in, in
+`ride_sections`, since a step of two minutes or more counted its metres and
+nothing else; a pause counts nowhere now, as a step over `GAP` never did.
 
 **One ride, opened, in the iPhone app.** The app's Me tab has **Your rides**:
 the same rides with a range — 7, 28, 90 days, all time — the distance, the

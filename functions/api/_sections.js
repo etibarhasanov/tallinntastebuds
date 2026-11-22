@@ -358,6 +358,11 @@ export function sectionsOf(line, track) {
     const own = took > 0 ? rode / took : 0;
     if (timed && (own * 3.6 < BIKE || cruised < rode * CRUISED)) continue;
     for (const step of stretch) {
+      /* A pause is a straight line nobody was seen riding, as a step over
+         GAP is, so it counts nowhere: on a timed ride its kind is '' — two
+         minutes or more between two points, or a clock that ran backwards.
+         Until 2026-11-22 its metres went into the square it ended in. */
+      if (timed && !step.kind) continue;
       const cell = cells.get(step.key) || { meters: 0, seconds: 0, paced: 0, par: 0, stops: 0 };
       cell.meters += step.d;
       if (step.kind === 'stop') cell.stops += 1;

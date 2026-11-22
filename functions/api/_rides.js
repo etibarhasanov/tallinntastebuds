@@ -75,7 +75,14 @@ export function rideInsight(line, track, meters, seconds) {
   const none = { average, timed: false, top: null, stopped: null, fastest: null, splits: [], speed: [] };
   if (!Array.isArray(track) || track.length !== line.length || line.length < 2) return none;
 
-  /* How far along and how long riding by each point. */
+  /* How far along and how long riding by each point, both counting riding
+     alone: a leg slower than STILL adds its seconds to the time standing
+     and nothing to either. It used to add its metres to `along` and not its
+     seconds to `moving`, so the distance was covered in no time at all. At
+     a red light that is twelve metres in nothing, and every kilometre with
+     a light in it read a few seconds quick; across a pause the phone was
+     carried through, it was 231 m in nothing, and on 2026-11-22 a ride of
+     34 minutes' riding answered a top speed of 253 km/h. */
   const along = [0];
   const moving = [0];
   let stopped = 0;
@@ -84,7 +91,7 @@ export function rideInsight(line, track, meters, seconds) {
     const dt = Math.max(0, Number(track[i][0]) - Number(track[i - 1][0]));
     const still = dt > 0 && d / dt < STILL;
     if (still) stopped += dt;
-    along.push(along[i - 1] + d);
+    along.push(along[i - 1] + (still ? 0 : d));
     moving.push(moving[i - 1] + (still ? 0 : dt));
   }
   const total = along[along.length - 1];
