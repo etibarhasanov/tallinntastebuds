@@ -15,16 +15,16 @@
 
 /* ----------------------------------------------------------- the five pages */
 
-/* The owner's menu: the mark and the six pages that are the owner's, as one
-   block that is the same on all six — /admin.html and the five under
+/* The owner's menu: the mark and the seven pages that are the owner's, as
+   one block that is the same on all seven — /admin.html and the six under
    /admin/. The page you are on is filled through aria-current the way the
    map fills the view you are in.
 
-   They are six pages rather than one because each answers a different
+   They are seven pages rather than one because each answers a different
    question out of a different table over a different stretch of time — what
    gets opened is all-time, who came and how they found it are a chosen
-   range, the directory is Google's list, the diagrams are a drawing, and the
-   door is where the site is changed — and one page of all of it would be a
+   range, the directory is Google's list, the diagrams are a drawing, the doors
+   are a file drawn on a map, and the door is where the site is changed — and one page of all of it would be a
    scroll nobody finishes on a phone. What they lacked was being a set.
 
    The row used to stand on each page's own column: 640px in the middle on
@@ -487,3 +487,22 @@ a.stats-name:hover { color: var(--accent); }
   letter-spacing: 0;
   overflow-wrap: anywhere;
 }
+
+/* /admin/doors — assets/doors.js. The map the doors are drawn on, the same
+   frame as the directory's on admin/google.html, and the rows under it, one
+   button a door. */
+.doors-map {
+  height: min(70vh, 560px);
+  border-radius: var(--radius-soft);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow);
+  background: var(--paper);
+}
+.doors-state { color: var(--muted); margin: 12px 0; }
+.doors-list { list-style: none; margin: 0; padding: 0; }
+.doors-row {
+  display: flex; gap: 12px; width: 100%; padding: 10px 4px;
+  border: 0; border-bottom: 1px solid var(--hairline);
+  background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.doors-id { flex: none; font-variant-numeric: tabular-nums; color: var(--muted); }

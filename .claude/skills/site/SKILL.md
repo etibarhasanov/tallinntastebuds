@@ -351,8 +351,8 @@ browser cannot import from `tools/`; change one, change the other.
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`,
   `deal.html`, `verify.html`, `staff.html`,
-  `flashcard.html`, `edit.html`, `write.html`, `insights.html`, `chess.html`, `404.html`, `privacy.html`, and the owner's five under
-  `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html`, and `admin.html`, the door to them — must carry `?v=` equal to the first
+  `flashcard.html`, `edit.html`, `write.html`, `insights.html`, `chess.html`, `404.html`, `privacy.html`, and the owner's six under
+  `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html`, `admin/doors.html`, and `admin.html`, the door to them — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` was
   the exception once, because it is served `no-store`, and drew new markup

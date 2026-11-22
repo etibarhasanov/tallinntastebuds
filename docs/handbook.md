@@ -3868,8 +3868,15 @@ Bikes only, and up to three doors a route: the way in to a door and the
 way on from it are each put to the doors once more, twelve router requests
 at the most.
 
-**Never drawn.** A door is not a line on the map, a ride is not either, and
-the bar says what it always said. `data/doors.json` is public the way the
+**Never drawn for a visitor.** A door is not a line on the map, a ride is not either, and
+the bar says what it always said. The owner sees them on `/admin/doors`,
+behind the owner's lock with the other pages under `/admin/`:
+`assets/doors.js` draws `data/doors.json` on the map, each door a line with
+its ends marked and a row below with how long it is, how far the router
+goes instead and a link to the spot on OpenStreetMap, and says how far
+`data/doors-checked.json` has looked. It reads the two files and no route,
+so it costs no row. It is there so a door that should not be one — over a
+railway with no crossing — is seen and taken out of the file by hand. `data/doors.json` is public the way the
 rides are: lines with nobody's name and their ends already off.
 
 The tool is not one of the generators and the validator does not hold the
