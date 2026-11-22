@@ -2370,6 +2370,49 @@ CREATE TABLE IF NOT EXISTS ride_sections (
   steady     INTEGER NOT NULL DEFAULT 0
 );
 
+-- One row is the long middle of a bike way between two cities: the road
+-- from the first junction after the way leaves one city's box to the last
+-- before it enters the other's, as the router gave it. A bike route between
+-- two of the cities in CITIES (functions/api/_lib.js) is asked of the router
+-- in pieces — the start to the exit and the entry to the end, each refined
+-- the way a ride in the city is — with the middles kept here between them,
+-- so the long road is asked for once and not again by everybody who rides
+-- it. functions/api/route.js reads and writes it, and LONG RIDES there is
+-- the reasoning: what a middle is, how it is learnt, and when it goes. It
+-- holds nothing about anybody: only roads, and when the router last
+-- answered with one.
+--
+-- The two questions it is asked, and the key that answers them:
+--   the middles from one city to another     (from_city, to_city) — the key's front
+--   whether a middle is already known        the whole key
+-- At most MIDDLES rows a pair, so the first reads three rows at the most.
+-- Each direction is its own row: a one-way street makes the way back
+-- another way. A rowid table, since a row is a few tens of kilobytes of
+-- line and turns, which WITHOUT ROWID is not for.
+CREATE TABLE IF NOT EXISTS route_middles (
+  -- CITIES' ids: 'tallinn', 'tartu', 'parnu', 'narva'.
+  from_city  TEXT    NOT NULL,
+  to_city    TEXT    NOT NULL,
+  -- The junctions, as the router names them — 'lat,lng' to six places, the
+  -- map node's own — so two riders who leave by the same road leave by the
+  -- same junction.
+  exit       TEXT    NOT NULL,
+  entry      TEXT    NOT NULL,
+  -- The router's metres and seconds from the one to the other.
+  meters     INTEGER NOT NULL,
+  seconds    INTEGER NOT NULL,
+  -- Its line, [[lat, lng], …] thinned to MAX_POINTS, and its turns in the
+  -- answer's own shape, metres counted from the exit, as JSON; and the
+  -- street the way turns onto at the exit, for the turn said there.
+  line       TEXT    NOT NULL,
+  steps      TEXT    NOT NULL,
+  name       TEXT    NOT NULL DEFAULT '',
+  -- When the router last answered with it. A middle no long ask has
+  -- answered with for MIDDLE_AGE is asked about again, and goes.
+  asked_at   INTEGER NOT NULL,
+  PRIMARY KEY (from_city, to_city, exit, entry)
+);
+
 
 -- --------------------------------------------------------------- community
 -- The Community tab of /azeri, the Azerbaijani Corner: posts members write,

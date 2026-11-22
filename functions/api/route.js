@@ -86,6 +86,11 @@
  * the bike on it, ride on. Those are `trains`, answered beside the ways —
  * TRAINS below.
  *
+ * And by bike from one city to another, only the ends are refined: the
+ * long road between them is the router's, cut at the junctions where it
+ * leaves the one city and enters the other, and kept in `route_middles` so
+ * the next rider is not asked for it again — LONG RIDES below.
+ *
  * SETTING OFF THE WAY THEY ARE GOING
  *
  * A way asked for in the middle of a ride is not the same question as one
@@ -153,7 +158,7 @@
  *
  * The same reasons /api/v1/geocode is one. The upstreams are free public
  * infrastructure and a worker can keep an answer in Cloudflare's cache where a
- * page cannot. Both ends are held to Tallinn's box and rounded before they go
+ * page cannot. Both ends are held to Estonia's box and rounded before they go
  * upstream: the start to four decimals, about eleven metres, and the end to
  * five, so the hundred people who press the arrow on one restaurant from one
  * street are one upstream request and a route that starts on the wrong side of
@@ -196,7 +201,7 @@
  * field stays on every answer, refusals included.
  */
 
-import { json, inEstonia, km, dataFile, wrongDatabase } from './_lib.js';
+import { json, inEstonia, cityOf, km, dataFile, wrongDatabase } from './_lib.js';
 import { riddenShare } from './_sections.js';
 import { VERSION } from '../_public.js';
 
@@ -299,6 +304,13 @@ async function street(context, mode, from, to, heading) {
      own; read only once the bike ways are known, since a train is offered
      only where it beats them. TRAINS below. */
   const asked = mode === 'bike' ? departures(from, to) : null;
+
+  /* By bike from one city to another, the ends are refined and the middle
+     is kept — LONG RIDES below. Anything it cannot do is the ride as
+     below. */
+  const long = mode === 'bike' && heading === null ? await longRide(context, from, to) : null;
+  if (long) return answered(from, to, long, asked);
+
   const url = OSRM[mode] + from.lng + ',' + from.lat + ';' + to.lng + ',' + to.lat +
     '?overview=full&geometries=geojson&steps=true&alternatives=';
 
@@ -366,6 +378,12 @@ async function street(context, mode, from, to, heading) {
      streets, which can make two ways one — SETTLING below. */
   ways = (await Promise.all(ways.slice(0, 1 + OTHERS).map((one) => settle(one, heading))))
     .filter((way, i, all) => !all.slice(0, i).some((before) => alike(way, before)));
+  return answered(from, to, ways, asked);
+}
+
+/* The ways as the answer: the first at the top level, the rest as
+   `others`, and by bike the trains that beat them. */
+async function answered(from, to, ways, asked) {
   const best = ways[0];
   const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
   if (best.ridden) answer.ridden = true;
@@ -445,7 +463,8 @@ async function doors(context) {
   for (const door of Array.isArray(file) ? file : []) {
     const line = door && Array.isArray(door.line) ? door.line : [];
     if (line.length < 2 || !Number.isFinite(door.meters)) continue;
-    both.push({ meters: door.meters, line: line }, { meters: door.meters, line: line.slice().reverse() });
+    const around = Number(door.around) || 0;
+    both.push({ meters: door.meters, around: around, line: line }, { meters: door.meters, around: around, line: line.slice().reverse() });
   }
   return both;
 }
@@ -1087,6 +1106,332 @@ async function eitherSide(ways, from, to) {
     if (!all.some((before) => alike(way, before) || alike(before, way))) all.push(way);
   }
   return all;
+}
+
+/* ------------------------------------------------------------- long rides
+ * A bike way from one city to another is a short ride, a long road and a
+ * short ride, and everything above — the doors, the streets kept off, the
+ * ways round either side, the settling — was written for the short ones.
+ * Each asks the router for the whole way again: on 2026-11-22 a way from
+ * Tallinn to Tartu, 192 km, was 23 router requests and about five
+ * megabytes, nearly all of it the same road re-asked to keep a few
+ * kilometres of it off Tartu maantee, and the next rider from another
+ * street paid all of it again. The owner asked for the refinements to be
+ * done on the ends alone and for the long middle to be kept.
+ *
+ * So between the cities in CITIES (./_lib.js) a way is cut in three where
+ * it crosses their boxes: the start to the EXIT, the first of the router's
+ * junctions outside the start's city; the exit to the ENTRY, the last
+ * junction before the end's city; and the entry to the end. A junction is
+ * one of the router's manoeuvres, a node of the map, so everybody who
+ * leaves by the same road leaves by the same junction and the middle
+ * between two junctions is the same road whoever rides it. The ends are
+ * refined as a ride in the city is — a door, the streets kept off, the
+ * bend settled — and the three joined, the turn at each junction read off
+ * how the line bends there, since a rider can come to one from any side.
+ * A long ride is offered no ways round either side, which beside a hundred
+ * kilometres of line are nothing, and is not weighed by the rides, which
+ * are counted in the cities.
+ *
+ * THE MIDDLES ARE KEPT
+ *
+ * Each middle is a row of `route_middles` (db/schema.sql), at most MIDDLES
+ * for a pair of cities. A ride between two cities reads them, one statement
+ * on the key's front, and where there are some it does not ask the long way
+ * at all: it asks the router from the start to each middle's exit and from
+ * its entry to the end — the way on from the entry setting off the way the
+ * middle arrives, so it does not turn back on itself — refines those,
+ * joins them, and offers the quickest first and the rest as `others`.
+ * Middles that share an exit share its ride.
+ *
+ * It asks the long way where the pair has no middle yet; for one ride in
+ * LEARN_ONE_IN when it has, at random, so a new road or a better exit from
+ * another part of town is found; and for the first ride after any of the
+ * pair's middles is MIDDLE_AGE old. Asked so, it asks for the steps and
+ * not the whole line beside them, which is the same line twice. The ways
+ * it answers are cut, their middles written with the time, and the pair
+ * held to MIDDLES: those just answered first, then the rest newest first,
+ * and a middle no long ask has answered with for MIDDLE_AGE goes. The ways
+ * it answered are the answer, their ends refined.
+ *
+ * Between a city and somewhere that is not one — Tallinn and Haapsalu —
+ * the long way is asked every time, there being no second junction to keep
+ * a middle between, and only the city's end is refined. A ride between two
+ * places in no city, or between two points nearer than LONG_FROM, is a ride
+ * as above. So is one with a heading: Rattatee asking mid-ride wants the
+ * way it is going on, which a kept middle may not be.
+ *
+ * WHAT IT COSTS
+ *
+ * With middles kept: one read of MIDDLES rows at the most, and for each
+ * exit and each entry the router asked once for a few kilometres, and
+ * again round a street kept off where the ride rides one. Learning: the
+ * long ask, a write of MIDDLES rows at the most and the deletes beside
+ * them, for the first ride of a pair and one in LEARN_ONE_IN after. Nothing
+ * waits on the table: without it, or without a database, every long ride
+ * asks the long way and refines its ends, which is still most of the
+ * saving; and anything that cannot be put together is the ride as above.
+ */
+const LONG_FROM = 20000;
+const MIDDLES = 3;
+const LEARN_ONE_IN = 20;
+const MIDDLE_AGE = 30 * 24 * 3600 * 1000;
+
+const junctionKey = (p) => p[0].toFixed(6) + ',' + p[1].toFixed(6);
+const middleKey = (m) => junctionKey(m.exit) + '>' + junctionKey(m.entry);
+
+/* The ways of a long ride, best first, or null where it is not one or
+   could not be put together. */
+async function longRide(context, from, to) {
+  const a = cityOf(from.lat, from.lng);
+  const b = cityOf(to.lat, to.lng);
+  if ((!a && !b) || (a && b && a.id === b.id)) return null;
+  const start = [from.lat, from.lng];
+  const end = [to.lat, to.lng];
+  if (metres(start, end) < LONG_FROM) return null;
+
+  const env = context.env || {};
+  const now = Date.now();
+  const known = a && b ? await knownMiddles(env, a.id, b.id) : [];
+  const learn = !known.length || Math.random() * LEARN_ONE_IN < 1 || known.some((m) => now - m.askedAt > MIDDLE_AGE);
+
+  let pieces;
+  if (learn) {
+    pieces = (await longWays(start, end)).map((route) => cutWay(route, a, b)).filter(Boolean)
+      .filter((p, i, all) => !a || !b || all.findIndex((q) => middleKey(q.middle) === middleKey(p.middle)) === i);
+    if (!pieces.length) return null;
+    if (a && b) await keepMiddles(env, a.id, b.id, pieces.map((p) => p.middle), known, now);
+  } else {
+    pieces = known.map((middle) => ({ head: null, middle: middle, tail: null }));
+  }
+
+  const heads = new Map();
+  const tails = new Map();
+  const once = (all, key, make) => {
+    if (!all.has(key)) all.set(key, make());
+    return all.get(key);
+  };
+  const ways = (await Promise.all(pieces.map(async (p) => {
+    const [head, tail] = await Promise.all([
+      a ? once(heads, junctionKey(p.middle.exit), () => refineEnd(context, p.head, start, p.middle.exit)) : null,
+      b ? once(tails, junctionKey(p.middle.entry), () => refineEnd(context, p.tail, p.middle.entry, end, arriving(p.middle.line))) : null
+    ]);
+    if ((a && !head) || (b && !tail)) return null;
+    return joinLong([head, p.middle, tail]);
+  }))).filter(Boolean).sort((x, y) => x.seconds - y.seconds);
+  return ways.length ? ways.slice(0, 1 + OTHERS) : null;
+}
+
+/* The router's ways from one end to the other, up to 1 + OTHERS of them,
+   with their steps and no line besides — each step carries its own piece
+   of it. None where it will not answer. */
+async function longWays(start, end) {
+  const url = OSRM.bike + start[1] + ',' + start[0] + ';' + end[1] + ',' + end[0] +
+    '?overview=false&geometries=geojson&steps=true&alternatives=';
+  for (const tail of [OTHERS, 'false']) {
+    try {
+      const res = await ask(url + tail, 'bike');
+      if (res.status === 429) return [];
+      if (!res.ok) continue;
+      const body = await res.json();
+      return body && body.code === 'Ok' && Array.isArray(body.routes) ? body.routes.slice(0, 1 + OTHERS) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return [];
+}
+
+/* One of the router's long ways cut where it leaves `a`'s box and where it
+   enters `b`'s, either of which may be null for an end in no city:
+   { head, middle, tail }, the middle carrying its `exit` and `entry` as
+   [lat, lng], or null where the way has no junction to cut at. */
+function cutWay(route, a, b) {
+  const legs = route && Array.isArray(route.legs) ? route.legs : [];
+  const steps = legs.length === 1 && Array.isArray(legs[0].steps) ? legs[0].steps : [];
+  const last = steps.length - 1;
+  if (last < 2) return null;
+  const at = (s) => {
+    const p = s && s.maneuver && Array.isArray(s.maneuver.location) ? s.maneuver.location.map(Number) : [];
+    return p.length === 2 && p.every(Number.isFinite) ? [p[1], p[0]] : null;
+  };
+  const outside = (city, s) => {
+    const p = at(s);
+    return !!p && !(p[0] >= city.south && p[0] <= city.north && p[1] >= city.west && p[1] <= city.east);
+  };
+  let i = 0;
+  if (a) {
+    i = steps.findIndex((s, k) => k > 0 && k < last && outside(a, s));
+    if (i < 0) return null;
+  }
+  let j = last + 1;
+  if (b) {
+    j = -1;
+    for (let k = last - 1; k > i; k--) {
+      if (outside(b, steps[k])) { j = k; break; }
+    }
+    if (j < 0) return null;
+  }
+  const middle = piece(steps.slice(i, j));
+  const head = a ? piece(steps.slice(0, i)) : null;
+  const tail = b ? piece(steps.slice(j)) : null;
+  if (!middle || (a && !head) || (b && !tail)) return null;
+  middle.exit = a ? at(steps[i]) : null;
+  middle.entry = b ? at(steps[j]) : null;
+  return { head: head, middle: middle, tail: tail };
+}
+
+/* A run of the router's steps as a way of its own, with `name` the street
+   its first step is on — the one a rider turns onto where it is joined. */
+function piece(steps) {
+  const coords = [];
+  for (const s of steps) {
+    for (const c of s && s.geometry && Array.isArray(s.geometry.coordinates) ? s.geometry.coordinates : []) {
+      const before = coords[coords.length - 1];
+      if (!before || before[0] !== c[0] || before[1] !== c[1]) coords.push(c);
+    }
+  }
+  const found = way({
+    distance: steps.reduce((n, s) => n + (Number(s && s.distance) || 0), 0),
+    duration: steps.reduce((n, s) => n + (Number(s && s.duration) || 0), 0),
+    geometry: { coordinates: coords },
+    legs: [{ steps: steps }]
+  });
+  return found && Object.assign(found, { name: steps[0] && typeof steps[0].name === 'string' ? steps[0].name : '' });
+}
+
+/* An end of a long ride, refined as a ride in the city is: `given`, the
+   router's own piece of the long way, or the router asked for it — setting
+   off by `heading` where there is one, and without it where the router has
+   no street running that way. Null where it has no way at all.
+
+   The doors are asked about only where one could win. A door saves at most
+   what the router's way round it is longer than it — `around` less
+   `meters`, 691 m for the best of them on 2026-11-22 — and wins only where
+   it saves a tenth of the way, DOOR_RATIO; an end from the middle of
+   Tallinn out to its box is twenty-odd kilometres, which no door can be a
+   tenth of, and asking cost four router requests an end for nothing. */
+async function refineEnd(context, given, start, end, heading = null) {
+  const found = given || (heading !== null && await oneWay([start, end], heading)) || await oneWay([start, end]);
+  if (!found) return null;
+  let ways = [found];
+  const all = await doors(context);
+  const most = Math.max(0, ...all.map((door) => door.around - door.meters));
+  const through = reach(found) * (1 - DOOR_RATIO) <= most
+    ? await viaDoor(all, start, end, reach(found), DOORS_DEEP)
+    : null;
+  if (through) {
+    ways = [through].concat(ways.filter((other) =>
+      Math.abs(other.meters - through.meters) > SAME_WAY || other.seconds < through.seconds));
+  }
+  ways = (await keepOff(ways, { lat: start[0], lng: start[1] }, { lat: end[0], lng: end[1] }, found.meters)).map(unspur);
+  return settle(ways[0]);
+}
+
+/* The way a line is going at its end, in whole degrees from north, rounded
+   the way a heading is — SETTING OFF THE WAY THEY ARE GOING. */
+function arriving(line) {
+  const b = line[line.length - 1];
+  let k = line.length - 2;
+  while (k > 0 && metres(line[k], b) < CORNER) k--;
+  const a = line[k];
+  if (!a || metres(a, b) < 1) return null;
+  const degrees = Math.atan2((b[1] - a[1]) * Math.cos(a[0] * Math.PI / 180), b[0] - a[0]) * 180 / Math.PI;
+  return (Math.round(degrees / HEADING_STEP) * HEADING_STEP % 360 + 360) % 360;
+}
+
+/* The pieces of a long ride as one way. Each piece's own turns go in after
+   the metres before it; the turn where two meet is read off how the line
+   bends there, under the street the second piece starts on, and the turn
+   the router said there for whichever way it came from goes. */
+function joinLong(parts) {
+  const all = parts.filter(Boolean);
+  let line = [];
+  let meters = 0;
+  let seconds = 0;
+  const steps = [];
+  all.forEach((p, n) => {
+    if (n) {
+      const turn = bend(line, p.line);
+      if (turn) steps.push({ at: p.line[0], meters: Math.round(meters), turn: turn, name: p.name || '' });
+    }
+    for (const s of p.steps) {
+      if ((n && s.meters === 0) || (s.turn === 'arrive' && n < all.length - 1)) continue;
+      steps.push(Object.assign({}, s, { meters: s.meters + Math.round(meters) }));
+    }
+    line = line.concat(p.line);
+    meters += p.meters;
+    seconds += p.seconds;
+  });
+  return { meters: Math.round(meters), seconds: Math.round(seconds), line: thin(line, MAX_POINTS), steps: untie(steps, line) };
+}
+
+/* The middles kept from city `a` to city `b`, or none — no database, no
+   table, a row that will not read. MIDDLES rows at the most, on the key's
+   front: (from_city, to_city). */
+async function knownMiddles(env, a, b) {
+  if (!env.DB) return [];
+  try {
+    if (await wrongDatabase(env)) return [];
+    const { results } = await env.DB
+      .prepare('SELECT exit, entry, meters, seconds, line, steps, name, asked_at FROM route_middles ' +
+        'WHERE from_city = ? AND to_city = ? LIMIT ?')
+      .bind(a, b, MIDDLES)
+      .all();
+    return (results || []).map(middleOf).filter(Boolean);
+  } catch (e) {
+    return [];
+  }
+}
+
+function middleOf(row) {
+  try {
+    const exit = String(row.exit).split(',').map(Number);
+    const entry = String(row.entry).split(',').map(Number);
+    const line = JSON.parse(row.line);
+    const steps = JSON.parse(row.steps);
+    if (exit.length !== 2 || entry.length !== 2 || !exit.concat(entry).every(Number.isFinite)) return null;
+    if (!Array.isArray(line) || line.length < 2 || !Array.isArray(steps)) return null;
+    return {
+      exit: exit, entry: entry, line: line, steps: steps,
+      meters: Number(row.meters) || 0, seconds: Number(row.seconds) || 0,
+      name: typeof row.name === 'string' ? row.name : '', askedAt: Number(row.asked_at) || 0
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+/* The middles a long ask answered with, written with the time, and the
+   pair held to MIDDLES — THE MIDDLES ARE KEPT. Each row by its whole key,
+   and never throws: a middle that could not be kept is asked for again. */
+async function keepMiddles(env, a, b, found, known, now) {
+  if (!env.DB) return;
+  const fresh = found.filter((m, i) => found.findIndex((other) => middleKey(other) === middleKey(m)) === i);
+  const stay = known
+    .filter((m) => now - m.askedAt <= MIDDLE_AGE && !fresh.some((f) => middleKey(f) === middleKey(m)))
+    .sort((x, y) => y.askedAt - x.askedAt);
+  const kept = fresh.concat(stay).slice(0, MIDDLES);
+  const gone = known.filter((m) => !kept.some((k) => middleKey(k) === middleKey(m)));
+  const writes = fresh.filter((m) => kept.includes(m)).map((m) => env.DB
+    .prepare(
+      'INSERT INTO route_middles (from_city, to_city, exit, entry, meters, seconds, line, steps, name, asked_at) ' +
+      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (from_city, to_city, exit, entry) DO UPDATE SET ' +
+      'meters = excluded.meters, seconds = excluded.seconds, line = excluded.line, steps = excluded.steps, ' +
+      'name = excluded.name, asked_at = excluded.asked_at'
+    )
+    .bind(a, b, junctionKey(m.exit), junctionKey(m.entry), m.meters, m.seconds,
+      JSON.stringify(m.line), JSON.stringify(m.steps), m.name || '', now))
+    .concat(gone.map((m) => env.DB
+      .prepare('DELETE FROM route_middles WHERE from_city = ? AND to_city = ? AND exit = ? AND entry = ?')
+      .bind(a, b, junctionKey(m.exit), junctionKey(m.entry))));
+  if (!writes.length) return;
+  try {
+    if (await wrongDatabase(env)) return;
+    await env.DB.batch(writes);
+  } catch (e) {
+    /* No table yet: the next ride between the two asks the long way again. */
+  }
 }
 
 function ask(url, mode) {
