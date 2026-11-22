@@ -46,9 +46,9 @@ export const PAGES = [
   'flashcard.html', 'edit.html', 'write.html', 'insights.html', 'chess.html', '404.html', 'privacy.html',
   /* The public API's page and the map other sites frame — functions/api/v1/. */
   'developers.html', 'embed.html',
-  /* The owner's five, under admin/ — see functions/_middleware.js. */
+  /* The owner's six, under admin/ — see functions/_middleware.js. */
   'admin/google.html', 'admin/stats.html', 'admin/visitors.html', 'admin/found.html',
-  'admin/flows.html',
+  'admin/flows.html', 'admin/doors.html',
   /* And the door to them. It went without stamps for a while, on the
      argument that it is served no-store and /assets/* is told to revalidate,
      so it could never hold a stale copy. The zone in front of Pages raises

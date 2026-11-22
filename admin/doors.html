@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Doors | Tallinn Tastebuds</title>
+<meta name="description" content="The doors a bike route may go through: stretches somebody rode that the router can only go round.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7ddd4">
+
+<!-- Analytics, as on every other page. This page's own visits are not
+     counted by the site — assets/track.js sends nothing from /admin/ — and
+     the owner's `ttb_owner` cookie keeps Clarity off it as well. -->
+<script src="/assets/analytics.js?v=7d35c109" defer></script>
+
+<!-- Not indexed and not disallowed, for the reasons admin/stats.html gives:
+     a crawler forbidden to fetch the page could not read this tag. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/logo/icon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="/assets/logo/icon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/assets/logo/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/logo/icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..700&amp;display=swap">
+
+<!-- Eagerly, as on admin/google.html: the map is the page. -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="">
+<!-- The map's tokens and card, the lists page's header and column, and the
+     owner's bar and rows the other pages under /admin/ draw with. -->
+<link rel="stylesheet" href="/assets/styles.lean.css?v=4f81ed66">
+<link rel="stylesheet" href="/assets/lists.lean.css?v=e7381579">
+<link rel="stylesheet" href="/assets/stats.css?v=6df62431">
+</head>
+<body class="lists-body">
+
+<a class="skip-link" href="#main">Skip to the doors</a>
+
+<!-- The owner's menu, the same markup as on the other pages under /admin/,
+     with Doors the page you are on. In English alone, as on admin.html: the
+     other pages' words come with their route's answer, and this page has no
+     route — it reads one file. -->
+<header class="owner-bar">
+  <a class="owner-home" href="/" aria-label="Back to the map">
+    <img class="owner-mark" src="/assets/logo/mark-round.webp" alt="" width="40" height="40">
+    <span class="owner-wordmark">Tallinn Tastebuds</span>
+  </a>
+  <nav class="numbers-nav" aria-label="The owner’s pages">
+    <a class="chip" href="/admin.html">Admin</a>
+    <a class="chip" href="/admin/visitors">Visitors</a>
+    <a class="chip" href="/admin/found">How they found it</a>
+    <a class="chip" href="/admin/stats">What people open</a>
+    <a class="chip" href="/admin/google">Google’s directory</a>
+    <a class="chip" href="/admin/flows">Who uses the site</a>
+    <a class="chip" href="/admin/doors" aria-current="page">Doors</a>
+  </nav>
+</header>
+
+<div class="lists-main is-wide">
+  <p class="eyebrow">Tallinn</p>
+  <h1 class="lists-title">Doors</h1>
+  <p class="stats-lead">Stretches somebody rode that the bike router can only go the long way round — a gap in a fence, a crossing, a path nobody drew. A bike route goes through one where it wins. Found by <code>node tools/doors.mjs</code> in the rides saved while signed in, and read from <code>data/doors.json</code>; nobody else sees them.</p>
+</div>
+
+<main class="lists-main is-wide" id="main" tabindex="-1">
+  <div id="doors-map" class="doors-map" role="region" aria-label="The doors on the map"></div>
+  <p class="doors-state" id="doors-state">Loading the doors…</p>
+  <ol class="doors-list" id="doors-list"></ol>
+</main>
+
+<noscript>
+  <div class="noscript card">
+    <p class="eyebrow">Tallinn</p>
+    <h2>Doors</h2>
+    <p>This page is drawn with JavaScript. The doors themselves are <a href="/data/doors.json">data/doors.json</a>.</p>
+  </div>
+</noscript>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+        defer></script>
+<script src="/assets/track.js?v=34c2e65a" defer></script>
+<!-- The tiles, the key and the attribution, shared with the map. Before
+     doors.js and deferred like it, so the global is there first. -->
+<script src="/assets/basemap.js?v=357d3794" defer></script>
+<script src="/assets/doors.js?v=7b5fa7e4" defer></script>
+</body>
+</html>

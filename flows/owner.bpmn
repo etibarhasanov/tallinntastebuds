@@ -153,12 +153,13 @@ ref: tools/generate.mjs</bpmn:documentation>
     <bpmn:endEvent id="discount-live" name="Offer live">
       <bpmn:incoming>owner-e21</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="stats" name="Reads the stats, the visitors, how they found the site, the diagrams and their numbers, Google's directory and budget">
+    <bpmn:userTask id="stats" name="Reads the stats, the visitors, how they found the site, the diagrams and their numbers, Google's directory and budget, and the doors">
       <bpmn:documentation>ref: admin/stats.html
 ref: admin/visitors.html
 ref: admin/found.html
 ref: admin/flows.html
 ref: admin/google.html
+ref: admin/doors.html
 ref: admin.html</bpmn:documentation>
       <bpmn:incoming>owner-e2</bpmn:incoming>
       <bpmn:incoming>owner-e22</bpmn:incoming>
