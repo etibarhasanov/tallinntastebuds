@@ -754,7 +754,8 @@ export async function refreshOnOpen(env, id, source = 'open') {
  * still to come — KEEP_FOR_OPENS in the afternoon, nought from
  * SPEND_ALL_FROM_HOUR — and `most` how many one caller may ask about, so at
  * most the day's cap less what is already spent and what is kept back is
- * read, and no more than `most` of that. The cap still binds on
+ * asked about, and no more than `most` of that, taken from the front of
+ * THE DAY'S QUEUE below. The cap still binds on
  * its own: an open that lands mid-loop takes its call, spend() refuses the
  * first one past thirty-two, and the loop stops at that refusal.
  *
@@ -785,47 +786,134 @@ export async function refreshOnOpen(env, id, source = 'open') {
 export async function refreshFill(env, now, leave = 0, most = BUDGET.details.day) {
   if (!env || !env.DB || !googleKey(env)) return 0;
 
-  let due;
+  let room;
+  let queue;
   try {
-    const room = Math.min(most, BUDGET.details.day - leave - (await spent(env, 'details', now)).today);
+    room = Math.min(most, BUDGET.details.day - leave - (await spent(env, 'details', now)).today);
     if (room <= 0) return 0;
-    /* How many closed rows were already asked about today, by anything. A
-       row that answered open no longer counts, which only ever lets one more
-       through on the day something reopened. */
-    const asked = await env.DB
-      .prepare('SELECT COUNT(*) AS n FROM google_venues WHERE status = ? AND refreshed_at >= ?')
-      .bind(CLOSED, Date.parse(dayOf(now)))
-      .first();
-    const shut = Math.min(room, Math.max(0, CLOSED_A_DAY - ((asked && asked.n) || 0)));
-    const only = await eatOnly(env);
-    const oldest = (closed, limit) => env.DB
-      .prepare(
-        'SELECT place_id FROM google_venues ' +
-        'WHERE hidden = 0 AND missing_since IS NULL' + only + ' AND ' + DUE_SQL + ' ' +
-        (closed ? 'AND status = ? ' : "AND COALESCE(status, '') <> ? ") +
-        'ORDER BY ' + TIER_SQL + ', COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?'
-      )
-      .bind(now, CLOSED, limit)
-      .all();
-    const first = shut ? ((await oldest(true, shut)).results || []) : [];
-    const rest = room > first.length ? ((await oldest(false, room - first.length)).results || []) : [];
-    due = { results: first.concat(rest) };
+    queue = await dayQueue(env, now);
   } catch (e) {
     return 0;
   }
 
-  /* Asked about one after another until the list or the day runs out.
-     refreshOnOpen() does the claiming, so a row another request is already
-     asking about comes back 'taken' and is simply skipped; 'spent' ends the
-     loop, since the next row would get the same answer, and so do the two
-     exits that mean nothing will be answered today. */
+  /* Asked about one after another until `room` calls are made or the queue
+     or the day runs out. refreshOnOpen() does the claiming, so a row another
+     request is already asking about comes back 'taken' and is simply
+     skipped, and one an open has asked about since the queue was made comes
+     back 'fresh'; 'spent' ends the loop, since the next row would get the
+     same answer, and so do the two exits that mean nothing will be answered
+     today. Every row the loop got through leaves the queue, whatever it
+     answered: one that failed waits for tomorrow's queue rather than being
+     asked again on every knock. */
   let written = 0;
-  for (const row of due.results) {
-    const outcome = await refreshOnOpen(env, row.place_id, 'fill');
+  let asked = 0;
+  let done = 0;
+  for (const id of queue) {
+    if (asked >= room) break;
+    const outcome = await refreshOnOpen(env, id, 'fill');
     if (outcome === 'spent' || outcome === 'no-key' || outcome === 'not-ready') break;
+    done++;
+    if (CALLED.has(outcome)) asked++;
     if (outcome === 'changed' || outcome === 'same' || outcome === 'closed' || outcome === 'gone') written++;
   }
+  if (done) await keepQueue(env, dayOf(now), queue.slice(done));
   return written;
+}
+
+/* The outcomes of refreshOnOpen() that may have spent a call — every one
+   after spend() but 'spent' itself, and 'error', which can come either side
+   of it and is counted as though it had. */
+const CALLED = new Set(['changed', 'same', 'closed', 'gone', 'failed', 'error']);
+
+/* THE DAY'S QUEUE
+ *
+ * Which rows are due, and in what order, is one walk of google_venues: the
+ * order is the tier, and the tier of a row ranked below four hundred asks
+ * google_scores whether it is busy, so no index can answer it. Each knock
+ * used to walk it again to choose its six — on 2026-11-22 four knocks
+ * between 12:00 and 12:45 UTC, each a scan to count the closed rows asked
+ * about today (1,190 rows read to answer 2, measured on production that
+ * day), another scan to choose, and the busy lookups beside it; google_venues was 14,141 rows read by 16:05, the dearest table on the
+ * meter by ten times.
+ *
+ * Nothing about which rows are due changes in an afternoon but the rows the
+ * afternoon asks about. So the first knock of a UTC day walks the table
+ * once, for QUEUE_LENGTH of the rows due — the closed ones first, as many as
+ * CLOSED_A_DAY leaves room for, then the rest in tier order — and keeps
+ * their keys in `meta`, under `fill_queue`, with the day. Every knock after
+ * it reads that one row and takes from the front; what it got through is
+ * written back without it. Twice the day's budget, because an open can ask
+ * about a row first — it answers 'fresh' and costs the fill nothing — and a
+ * queue that ran dry with calls to spend would leave the day short. A row
+ * that falls due later in the day waits for tomorrow's queue, which is the
+ * order it would have come in anyway.
+ *
+ * Two knocks in two isolates read the same queue and the claim settles it:
+ * the second finds the first's rows 'taken' and goes on down. Each writes
+ * back what it got through, so the last to write may put back a row the
+ * other already asked about, which answers 'fresh' next time. Without
+ * `meta`, every knock walks the table, as it did before.
+ *
+ * What it costs: the walk once a day, where it was every knock with calls
+ * left to spend, four to six an afternoon; then one row of `meta` read and
+ * one written a knock, and a row read or two for each row taken. */
+const QUEUE = 'fill_queue';
+const QUEUE_LENGTH = 2 * BUDGET.details.day;
+
+/* Today's queue, as Google keys in the order to ask them, made where there
+   is none for today. Throws where google_venues cannot be read. */
+async function dayQueue(env, now) {
+  const day = dayOf(now);
+  try {
+    /* One row of meta by its key. */
+    const kept = await env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind(QUEUE).first();
+    const queue = kept ? JSON.parse(kept.value) : null;
+    if (queue && queue.day === day && Array.isArray(queue.ids)) {
+      return queue.ids.filter((id) => typeof id === 'string');
+    }
+  } catch (e) {
+    /* No meta, or a value that is not a queue: make one. */
+  }
+
+  /* How many closed rows were already asked about today, by anything, when
+     the queue is made — before the fill's first knock, so normally none. A
+     row that answered open no longer counts; when that happens during the
+     afternoon, the next closed row waits for tomorrow's queue, where each
+     knock used to let it through the same day. A scan: status is the second
+     column of idx_google_venues_open. */
+  const asked = await env.DB
+    .prepare('SELECT COUNT(*) AS n FROM google_venues WHERE status = ? AND refreshed_at >= ?')
+    .bind(CLOSED, Date.parse(day))
+    .first();
+  const shut = Math.max(0, CLOSED_A_DAY - ((asked && asked.n) || 0));
+  const only = await eatOnly(env);
+  const oldest = (closed, limit) => env.DB
+    .prepare(
+      'SELECT place_id FROM google_venues ' +
+      'WHERE hidden = 0 AND missing_since IS NULL' + only + ' AND ' + DUE_SQL + ' ' +
+      (closed ? 'AND status = ? ' : "AND COALESCE(status, '') <> ? ") +
+      'ORDER BY ' + TIER_SQL + ', COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?'
+    )
+    .bind(now, CLOSED, limit)
+    .all();
+  const first = shut ? ((await oldest(true, shut)).results || []) : [];
+  const rest = (await oldest(false, QUEUE_LENGTH - first.length)).results || [];
+  const ids = first.concat(rest).map((row) => row.place_id);
+  await keepQueue(env, day, ids);
+  return ids;
+}
+
+/* The queue, written for the knocks after this one. Never throws: a queue
+   that could not be kept is made again on the next knock. */
+async function keepQueue(env, day, ids) {
+  try {
+    await env.DB
+      .prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value')
+      .bind(QUEUE, JSON.stringify({ day, ids }))
+      .run();
+  } catch (e) {
+    /* No meta: the next knock walks the table again. */
+  }
 }
 
 /* WHY A VISIT IS THE CLOCK
