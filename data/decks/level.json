@@ -2080,34 +2080,34 @@
   },
   "wrong": [
    {
-    "en": "Shoulder",
-    "az": "Çiyin",
-    "ru": "Плечо"
+    "en": "Leg, foot",
+    "az": "Ayaq",
+    "ru": "Нога"
    },
    {
-    "en": "Elbow",
-    "az": "Dirsək",
-    "ru": "Локоть"
+    "en": "Bottom",
+    "az": "Oturacaq",
+    "ru": "Ягодицы"
    },
    {
-    "en": "Neck",
-    "az": "Boyun",
-    "ru": "Шея"
+    "en": "Ankle",
+    "az": "Topuq",
+    "ru": "Лодыжка"
    },
    {
-    "en": "Finger",
-    "az": "Barmaq",
-    "ru": "Палец"
+    "en": "Hip",
+    "az": "Bud",
+    "ru": "Бедро"
    },
    {
-    "en": "Toe",
-    "az": "Ayaq barmağı",
-    "ru": "Палец ноги"
+    "en": "Nail",
+    "az": "Dırnaq",
+    "ru": "Ноготь"
    },
    {
-    "en": "Chest",
-    "az": "Sinə",
-    "ru": "Грудь"
+    "en": "Heel",
+    "az": "Daban",
+    "ru": "Пятка"
    }
   ]
  },

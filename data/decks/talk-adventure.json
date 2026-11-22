@@ -360,7 +360,7 @@
     "az": "valideynlərin",
     "ru": "родителей"
    },
-   "deck": "adjectives-cards"
+   "deck": "tana-words"
   },
   "juurde": {
    "base": "juurde",
@@ -655,7 +655,7 @@
     "az": "ayaqlar",
     "ru": "ноги"
    },
-   "deck": "health"
+   "deck": "body"
   },
   "tõusid": {
    "base": "tõusma",
@@ -795,7 +795,7 @@
     "az": "ağza",
     "ru": "в рот"
    },
-   "deck": "health"
+   "deck": "body"
   },
   "ega": {
    "base": "ega",
@@ -813,7 +813,7 @@
     "az": "gözə",
     "ru": "в глаза"
    },
-   "deck": "health"
+   "deck": "body"
   },
   "ringi": {
    "base": "ringi",

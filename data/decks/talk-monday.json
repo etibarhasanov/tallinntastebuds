@@ -281,7 +281,7 @@
     "az": "dişləri",
     "ru": "зубы"
    },
-   "deck": "health"
+   "deck": "body"
   },
   "ja": {
    "base": "ja",
@@ -786,7 +786,7 @@
     "az": "dişlər",
     "ru": "зубы"
    },
-   "deck": "health"
+   "deck": "body"
   },
   "ära": {
    "base": "ära",
@@ -902,7 +902,7 @@
     "az": "başa",
     "ru": "в голову"
    },
-   "deck": "health"
+   "deck": "body"
   },
   "tuleb": {
    "base": "tulema",

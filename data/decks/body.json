@@ -14,108 +14,64 @@
  },
  "cards": [
   {
-   "id": "kael",
-   "front": "Kael",
+   "id": "keha",
+   "front": "Keha",
    "back": {
-    "en": "Neck",
-    "az": "Boyun",
-    "ru": "Шея"
+    "en": "Body",
+    "az": "Bədən",
+    "ru": "Тело"
    },
    "forms": [
-    "kaela",
-    "kaela"
+    "keha",
+    "keha"
    ]
   },
   {
-   "id": "olg",
-   "front": "Õlg",
+   "id": "pea",
+   "front": "Pea",
    "back": {
-    "en": "Shoulder",
-    "az": "Çiyin",
-    "ru": "Плечо"
+    "en": "Head",
+    "az": "Baş",
+    "ru": "Голова"
    },
    "forms": [
-    "õla",
-    "õlga"
-   ]
+    "pea",
+    "pead"
+   ],
+   "sentence": {
+    "et": "Mul on peavalu.",
+    "en": "I have a headache.",
+    "az": "Başım ağrıyır.",
+    "ru": "У меня болит голова."
+   }
   },
   {
-   "id": "polv",
-   "front": "Põlv",
+   "id": "nagu",
+   "front": "Nägu",
    "back": {
-    "en": "Knee",
-    "az": "Diz",
-    "ru": "Колено"
+    "en": "Face",
+    "az": "Üz",
+    "ru": "Лицо"
    },
    "forms": [
-    "põlve",
-    "põlve"
-   ]
+    "näo",
+    "nägu"
+   ],
+   "sentence": {
+    "et": "Tal on sõbralik nägu.",
+    "en": "They have a friendly face.",
+    "az": "Onun mehriban üzü var.",
+    "ru": "У него доброе лицо."
+   }
   },
   {
-   "id": "kuunarnukk",
-   "front": "Küünarnukk",
+   "id": "juuksed",
+   "front": "Juuksed",
    "back": {
-    "en": "Elbow",
-    "az": "Dirsək",
-    "ru": "Локоть"
-   },
-   "forms": [
-    "küünarnuki",
-    "küünarnukki"
-   ]
-  },
-  {
-   "id": "sorm",
-   "front": "Sõrm",
-   "back": {
-    "en": "Finger",
-    "az": "Barmaq",
-    "ru": "Палец"
-   },
-   "forms": [
-    "sõrme",
-    "sõrme"
-   ]
-  },
-  {
-   "id": "varvas",
-   "front": "Varvas",
-   "back": {
-    "en": "Toe",
-    "az": "Ayaq barmağı",
-    "ru": "Палец ноги"
-   },
-   "forms": [
-    "varba",
-    "varvast"
-   ]
-  },
-  {
-   "id": "rind",
-   "front": "Rind",
-   "back": {
-    "en": "Chest",
-    "az": "Sinə",
-    "ru": "Грудь"
-   },
-   "forms": [
-    "rinna",
-    "rinda"
-   ]
-  },
-  {
-   "id": "puus",
-   "front": "Puus",
-   "back": {
-    "en": "Hip",
-    "az": "Bud",
-    "ru": "Бедро"
-   },
-   "forms": [
-    "puusa",
-    "puusa"
-   ]
+    "en": "Hair",
+    "az": "Saç",
+    "ru": "Волосы"
+   }
   },
   {
    "id": "laup",
@@ -128,6 +84,175 @@
    "forms": [
     "lauba",
     "laupa"
+   ]
+  },
+  {
+   "id": "kulm",
+   "front": "Kulm",
+   "back": {
+    "en": "Eyebrow",
+    "az": "Qaş",
+    "ru": "Бровь"
+   },
+   "forms": [
+    "kulmu",
+    "kulmu"
+   ]
+  },
+  {
+   "id": "silm",
+   "front": "Silm",
+   "back": {
+    "en": "Eye",
+    "az": "Göz",
+    "ru": "Глаз"
+   },
+   "forms": [
+    "silma",
+    "silma"
+   ],
+   "sentence": {
+    "et": "Mul on midagi silmas.",
+    "en": "I have something in my eye.",
+    "az": "Gözümə nəsə düşüb.",
+    "ru": "Мне что-то попало в глаз."
+   }
+  },
+  {
+   "id": "silmalaug",
+   "front": "Silmalaug",
+   "back": {
+    "en": "Eyelid",
+    "az": "Göz qapağı",
+    "ru": "Веко"
+   },
+   "forms": [
+    "silmalau",
+    "silmalaugu"
+   ]
+  },
+  {
+   "id": "ripsmed",
+   "front": "Ripsmed",
+   "back": {
+    "en": "Eyelashes",
+    "az": "Kirpiklər",
+    "ru": "Ресницы"
+   }
+  },
+  {
+   "id": "korv",
+   "front": "Kõrv",
+   "back": {
+    "en": "Ear",
+    "az": "Qulaq",
+    "ru": "Ухо"
+   },
+   "forms": [
+    "kõrva",
+    "kõrva"
+   ],
+   "sentence": {
+    "et": "Kõrv valutab.",
+    "en": "My ear hurts.",
+    "az": "Qulağım ağrıyır.",
+    "ru": "Болит ухо."
+   }
+  },
+  {
+   "id": "nina",
+   "front": "Nina",
+   "back": {
+    "en": "Nose",
+    "az": "Burun",
+    "ru": "Нос"
+   },
+   "forms": [
+    "nina",
+    "nina"
+   ],
+   "sentence": {
+    "et": "Mul on nina kinni.",
+    "en": "My nose is blocked.",
+    "az": "Burnum tutulub.",
+    "ru": "У меня заложен нос."
+   }
+  },
+  {
+   "id": "posk",
+   "front": "Põsk",
+   "back": {
+    "en": "Cheek",
+    "az": "Yanaq",
+    "ru": "Щека"
+   },
+   "forms": [
+    "põse",
+    "põske"
+   ]
+  },
+  {
+   "id": "suu",
+   "front": "Suu",
+   "back": {
+    "en": "Mouth",
+    "az": "Ağız",
+    "ru": "Рот"
+   },
+   "forms": [
+    "suu",
+    "suud"
+   ],
+   "sentence": {
+    "et": "Tee on kuum, ära põleta suud.",
+    "en": "The tea is hot, do not burn your mouth.",
+    "az": "Çay istidir, ağzını yandırma.",
+    "ru": "Чай горячий, не обожги рот."
+   }
+  },
+  {
+   "id": "huul",
+   "front": "Huul",
+   "back": {
+    "en": "Lip",
+    "az": "Dodaq",
+    "ru": "Губа"
+   },
+   "forms": [
+    "huule",
+    "huult"
+   ]
+  },
+  {
+   "id": "hammas",
+   "front": "Hammas",
+   "back": {
+    "en": "Tooth",
+    "az": "Diş",
+    "ru": "Зуб"
+   },
+   "forms": [
+    "hamba",
+    "hammast"
+   ],
+   "sentence": {
+    "et": "Hammas valutab.",
+    "en": "My tooth hurts.",
+    "az": "Dişim ağrıyır.",
+    "ru": "Зуб болит."
+   }
+  },
+  {
+   "id": "keel",
+   "front": "Keel",
+   "back": {
+    "en": "Tongue",
+    "az": "Dil",
+    "ru": "Язык"
+   },
+   "forms": [
+    "keele",
+    "keelt"
    ]
   },
   {
@@ -144,26 +269,366 @@
    ]
   },
   {
-   "id": "posk",
-   "front": "Põsk",
+   "id": "kael",
+   "front": "Kael",
    "back": {
-    "en": "Cheek",
-    "az": "Yanaq",
-    "ru": "Щека"
+    "en": "Neck",
+    "az": "Boyun",
+    "ru": "Шея"
    },
    "forms": [
-    "põse",
-    "põske"
+    "kaela",
+    "kaela"
    ]
   },
   {
-   "id": "juuksed",
-   "front": "Juuksed",
+   "id": "kurk",
+   "front": "Kurk",
    "back": {
-    "en": "Hair",
-    "az": "Saç",
-    "ru": "Волосы"
+    "en": "Throat",
+    "az": "Boğaz",
+    "ru": "Горло"
+   },
+   "forms": [
+    "kurgu",
+    "kurku"
+   ]
+  },
+  {
+   "id": "olg",
+   "front": "Õlg",
+   "back": {
+    "en": "Shoulder",
+    "az": "Çiyin",
+    "ru": "Плечо"
+   },
+   "forms": [
+    "õla",
+    "õlga"
+   ]
+  },
+  {
+   "id": "selg",
+   "front": "Selg",
+   "back": {
+    "en": "Back",
+    "az": "Bel, kürək",
+    "ru": "Спина"
+   },
+   "forms": [
+    "selja",
+    "selga"
+   ],
+   "sentence": {
+    "et": "Selg on valus.",
+    "en": "My back hurts.",
+    "az": "Belim ağrıyır.",
+    "ru": "У меня болит спина."
    }
+  },
+  {
+   "id": "rind",
+   "front": "Rind",
+   "back": {
+    "en": "Chest",
+    "az": "Sinə",
+    "ru": "Грудь"
+   },
+   "forms": [
+    "rinna",
+    "rinda"
+   ]
+  },
+  {
+   "id": "koht",
+   "front": "Kõht",
+   "back": {
+    "en": "Stomach",
+    "az": "Qarın",
+    "ru": "Живот"
+   },
+   "forms": [
+    "kõhu",
+    "kõhtu"
+   ],
+   "sentence": {
+    "et": "Mul on kõht valus.",
+    "en": "My stomach hurts.",
+    "az": "Qarnım ağrıyır.",
+    "ru": "У меня болит живот."
+   }
+  },
+  {
+   "id": "naba",
+   "front": "Naba",
+   "back": {
+    "en": "Navel",
+    "az": "Göbək",
+    "ru": "Пупок"
+   },
+   "forms": [
+    "naba",
+    "naba"
+   ]
+  },
+  {
+   "id": "kaenlaalune",
+   "front": "Kaenlaalune",
+   "back": {
+    "en": "Armpit",
+    "az": "Qoltuq",
+    "ru": "Подмышка"
+   },
+   "forms": [
+    "kaenlaaluse",
+    "kaenlaalust"
+   ]
+  },
+  {
+   "id": "kasi",
+   "front": "Käsi",
+   "back": {
+    "en": "Hand, arm",
+    "az": "Əl, qol",
+    "ru": "Рука"
+   },
+   "forms": [
+    "käe",
+    "kätt"
+   ],
+   "sentence": {
+    "et": "Mul on käsi katki.",
+    "en": "My hand is hurt.",
+    "az": "Əlim zədələnib.",
+    "ru": "У меня повреждена рука."
+   }
+  },
+  {
+   "id": "kaeluu",
+   "front": "Käeluu",
+   "back": {
+    "en": "Arm bone",
+    "az": "Qol sümüyü",
+    "ru": "Кость руки"
+   },
+   "forms": [
+    "käeluu",
+    "käeluud"
+   ]
+  },
+  {
+   "id": "kuunarnukk",
+   "front": "Küünarnukk",
+   "back": {
+    "en": "Elbow",
+    "az": "Dirsək",
+    "ru": "Локоть"
+   },
+   "forms": [
+    "küünarnuki",
+    "küünarnukki"
+   ]
+  },
+  {
+   "id": "ranne",
+   "front": "Ranne",
+   "back": {
+    "en": "Wrist",
+    "az": "Bilək",
+    "ru": "Запястье"
+   },
+   "forms": [
+    "randme",
+    "rannet"
+   ]
+  },
+  {
+   "id": "peopesa",
+   "front": "Peopesa",
+   "back": {
+    "en": "Palm",
+    "az": "Ovuc",
+    "ru": "Ладонь"
+   },
+   "forms": [
+    "peopesa",
+    "peopesa"
+   ]
+  },
+  {
+   "id": "sorm",
+   "front": "Sõrm",
+   "back": {
+    "en": "Finger",
+    "az": "Barmaq",
+    "ru": "Палец"
+   },
+   "forms": [
+    "sõrme",
+    "sõrme"
+   ]
+  },
+  {
+   "id": "poial",
+   "front": "Pöial",
+   "back": {
+    "en": "Thumb",
+    "az": "Baş barmaq",
+    "ru": "Большой палец"
+   },
+   "forms": [
+    "pöidla",
+    "pöialt"
+   ]
+  },
+  {
+   "id": "kuus",
+   "front": "Küüs",
+   "back": {
+    "en": "Nail",
+    "az": "Dırnaq",
+    "ru": "Ноготь"
+   },
+   "forms": [
+    "küüne",
+    "küünt"
+   ]
+  },
+  {
+   "id": "puus",
+   "front": "Puus",
+   "back": {
+    "en": "Hip",
+    "az": "Bud",
+    "ru": "Бедро"
+   },
+   "forms": [
+    "puusa",
+    "puusa"
+   ]
+  },
+  {
+   "id": "tagumik",
+   "front": "Tagumik",
+   "back": {
+    "en": "Bottom",
+    "az": "Oturacaq",
+    "ru": "Ягодицы"
+   },
+   "forms": [
+    "tagumiku",
+    "tagumikku"
+   ]
+  },
+  {
+   "id": "jalg",
+   "front": "Jalg",
+   "back": {
+    "en": "Leg, foot",
+    "az": "Ayaq",
+    "ru": "Нога"
+   },
+   "forms": [
+    "jala",
+    "jalga"
+   ],
+   "sentence": {
+    "et": "Jalg valutab.",
+    "en": "My leg hurts.",
+    "az": "Ayağım ağrıyır.",
+    "ru": "Нога болит."
+   }
+  },
+  {
+   "id": "polv",
+   "front": "Põlv",
+   "back": {
+    "en": "Knee",
+    "az": "Diz",
+    "ru": "Колено"
+   },
+   "forms": [
+    "põlve",
+    "põlve"
+   ]
+  },
+  {
+   "id": "saar",
+   "front": "Säär",
+   "back": {
+    "en": "Lower leg, shin",
+    "az": "Baldır",
+    "ru": "Голень"
+   },
+   "forms": [
+    "sääre",
+    "säärt"
+   ]
+  },
+  {
+   "id": "pahkluu",
+   "front": "Pahkluu",
+   "back": {
+    "en": "Ankle",
+    "az": "Topuq",
+    "ru": "Лодыжка"
+   },
+   "forms": [
+    "pahkluu",
+    "pahkluud"
+   ]
+  },
+  {
+   "id": "labajalg",
+   "front": "Labajalg",
+   "back": {
+    "en": "Foot",
+    "az": "Ayaq pəncəsi",
+    "ru": "Ступня"
+   },
+   "forms": [
+    "labajala",
+    "labajalga"
+   ]
+  },
+  {
+   "id": "kand",
+   "front": "Kand",
+   "back": {
+    "en": "Heel",
+    "az": "Daban",
+    "ru": "Пятка"
+   },
+   "forms": [
+    "kanna",
+    "kanda"
+   ]
+  },
+  {
+   "id": "varvas",
+   "front": "Varvas",
+   "back": {
+    "en": "Toe",
+    "az": "Ayaq barmağı",
+    "ru": "Палец ноги"
+   },
+   "forms": [
+    "varba",
+    "varvast"
+   ]
+  },
+  {
+   "id": "aju",
+   "front": "Aju",
+   "back": {
+    "en": "Brain",
+    "az": "Beyin",
+    "ru": "Мозг"
+   },
+   "forms": [
+    "aju",
+    "aju"
+   ]
   },
   {
    "id": "suda",
@@ -188,6 +653,45 @@
    }
   },
   {
+   "id": "neer",
+   "front": "Neer",
+   "back": {
+    "en": "Kidney",
+    "az": "Böyrək",
+    "ru": "Почка"
+   },
+   "forms": [
+    "neeru",
+    "neeru"
+   ]
+  },
+  {
+   "id": "luu",
+   "front": "Luu",
+   "back": {
+    "en": "Bone",
+    "az": "Sümük",
+    "ru": "Кость"
+   },
+   "forms": [
+    "luu",
+    "luud"
+   ]
+  },
+  {
+   "id": "lihas",
+   "front": "Lihas",
+   "back": {
+    "en": "Muscle",
+    "az": "Əzələ",
+    "ru": "Мышца"
+   },
+   "forms": [
+    "lihase",
+    "lihast"
+   ]
+  },
+  {
    "id": "nahk",
    "front": "Nahk",
    "back": {
@@ -198,32 +702,6 @@
    "forms": [
     "naha",
     "nahka"
-   ]
-  },
-  {
-   "id": "kaeluu",
-   "front": "Käeluu",
-   "back": {
-    "en": "Arm bone",
-    "az": "Qol sümüyü",
-    "ru": "Кость руки"
-   },
-   "forms": [
-    "käeluu",
-    "käeluud"
-   ]
-  },
-  {
-   "id": "tagumik",
-   "front": "Tagumik",
-   "back": {
-    "en": "Bottom",
-    "az": "Oturacaq",
-    "ru": "Ягодицы"
-   },
-   "forms": [
-    "tagumiku",
-    "tagumikku"
    ]
   },
   {

@@ -59,6 +59,16 @@
  *                            cards' sentences are the song's lines, and that
  *                            door does not hand out lyrics.
  *
+ *   data/decks/level.json    the questions Find your level draws its test
+ *                            from, each written out whole: the source names
+ *                            a card or a lesson's example, and this is the
+ *                            Estonian, what it means in each language and
+ *                            the wrong answers to stand beside the right
+ *                            one — levelFile() below. What ?level=1 on
+ *                            /api/v1/flashcard reads, so that a test of
+ *                            twenty-five questions out of a dozen decks is
+ *                            one file and not a dozen.
+ *
  * WHO READS WHAT
  *
  * functions/api/_decks.js is the ways of reading the folder, for
@@ -80,16 +90,6 @@
  * tools/validate.mjs and tools/sitemap.mjs read the source, as they always
  * did, and the validator fails the build on a file here that is not what
  * this would write.
- *
- *   data/decks/level.json    the questions Find your level draws its test
- *                            from, each written out whole: the source names
- *                            a card or a lesson's example, and this is the
- *                            Estonian, what it means in each language and
- *                            the wrong answers to stand beside the right
- *                            one — levelFile() below. What ?level=1 on
- *                            /api/v1/flashcard reads, so that a test of
- *                            twenty-five questions out of a dozen decks is
- *                            one file and not a dozen.
  *
  * Four names are the folder's own and no deck, lesson or song may take them:
  * RESERVED_FILES below, which the validator holds every id against.
@@ -212,21 +212,58 @@ function bare(front) {
   return String(front || '').toLowerCase().replace(/^[^a-z\u00C0-\u024F]+|[^a-z\u00C0-\u024F]+$/g, '');
 }
 
-/* Where on the shelf each word is taught, by its base form: the first deck
-   in the file with a card of that front, a deck of the shelf's own before a
-   song's. A conversation's word names no deck in the source — there are nine
-   hundred of them, and the shelf moves under them — so this finds it on
-   every run, the way the song's tap box is told it by hand. */
+/* Where on the shelf each word is taught, by its base form: every deck in
+   the file with a card of that front, in the file's order, a deck of the
+   shelf's own before a song's, each with what its card means in English. A
+   conversation's word names no deck in the source — there are nine hundred
+   of them, and the shelf moves under them — so this finds it on every run,
+   the way the song's tap box is told it by hand. deckFor() below picks one. */
 function taught(file) {
   const where = new Map();
   const decks = (file.decks || []).filter((deck) => deck && Array.isArray(deck.cards));
   for (const deck of decks.filter((d) => d.level !== 'song').concat(decks.filter((d) => d.level === 'song'))) {
     for (const card of deck.cards) {
       const key = bare(card && card.front);
-      if (key && !where.has(key)) where.set(key, deck.id);
+      if (!key) continue;
+      const found = where.get(key) || [];
+      if (!found.some((one) => one.deck === deck.id)) found.push({ deck: deck.id, means: card.back && card.back.en });
+      where.set(key, found);
     }
   }
   return where;
+}
+
+/* Which of those decks a conversation's word is taught in. Most bases are on
+   one deck and that is the answer. Some are on two because Estonian spends
+   one word on two things — *keel* is a language and a tongue, *kurk* a
+   cucumber and a throat, *parem* better and the right-hand side — and the
+   first in the file used to be the answer for all of them, so the day
+   *Head to toe* took *keel* as a tongue, every conversation about a language
+   class pointed at the body. So what the glossary says the word means picks:
+   the deck whose card shares the earliest word of it, and where none shares
+   one, the first, as before. That put *parem* on *better* rather than on the
+   right-hand side, and *vanemad*, the parents, on the song deck whose
+   *Vanem* is a parent rather than the comparatives' *older*, both of which
+   the first in the file had got wrong. The same word on two decks meaning
+   the same thing — *silm* on *Head to toe* and on *When something is wrong*
+   — goes to the first, which is the one a learner reaches sooner. A word
+   of a meaning is four letters and up, so *the*, *to* and *in* match
+   nothing, with a plural's last *s* off, so *languages* is *language*. */
+function deckFor(found, means) {
+  if (!found) return undefined;
+  const words = (text) => (String(text || '').toLowerCase().match(/[a-z]{4,}/g) || []).map((word) => word.replace(/s$/, ''));
+  const said = words(means && means.en);
+  let best = found[0];
+  let at = Infinity;
+  for (const one of found) {
+    const theirs = new Set(words(one.means));
+    const first = said.findIndex((word) => theirs.has(word));
+    if (first !== -1 && first < at) {
+      best = one;
+      at = first;
+    }
+  }
+  return best.deck;
 }
 
 /* A conversation as its own file carries it: the source's, with `words`
@@ -245,7 +282,7 @@ function talkFile(talk, file, where) {
         const key = found.toLowerCase();
         const word = own[key] || glossary[key];
         if (!word || words[key]) continue;
-        const deck = where.get(bare(word.base));
+        const deck = deckFor(where.get(bare(word.base)), word.means);
         words[key] = deck ? { ...word, deck } : { ...word };
       }
     }
@@ -261,7 +298,7 @@ const WRONG_POOL = 6;
 /* The questions of Find your level, written out — `level` in the source,
    which names a card or a lesson's example and nothing else, so that a
    question can never say something the shelf does not.
- *
+
    A card asked as `write` is its meaning and the front to type; any other
    card is its front and its meaning to pick, among the meanings of the cards
    nearest it in its own deck — nearest, because a deck runs by subject and
