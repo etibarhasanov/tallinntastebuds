@@ -3932,11 +3932,25 @@ Liivalaia, and from Vabaduse väljak south 690 m of Pärnu maantee; after,
 the first takes Kesk-Ameerika and Vana-Lõuna and the second Kaarli
 puiestee, riding Pärnu maantee only for the last door on it.
 
+Laagna tee followed on 2026-11-22, from a picture the owner sent of
+Rattatee: a ride from Herne to Tallinn Arena that ran along it. It is the
+worst of the four, because the router was not on a path beside it: its
+bike line lay on its car line to the metre for four kilometres, the dual
+carriageway itself. Nothing the router reads keeps a bike off it, so it
+was the quickest way across Lasnamäe, and of ten trips into, out of and
+across Lasnamäe tried that day seven offered it, five first. It is kept
+off its whole length, from the Konstantin Türnpu end to where it comes out
+at the Väo junction. After, from Herne to Tondiraba the first way is Narva
+maantee and Juhan Smuuli tee, 7.8 km and 34 minutes against 6.6 km and 28
+down Laagna tee, and back the same way 8.1 km and 32 minutes against 6.6
+and 27; no way offered on the ten rides more of it than a crossing.
+
 **The router cannot be told, so it is asked again.** OpenStreetMap
 Germany's public router takes no list of streets to avoid. So where a way
 rides one — more than 150 m of its line within the street's width of
-the street's line (60 m for Tartu maantee, 40 m for the two narrower ones,
-whose quiet neighbours run close beside them),
+the street's line (60 m for Tartu maantee, 40 m for the narrower ones,
+whose quiet neighbours run close beside them, and for Laagna tee, whose
+line is the middle of its two carriageways and each within 21 m of it),
 leaving out the first and last 150 m, so a place on the street is still
 reached and crossing it is not riding it — `keepOff()` in
 `functions/api/route.js` asks for the way through a point on either side of
@@ -3945,12 +3959,24 @@ the stretch ridden — on the street it rides most, where it rides two —
 each to the nearest street it can ride, which is a parallel one, and a way
 round longer than half as much again as the shortest is not a way round.
 
+**A long street is gone round twice.** One point beside the middle of five
+kilometres leaves both ends of them ridden: from Lasnamäe to Vabaduse
+väljak every way round the middle of Laagna tee came back to it for its
+last kilometre and a half. So where no way keeps off and the one riding
+least is a way round, it is asked about once more, through its own point
+and a point either side of what it still rides, and where that rides less
+those are the ways. On that ride it took the kilometre and a half of
+Laagna tee off, leaving under two hundred metres of Tartu maantee near the
+centre.
+
 **Only the ways that keep off are offered.** The router's own that already
 did, in its order, then the ways round, quickest first. Where nothing keeps
 off — a start on Tartu maantee itself, say — the ways riding least of it
-are, and one down its whole length beside them is not. The answer's shape
-does not move, so the map, the iPhone app and Rattatee are simply given a
-different line; the cost is up to four more router requests on a ride that
+are, and one down its whole length beside them is not; and where a way
+round either side (**A way on either side**) keeps off, it goes before
+them, as one did on the ride to Vabaduse väljak. The answer's shape does
+not move, so the map, the iPhone app and Rattatee are simply given a
+different line; the cost is up to eight more router requests on a ride that
 touched the street, each cached a day like any other.
 
 **A way round loses its spurs.** The router reaches the point it was asked
@@ -4021,7 +4047,9 @@ again before its spurs come off — and is not a way already there. On that ride
 east by Rävala puiestee, and one west by Toompuiestee.
 
 The ways that were offered before are offered still, in the same order and
-first; a way round only fills a button that was empty. A ride under a
+first; a way round only fills a button that was empty — unless none of
+them keeps off a street to keep off and the way round does, which then goes
+before them. A ride under a
 kilometre as the crow flies has no sides to speak of and is not asked, and
 neither is a way with a `heading`, where a way round is a way back.
 

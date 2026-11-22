@@ -74,9 +74,9 @@
  * true` beside it — RIDDEN below.
  *
  * And by bike some streets are not offered at all. A way that rides Tartu
- * maantee, Liivalaia, or Pärnu maantee from Vabaduse väljak to Liivalaia,
- * for more than a crossing is asked for again round it, and only the ways
- * that keep off are answered — KEEPING OFF below.
+ * maantee, Liivalaia, Pärnu maantee from Vabaduse väljak to Liivalaia, or
+ * Laagna tee for more than a crossing is asked for again round it, and only
+ * the ways that keep off are answered — KEEPING OFF below.
  *
  * And by bike and on foot no way rides out and straight back the way it
  * came — SPURS below. Nor, by bike, does a way keep the bend it made to
@@ -353,6 +353,12 @@ async function street(context, mode, from, to, heading) {
     ways = ways.map(unspur).filter((way, i, all) => !all.slice(0, i).some((before) => alike(way, before)));
   }
   if (mode === 'bike' && heading === null && ways.length <= OTHERS) ways = await eitherSide(ways, from, to);
+  /* A way that keeps off goes before one that does not, wherever it was
+     found — KEEPING OFF below. */
+  if (mode === 'bike') {
+    ways = ways.map((way) => ({ way, rides: ridden(way).meters > KEEP_OFF_MIN }))
+      .sort((a, b) => a.rides - b.rides).map((one) => one.way);
+  }
   /* And of all of those, the one riders made the most of goes in front —
      RIDDEN below. */
   if (mode === 'bike' && heading === null) ways = await riddenFirst(context, ways, shortest);
@@ -815,7 +821,10 @@ async function settle(found, heading = null) {
  * into the centre from the south-east. The owner asked for it not to be
  * offered. Liivalaia, and Pärnu maantee from the lights at Vabaduse väljak
  * down to the Liivalaia crossing, followed on 2026-11-18: the same six
- * lanes and buses, and the owner rides neither. OSRM's public server cannot
+ * lanes and buses, and the owner rides neither. Laagna tee followed on
+ * 2026-11-22, and it is worse than any of them: the router put a ride from
+ * Herne to Tondiraba on the carriageway itself, four kilometres of dual
+ * carriageway, as the quickest way. OSRM's public server cannot
  * be told to avoid a street, so where a way rides one the router is asked
  * again, through a point either side of the stretch ridden, KEEP_OFF_AWAY
  * metres out and square to it, which it snaps to the nearest street it can
@@ -824,6 +833,14 @@ async function settle(found, heading = null) {
  * rides most: a stretch from the first street's start to the second's end
  * is a diagonal through neither, and the points either side of it land on
  * the streets themselves.
+ *
+ * One point beside the middle of a long stretch can leave both its ends
+ * ridden: from Lasnamäe to Vabaduse väljak the router rode five kilometres
+ * of Laagna tee, and every way round its middle came back to the street for
+ * its last kilometre and a half. So where no way keeps off and the one
+ * riding least is a way round, it is asked about once more, through its own
+ * point and a point either side of what it still rides, and where that
+ * rides less, those ways are the ones offered.
  *
  * A way rides a street for as many metres of it as lie within the street's
  * `width` of its line, not counting the first and last KEEP_OFF_ENDS: a
@@ -835,7 +852,9 @@ async function settle(found, heading = null) {
  * Where any way keeps off, only those are offered — the router's own in
  * the router's order first, then the ways round, quickest first. Where
  * none does, as from a door on Tartu maantee itself, the ones that ride
- * least of it are, and a way down its whole length beside them is not.
+ * least of it are, and a way down its whole length beside them is not;
+ * and a way round either side that does keep off goes before them —
+ * EITHER SIDE below.
  * The answer's shape does not change, so the map and both apps simply get
  * a different line. Nothing waits on it: a way round the router will not
  * answer is one fewer to choose from, and no way round at all is the
@@ -870,6 +889,23 @@ const KEEP_OFF = [
     line: [[59.43248, 24.74567], [59.43194, 24.74558], [59.43159, 24.74548], [59.43098, 24.74528],
       [59.4305, 24.74508], [59.43009, 24.74443], [59.42969, 24.7438], [59.4293, 24.74337],
       [59.42877, 24.74281], [59.42837, 24.74247], [59.42729, 24.74254]]
+  },
+  {
+    /* The carriageway itself, not a path beside it: the router's bike line
+       lay on its car line to the metre for four kilometres on 2026-11-22,
+       from Herne to Tondiraba. From the Konstantin Türnpu end to where it
+       comes out at the Väo junction; the line is the middle of the router's
+       two carriageways, each at most 21 m from it, so forty metres takes
+       both. */
+    name: 'Laagna tee',
+    width: 40,
+    line: [[59.43025, 24.77945], [59.43055, 24.78095], [59.43074, 24.78156], [59.43175, 24.78434],
+      [59.43214, 24.78576], [59.43254, 24.7869], [59.43437, 24.79196], [59.43477, 24.79344],
+      [59.43496, 24.79468], [59.43509, 24.79627], [59.43508, 24.79742], [59.43485, 24.80212],
+      [59.4349, 24.80341], [59.43508, 24.8049], [59.43537, 24.80615], [59.43868, 24.8181],
+      [59.43911, 24.81996], [59.43929, 24.822], [59.44032, 24.84649], [59.44041, 24.849],
+      [59.44042, 24.8528], [59.44056, 24.85501], [59.44282, 24.87082], [59.44296, 24.87277],
+      [59.44313, 24.879], [59.44343, 24.88169], [59.44693, 24.89943]]
   }
 ];
 const KEEP_OFF_MIN = 150;
@@ -953,6 +989,15 @@ async function keepOff(ways, from, to, shortest, heading = null, past = null) {
   const all = ways.concat(round);
   const on = rides.concat(round.map(ridden)).map((r) => r.meters);
   const least = Math.min(...on);
+
+  /* Nothing kept off: the way round riding least goes round what it still
+     rides, once — the points either side of a long stretch above. */
+  const nearest = all[on.indexOf(least)];
+  if (least > KEEP_OFF_MIN && !past && nearest.through) {
+    const again = await keepOff([nearest], from, to, shortest, heading, nearest.through[0]);
+    if (Math.min(...again.map((way) => ridden(way).meters)) < least) return again;
+  }
+
   const room = least <= KEEP_OFF_MIN ? KEEP_OFF_MIN : least + KEEP_OFF_MIN;
 
   /* Two points either side can snap to one street: one button each. */
@@ -981,7 +1026,8 @@ async function keepOff(ways, from, to, shortest, heading = null, past = null) {
  * offered, keeps off the streets every way keeps off, and is not a way
  * already there — in either direction, since a way round that only leaves
  * the first for a block is that way. The quicker first, after the ways
- * that were there. A trip under SIDE_FROM has no sides to speak of.
+ * that were there — and before them where they ride a street to keep off,
+ * which street() sees to. A trip under SIDE_FROM has no sides to speak of.
  *
  * SIDE_LONGER is as much as it is because the shortest way was then often
  * one put together from a ride straight through the Old Town — RIDDEN
