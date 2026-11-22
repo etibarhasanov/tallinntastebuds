@@ -4059,6 +4059,60 @@ with fewer than three ways that nobody asked for between those two rounded
 points that day; each is kept a day at the edge. That first answer is slower
 for it, by a second or two on the rides tried.
 
+## A long ride between cities
+
+Every refinement above — the doors, the streets kept off, the ways either
+side, the settling — was written for a ride across town, and each asks the
+router for the whole way again. On 2026-11-22 the owner asked for a bike
+route from Tallinn to Tartu, and it cost 23 router requests and about five
+megabytes for one 192 km ride, nearly all of it the same road re-asked to
+keep a few kilometres of it off Tartu maantee; the next rider from another
+street would have paid it all again. The owner asked for the refinements to
+be done on the ends alone and for the long middle to be kept.
+
+**Three pieces.** Between two of the cities the site draws a box round —
+Tallinn, Tartu, Pärnu and Narva, `CITIES` in `functions/api/_lib.js` — a
+bike way is cut where it crosses the boxes: from the start to the first of
+the router's junctions outside the start's city, from there to the last
+junction before the end's city, and on to the end. A junction is one of the
+router's own manoeuvres, a node of the map, so everybody who leaves Tallinn
+by the same road leaves by the same junction, and the middle between two
+junctions is the same road whoever rides it. The two ends are refined as a
+ride in town is, and the three joined, with the turn at each junction read
+off how the line bends there. No ways either side, which beside a hundred
+kilometres are nothing, and no way put first as ridden, since the rides are
+counted in the cities. The doors are asked about only on an end short
+enough for one to win: the best door saves 691 metres, and a door has to
+save a tenth of the way.
+
+**The middles are kept.** In `route_middles`, at most three for each pair
+of cities, each direction its own. A ride between two cities reads them —
+three rows by the key — and where there are some it does not ask the long
+way at all: it asks the router for the start to each middle's exit and its
+entry to the end, refines those, joins them, and offers the quickest first.
+The long way is asked where the pair has no middle yet, for one ride in
+twenty when it has, so a better exit from another part of town is found,
+and for the first ride after any middle is thirty days old. Its middles are
+written with the time, and the pair is held to three: those just answered
+first, then the rest newest first, and one that no long ask has answered
+with for thirty days goes. `longRide()` in `functions/api/route.js`.
+
+Between a city and a town that is not one — Tallinn and Haapsalu — the long
+way is asked every time, there being no second junction to keep a middle
+between, and only the city's end is refined. A ride between two places in
+no city, one under 20 km as the crow flies, a ride with a `heading`, and
+every ride inside a city are answered exactly as before.
+
+**What it saved**, against the real router on 2026-11-22, with two middles
+kept for Tallinn to Tartu: from Tallinn's centre 16 router requests and
+1.0 MB where it had been 23 and 5.1 MB; from Mustamäe 4 and 0.2 MB where it
+had been 8 and 1.7 MB; from Pirita 9 and 0.7 MB where it had been 8 and 1.6
+MB. The best way was the same road each time. What it gives up is an
+alternative the router would have found for that start alone: from Pirita
+the old answer offered a third way, 198.6 km, through the middle of the
+country, which a ride learning a middle for the pair later adds. A ride
+inside Tallinn gave the same answer, byte for byte.
+
 ## A new way sets off the way the rider is going
 
 Rattatee asks for a new way by itself once its rider has plainly left the
