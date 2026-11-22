@@ -336,46 +336,60 @@ const DAY_MAX = 20000;
 const UNPACKED = 1000;
 const SEEK = 100;
 
-/* Rows in each table of production, 2026-11-18. MAX(rowid) for a table with
-   one, which reads a row a table — forty-one for the lot:
+/* Rows in each table of production, 2026-11-22. MAX(rowid) for a table with
+   one, which reads a row a table — forty-five for the lot — and is never
+   fewer than the rows there, so a table rows were deleted from errs dear:
  *
  *   SELECT (SELECT MAX(rowid) FROM saves) saves, (SELECT MAX(rowid) FROM …
  *
- * and for the tables WITHOUT ROWID only where the number is written down
- * elsewhere. A table missing here has no price, so a walk of it asks; add
- * the line when one is measured. A table that has grown past its line is
- * caught by the meter, which is the day to measure it again. */
+ * A table WITHOUT ROWID has no rowid to ask, so a small one is counted
+ * whole in the same statement, (SELECT COUNT(*) FROM ride_cells) ride_cells,
+ * and a big one only where the number is written down elsewhere. The whole
+ * measurement read 526 rows on 2026-11-22. A table missing here has no
+ * price, so a walk of it asks; add the line when one is measured.
+ *
+ * A table that has grown past its line is caught by the meter, which is the
+ * day to measure it again. On 2026-11-22 ride_sections was 4,440 rows and
+ * its line said 1,920 — four days in which rides went from fifteen to
+ * thirty-five — so a COUNT(*) of it was priced under READ_MAX, let through,
+ * and read 4,440. */
 const SIZES = {
-  saves: 62, save_counts: 39, press_counts: 715, profile_counts: 305, view_seen: 426,
-  list_counts: 117, counter_days: 51, counter_total: 1, users: 81, username_holds: 3,
-  profile_rows: 81, sessions: 105, login_fails: 21, identities: 49, lists: 39,
-  list_items: 451, list_keeps: 8, added_places: 10, google_venues: 1177, google_calls: 55,
-  google_refreshes: 717, google_reranks: 6, google_ranks: 6639, google_scores: 1209,
-  feedback: 2, feedback_hearts: 2, meta: 1, flashcard_decks: 1, flashcard_cards: 170,
-  flashcard_known: 3956, flashcard_reports: 4, chess_games: 4, chess_moves: 42,
-  chess_notes: 6, chess_asks: 1, posts: 1, post_texts: 4, walks: 5, walk_checks: 9,
-  rides: 15, ride_sections: 1920, ride_cells: 39, usage_people: 37, flashcard_days: 15,
-  /* WITHOUT ROWID: the counter's table on the day it stopped the site, and a
-     ring that is sixty rows for ever. */
-  visitor_counts: 18439, visitor_live: 60,
-  /* WITHOUT ROWID too, counted by hand on 2026-11-18 at 22:51 UTC. flow_counts
-     is keyed (flow, day, who, id), so a question by day walks all of it — on
-     2026-11-18 one asked it once per day of visitor_counts, 54,000 rows a
-     run, fourteen times, before this line existed to price it. read_meter is
-     a row a day and table. */
-  flow_counts: 14238, read_meter: 21,
-  /* WITHOUT ROWID, and not in production until db/schema.sql is run again:
-     a row a person and deck, which were 148 pairs on 2026-11-19. */
-  flashcard_progress: 148,
-  /* Not in production: nothing loads db/city-venues.sql there yet. Priced as
-     the three cities' export would be when it is, rather than left unpriced. */
+  saves: 62, save_counts: 39, press_counts: 752, profile_counts: 311, view_seen: 465,
+  list_counts: 151, counter_days: 55, counter_total: 1, users: 81, username_holds: 3,
+  profile_rows: 81, sessions: 108, login_fails: 22, identities: 49, lists: 39,
+  list_items: 475, list_keeps: 8, added_places: 11, google_venues: 1190, google_calls: 63,
+  google_refreshes: 837, google_reranks: 6, google_ranks: 6639, google_scores: 1406,
+  feedback: 2, feedback_hearts: 2, meta: 5, flashcard_decks: 1, flashcard_cards: 170,
+  flashcard_known: 3959, flashcard_reports: 4, chess_games: 4, chess_moves: 42,
+  chess_notes: 6, chess_asks: 0, posts: 1, post_texts: 4, walks: 5, walk_checks: 9,
+  rides: 35, ride_sections: 4440,
+  /* The Azerbaijani corner's Community, in production and all but empty.
+     Until 2026-11-22 it was priced as a year of a busy one would be, from
+     before its tables were loaded; it is what it is now, and the meter is
+     what catches it growing, as with every other line here. */
+  azeri_posts: 1, azeri_comments: 0, azeri_votes: 0, azeri_seen: 1,
+  /* WITHOUT ROWID and small, counted whole on 2026-11-22: a row a ride and
+     square, a week, product and person, a person and day, a person and deck,
+     a day and table, and a ring that is sixty rows for ever. */
+  ride_cells: 83, usage_people: 38, flashcard_days: 17, flashcard_progress: 144,
+  read_meter: 139, visitor_live: 60,
+  /* WITHOUT ROWID and big, and not counted again on 2026-11-22: a count
+     reads every row, about 35,000 for the two, and nothing deletes from
+     either, so each is only bigger than its line. Both are past READ_MAX by
+     seven times or more whatever the number, so a walk of either asks; it
+     only sets the figure the prompt quotes. visitor_counts is the counter's
+     table on the day it stopped the site; flow_counts was counted by hand on
+     2026-11-18 at 22:51 UTC. It is keyed (flow, day, who, id), so a question
+     by day walks all of it — on 2026-11-18 one asked it once per day of
+     visitor_counts, 54,000 rows a run, fourteen times, before this line
+     existed to price it. */
+  visitor_counts: 18439, flow_counts: 14238,
+  /* Not in production on 2026-11-22: nothing loads db/city-venues.sql there
+     yet. Priced as the three cities' export would be when it is, rather than
+     left unpriced. */
   city_venues: 5000,
-  /* Not in production until db/schema.sql is run again: the Azerbaijani
-     Corner's Community, which starts empty. Priced as a year of a busy one
-     would be — a few thousand posts, ten times the comments and upvotes, a
-     row a member — rather than left unpriced, so a walk of one still asks. */
-  azeri_posts: 5000, azeri_comments: 50000, azeri_votes: 50000, azeri_seen: 1000,
-  /* The schema's own list of tables and indexes. */
+  /* The schema's own list of tables and indexes: 143 rows on 2026-11-22,
+     and a round line above that, since every index added is another. */
   sqlite_master: 200, sqlite_schema: 200
 };
 
@@ -907,7 +921,9 @@ const CASES = [
   ['ask', "SELECT r.id, t.key, json_extract(t.value,'$[0]') - LAG(json_extract(t.value,'$[0]')) OVER (PARTITION BY r.id ORDER BY t.key) dt FROM rides r, json_each(r.track) t"],
   /* A whole table under the line runs; one over it, or with no size, asks. */
   ['allow', 'SELECT COUNT(*) n, SUM(meters) m FROM rides'],
-  ['allow', 'SELECT COUNT(*) cells, SUM(stops) stops FROM ride_sections'],
+  /* This one ran on 2026-11-22 as under the line, priced at 1,920 rows out
+     of a SIZES four days old, and read 4,440. Measured again, it asks. */
+  ['ask', 'SELECT COUNT(*) cells, SUM(stops) stops FROM ride_sections'],
   ['ask', 'SELECT * FROM visitor_counts'],
   ['ask', "SELECT kind, SUM(n) FROM visitor_counts WHERE day >= '2026-11-01' GROUP BY kind"],
   ['ask', 'SELECT * FROM flow_counts'],
