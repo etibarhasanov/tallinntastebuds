@@ -16779,15 +16779,24 @@ is half a year old, and about ninety-five thousand rows after that at
 November 2026's five hundred and thirty a day — and that was read again for
 every device chip, every language and every range, every five minutes,
 though a day that has ended never changes. Since 2026-11-19 a day two or
-more behind is read once and kept in the colo for forty-five days, an entry
-a day, and only yesterday and today came from the table on each open. That
-was still the dearest statement on the account on 2026-11-19 — twelve runs
-and 101,940 rows in six hours, every chip pressed and every page opened
-reading the recent days again — so since the same day yesterday joins the
-kept days a quarter of an hour after midnight UTC, and today's rows are
-kept two minutes in the colo for both pages and every chip to share: one
-day's rows at most once in two minutes, however long the range and however
-old the table. The
+more behind is read once and kept in the colo, and only yesterday and today
+came from the table on each open. That was still the dearest statement on
+the account on 2026-11-19 — twelve runs and 101,940 rows in six hours, every
+chip pressed and every page opened reading the recent days again — so since
+the same day yesterday joins the kept days a quarter of an hour after
+midnight UTC, and today's rows are kept two minutes in the colo for both
+pages and every chip to share: one day's rows at most once in two minutes,
+however long the range and however old the table.
+
+The kept days were an entry a day until 2026-11-22, and for twenty-eight and
+ninety days that kept nothing: a request on the free plan makes fifty Cache
+API calls at the most, an entry a day was fifty-five of them and a hundred
+and seventy-nine, and every call past the fiftieth failed quietly — so the
+newest days were read from the table on every open, and the page's own
+answer, put last, was not kept for the day either. Cloudflare counted
+fourteen runs and 68,780 rows in an hour that evening. Now each range has
+one entry holding all its ended days, and a day that ends is read once and
+added to it: a handful of calls a request, and one day's rows a day. The
 `MIN(day)` question each page asks — when the count began — is kept there
 the same way once it has an answer, where it walked the key until its kind
 turned up. **THE DAYS THAT

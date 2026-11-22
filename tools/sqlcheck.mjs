@@ -119,7 +119,7 @@ const ROWS = [
   { file: 'api/_lib.js', has: 'SELECT * FROM google_venues', why: "googleTable()'s whole read, ~1,180 rows, once a day per colo" },
   { file: 'api/_rank.js', has: 'FROM google_ranks r JOIN google_venues v', why: 'the week\'s top: r.rank <= TOP, a hundred rows, bound as ?2' },
   { file: 'api/_refresh.js', has: 'SELECT place_id FROM google_venues WHERE hidden = 0', why: "the day's queue: LIMIT is QUEUE_LENGTH, twice BUDGET.details.day, sixty-four, once a UTC day" },
-  { file: 'api/_visitors.js', has: 'SELECT day, kind, id, n FROM visitor_counts WHERE day >= ? AND day <= ?', why: "the owner's pages: the days missing from the colo, read once each and then kept — a few hundred rows a day of the range" },
+  { file: 'api/_visitors.js', has: 'SELECT day, kind, id, n FROM visitor_counts WHERE day >= ? AND day <= ?', why: "the owner's pages: the days that have ended since a range's entry in the colo was put — one day's rows a day, 261 for 21 Nov 2026 — and a range read whole, once, where the colo holds no entry for it" },
   { file: 'api/_visitors.js', has: 'SELECT day, kind, id, n FROM visitor_counts WHERE day >= ?', why: "the owner's pages: yesterday and today, a few hundred rows a day" },
   { file: 'api/_visitors.js', has: "FROM visitor_counts WHERE day = ?1 AND kind = 'shown'", why: "the flag counter: one day's 'shown' rows, one a country, a few dozen; through the colo for five minutes" },
   { file: 'api/_visitors.js', has: "kind IN ('visitor', 'desktop.visitor', 'country') UNION ALL", why: "the flag counter's estimate of one day: its visitors and countries, a few dozen rows" },

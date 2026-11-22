@@ -451,6 +451,15 @@ particulars apply, and this area adds:
 - **A number that moved on the page and not in the table**, or the other
   way round: the edge cache. Five minutes, keyed on language and range.
   Read the row before reading the code.
+- **A cache call a day.** The owner's two pages kept the days that had
+  ended in the colo an entry a day, which is fifty-five Cache API calls for
+  twenty-eight days and a hundred and seventy-nine for ninety, against the
+  free plan's fifty a request. Every call past the fiftieth failed quietly,
+  so those two ranges read the newest days from the table on every open and
+  kept nothing, the answer's own put included — 68,780 rows in an hour on
+  2026-11-22. `rowsSince()` keeps an entry a range now. Anything that asks
+  the colo in a loop counts its calls against fifty first, the answer's
+  match and put among them.
 - **Driving the count under `http.server`.** There is no Function there;
   every beacon 404s silently and nothing is wrong. `wrangler pages dev`.
 - **Every write a fact, filed four ways.** By 2026-11-19 one page view
