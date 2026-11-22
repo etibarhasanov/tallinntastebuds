@@ -658,6 +658,10 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `roundabout`, `arrive`, and `tunnel` where the way goes into one — are a
   recording each in the app, so a new word
   is one an installed app stays silent at.
+  And, from 2026-11-22, `ridden: true` on the way riders made the most of,
+  which the card names on its button, *Ridden*. The builds before it read
+  only `style`, which the site sent for a day from 2026-11-19 and took
+  back, and show that way unnamed.
   And `GET /api/v1/find` with no query, the whole roll, kept on the phone a
   week at a time so Where to? opens on the nearest places: `id`, `name`,
   `lat`, `lng` and `map` of each row.
