@@ -2291,6 +2291,69 @@ CREATE INDEX IF NOT EXISTS idx_rides_user ON rides (user_id, created_at);
 -- cursor rather than one of them skipped. Added on 2026-11-22.
 CREATE INDEX IF NOT EXISTS idx_rides_created ON rides (created_at, id);
 
+-- One row is one ride a member saved signed in, in numbers: the whole ride
+-- as the phone measured it — its ends and the parts outside the four cities
+-- included, which `rides` keeps none of — or, for a save that sent none,
+-- what the server could work out of the line it kept. Written by a save in
+-- functions/api/rides.js through functions/api/_ridestats.js, which says
+-- what each number is and what is checked; answered to nobody row by row,
+-- only added up into ride_totals below. A ride saved with no account has no
+-- row. Added on 2026-11-22.
+--
+-- The questions it is asked, and the key that answers each:
+--   one ride's numbers, to take them off when it is dropped   id — the key
+--   an account's best top speed, fastest km and longest ride
+--   after a drop, and every row of an account when it is deleted
+--                                     idx_ride_stats_top, _fastest, _meters
+CREATE TABLE IF NOT EXISTS ride_stats (
+  -- rides.id of the ride's first run where it was kept as a line; twelve
+  -- hex characters of its own where none of it was in a city.
+  id         TEXT    PRIMARY KEY,
+  user_id    TEXT    NOT NULL,
+  created_at INTEGER NOT NULL,
+  meters     INTEGER NOT NULL,
+  -- Riding time, the stretches the phone found walked or driven and every
+  -- long stop left out; and Start to Finish with only the pauses left out.
+  seconds    INTEGER NOT NULL,
+  total      INTEGER NOT NULL,
+  -- Seconds spent slower than walking a bike, which `seconds` may still
+  -- hold some of: a wait at a crossing is riding time.
+  stopped    INTEGER NOT NULL,
+  -- The fastest half a minute in km/h, and the seconds of the quickest
+  -- whole kilometre; null for a ride with none.
+  top        REAL,
+  fastest    INTEGER,
+  -- Where the ride was 200 m of riding in from its start and from its
+  -- finish, at five decimals — never where it began or ended. Null where
+  -- the phone sent none.
+  start_lat  REAL,
+  start_lng  REAL,
+  end_lat    REAL,
+  end_lng    REAL
+);
+CREATE INDEX IF NOT EXISTS idx_ride_stats_top ON ride_stats (user_id, top);
+CREATE INDEX IF NOT EXISTS idx_ride_stats_fastest ON ride_stats (user_id, fastest);
+CREATE INDEX IF NOT EXISTS idx_ride_stats_meters ON ride_stats (user_id, meters);
+
+-- One row is one account's riding, added up: kept by the save that adds a
+-- row to ride_stats and by the drop that takes one away, in the same batch,
+-- and read by its key for the account page and Rattatee's Account tab —
+-- never summed out of ride_stats on a read. Added on 2026-11-22.
+CREATE TABLE IF NOT EXISTS ride_totals (
+  user_id    TEXT    PRIMARY KEY,
+  rides      INTEGER NOT NULL,
+  meters     INTEGER NOT NULL,
+  seconds    INTEGER NOT NULL,
+  stopped    INTEGER NOT NULL,
+  -- The best of each, null until a ride has one.
+  top        REAL,
+  fastest    INTEGER,
+  longest    INTEGER NOT NULL,
+  -- When the first ride was counted, which the totals say they are since.
+  since      INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
 -- One row is one ride passing through one square of the city, 1/50 by 1/25 of
 -- a degree — about 2.2 km a side — so the rides near a way are found
 -- by the key instead of by reading every ride: functions/api/_ridecells.js,

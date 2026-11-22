@@ -110,6 +110,7 @@ import {
 import { recentViews } from './_visits.js';
 import { adminIds, ownerCookie } from './_admin.js';
 import { postsReady } from './_posts.js';
+import { statsReady, forgetStatements } from './_ridestats.js';
 import { forgetMember } from './_community.js';
 /* A new name is a new byline on every list the account wrote, and a deleted
    account takes its lists with it: both move the mark every copy of a list
@@ -916,6 +917,7 @@ export async function onRequestPost(context) {
    *   flashcard_known, _progress
    *   walks, walk_checks            the lists it walked, where it checked in
    *                                 and what it said there
+   *   ride_stats, ride_totals       its rides in numbers, and their totals
    *
    * WHAT STAYS, AND WHY IT IS NOT THE PERSON
    *
@@ -991,6 +993,10 @@ export async function onRequestPost(context) {
         env.DB.prepare('DELETE FROM posts WHERE owner = ?').bind(id)
       );
     }
+
+    /* Its riding in numbers, on the same terms: only where the two tables
+       are there — WHEN THE TABLES ARE NOT THERE in ./_ridestats.js. */
+    if (await statsReady(env)) statements.unshift(...forgetStatements(env, id));
 
     statements.push(
       env.DB

@@ -684,6 +684,17 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `too-many` and `title`. An add it was keeping for later is tried again on
   a 5xx, after the same doubling wait a ride has, and dropped on any 4xx, so
   a new refusal that sending again could change must not be a 4xx.
+- Its numbers, from 2026-11-22: `POST /api/v1/rides`'s save carries
+  `summary` — `meters`, `seconds`, `total`, `stopped`, and `top`,
+  `fastest`, `start` and `end` where the ride has them — which a session's
+  save keeps and adds to the account's totals and a save with none does
+  not read. A ride ridden wholly outside the four cities, saved signed in,
+  is sent with `line: []` and without `anon`, answered `{ "counted": true }`;
+  its `short`, `malformed` and — the session gone — `signed-out` are final,
+  and the ride is listed as outside the cities. And `GET /api/v1/rides?totals=1`,
+  signed in, for its Account tab: `ready`, `user` and `totals` — `rides`,
+  `meters`, `seconds`, `stopped`, `top`, `fastest`, `longest` and `since`,
+  or null — asked when the tab opens, at most once a minute.
 - Its ride page, from 2026-11-18: `GET /api/v1/rides/<id>`, signed in,
   for a ride it saved — reading `ride` with `meters` and `line`, the stored
   `[lat, lng]` pairs, which it draws over the phone's own line. It reads

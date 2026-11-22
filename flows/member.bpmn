@@ -226,9 +226,11 @@ ref: functions/api/walk.js POST start, mode, check, note, order, again</bpmn:doc
       <bpmn:incoming>member-e23</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="ride" name="Reads the bike rides they recorded">
-      <bpmn:documentation>The Your rides card on the account page, there once they have a ride: what each was called, how far, how long and the day. Nothing on the website records one — a ride is recorded in Rattatee, the iPhone app, and saved under the account it is signed in to.
+      <bpmn:documentation>The Your rides card on the account page, there once they have a ride: all of them added up — how far, how long, the average and top speed, the fastest kilometre — over what each was called, how far, how long and the day. Nothing on the website records one — a ride is recorded in Rattatee, the iPhone app, and saved under the account it is signed in to.
 ref: assets/account.js ridesCard()
-ref: functions/api/rides.js GET ?mine=1</bpmn:documentation>
+ref: assets/account.js ridesTotals()
+ref: functions/api/rides.js GET ?mine=1
+ref: functions/api/_ridestats.js</bpmn:documentation>
       <bpmn:incoming>member-e24</bpmn:incoming>
       <bpmn:outgoing>member-e25</bpmn:outgoing>
     </bpmn:userTask>

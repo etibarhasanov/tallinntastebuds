@@ -3549,6 +3549,37 @@ session's own rides with their names and no lines, uncached — and so does
 `GET /api/v1/rides` with nothing asked, which is how the iPhone app asks. A row
 on the website opens nothing yet: the page that opens one is the app's.
 
+**A ride in numbers, and all of them added up.** The line a ride is kept as
+is not the ride: its ends are off, and anything ridden outside the four
+cities never reaches the site at all, so a ride to Keila is kept as the
+part of it inside Tallinn's box. Since 2026-11-22 Rattatee sends the whole
+ride worked out as well, as `summary` beside the line — its distance, its
+riding time and its time Start to Finish, how long it stood, its top speed,
+its fastest whole kilometre, and where it was 200 m in from each end, never
+where it began or finished. A save made signed in keeps that as a row of
+`ride_stats` and adds it to the account's one row of `ride_totals`, in the
+same batch; a save with no summary, the map app's, has its numbers worked
+out of the line it kept, and a ride ridden wholly outside the cities is
+sent with an empty line and kept as its numbers alone. A ride saved with
+no account keeps no numbers, as it keeps nothing else: the owner's word on
+the day was that a rider signs in and their rides add up from then on.
+`?mine=1` answers the totals beside the rides, and Your rides draws them
+over the list in two rows of the Discover counter's figures — distance,
+riding time and rides, then the average, the top speed and the fastest
+kilometre — with the time standing, the longest ride and the first ride's
+day under them; `?totals=1` answers them alone, for Rattatee's Account tab.
+Each kept run's `seconds` is now its share of the whole ride's distance,
+not of the kept line's, so a run inside town no longer carries a day's
+riding at four kilometres an hour. The phone's numbers for the parts the
+site never sees are the phone's word, held to sense and dropped, never the
+ride, where they make none; the totals go to their account alone, so a
+made-up summary fools only its maker. A drop takes the ride off the totals
+and finds the three bests again by their indexes; deleting the account
+deletes both. `functions/api/_ridestats.js` is the whole of it, cost
+included: one row read and about seven written a save, one read a look.
+The 37 rides kept before it were added by hand the same day, worked out of
+their kept lines the way a save with no summary is.
+
 **One ride, opened, in the iPhone app.** The app's Me tab has **Your rides**:
 the same rides with a range — 7, 28, 90 days, all time — the distance, the
 riding time and the number of rides against the range before, a line of

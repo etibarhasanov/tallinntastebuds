@@ -222,7 +222,8 @@
     places: {},      // id -> { name, address }
     lists: [],       // the ones you wrote
     kept: [],        // the ones you kept, which are somebody else's
-    rides: []        // the bike rides you recorded, newest first
+    rides: [],       // the bike rides you recorded, newest first
+    totals: null     // all of them added up — see ridesTotals(); null before any
   };
 
   /* The one element on the page that is not furniture. Everything below
@@ -821,15 +822,12 @@
   function rideRow(ride) {
     var day = new Date(ride.at);
     var month = t('months').split('|')[day.getMonth()] || '';
-    var far = ride.meters < 1000
-      ? t('askMetres', { n: Math.round(ride.meters / 10) * 10 })
-      : t('askKm', { n: (ride.meters / 1000).toFixed(1) });
     return el('li', { className: 'lists-index-row' }, [
       el('div', { className: 'lists-all-card is-still' }, [
         el('p', { className: 'lists-index-title', textContent: ride.name || t('rideUnnamed') }),
         el('p', {
           className: 'lists-all-meta mono',
-          textContent: [far, t('walkMin', { n: Math.max(1, Math.round(ride.seconds / 60)) }),
+          textContent: [distance(ride.meters), t('walkMin', { n: Math.max(1, Math.round(ride.seconds / 60)) }),
             day.getDate() + ' ' + month].join(' · ')
         })
       ])
@@ -840,8 +838,68 @@
     var n = state.rides.length;
     if (!n) return null;
     var say = el('p', { className: 'lists-say', textContent: t('ridesWhat') });
+    var top = state.totals ? [say, ridesTotals(state.totals)] : [say];
     return card([fold('rides', t('ridesYours'), n === 1 ? t('ridesCountOne') : t('ridesCount', { n: n }),
-      [say].concat(column('rides', state.rides, rideRow)))]);
+      top.concat(column('rides', state.rides, rideRow)))]);
+  }
+
+  /* How far, a ride's or all of them: metres under a kilometre, a tenth of a
+     kilometre under a hundred, and whole kilometres past that. */
+  function distance(meters) {
+    if (meters < 1000) return t('askMetres', { n: Math.round(meters / 10) * 10 });
+    var k = meters / 1000;
+    return t('askKm', { n: k < 100 ? k.toFixed(1) : String(Math.round(k)) });
+  }
+
+  /* A length of time as a rider reads one: minutes under an hour, hours and
+     two-figure minutes past it. */
+  function hours(seconds) {
+    var m = Math.round(seconds / 60);
+    if (m < 60) return t('walkMin', { n: m });
+    var rest = m % 60;
+    return t('ridesHours', { h: Math.floor(m / 60), m: (rest < 10 ? '0' : '') + rest });
+  }
+
+  /* All your rides added up, over the list of them: the account's one row of
+     ride_totals, which every ride saved signed in adds to from whichever
+     phone saved it — A RIDE IN NUMBERS in functions/api/rides.js. Two rows
+     of three figures, the Discover counter's, and a line under them. A
+     figure with nothing to say — no ride with a top speed or a whole
+     kilometre yet, which is a ride saved by the map app — is left out
+     rather than drawn as a dash. Only to the account, like the rest of
+     this card. */
+  function ridesTotals(totals) {
+    var figure = function (big, small) {
+      return el('div', { className: 'counter-figure' }, [
+        el('b', { textContent: big }),
+        el('span', { textContent: small })
+      ]);
+    };
+    var speeds = [figure((totals.meters / totals.seconds * 3.6).toFixed(1), t('ridesTotalsAverage'))];
+    if (totals.top) speeds.push(figure(totals.top.toFixed(1), t('ridesTotalsTop')));
+    if (totals.fastest) {
+      var sec = totals.fastest % 60;
+      speeds.push(figure(Math.floor(totals.fastest / 60) + ':' + (sec < 10 ? '0' : '') + sec, t('ridesTotalsFastest')));
+    }
+    return el('div', { className: 'ride-totals' }, [
+      el('p', { className: 'counter-title', textContent: t('ridesTotalsTitle') }),
+      el('div', { className: 'counter-three' }, [
+        figure(distance(totals.meters), t('ridesTotalsRidden')),
+        figure(hours(totals.seconds), t('ridesTotalsRiding')),
+        figure(String(totals.rides), t('ridesTotalsRides'))
+      ]),
+      el('div', { className: 'counter-three' }, speeds),
+      el('p', {
+        className: 'ride-totals-more',
+        textContent: t('ridesTotalsMore', {
+          stopped: hours(totals.stopped),
+          longest: distance(totals.longest),
+          /* In the page's language with the month in the case it takes
+             there — 3 октября, not 3 октябрь — which `months` cannot do. */
+          date: new Date(totals.since).toLocaleDateString(state.lang, { day: 'numeric', month: 'long', year: 'numeric' })
+        })
+      })
+    ]);
   }
 
   /* ------------------------------------------------------------------- you */
@@ -1287,6 +1345,7 @@
       state.lists = loaded[3].out.lists || [];
       state.kept = loaded[3].out.kept || [];
       state.rides = loaded[4].out.rides || [];
+      state.totals = loaded[4].out.totals || null;
       /* A list somebody kept can be one Google wrote — see assets/googlewords.js. */
       TTBGoogleWords.lists(state.kept, t, state.lang);
 

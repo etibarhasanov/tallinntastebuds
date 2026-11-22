@@ -358,6 +358,10 @@ const SIZES = {
   /* Its ceiling rather than a measure: twelve ordered pairs of the four
      CITIES, MIDDLES (three) each — LONG RIDES in functions/api/route.js. */
   route_middles: 36,
+  /* Made in production on 2026-11-22 and filled by hand the same day: a
+     ride a row and an account a row — A RIDE IN NUMBERS in
+     functions/api/rides.js. */
+  ride_stats: 37, ride_totals: 2,
   /* WITHOUT ROWID: the counter's table on the day it stopped the site, and a
      ring that is sixty rows for ever. */
   visitor_counts: 18439, visitor_live: 60,
