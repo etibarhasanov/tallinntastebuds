@@ -205,6 +205,11 @@
 .lists-fold > summary:hover .menu-go { color: var(--accent); }
 .lists-fold[open] > summary .menu-go { transform: rotate(90deg); }
 
+.ride-totals { margin: 4px 0 14px; }
+.ride-totals .counter-title { margin-bottom: 8px; }
+.ride-totals .counter-three + .counter-three { border-bottom: 0; }
+.ride-totals-more { margin: 0; font: 12px var(--mono); color: var(--muted); }
+
 .lists-save { transition: background-color .18s ease, border-color .18s ease, color .18s ease; }
 .lists-save.is-saved {
   background: var(--wash);

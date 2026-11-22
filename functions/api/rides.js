@@ -44,7 +44,19 @@
  *   whether the ride has a track, so the list can tell which rides will
  *   have speeds when opened. Never cached. Signed out it is empty. One ride
  *   whole, with what it says about itself, is GET /api/v1/rides/<id> in
- *   ./rides/[id].js.
+ *   ./rides/[id].js. And `totals`, the account's riding added up, or null —
+ *   A RIDE IN NUMBERS.
+ *
+ * GET  /api/v1/rides?totals=1
+ *
+ *   { ready, user, totals: { rides, meters, seconds, stopped, top, fastest,
+ *     longest, since } }
+ *
+ *   The totals alone, for Rattatee's Account tab, which wants them and not
+ *   the list: one row read rather than two hundred. `top` in km/h and
+ *   `fastest` in seconds, each null until a ride has one; `since` when the
+ *   first was counted. `totals` is null signed out and before a ride has
+ *   been counted. Never cached.
  *
  * GET  /api/v1/rides?mine=1&lines=1
  *
@@ -55,18 +67,29 @@
  *   ride whole is still GET /api/v1/rides/<id>. Only with `lines=1`, so the
  *   list an installed app and the account page ask for is the size it was.
  *
- * POST /api/v1/rides  { action: 'save', name, seconds, line }  a session
- * POST /api/v1/rides  { action: 'save', anon: true, … }         nobody
+ * POST /api/v1/rides  { action: 'save', name, seconds, line, summary }  a session
+ * POST /api/v1/rides  { action: 'save', anon: true, … }                  nobody
  * POST /api/v1/rides  { action: 'rename', id, name }           its rider
  * POST /api/v1/rides  { action: 'drop', id }                   its rider
  *
  *   { ride: { id, meters, seconds } }     kept, with a session
- *   { counted: true }                     counted and not kept, with none
+ *   { counted: true }                     counted and not kept, with none;
+ *                                         and a session's ride with no line
+ *                                         to keep, whose numbers are kept
  *
  *   With a session the ride is filed under the account and is one of its
- *   owner's on ?mine=1. With `anon: true` and no session nothing of it is
- *   kept: its squares are counted and the answer has no `ride` — A RIDE
- *   WITHOUT AN ACCOUNT IS COUNTED, NOT KEPT.
+ *   owner's on ?mine=1, and `summary`, where the save carried one, is kept
+ *   as its numbers and added to the account's totals — A RIDE IN NUMBERS.
+ *   With `anon: true` and no session nothing of it is kept: its squares are
+ *   counted and the answer has no `ride` — A RIDE WITHOUT AN ACCOUNT IS
+ *   COUNTED, NOT KEPT — and `summary` is not read.
+ *
+ *   `summary` is { meters, seconds, total, stopped, top, fastest, start,
+ *   end } of the whole ride, worked out on the phone — ./_ridestats.js says
+ *   what each is. With a session and a summary, `line` may be empty, or
+ *   too short to keep once its ends are off, where the ride was ridden
+ *   outside the four cities: no line is kept or counted, the numbers are,
+ *   and the answer is `{ counted: true }`, there being no ride to name.
  *
  *   A point of `line` is [lat, lng], or [lat, lng, t, acc] — the seconds
  *   since the ride began and the fix's accuracy in metres — WHEN EACH POINT
@@ -76,7 +99,7 @@
  *   `rename` answers { ride: { id, name } } and `drop` { ok: true }; both
  *   take a session and touch only a ride filed under it, and anything else
  *   is 404 not-found, the answer GET /api/v1/rides/<id> gives. A dropped ride
- *   is gone from under the Bike tab too.
+ *   is gone from under the Bike tab too, and from its account's totals.
  *
  *   A ride that was paused and went on somewhere else is kept as the runs
  *   that were ridden, a row each — A RIDE WITH A GAP IN IT — and the answer
@@ -243,6 +266,22 @@
  * only counted it is all there is, so where it does not work the save has
  * not happened: `not-ready`, and the phone sends the ride again later.
  *
+ * A RIDE IN NUMBERS
+ *
+ * The line kept here is not the ride: its ends are off and so is anything
+ * ridden outside the four cities. What a rider wants to know of their own
+ * riding — how far, how long, how fast, how long standing — is the whole
+ * ride's, so since 2026-11-22 Rattatee sends it worked out, as `summary`,
+ * and a signed-in save keeps it as a row of `ride_stats` under the ride's
+ * first run and adds it to the account's row of `ride_totals`, which ?mine=1
+ * and ?totals=1 answer. A save with no summary has its numbers worked out of
+ * the line it kept. Each kept run's `seconds` is its share of the whole
+ * ride's distance where there is a summary — of the kept line's where there
+ * is none — so a ride to Keila does not leave its in-town runs with the
+ * whole day's time on them and an average of four kilometres an hour.
+ * ./_ridestats.js is the whole of it: what each number is, what is checked,
+ * and what it costs.
+ *
  * WHEN THE TABLE IS NOT THERE
  *
  * `rides` is in db/schema.sql and loaded by hand. Until it is, GET answers
@@ -252,7 +291,9 @@
  * save catches both: the ride is kept, uncounted or unfiled as may be. A
  * counted ride needs `ride_sections` and is `not-ready` without it.
  * Without `ride_cells` ?bbox= answers `ready: false`, the same as without
- * `rides`.
+ * `rides`. Without `ride_stats` and `ride_totals` a ride is kept and its
+ * numbers are not, `totals` is null, and a save that had only numbers to
+ * keep is `not-ready`.
  */
 
 import { json, sessionUser, wrongDatabase, nearCity, km, randomHex } from './_lib.js';
@@ -260,6 +301,7 @@ import { countUse } from './_visitors.js';
 import { pieces, sectionsOf, tally } from './_sections.js';
 import { arrayOf } from './_rides.js';
 import { ridesIn, fileCells } from './_ridecells.js';
+import { summaryOf, summaryFromRuns, statsStatements, totalsOf, dropStatements, statsReady } from './_ridestats.js';
 
 /* Metres taken off each end of a ride before it is stored — NOBODY'S NAME
    IS ON A RIDE. Two hundred is a block or two: enough that a line stopping
@@ -326,6 +368,7 @@ export async function onRequestGet(context) {
   const { env, request } = context;
   const query = new URL(request.url).searchParams;
   if (query.has('since')) return json(...await since(env, query.get('since'), query.get('after')));
+  if (query.get('totals') === '1') return json(await totals(context), 200);
   if (query.get('mine') === '1' || !query.has('bbox')) {
     return json(await mine(context, query.get('lines') === '1'), 200);
   }
@@ -421,7 +464,16 @@ async function mine(context, lines) {
   const rides = got.results.map((r) => lines
     ? { ...r, timed: !!r.timed, line: thinned(arrayOf(r.line)) }
     : { ...r, timed: !!r.timed });
-  return { ready: true, user: user.username, rides };
+  return { ready: true, user: user.username, rides, totals: await totalsOf(env, user.id) };
+}
+
+/* The session's totals alone — GET ?totals=1. One row, by ride_totals' key. */
+async function totals(context) {
+  const { env, request } = context;
+  if (!env.DB || await wrongDatabase(env)) return { ready: false, user: null, totals: null };
+  const user = await sessionUser(request, env);
+  if (!user) return { ready: true, user: null, totals: null };
+  return { ready: true, user: user.username, totals: await totalsOf(env, user.id) };
 }
 
 /* A line with a point every THIN metres of riding or so, its first and last
@@ -457,10 +509,13 @@ async function own(env, user, body) {
     if (!done.meta.changes) return json({ error: 'not-found' }, 404);
     return json({ ride: { id, name } }, 200);
   }
-  const done = await env.DB
-    .prepare('DELETE FROM rides WHERE id = ? AND user_id = ?')
-    .bind(id, user.id)
-    .run();
+  /* With its numbers, in one batch, so the totals never count a ride that
+     is gone or lose one that is not — A RIDE IN NUMBERS. */
+  const gone = env.DB.prepare('DELETE FROM rides WHERE id = ? AND user_id = ?').bind(id, user.id);
+  const counted = await statsReady(env);
+  const done = counted
+    ? (await env.DB.batch([gone, ...dropStatements(env, user.id, id, Date.now())]))[0]
+    : await gone.run();
   if (!done.meta.changes) return json({ error: 'not-found' }, 404);
   /* And its squares, by idx_ride_cells_ride. Left behind they would name a
      ride that is not there, which a read drops at the lookup by id. */
@@ -498,7 +553,7 @@ export async function onRequestPost(context) {
      page whose session ran out. */
   if (!user && body.anon !== true) return json({ error: 'signed-out' }, 401);
 
-  const ride = riddenOf(body);
+  const ride = riddenOf(body, user);
   if (ride.error) return json({ error: ride.error }, 400);
 
   try {
@@ -510,11 +565,17 @@ export async function onRequestPost(context) {
 }
 
 /* What of a save was ridden: the runs, each without its ends and with its
-   track where every point carried one, the metres of them all and the
-   seconds the rider said — or the word it is refused with. Nothing here
-   reads the database. */
-function riddenOf(body) {
-  const points = cleanLine(body.line);
+   track where every point carried one, the metres of them all, the seconds
+   the rider said and, with a session, the ride's numbers — or the word it
+   is refused with. Nothing here reads the database.
+
+   A session's save with numbers may bring an empty line, or one too short
+   to keep: a ride ridden outside the four cities, whose numbers are kept
+   and nothing else — A RIDE IN NUMBERS. It is still held to the shortest
+   ride the recorders save, MIN_METERS and ENDS twice. */
+function riddenOf(body, user) {
+  const nowhere = user && Array.isArray(body.line) && body.line.length === 0;
+  const points = nowhere ? [] : cleanLine(body.line);
   const seconds = Math.round(Number(body.seconds));
   if (!points || !Number.isFinite(seconds) || seconds < 1) return { error: 'malformed' };
 
@@ -533,13 +594,17 @@ function riddenOf(body) {
       return { line, track, meters: Math.round(lengthOf(line)) };
     })
     .filter((run) => run.meters >= MIN_METERS);
-  if (!runs.length) return { error: 'short' };
   /* The speed is judged on the whole of what was ridden, ends included,
      since the seconds are the whole ride's — and on nothing that was not:
      the step across a gap is not in it. */
   const rode = ridden.reduce((sum, run) => sum + lengthOf(run), 0);
   if (rode / 1000 / (seconds / 3600) > FASTEST) return { error: 'fast' };
-  return { runs, seconds, meters: runs.reduce((sum, run) => sum + run.meters, 0) };
+  const meters = runs.reduce((sum, run) => sum + run.meters, 0);
+  const summary = user ? summaryOf(body.summary, meters, FASTEST) : null;
+  if (!runs.length && !(summary && summary.meters >= MIN_METERS + 2 * ENDS)) {
+    return { error: nowhere && !summary ? 'malformed' : 'short' };
+  }
+  return { runs, seconds, meters, summary };
 }
 
 /* A ride with no account behind it: counted, and not kept. Its runs go in
@@ -555,9 +620,15 @@ async function count(env, ride) {
   return json({ counted: true }, 200);
 }
 
-/* A ride with an account behind it: kept, filed and counted. */
+/* A ride with an account behind it: kept, filed and counted, and its
+   numbers added to the account's — or, with no line long enough to keep,
+   its numbers alone. */
 async function keep(env, user, body, ride) {
-  const { runs, meters, seconds } = ride;
+  const { runs, meters, seconds, summary } = ride;
+  if (!runs.length) {
+    await env.DB.batch(statsStatements(env, user.id, randomHex(6), Date.now(), summary));
+    return json({ counted: true }, 200);
+  }
   const day = new Date();
   day.setUTCHours(0, 0, 0, 0);
   const sent = await env.DB
@@ -568,12 +639,15 @@ async function keep(env, user, body, ride) {
 
   const name = typeof body.name === 'string' ? body.name.trim().slice(0, MAX_NAME) : '';
   const now = Date.now();
+  /* Each run's share of the time is its share of the whole ride's length,
+     which the summary knows and the kept line does not. */
+  const whole = summary ? summary.meters : meters;
   const rows = runs.map((run, i) => {
     const lats = run.line.map((p) => p[0]);
     const lngs = run.line.map((p) => p[1]);
     return [
       randomHex(6), user.id, name, run.meters,
-      Math.max(1, Math.round(seconds * run.meters / meters)), JSON.stringify(run.line),
+      Math.max(1, Math.round(seconds * run.meters / whole)), JSON.stringify(run.line),
       Math.min(...lats), Math.min(...lngs), Math.max(...lats), Math.max(...lngs),
       /* A millisecond apart, so Your rides lists the runs in the order they
          were ridden. */
@@ -604,6 +678,12 @@ async function keep(env, user, body, ride) {
     const counts = runs.map((run, i) => tally(env, sectionsOf(run.line, run.track), rows[i][0])).filter(Boolean);
     if (counts.length) await env.DB.batch(counts);
   } catch (e) { /* No ride_sections yet, or none with `steady`. */ }
+  /* A RIDE IN NUMBERS, under the first run's id, which a drop of that run
+     takes off again. Not there yet, or failed: the ride is kept, and the
+     totals go without it. */
+  try {
+    await env.DB.batch(statsStatements(env, user.id, rows[0][0], now, summary || summaryFromRuns(runs, seconds, FASTEST)));
+  } catch (e) { /* No ride_stats or ride_totals yet. */ }
   return json({ ride: { id: rows[0][0], meters, seconds } }, 200);
 }
 
