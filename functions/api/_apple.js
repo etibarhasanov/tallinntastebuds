@@ -72,7 +72,7 @@ const KEYS_URL = 'https://appleid.apple.com/auth/keys';
    who signs in to more than one with Apple is the same row in `identities`
    and the same account, which is the point of Kohuke and Rattatee having no
    accounts of their own. */
-const APP_IDS = ['ee.tallinntastebuds.app', 'ee.tallinntastebuds.kohuke', 'ee.tallinntastebuds.rattatee'];
+const APP_IDS = ['ee.tallinntastebuds.app', 'ee.tallinntastebuds.kohuke', 'ee.tallinntastebuds.rattatee.app'];
 
 /* How long Apple's keys are trusted without asking again. Apple rotates them
    rarely and publishes the new one beside the old well ahead, and a `kid`

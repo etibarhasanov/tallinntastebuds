@@ -6253,7 +6253,7 @@ kept, in `identities` under `apple`. There is no secret to set: the app is
 the client, and `APPLE_APP_ID` exists only for a build signed under a bundle
 id other than the three `APP_IDS` in `_apple.js` names: `ee.tallinntastebuds.app`,
 the map's, `ee.tallinntastebuds.kohuke`, the flashcards' — **Kohuke reads
-the flashcards** below — and `ee.tallinntastebuds.rattatee`, the ride
+the flashcards** below — and `ee.tallinntastebuds.rattatee.app`, the ride
 recorder's, **Recorded rides**. There is no Apple button on the
 site — a web sign-in with Apple is a different integration, with a Services
 ID and a key — so an account made this way is reached from a browser by
