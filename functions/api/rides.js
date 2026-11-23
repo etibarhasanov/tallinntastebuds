@@ -177,8 +177,9 @@
  * that kept twenty thousand of them would fill the table.
  *
  * And a ride whose answer was lost is done again: counted twice with no
- * account, kept as a second row with one. That was the known gap in
- * Rattatee's README before, and is again.
+ * account, which is the known gap in Rattatee's README. With an account it
+ * was kept as a second row until 2026-11-23, and is now answered as the
+ * first was and written nowhere — THE SAME RIDE AGAIN in ./_ridestats.js.
  *
  * So the save needs no SAVE_SALT now, and nothing of the request but its
  * body.
@@ -312,7 +313,9 @@ import { json, sessionUser, wrongDatabase, nearCity, km, randomHex } from './_li
 import { countUse } from './_visitors.js';
 import { pieces, sectionsOf, tally } from './_sections.js';
 import { arrayOf } from './_rides.js';
-import { summaryOf, summaryFromRuns, statsStatements, totalsOf, dropStatements, statsReady } from './_ridestats.js';
+import {
+  summaryOf, summaryFromRuns, sameRide, statsStatements, totalsOf, dropStatements, statsReady
+} from './_ridestats.js';
 
 /* Metres taken off each end of a ride before it is stored — NOBODY'S NAME
    IS ON A RIDE. Two hundred is a block or two: enough that a line stopping
@@ -555,8 +558,15 @@ async function count(env, ride) {
    its numbers alone. */
 async function keep(env, user, body, ride) {
   const { runs, meters, seconds, summary } = ride;
+  const numbers = summary || summaryFromRuns(runs, seconds, FASTEST);
+  /* THE SAME RIDE AGAIN in ./_ridestats.js: a ride this account has saved
+     already, its answer lost on the way back, is answered as it was the
+     first time and nothing is written — before the day's cap, which is
+     not for a ride that is already in. */
+  const before = await sameRide(env, user.id, numbers);
+  if (before) return json(runs.length ? { ride: { id: before, meters, seconds } } : { counted: true }, 200);
   if (!runs.length) {
-    await env.DB.batch(statsStatements(env, user.id, randomHex(6), Date.now(), summary));
+    await env.DB.batch(statsStatements(env, user.id, randomHex(6), Date.now(), numbers));
     return json({ counted: true }, 200);
   }
   const day = new Date();
@@ -605,7 +615,7 @@ async function keep(env, user, body, ride) {
      takes off again. Not there yet, or failed: the ride is kept, and the
      totals go without it. */
   try {
-    await env.DB.batch(statsStatements(env, user.id, rows[0][0], now, summary || summaryFromRuns(runs, seconds, FASTEST)));
+    await env.DB.batch(statsStatements(env, user.id, rows[0][0], now, numbers));
   } catch (e) { /* No ride_stats or ride_totals yet. */ }
   return json({ ride: { id: rows[0][0], meters, seconds } }, 200);
 }

@@ -3547,8 +3547,9 @@ address, over ten seconds, and it is the owner's to switch on in the
 dashboard the day it is wanted. An account's cap of twenty a day is
 unchanged, since an account's rides are kept. And a ride whose answer was
 lost is done again when it is sent again: counted twice with no account,
-kept as a second row with one, which is the gap Rattatee's README has
-named since its first build.
+which is the gap Rattatee's README has named since its first build. With
+an account it was kept as a second row until 2026-11-23 — **The same ride
+again**, below.
 
 Before any of this the fingerprint was on the ride itself, `net:<hmac>` in
 `rides.user_id`, and each save emptied it from the rides of earlier days
@@ -3600,7 +3601,7 @@ ride, where they make none; the totals go to their account alone, so a
 made-up summary fools only its maker. A drop takes the ride off the totals
 and finds the three bests again by their indexes; deleting the account
 deletes both. `functions/api/_ridestats.js` is the whole of it, cost
-included: one row read and about seven written a save, one read a look.
+included: about three rows read and seven written a save, one read a look.
 The 37 rides kept before it were added by hand the same day, worked out of
 their kept lines the way a save with no summary is — and corrected within the
 hour, when one of them came out at 253 km/h. No point of it moved that fast:
@@ -3612,6 +3613,22 @@ rides' top speeds and fastest kilometres moved, one account's best from 36.3
 to 34.4 km/h. The same pause was 231 m in the square it ended in, in
 `ride_sections`, since a step of two minutes or more counted its metres and
 nothing else; a pause counts nowhere now, as a step over `GAP` never did.
+
+**The same ride again.** A phone that never heard the answer to a save
+sends the ride again, and until 2026-11-23 a signed-in rider then had it
+twice: two rows in `rides`, two in `ride_stats`, and the ride twice in the
+totals. The owner's design for telling was to keep no list of rides seen,
+since the numbers kept for a ride already say which ride it is: two saves
+of one recording carry the same distance, times, speeds and end points to
+the metre and the second, and two different rides of one account do not.
+So before a session's save writes anything, `sameRide()` in `_ridestats.js`
+asks `ride_stats` for a row of that account's with exactly those numbers,
+and a save that finds one is answered as the first was, with that ride's
+id, and writes nothing — before the day's cap, which is not for a ride
+already in. It is found by a key: `idx_ride_stats_meters` is (user_id,
+meters), so the look reads the account's rides of exactly that many metres,
+the one being looked for or none. A ride saved with no account has no row
+there, and a repeat of one is counted again, as it was.
 
 **One ride, opened, in the iPhone app.** The map app's Me tab had **Your
 rides**: the same rides with a range — 7, 28, 90 days, all time — the
