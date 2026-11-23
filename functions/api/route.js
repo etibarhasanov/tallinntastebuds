@@ -506,14 +506,17 @@ async function leg(a, b) {
 /* The router's one way by bike through [lat, lng] points in order, setting
    off by `heading` where there is one, or null where it has none. The
    points in the middle ride along as `through`, for settle() to ask the
-   way again around before it is answered — SETTLING below. */
+   way again around before it is answered — SETTLING below. A way through
+   points of its own that boards a ferry is none: AT SEA below. */
 async function oneWay(points, heading = null) {
   try {
     const res = await ask(OSRM.bike + points.map((p) => p[1] + ',' + p[0]).join(';') +
       '?overview=full&geometries=geojson&steps=true&alternatives=false' + bearings(heading, points.length), 'bike');
     if (!res.ok) return null;
     const body = await res.json();
-    const found = body && body.code === 'Ok' && Array.isArray(body.routes) ? way(body.routes[0]) : null;
+    const route = body && body.code === 'Ok' && Array.isArray(body.routes) ? body.routes[0] : null;
+    if (points.length > 2 && afloat(route)) return null;
+    const found = way(route);
     if (!found || !Number.isFinite(found.meters) || !Number.isFinite(found.seconds)) return null;
     return points.length > 2 ? Object.assign(found, { through: points.slice(1, -1) }) : found;
   } catch (e) {
@@ -1040,7 +1043,8 @@ async function keepOff(ways, from, to, shortest, heading = null, past = null) {
  * is asked twice more, through a point either side of the straight line
  * between the two ends: square to its middle, SIDE_SHARE of its length
  * out, no nearer than SIDE_LEAST and no further than SIDE_MOST. Each is a
- * way that goes round on that side, where there is a street to. One is
+ * way that goes round on that side, where there is a street to — a point
+ * out in the bay is none, AT SEA below. One is
  * offered where it is no more than SIDE_LONGER times the shortest way
  * offered, keeps off the streets every way keeps off, and is not a way
  * already there — in either direction, since a way round that only leaves
@@ -1106,6 +1110,34 @@ async function eitherSide(ways, from, to) {
     if (!all.some((before) => alike(way, before) || alike(before, way))) all.push(way);
   }
   return all;
+}
+
+/* ----------------------------------------------------------------- at sea
+ * A point made up beside the straight line can land in the water, and the
+ * router snaps it to the nearest thing out there it can travel: a ferry's
+ * line. On 2026-11-23, in a picture from the map app, a ride from Tõnismägi
+ * to a kebab shop in Viimsi ran beside Tallinna laht, the point on its west
+ * side was out in the bay, and the router took it to the Aegna ferry's line
+ * forty metres off — a crossing it reports as pushing a bike. The way rode
+ * to the pier by Linnahall, out along the ferry and back; SPURS took the
+ * ferry off, the hook down to the pier stayed, and since the router's own
+ * ways rode a street kept off it went first: 66 minutes and 14.8 km ahead
+ * of 54 and 12.5. A way round is a way round on that side where there is a street,
+ * and a ferry is not one.
+ *
+ * So a way asked through points of its own — either side, round a street
+ * kept off, and settling — that boards a ferry anywhere is no way, and
+ * oneWay() answers none: the router classes every crossing it boards one
+ * at, and that is read rather than its mode or its name. A ride that wants
+ * a ferry, to Aegna or an island, keeps the router's own ways and is
+ * offered no way round them. A side that lands in the bay now costs one
+ * router request, where it was up to nine.
+ */
+function afloat(route) {
+  return (route && Array.isArray(route.legs) ? route.legs : []).some((leg) =>
+    (Array.isArray(leg.steps) ? leg.steps : []).some((s) =>
+      (s && Array.isArray(s.intersections) ? s.intersections : []).some((i) =>
+        Array.isArray(i.classes) && i.classes.includes('ferry'))));
 }
 
 /* ------------------------------------------------------------- long rides
