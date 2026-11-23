@@ -3,10 +3,11 @@
  * Tallinn Tastebuds — the doors: where a saved ride is shorter than the map.
  *
  * Reads the rides saved since it last ran off the live site, asks the bike
- * router about them, finds every stretch somebody cycled between two points
- * the router can only join the long way round, and writes data/doors.json. functions/api/route.js reads
- * that file and sends a bike route through a door where it is clearly
- * shorter. **Doors** in docs/handbook.md is the reasoning.
+ * routers about them, finds every stretch somebody cycled between two points
+ * that neither can join but the long way round, and writes data/doors.json.
+ * functions/api/route.js reads that file and sends a bike route through a
+ * door where it is clearly shorter. **Doors** in docs/handbook.md is the
+ * reasoning.
  *
  *   node tools/doors.mjs           look at the rides saved since the last
  *                                  run, and rewrite data/doors.json and
@@ -88,6 +89,26 @@
  * corners, or lay along a way the router rides once it is timed by its
  * streets.
  *
+ * BROUTER CANNOT GET THROUGH EITHER
+ *
+ * Since 2026-11-23 a bike way is BRouter's first, found by the rules in
+ * data/bike.brf, and the router above is asked only where BRouter has no
+ * answer — functions/api/_brouter.js. BRouter rides a park path, which is
+ * what most doors were: put to it that day, 159 of the 201 doors the file
+ * had were ways it gets through by itself, 24 had an end it cannot reach,
+ * and 18 were left. A door a bike way no longer needs is a shortcut it
+ * would be stitched through for nothing, so a stretch that has passed
+ * everything above is put to BRouter as well, under the same rules a
+ * rider's way is found by, and is a door only where
+ * BRouter needs GAIN metres and RATIO more than was ridden, both ways —
+ * counted by its metres, since it has nobody push — and can reach both
+ * ends at all. An end on a path BRouter will not ride cannot be ridden to,
+ * and a door nobody can be sent to is not kept. How far BRouter goes round
+ * a door is written beside it as `brouter`, as `around` is the router's,
+ * so the route can leave alone a door too small to win. It is asked last,
+ * of the few stretches the router has already let through; --recheck asks
+ * it first, since it says no to most and saves the router the question.
+ *
  * Two rides through one door are one door: ends within SAME metres of each
  * other, either way round, or most of the shorter line lying along the
  * longer, and the shorter line is kept.
@@ -155,10 +176,12 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { pieces } from '../functions/api/_sections.js';
+import { brouterUrl, brouterWay, sendRules } from '../functions/api/_brouter.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'data', 'doors.json');
 const CHECKED = join(ROOT, 'data', 'doors-checked.json');
+const RULES = join(ROOT, 'data', 'bike.brf');
 const SITE = 'https://tallinntastebuds.ee';
 
 /* The router functions/api/route.js asks by bike, and the name the site
@@ -180,6 +203,15 @@ const SAME = 30;
 const SPEED = 4.2;
 const PUSHED = 2 / 3;
 const PAUSE = 1100;
+
+/* How long BRouter is left alone once it refuses. It is asked at the pace
+   the router is, a request every PAUSE, and brouter.de takes some thirty
+   requests in a row and then about four a minute: asked two a second on
+   2026-11-23 it refused the thirtieth with a 403, and a --recheck over
+   201 doors that day got through 64 of them in a quarter of an hour. A
+   run over new rides asks it of a handful of stretches and never meets
+   that; --recheck over two hundred doors does, and waits. */
+const REFUSED = 60000;
 
 /* A stretch with this share of its points within ON metres of the router's
    own ways is the router's way, not a door. */
@@ -275,6 +307,42 @@ async function routed(a, b) {
   return found;
 }
 
+/* How far BRouter goes between two points under the site's rules, in
+   metres, or null where it cannot — BROUTER CANNOT GET THROUGH EITHER. The
+   rules are sent once a run. A server that will not answer stops the run:
+   a door must not be kept or dropped because BRouter was down. */
+const niceAsked = new Map();
+let rules = null;
+let niceCalls = 0;
+async function nice(a, b) {
+  const key = a.join(',') + ';' + b.join(',');
+  if (niceAsked.has(key)) return niceAsked.get(key);
+  if (!rules) rules = await sendRules(readFileSync(RULES, 'utf8'));
+  if (!rules) throw new Error('BRouter would not take data/bike.brf');
+  let said = 'nothing';
+  for (let attempt = 0; attempt < 5; attempt++) {
+    await sleep(attempt ? REFUSED : PAUSE);
+    niceCalls++;
+    let res;
+    try { res = await fetch(brouterUrl(rules, [a, b]), { headers: { 'User-Agent': AGENT } }); } catch (e) { said = String(e); continue; }
+    /* 400 is its word for no way: a point on a path it cannot reach. */
+    const way = res.ok ? brouterWay(await res.json()) : null;
+    if (way || res.status === 400) {
+      niceAsked.set(key, way ? way.meters : null);
+      return niceAsked.get(key);
+    }
+    said = String(res.status);
+  }
+  throw new Error('BRouter did not answer for ' + key + ': ' + said);
+}
+
+/* Whether a stretch ridden in `rode` metres is the long way round for
+   BRouter too, both ways, by the test the router is held to. */
+async function niceLong(a, b, rode) {
+  const long = (meters) => meters !== null && meters - rode >= GAIN && meters >= rode * RATIO;
+  return long(await nice(a, b)) && long(await nice(b, a));
+}
+
 /* The doors in one ride: [first, last] index pairs, tightened. */
 async function doorsIn(line) {
   const along = [0];
@@ -316,7 +384,13 @@ async function doorsIn(line) {
     const stretch = line.slice(i, j + 1);
     const ways = way.lines.concat(back.lines);
     if (onLines(stretch, ways) >= SHARE) continue;
-    doors.push({ meters: Math.round(ridden(i, j)), around: Math.min(way.meters, back.meters), line: line.slice(i, j + 1) });
+    if (!await niceLong(line[i], line[j], ridden(i, j))) continue;
+    doors.push({
+      meters: Math.round(ridden(i, j)),
+      around: Math.min(way.meters, back.meters),
+      brouter: Math.min(await nice(line[i], line[j]), await nice(line[j], line[i])),
+      line: stretch
+    });
   }
   return doors;
 }
@@ -352,6 +426,7 @@ function written() {
     id: createHash('sha256').update(JSON.stringify(door.line)).digest('hex').slice(0, 8),
     meters: door.meters,
     around: door.around,
+    brouter: door.brouter,
     line: door.line
   })).sort((a, b) => a.id.localeCompare(b.id));
 }
@@ -368,22 +443,28 @@ function save(at) {
   if (at) writeFileSync(CHECKED, JSON.stringify(at) + '\n');
 }
 
-/* --recheck — AND THE DOORS IT ALREADY HAD: each door put to the router
-   both ways and kept where it is still the long way round in both, its
-   ends still on the router's network and its line off the router's ways.
-   One the router does not answer about is kept: no answer is not a way.
-   The bookmark does not move, since no ride is looked at. */
+/* --recheck — AND THE DOORS IT ALREADY HAD: each door put to BRouter and
+   then to the router, both ways, and kept where it is still the long way
+   round for both, its ends still on the router's network and its line off
+   the router's ways. BRouter is asked first because it is the quicker to
+   say no. One the router does not answer about is kept: no answer is not
+   a way. The bookmark does not move, since no ride is looked at. */
 if (process.argv.includes('--recheck')) {
   const kept = [];
   for (const door of doors) {
     const a = door.line[0];
     const b = door.line[door.line.length - 1];
+    if (!await niceLong(a, b, door.meters)) {
+      console.log('not a door for BRouter: ' + door.id + '  ' + door.meters + ' m ridden  ' + a.join(','));
+      continue;
+    }
     const way = await routed(a, b);
     const back = await routed(b, a);
     const long = (w) => w.meters - door.meters >= GAIN && w.meters >= door.meters * RATIO;
     if (!way || !back || (long(way) && long(back) && Math.max(way.snap, back.snap) <= SNAP &&
       onLines(door.line, way.lines.concat(back.lines)) < SHARE)) {
-      kept.push(way && back ? Object.assign(door, { around: Math.min(way.meters, back.meters) }) : door);
+      kept.push(Object.assign(door, { brouter: Math.min(await nice(a, b), await nice(b, a)) },
+        way && back ? { around: Math.min(way.meters, back.meters) } : {}));
     } else {
       console.log('not a door: ' + door.id + '  ' + door.meters + ' m ridden, ' +
         Math.min(way.meters, back.meters) + ' m by the router  ' + a.join(','));
@@ -391,7 +472,7 @@ if (process.argv.includes('--recheck')) {
   }
   doors = kept;
   save(null);
-  console.log(kept.length + ' of ' + had + ' doors kept; ' + calls + ' router calls' +
+  console.log(kept.length + ' of ' + had + ' doors kept; ' + calls + ' router calls and ' + niceCalls + ' to BRouter' +
     (process.argv.includes('--dry') ? ', nothing written' : ''));
   process.exit(0);
 }
@@ -406,7 +487,6 @@ const fresh = await rides(from);
 const piecesOfRide = (ride) => Array.isArray(ride.line) ? piecesOf(ride.line) : [];
 console.log(fresh.length + ' rides saved since ' + (from.at ? new Date(from.at).toISOString() : 'the start') +
   ': ' + fresh.reduce((n, ride) => n + piecesOfRide(ride).length, 0) + ' ridden pieces');
-
 
 const began = Date.now();
 for (const [n, ride] of fresh.entries()) {

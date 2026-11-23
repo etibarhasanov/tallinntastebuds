@@ -438,14 +438,21 @@ let mapped = null;
 let known = null;
 let knownAt = 0;
 
-export async function mapPlaces(context) {
-  if (mapped && Date.now() - knownAt < 300000) return mapped;
-  const url = new URL('/data/restaurants.json', context.request.url);
+/* A file out of the deployment, by path, as the response it comes in: read
+   through the ASSETS binding where there is one, and over the network under
+   a dev server without it. Throws where the file is not there. */
+export async function deployed(context, path) {
+  const url = new URL(path, context.request.url);
   const res = context.env.ASSETS
     ? await context.env.ASSETS.fetch(new Request(url.toString()))
     : await fetch(url.toString());
-  if (!res.ok) throw new Error('restaurants.json unreadable: ' + res.status);
-  mapped = await res.json();
+  if (!res.ok) throw new Error(path + ' unreadable: ' + res.status);
+  return res;
+}
+
+export async function mapPlaces(context) {
+  if (mapped && Date.now() - knownAt < 300000) return mapped;
+  mapped = await (await deployed(context, '/data/restaurants.json')).json();
   known = new Set(mapped.map((p) => p.id));
   knownAt = Date.now();
   return mapped;
@@ -604,12 +611,7 @@ let rollAt = 0;
 
 export async function catalogue(context) {
   if (roll && Date.now() - rollAt < 300000) return roll;
-  const url = new URL('/data/places.json', context.request.url);
-  const res = context.env.ASSETS
-    ? await context.env.ASSETS.fetch(new Request(url.toString()))
-    : await fetch(url.toString());
-  if (!res.ok) throw new Error('places.json unreadable: ' + res.status);
-  const places = await res.json();
+  const places = await (await deployed(context, '/data/places.json')).json();
   roll = new Map(places.map((p) => [p.id, p]));
   rollAt = Date.now();
   return roll;
@@ -637,12 +639,7 @@ const files = new Map();
 export async function dataFile(context, path) {
   const kept = files.get(path);
   if (kept && Date.now() - kept.at < 300000) return kept.value;
-  const url = new URL(path, context.request.url);
-  const res = context.env.ASSETS
-    ? await context.env.ASSETS.fetch(new Request(url.toString()))
-    : await fetch(url.toString());
-  if (!res.ok) throw new Error(path + ' unreadable: ' + res.status);
-  const value = await res.json();
+  const value = await (await deployed(context, path)).json();
   files.set(path, { value: value, at: Date.now() });
   return value;
 }

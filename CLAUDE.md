@@ -528,6 +528,10 @@ its models are in `TallinnTasteBuds/Models/`.
   `line`, and the train's `name`, `from`, `to` and `at`. The app asks it
   first and asks the old `/api/route` again on an answer without `version`,
   so `version` is on every answer, refusals included.
+- From 2026-11-23, `GET /api/v1/route` by bike, but for a ride between
+  cities, answers BRouter's ways, the quietest first — **Nice ways by bike** in
+  `docs/handbook.md` — in the fields it always had. The first way is the
+  quietest, so one of `others` can be shorter or quicker.
 - Signing in, which is three promises of its own. `GET /api/v1/account` answers
   `appGoogle` and `appApple`, and the app draws a button only where its flag
   is true — so taking one away hides a button, and renaming one hides it for
@@ -676,6 +680,17 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `heading` beside them, whole degrees from north, the way the rider is
   going — answered in the same fields, the way setting off that way. An
   answer that ignored it would be read just the same.
+- Its ways by bike, from 2026-11-23: with no `heading`, and but for a ride
+  between cities, the ways are BRouter's, in the same fields and the same
+  words of `turn`
+  — **Nice ways by bike** in `docs/handbook.md`. Three things an installed
+  app meets. The first way is the quietest and not the quickest, so
+  `others` can hold a shorter one. `ridden: true` is on the way riders made
+  the most of wherever it comes, first or among `others`, where it was only
+  ever on the first. And a step's `name` is empty, BRouter's map having no
+  street names, as it always was through a door: the row while riding is
+  the turn alone. With a `heading`, and between cities, the answer is the
+  router's as it was.
 - Its lists, signed in: `GET /api/v1/me/lists`, reading `lists` with `id`, `title`
   and `n`; and `POST /api/v1/me/lists` with `create` (`title`, answered `id` and
   `title`), `place` (`name`, `address`, `lat`, `lng`, answered `place.id`)
