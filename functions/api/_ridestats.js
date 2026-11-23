@@ -65,16 +65,40 @@
  * The totals are shown to their own account alone, so a made-up summary
  * fools only the person who made it up.
  *
+ * THE SAME RIDE AGAIN
+ *
+ * A phone that never heard the answer to a save sends the ride again, and
+ * until 2026-11-23 that was a second row in `rides`, a second in here, and
+ * the ride twice in the account's totals. The owner's design for telling:
+ * no list of rides seen, since the numbers kept here already say which
+ * ride a ride is. Two saves of one ride carry the same numbers to the
+ * metre, the second and the point — the phone works them out of the same
+ * recording, and summaryFromRuns() out of the same line — and two
+ * different rides of one account do not. So sameRide() asks this table for
+ * a row of the account's with exactly these numbers before anything is
+ * written, and a save that finds one is answered as the first was, with
+ * that ride's id, and writes nothing.
+ *
+ * It is found by a key: idx_ride_stats_meters is (user_id, meters), so the
+ * lookup reads the account's rides of exactly that many metres, which is
+ * the one being looked for or none, and never the account's history. It is
+ * a look and then a write, not one statement, so two copies of a ride
+ * arriving in the same instant are both kept; Rattatee sends one ride at a
+ * time and waits a minute before trying again, so that is a program and
+ * not a phone. A ride with no account has no row here and is not looked
+ * for: it is counted again, as it was.
+ *
  * WHAT IT COSTS
  *
- * A signed-in save writes one `ride_stats` row — five rows to D1, the row,
- * its key's index and its three others, measured on the 37 written by hand
- * — and upserts one `ride_totals` row by its key, one row read and one or
- * two written: about seven a save, beside the hundred or more a save
+ * A signed-in save reads the row or two sameRide() looks at, writes one
+ * `ride_stats` row — five rows to D1, the row, its key's index and its
+ * three others, measured on the 37 written by hand — and upserts one
+ * `ride_totals` row by its key, one row read and one or two written: about
+ * three read and seven written a save, beside the hundred or more a save
  * already writes into ride_sections. The totals are read by the key, one
  * row, on Rattatee's ?totals=1, which it asks when its My rides opens and
  * not more than once a minute. At a thousand saves and five thousand opens a
- * day that is six thousand rows read of five million and seven thousand
+ * day that is eight thousand rows read of five million and seven thousand
  * written of a hundred thousand. A drop reads under ten rows, each by a
  * key; deleting an account, one row a ride it saved since this file.
  *
@@ -178,6 +202,29 @@ export function summaryFromRuns(runs, seconds, fastest) {
     meters, seconds, total, stopped: Math.min(stopped, total), top, fastest: quickest,
     start: first[0], end: last[last.length - 1]
   };
+}
+
+/* The id of the ride this account already saved with exactly these numbers,
+   or null — THE SAME RIDE AGAIN. Every number and both points, a null
+   matching a null. A lookup on idx_ride_stats_meters, (user_id, meters):
+   the account's rides of that many metres, one row or none. Null too
+   where the table is not there, so the save goes on as it did. */
+export async function sameRide(env, userId, s) {
+  try {
+    const row = await env.DB
+      .prepare(
+        'SELECT id FROM ride_stats WHERE user_id = ?1 AND meters = ?2 AND seconds = ?3 AND total = ?4 ' +
+        'AND stopped = ?5 AND top IS ?6 AND fastest IS ?7 AND start_lat IS ?8 AND start_lng IS ?9 ' +
+        'AND end_lat IS ?10 AND end_lng IS ?11 LIMIT 1'
+      )
+      .bind(userId, s.meters, s.seconds, s.total, s.stopped, s.top, s.fastest,
+        s.start ? s.start[0] : null, s.start ? s.start[1] : null,
+        s.end ? s.end[0] : null, s.end ? s.end[1] : null)
+      .first();
+    return row ? row.id : null;
+  } catch (e) {
+    return null;
+  }
 }
 
 /* The two statements that keep a ride's numbers under `id` and add them to

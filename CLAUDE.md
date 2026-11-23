@@ -723,7 +723,10 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   not read. A ride ridden wholly outside the four cities, saved signed in,
   is sent with `line: []` and without `anon`, answered `{ "counted": true }`;
   its `short`, `malformed` and — the session gone — `signed-out` are final,
-  and the ride is listed as outside the cities. And `GET /api/v1/rides?totals=1`,
+  and the ride is listed as outside the cities. Since 2026-11-23 a session's
+  save of a ride the account already holds — the same numbers to the metre
+  and the second, its first answer lost — is answered as the first was,
+  `ride` with the same `id` or `counted`, and kept once. And `GET /api/v1/rides?totals=1`,
   signed in, for its My rides: `ready`, `user` and `totals` — `rides`,
   `meters`, `seconds`, `stopped`, `top`, `fastest`, `longest` and `since`,
   or null — asked when My rides opens, at most once a minute.
