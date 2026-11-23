@@ -14,6 +14,9 @@
  *   node tools/doors.mjs --dry     the same, printed, and nothing written
  *   node tools/doors.mjs --all     look at every ride again, as after a
  *                                  change to how a door is found
+ *   node tools/doors.mjs --recheck hold the doors already in the file to
+ *                                  the test again, keep those that pass,
+ *                                  and look at no ride
  *
  * It is not one of the generators tools/generate.mjs runs, and the validator
  * does not hold the file to it: what it writes depends on the rides people
@@ -64,10 +67,26 @@
  * answered the very line the owner rode, 266 m in 171 seconds, and so sent
  * every route round by Tööstuse instead. Somebody rode it, so it is a door.
  * A way therefore counts as the metres a ride covers in the time the
- * router gives it, at PACE, where that is more than its length — an
+ * router gives it, at SPEED, where that is more than its length — an
  * ordinary street comes out at its own length and a pushed path at more
  * than twice it — and a way it pushes is not one a stretch can be
  * dismissed for lying along.
+ *
+ * A CORNER IS NOT A DOOR
+ *
+ * The time is the router's time on its streets and paths, stretch by
+ * stretch, and not the time of the whole way, which has a few seconds more
+ * for every corner turned and every light. Until 2026-11-23 it was the
+ * whole way's, at twelve kilometres an hour, and on a stretch of two
+ * hundred metres the corners were half of it: from Narva maantee round
+ * into Weizenbergi the router rides 171 m in 56 seconds on its streets and
+ * took 103 in all, which counted as 340 m against the 197 ridden — a door
+ * along two streets it rides. A park path is as slow on its own as in all —
+ * 138 m in 83 seconds of path and 89 in all — so the paths are doors still,
+ * and they were 131 of the 240 the file had when the owner asked that day
+ * why most doors were parks. --recheck kept 201; the 39 that went were
+ * corners, or lay along a way the router rides once it is timed by its
+ * streets.
  *
  * Two rides through one door are one door: ends within SAME metres of each
  * other, either way round, or most of the shorter line lying along the
@@ -80,7 +99,10 @@
  * ride not being looked at again, so the doors already in data/doors.json are kept and
  * the new ones joined to them, one door for two that are the same. A door
  * that should not be one is a line taken out of the file by hand, and it
- * stays out for as long as the ride that made it is not found again.
+ * stays out for as long as the ride that made it is not found again. And
+ * when the way a door is found changes, --recheck holds every door in the
+ * file to the test again, the router asked both ways, and keeps only those
+ * that pass; it reads no ride.
  *
  * And a ride is not all ridden. The owner rode to Ülemiste on 2026-11-17,
  * took the train two stops with the bike and rode on, and saved it as one
@@ -150,12 +172,12 @@ const RATIO = 1.5;
 const SNAP = 20;
 const SAME = 30;
 
-/* What the router makes of a plain street by bike, in metres a second:
-   twelve kilometres an hour once its corners are counted. A way slower
-   than PUSHED of that is one it has a bike pushed along for most of. The
-   same PACE is in functions/api/route.js, which measures a way the same
-   way. */
-const PACE = 3.3;
+/* What the router rides a plain street at by bike, in metres a second:
+   fifteen kilometres an hour, DOOR_SPEED in functions/api/route.js. A way
+   is counted by the time the router gives its streets and paths, and not
+   what it adds at a corner — A CORNER IS NOT A DOOR — and a way slower than
+   PUSHED of this is one it has a bike pushed along for most of. */
+const SPEED = 4.2;
 const PUSHED = 2 / 3;
 const PAUSE = 1100;
 
@@ -229,21 +251,23 @@ async function routed(a, b) {
     calls++;
     try {
       const res = await fetch(ROUTER + a[1] + ',' + a[0] + ';' + b[1] + ',' + b[0] +
-        '?overview=full&geometries=geojson&alternatives=true', { headers: { 'User-Agent': AGENT } });
+        '?overview=full&geometries=geojson&alternatives=true&annotations=duration', { headers: { 'User-Agent': AGENT } });
       if (!res.ok) continue;
       const body = await res.json();
       if (body.code === 'NoRoute') break;
       if (body.code !== 'Ok' || !Array.isArray(body.routes) || !body.routes.length) continue;
       const ways = body.routes.map((r) => ({
         meters: r.distance,
-        seconds: r.duration,
+        seconds: r.legs.every((leg) => leg.annotation && Array.isArray(leg.annotation.duration))
+          ? r.legs.reduce((sum, leg) => sum + leg.annotation.duration.reduce((x, y) => x + y, 0), 0)
+          : r.duration,
         line: r.geometry.coordinates.map(([lng, lat]) => [lat, lng])
       }));
       const line = ways[0].line;
       found = {
-        meters: Math.round(Math.min(...ways.map((w) => Math.max(w.meters, w.seconds * PACE)))),
+        meters: Math.round(Math.min(...ways.map((w) => Math.max(w.meters, w.seconds * SPEED)))),
         snap: Math.max(metres(a, line[0]), metres(b, line[line.length - 1])),
-        lines: ways.filter((w) => w.meters >= w.seconds * PACE * PUSHED).map((w) => w.line)
+        lines: ways.filter((w) => w.meters >= w.seconds * SPEED * PUSHED).map((w) => w.line)
       };
     } catch (e) { /* asked again */ }
   }
@@ -302,17 +326,6 @@ function piecesOf(line) {
   return pieces(line).filter((piece) => piece.length >= 2);
 }
 
-/* Where the last run stopped — A RIDE IS LOOKED AT ONCE — and the rides
-   saved since. */
-let from = { at: 0, id: '' };
-if (!process.argv.includes('--all')) {
-  try { from = JSON.parse(readFileSync(CHECKED, 'utf8')); } catch (e) { /* no file yet: every ride */ }
-}
-const fresh = await rides(from);
-const piecesOfRide = (ride) => Array.isArray(ride.line) ? piecesOf(ride.line) : [];
-console.log(fresh.length + ' rides saved since ' + (from.at ? new Date(from.at).toISOString() : 'the start') +
-  ': ' + fresh.reduce((n, ride) => n + piecesOfRide(ride).length, 0) + ' ridden pieces');
-
 /* The doors the file already has first — AND THE DOORS IT ALREADY HAD —
    then each one found, joined to its twin where it has one. */
 let doors = [];
@@ -352,8 +365,48 @@ function save(at) {
   if (process.argv.includes('--dry')) return;
   const out = written();
   writeFileSync(OUT, '[\n' + out.map((door) => '  ' + JSON.stringify(door)).join(',\n') + (out.length ? '\n' : '') + ']\n');
-  writeFileSync(CHECKED, JSON.stringify(at) + '\n');
+  if (at) writeFileSync(CHECKED, JSON.stringify(at) + '\n');
 }
+
+/* --recheck — AND THE DOORS IT ALREADY HAD: each door put to the router
+   both ways and kept where it is still the long way round in both, its
+   ends still on the router's network and its line off the router's ways.
+   One the router does not answer about is kept: no answer is not a way.
+   The bookmark does not move, since no ride is looked at. */
+if (process.argv.includes('--recheck')) {
+  const kept = [];
+  for (const door of doors) {
+    const a = door.line[0];
+    const b = door.line[door.line.length - 1];
+    const way = await routed(a, b);
+    const back = await routed(b, a);
+    const long = (w) => w.meters - door.meters >= GAIN && w.meters >= door.meters * RATIO;
+    if (!way || !back || (long(way) && long(back) && Math.max(way.snap, back.snap) <= SNAP &&
+      onLines(door.line, way.lines.concat(back.lines)) < SHARE)) {
+      kept.push(way && back ? Object.assign(door, { around: Math.min(way.meters, back.meters) }) : door);
+    } else {
+      console.log('not a door: ' + door.id + '  ' + door.meters + ' m ridden, ' +
+        Math.min(way.meters, back.meters) + ' m by the router  ' + a.join(','));
+    }
+  }
+  doors = kept;
+  save(null);
+  console.log(kept.length + ' of ' + had + ' doors kept; ' + calls + ' router calls' +
+    (process.argv.includes('--dry') ? ', nothing written' : ''));
+  process.exit(0);
+}
+
+/* Where the last run stopped — A RIDE IS LOOKED AT ONCE — and the rides
+   saved since. */
+let from = { at: 0, id: '' };
+if (!process.argv.includes('--all')) {
+  try { from = JSON.parse(readFileSync(CHECKED, 'utf8')); } catch (e) { /* no file yet: every ride */ }
+}
+const fresh = await rides(from);
+const piecesOfRide = (ride) => Array.isArray(ride.line) ? piecesOf(ride.line) : [];
+console.log(fresh.length + ' rides saved since ' + (from.at ? new Date(from.at).toISOString() : 'the start') +
+  ': ' + fresh.reduce((n, ride) => n + piecesOfRide(ride).length, 0) + ' ridden pieces');
+
 
 const began = Date.now();
 for (const [n, ride] of fresh.entries()) {
