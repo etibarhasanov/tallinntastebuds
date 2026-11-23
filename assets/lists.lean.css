@@ -205,11 +205,6 @@
 .lists-fold > summary:hover .menu-go { color: var(--accent); }
 .lists-fold[open] > summary .menu-go { transform: rotate(90deg); }
 
-.ride-totals { margin: 4px 0 14px; }
-.ride-totals .counter-title { margin-bottom: 8px; }
-.ride-totals .counter-three + .counter-three { border-bottom: 0; }
-.ride-totals-more { margin: 0; font: 12px var(--mono); color: var(--muted); }
-
 .lists-save { transition: background-color .18s ease, border-color .18s ease, color .18s ease; }
 .lists-save.is-saved {
   background: var(--wash);
@@ -898,9 +893,6 @@
 .lists-all-card.has-keep { padding-bottom: 54px; }
 .lists-all-card:hover { border-color: var(--accent); }
 .lists-all-card:hover .lists-index-title { color: var(--accent); }
-
-.lists-all-card.is-still:hover { border-color: var(--hairline); }
-.lists-all-card.is-still:hover .lists-index-title { color: inherit; }
 
 .lists-index-row > .lists-keep-wrap {
   position: absolute;

@@ -154,12 +154,12 @@
  *
  * WHAT IT ASKS, AND HOW OFTEN
  *
- * The rides come from GET /api/v1/rides?since=, the same public lines
- * ?bbox= gives anybody: their first and last 200 m already off, and
- * nobody's name. Until 2026-11-22 they came from ?bbox=, Tallinn in three
- * by three boxes, and so only the newest forty of a box and none of the
- * other three cities a ride can be saved in; asked by when, it is every
- * ride saved since, wherever it was ridden.
+ * The rides come from GET /api/v1/rides?since=, the lines as they are
+ * kept: their first and last 200 m already off, and nobody's name. Until
+ * 2026-11-22 they came from ?bbox=, Tallinn in three by three boxes, and so
+ * only the newest forty of a box and none of the other three cities a ride
+ * can be saved in; asked by when, it is every ride saved since, wherever it
+ * was ridden. ?bbox= answers no rides at all since 2026-11-23.
  *
  * The router is asked directly, a request every PAUSE milliseconds, and
  * not through the site's /api/v1/route, which it was until 2026-11-22. That

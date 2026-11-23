@@ -2234,11 +2234,11 @@ CREATE TABLE IF NOT EXISTS walk_checks (
 CREATE INDEX IF NOT EXISTS idx_walk_checks_list ON walk_checks (list_id, checked_at);
 
 -- One row is one bike ride a member recorded and saved while signed in — a
--- confirmed bike route, a line somebody has really cycled. Answered under
--- ?bbox= by functions/api/rides.js without a name on it: the rides are
--- everybody's evidence, not anybody's profile. A ride saved with no
--- account has no row here, or anywhere: it is counted into ride_sections
--- and let go. **Recorded rides** in docs/handbook.md.
+-- confirmed bike route, a line somebody has really cycled. Answered by
+-- ?since= in functions/api/rides.js, for tools/doors.mjs, without a name on
+-- it: the rides are everybody's evidence, not anybody's profile. A ride
+-- saved with no account has no row here, or anywhere: it is counted into
+-- ride_sections and let go. **Recorded rides** in docs/handbook.md.
 CREATE TABLE IF NOT EXISTS rides (
   -- Twelve hex characters, drawn by the Function.
   id         TEXT    PRIMARY KEY,
@@ -2280,8 +2280,10 @@ CREATE TABLE IF NOT EXISTS rides (
   -- and last in the table for that reason.
   track      TEXT    NOT NULL DEFAULT ''
 );
--- The rides under a way: the box test leads with the latitudes. No read uses
--- it since ride_cells below; a box is four ranges and no index answers it.
+-- The rides under a way: the box test leads with the latitudes. No read has
+-- used it since 2026-11-18, and nothing asks for the rides under a way at
+-- all since 2026-11-23 — NO LIST AND NO MAP OF RIDES in
+-- functions/api/rides.js.
 CREATE INDEX IF NOT EXISTS idx_rides_box ON rides (south, north);
 -- One person's rides today, for the cap.
 CREATE INDEX IF NOT EXISTS idx_rides_user ON rides (user_id, created_at);
@@ -2337,8 +2339,8 @@ CREATE INDEX IF NOT EXISTS idx_ride_stats_meters ON ride_stats (user_id, meters)
 
 -- One row is one account's riding, added up: kept by the save that adds a
 -- row to ride_stats and by the drop that takes one away, in the same batch,
--- and read by its key for the account page and Rattatee's Account tab —
--- never summed out of ride_stats on a read. Added on 2026-11-22.
+-- and read by its key for Rattatee's My rides — never summed out of
+-- ride_stats on a read. Added on 2026-11-22.
 CREATE TABLE IF NOT EXISTS ride_totals (
   user_id    TEXT    PRIMARY KEY,
   rides      INTEGER NOT NULL,
@@ -2353,33 +2355,6 @@ CREATE TABLE IF NOT EXISTS ride_totals (
   since      INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );
-
--- One row is one ride passing through one square of the city, 1/50 by 1/25 of
--- a degree — about 2.2 km a side — so the rides near a way are found
--- by the key instead of by reading every ride: functions/api/_ridecells.js,
--- which says what a read costs. Filled by a save in functions/api/rides.js
--- and emptied of a ride by its drop. Holds nothing `rides` does not, so it is
--- rebuilt from that table — the rides saved before it, or a new square size —
--- with one statement, the arithmetic of cellOf() in SQL:
---   INSERT OR IGNORE INTO ride_cells (cell, created_at, ride)
---     SELECT DISTINCT CAST(json_extract(p.value, '$[0]') * 50 AS INTEGER) * 10000
---          + CAST(json_extract(p.value, '$[1]') * 25 AS INTEGER), r.created_at, r.id
---     FROM rides r, json_each(r.line) p;
--- A load for a terminal once there are more than a hundred rows of it.
---
--- The questions it is asked, and the key that answers each:
---   the newest rides through one square       (cell, created_at) — the key
---   the squares of one ride, to drop them     (ride) — idx_ride_cells_ride
-CREATE TABLE IF NOT EXISTS ride_cells (
-  -- The square: trunc(lat * 50) * 10000 + trunc(lng * 25), both positive here.
-  cell       INTEGER NOT NULL,
-  -- rides.created_at, so the newest come first by the key.
-  created_at INTEGER NOT NULL,
-  -- rides.id.
-  ride       TEXT    NOT NULL,
-  PRIMARY KEY (cell, created_at, ride)
-) WITHOUT ROWID;
-CREATE INDEX IF NOT EXISTS idx_ride_cells_ride ON ride_cells (ride);
 
 -- One row is one square of the city, about twenty-eight metres a side,
 -- crossed one way, and what the rides that crossed it that way say about

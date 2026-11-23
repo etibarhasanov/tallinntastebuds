@@ -487,7 +487,10 @@ its models are in `TallinnTasteBuds/Models/`.
     `checked` and `total`; and the error `far` with `place` and `meters`.
   - `GET /api/v1/rides?bbox=` (`rides`, each a `line`) and `POST /api/v1/rides`
     with `save`, `name`, `seconds` and `line`, and the errors `signed-out`,
-    `often`, `fast` and `short`.
+    `often`, `fast` and `short`. Since 2026-11-23 `?bbox=` answers `ready:
+    false` and no rides, reading nothing: the owner took the bike stats off
+    the website for what they read and kept what Rattatee asks for — **No
+    list and no map of rides** in `docs/handbook.md`.
   - `GET /api/v1/route` with `mode=bike`.
   - `POST /api/v1/ask` with `q`, `lang`, `wish`, `here` and `history`, reading
     `ok`, `source` (`resting` included), `say`, `picks` (`id`, `why`, `far`),
@@ -513,6 +516,10 @@ its models are in `TallinnTasteBuds/Models/`.
 - Added on 2026-11-18, with Where you rode: `GET /api/v1/rides?mine=1&lines=1`,
   the same answer with `line` on each ride, `[lat, lng]` pairs thinned by
   the site, which the app draws together on one map.
+- Since 2026-11-23 the list — `GET /api/v1/rides` with no query, `?mine=1`
+  and `?mine=1&lines=1` — answers `ready: false`, `user: null` and no
+  rides, as `?bbox=` does, so an installed app lists none; a ride's own
+  page, `rename` and `drop` answer as before.
 - `data/map.json`'s `closed`, written down on 2026-11-21 after it went
   wrong: `false`, `true` for good, or `"temporary"`, which the app shows as
   **Temporarily closed** with `closedTempNote`. The app read `closed` as true

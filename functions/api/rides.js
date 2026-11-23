@@ -6,66 +6,42 @@
  * they were signed in, and counted and let go where they were not. The
  * website records nothing: its own recorder, assets/ride.js, was taken out
  * on 2026-11-18, since the site gives directions and takes nobody's
- * movements. The website's
- * map no longer draws them under a bike route — a suggested way joins one
- * place to another, and somebody's own rides beside it read as nonsense and
- * gave away where they ride from — but ?bbox= stays, because the iPhone app
- * asks it and an installed app is a promise. **Recorded rides** in
- * docs/handbook.md is the reasoning.
- *
- * GET  /api/v1/rides?bbox=<south>,<west>,<north>,<east>
- *
- *   { ready, rides: [ { id, meters, seconds, line: [ [lat, lng], … ] } ] }
- *
- *   The rides whose box meets the one asked about, newest first and at most
- *   NEAR of them. Open to anybody and the same answer for everybody, so it is
- *   cached: the box is rounded outward to two decimals first, about a
- *   kilometre, so a hundred people asking about one street are one read.
- *   `ready: false` and no rides where the table is not applied — WHEN THE
- *   TABLE IS NOT THERE.
+ * movements. Nothing draws a ride or lists one any more, here or in an app:
+ * what a ride is for is steering a bike route — **Doors** and **Ways people
+ * have ridden** in docs/handbook.md — and adding up its rider's riding, which
+ * Rattatee shows. **Recorded rides** there is the reasoning.
  *
  * GET  /api/v1/rides?since=<ms>[&after=<id>]
  *
  *   { ready, rides: [ { id, meters, seconds, at, line } ], next }
  *
  *   The rides saved after a moment, oldest first, SINCE_PAGE at a time,
- *   `next` the { at, id } to ask the page after with, or null. The same
- *   public lines ?bbox= answers, for tools/doors.mjs, which asks only for
- *   the rides it has not looked at — since() below.
- *
- * GET  /api/v1/rides?mine=1, or /api/v1/rides with nothing asked
- *
- *   { ready, user, rides: [ { id, name, meters, seconds, at, timed } ] }
- *
- *   The session's own rides, newest first and at most MINE of them, for the
- *   Your rides card on /account.html and the iPhone app's Your rides. The
- *   one answer here that carries a name, because it goes only to whoever
- *   gave it, and it carries no line: the card is a list. `timed` says
- *   whether the ride has a track, so the list can tell which rides will
- *   have speeds when opened. Never cached. Signed out it is empty. One ride
- *   whole, with what it says about itself, is GET /api/v1/rides/<id> in
- *   ./rides/[id].js. And `totals`, the account's riding added up, or null —
- *   A RIDE IN NUMBERS.
+ *   `next` the { at, id } to ask the page after with, or null. The lines
+ *   with no name on them, for tools/doors.mjs, which asks only for the rides
+ *   it has not looked at — since() below.
  *
  * GET  /api/v1/rides?totals=1
  *
  *   { ready, user, totals: { rides, meters, seconds, stopped, top, fastest,
  *     longest, since } }
  *
- *   The totals alone, for Rattatee's My rides, which wants them and not
- *   the list: one row read rather than two hundred. `top` in km/h and
+ *   The account's riding added up, for Rattatee's My rides: one row read,
+ *   by ride_totals' key — A RIDE IN NUMBERS. `top` in km/h and
  *   `fastest` in seconds, each null until a ride has one; `since` when the
  *   first was counted. `totals` is null signed out and before a ride has
  *   been counted. Never cached.
  *
- * GET  /api/v1/rides?mine=1&lines=1
+ * GET  /api/v1/rides?bbox=…, ?mine=1, ?mine=1&lines=1, or nothing asked
  *
- *   The same answer with a `line` on every ride, [lat, lng] pairs thinned to
- *   a point every THIN metres or so, for Where you rode on the iPhone app's
- *   Your rides: every ride of a range drawn on one map. Thinned because the
- *   map is the size of a card and two hundred whole lines are megabytes; a
- *   ride whole is still GET /api/v1/rides/<id>. Only with `lines=1`, so the
- *   list an installed app and the account page ask for is the size it was.
+ *   { ready: false, user: null, rides: [] }
+ *
+ *   What the map app's rides near a way, its Your rides and its Where you
+ *   rode, and the account page's Your rides card, asked for. Since
+ *   2026-11-23 the answer a deployment without the table gives, reading
+ *   nothing — NO LIST AND NO MAP OF RIDES.
+ *
+ *   One ride whole, to its rider, is GET /api/v1/rides/<id> in
+ *   ./rides/[id].js, which Rattatee's ride page asks.
  *
  * POST /api/v1/rides  { action: 'save', name, seconds, line, summary }  a session
  * POST /api/v1/rides  { action: 'save', anon: true, … }                  nobody
@@ -77,8 +53,8 @@
  *                                         and a session's ride with no line
  *                                         to keep, whose numbers are kept
  *
- *   With a session the ride is filed under the account and is one of its
- *   owner's on ?mine=1, and `summary`, where the save carried one, is kept
+ *   With a session the ride is filed under the account, its rider's to
+ *   open, rename and drop, and `summary`, where the save carried one, is kept
  *   as its numbers and added to the account's totals — A RIDE IN NUMBERS.
  *   With `anon: true` and no session nothing of it is kept: its squares are
  *   counted and the answer has no `ride` — A RIDE WITHOUT AN ACCOUNT IS
@@ -135,11 +111,10 @@
  * So a save that says `anon: true` and carries no session is checked as
  * any ride is, cut into its runs with the ends off each, counted into
  * `ride_sections` — WHAT THE RIDE SAYS ABOUT THE STREETS — and let go. No
- * row in `rides`, none in `ride_cells`, and the answer is `counted: true`
- * with no `ride` in it, since there is none to name: Rattatee marks a ride
- * saved on any 2xx, and asks for the kept ride only where it was given an
- * id. Such a ride is never under ?bbox=, and tools/doors.mjs never reads
- * it.
+ * row in `rides`, and the answer is `counted: true` with no `ride` in it,
+ * since there is none to name: Rattatee marks a ride saved on any 2xx, and
+ * asks for the kept ride only where it was given an id. tools/doors.mjs
+ * never reads such a ride.
  *
  * It has to say `anon`. A recorder that asks for a sign-in first — the map
  * app's — is making a ride one of Your rides, and one whose session ran
@@ -191,8 +166,8 @@
  * MAX_POINTS of them, and an average faster than FASTEST is a car or a
  * train, not a bike, and is refused. Past that a browser's location is
  * whatever the browser says it is, the same as a walk's check-in — see IT
- * CAN BE FAKED in ./walk.js. A ride is drawn faintly and suggested nothing;
- * a faked one costs a faint line.
+ * CAN BE FAKED in ./walk.js. A ride is drawn nowhere; a faked one weighs
+ * a little on the squares it crosses — WHAT THE RIDE SAYS ABOUT THE STREETS.
  *
  * WHEN EACH POINT WAS PASSED
  *
@@ -247,13 +222,25 @@
  * is `short`. One row a run and not one row with several lines, because
  * `line` is one line to every page and installed app that reads it.
  *
- * WHERE IT IS FILED
+ * NO LIST AND NO MAP OF RIDES
  *
- * A ride is also filed under the squares of the city its line passes
- * through, in `ride_cells`, so ?bbox= finds the rides near a way by a key
- * rather than by reading every ride there is. ./_ridecells.js is the whole
- * of it; a drop takes the squares with it. A kept ride's, that is: one
- * that is only counted is filed nowhere.
+ * Until 2026-11-23 a kept ride was also filed under the squares of the city
+ * its line passed through, in `ride_cells`, so ?bbox= could answer the
+ * rides near a way by a key; and ?mine=1 answered somebody's own, up to
+ * two hundred rows a look, for the account page's Your rides card and the
+ * map app's. That day the owner took the bike stats off the website, for
+ * what they read — the rides near a way alone came to about fifteen hundred
+ * rows a day — and kept what Rattatee asks for: a save, ?totals=1, a ride's
+ * own page and the bike route the rides steer. Rattatee lists the rides on
+ * its own phone and asks the site for neither.
+ *
+ * So ?bbox=, ?mine=1 and the bare address answer `ready: false` and no
+ * rides, which every installed map app already reads as a deployment
+ * without the table, and read nothing — not even the session. Nothing
+ * files a ride under `ride_cells` now, and the owner dropped the table the
+ * same day. `rename` and `drop` stay: each reads a row or two by a key, only
+ * when somebody asks, and a drop is the one way to take a single ride off
+ * the site.
  *
  * WHAT THE RIDE SAYS ABOUT THE STREETS
  *
@@ -273,8 +260,8 @@
  * riding — how far, how long, how fast, how long standing — is the whole
  * ride's, so since 2026-11-22 Rattatee sends it worked out, as `summary`,
  * and a signed-in save keeps it as a row of `ride_stats` under the ride's
- * first run and adds it to the account's row of `ride_totals`, which ?mine=1
- * and ?totals=1 answer. A save with no summary has its numbers worked out of
+ * first run and adds it to the account's row of `ride_totals`, which
+ * ?totals=1 answers. A save with no summary has its numbers worked out of
  * the line it kept. Each kept run's `seconds` is its share of the whole
  * ride's distance where there is a summary — of the kept line's where there
  * is none — so a ride to Keila does not leave its in-town runs with the
@@ -284,23 +271,20 @@
  *
  * WHEN THE TABLE IS NOT THERE
  *
- * `rides` is in db/schema.sql and loaded by hand. Until it is, GET answers
- * `ready: false` and the Bike tab draws its way exactly as it did; a save
- * answers 503 `not-ready` and the phone keeps the ride to try again.
- * `ride_sections` and `ride_cells` are loaded the same way. A kept ride's
- * save catches both: the ride is kept, uncounted or unfiled as may be. A
- * counted ride needs `ride_sections` and is `not-ready` without it.
- * Without `ride_cells` ?bbox= answers `ready: false`, the same as without
- * `rides`. Without `ride_stats` and `ride_totals` a ride is kept and its
- * numbers are not, `totals` is null, and a save that had only numbers to
- * keep is `not-ready`.
+ * `rides` is in db/schema.sql and loaded by hand. Until it is, ?since=
+ * answers `ready: false` and the Bike tab draws its way exactly as it did;
+ * a save answers 503 `not-ready` and the phone keeps the ride to try again.
+ * `ride_sections` is loaded the same way. A kept ride's save catches it:
+ * the ride is kept, uncounted. A counted ride needs `ride_sections` and is
+ * `not-ready` without it. Without `ride_stats` and `ride_totals` a ride is
+ * kept and its numbers are not, `totals` is null, and a save that had only
+ * numbers to keep is `not-ready`.
  */
 
 import { json, sessionUser, wrongDatabase, nearCity, km, randomHex } from './_lib.js';
 import { countUse } from './_visitors.js';
 import { pieces, sectionsOf, tally } from './_sections.js';
 import { arrayOf } from './_rides.js';
-import { ridesIn, fileCells } from './_ridecells.js';
 import { summaryOf, summaryFromRuns, statsStatements, totalsOf, dropStatements, statsReady } from './_ridestats.js';
 
 /* Metres taken off each end of a ride before it is stored — NOBODY'S NAME
@@ -333,12 +317,6 @@ const DAY_RIDES = 20;
    `longestName` in Rattatee/Core/Store.swift, whose field stops there. */
 const MAX_NAME = 60;
 
-/* How many rides one read answers, and how large a box it may ask about —
-   a way across the city is about 0.1 by 0.25 degrees, and anything bigger
-   than this is not a way to a place. */
-const NEAR = 40;
-const MAX_BOX = 0.4;
-
 /* How many rides a page of ?since= answers. Fewer than PAGE in ./_lib.js
    because each carries its whole line, which is a few hundred points. */
 const SINCE_PAGE = 20;
@@ -355,49 +333,20 @@ const MAX_ACC = 1000;
 const MIN_ALT = -100;
 const MAX_ALT = 1000;
 
-/* How many of somebody's own rides ?mine=1 answers. A year of commuting is
-   more than this, and the card that reads it shows six until asked. */
-const MINE = 200;
-
-/* How far apart, in metres, the points of a line ?lines=1 answers are. The
-   page keeps one every dozen metres; at fifty a corner is still a corner on
-   a map of the whole city, and a ten-kilometre ride is two hundred points. */
-const THIN = 50;
-
 export async function onRequestGet(context) {
-  const { env, request } = context;
-  const query = new URL(request.url).searchParams;
-  if (query.has('since')) return json(...await since(env, query.get('since'), query.get('after')));
+  const query = new URL(context.request.url).searchParams;
+  if (query.has('since')) return json(...await since(context.env, query.get('since'), query.get('after')));
   if (query.get('totals') === '1') return json(await totals(context), 200);
-  if (query.get('mine') === '1' || !query.has('bbox')) {
-    return json(await mine(context, query.get('lines') === '1'), 200);
-  }
-  const box = roundedBox(query.get('bbox'));
-  if (!box) return json({ error: 'malformed' }, 400);
-  if (!env.DB || await wrongDatabase(env)) return json({ ready: false, rides: [] }, 200);
-
-  try {
-    /* By the squares of the city each ride passes through, not by reading
-       every ride's box — WHAT A READ COSTS in ./_ridecells.js. */
-    const results = await ridesIn(env, box, 'id, meters, seconds, line', NEAR);
-    const rides = results.map((row) => ({
-      id: row.id,
-      meters: row.meters,
-      seconds: row.seconds,
-      line: arrayOf(row.line)
-    })).filter((ride) => ride.line.length > 1);
-    return json({ ready: true, rides }, 200, 300);
-  } catch (e) {
-    return json({ ready: false, rides: [] }, 200);
-  }
+  /* NO LIST AND NO MAP OF RIDES: whatever else is asked. */
+  return json({ ready: false, user: null, rides: [] }, 200);
 }
 
 /* The rides saved after a moment — GET ?since=<ms>[&after=<id>] — oldest
    first, a page of SINCE_PAGE, answered as [body, status, maxAge] for
-   json(). The same rides and the same fields ?bbox= gives anybody, with
-   `at` beside them and no name, and `next` the cursor of the page after
-   this one, or null on the last: ask again with since=next.at and
-   after=next.id. It is for tools/doors.mjs, which keeps when it last looked
+   json(). Each ride's line, metres and seconds, with `at` beside them and
+   no name, and `next` the cursor of the page after this one, or null on
+   the last: ask again with since=next.at and after=next.id. It is for
+   tools/doors.mjs, which keeps when it last looked
    and asks for nothing older — A RIDE IS LOOKED AT ONCE there.
 
    WHAT IT COSTS: a range on idx_rides_created (created_at, id) in
@@ -434,63 +383,13 @@ async function since(env, rawSince, rawAfter) {
   }
 }
 
-/* The session's own rides — GET ?mine=1. */
-async function mine(context, lines) {
-  const { env, request } = context;
-  const none = { ready: false, user: null, rides: [] };
-  if (!env.DB || await wrongDatabase(env)) return none;
-  const user = await sessionUser(request, env);
-  if (!user) return { ...none, ready: true };
-  const read = (timed) => env.DB
-    .prepare(
-      'SELECT id, name, meters, seconds, created_at AS at, ' + timed + ' AS timed' +
-      (lines ? ', line' : '') + ' FROM rides ' +
-      'WHERE user_id = ? ORDER BY created_at DESC LIMIT ?'
-    )
-    .bind(user.id, MINE)
-    .all();
-  let got;
-  try {
-    got = await read("track <> ''");
-  } catch (e) {
-    /* No `track` column yet, so no ride has one; or WHEN THE TABLE IS NOT
-       THERE, which the second read finds out. */
-    try {
-      got = await read('0');
-    } catch (e2) {
-      return none;
-    }
-  }
-  const rides = got.results.map((r) => lines
-    ? { ...r, timed: !!r.timed, line: thinned(arrayOf(r.line)) }
-    : { ...r, timed: !!r.timed });
-  return { ready: true, user: user.username, rides, totals: await totalsOf(env, user.id) };
-}
-
-/* The session's totals alone — GET ?totals=1. One row, by ride_totals' key. */
+/* The session's totals — GET ?totals=1. One row, by ride_totals' key. */
 async function totals(context) {
   const { env, request } = context;
   if (!env.DB || await wrongDatabase(env)) return { ready: false, user: null, totals: null };
   const user = await sessionUser(request, env);
   if (!user) return { ready: true, user: null, totals: null };
   return { ready: true, user: user.username, totals: await totalsOf(env, user.id) };
-}
-
-/* A line with a point every THIN metres of riding or so, its first and last
-   kept — what ?lines=1 answers. */
-function thinned(line) {
-  if (line.length < 3) return line;
-  const out = [line[0]];
-  let run = 0;
-  for (let i = 1; i < line.length - 1; i++) {
-    run += leg(line[i - 1], line[i]);
-    if (run >= THIN) {
-      out.push(line[i]);
-      run = 0;
-    }
-  }
-  out.push(line[line.length - 1]);
-  return out;
 }
 
 /* Renaming or deleting one of the session's own rides. The WHERE carries the
@@ -517,11 +416,6 @@ async function own(env, user, body) {
     ? (await env.DB.batch([gone, ...dropStatements(env, user.id, id, Date.now())]))[0]
     : await gone.run();
   if (!done.meta.changes) return json({ error: 'not-found' }, 404);
-  /* And its squares, by idx_ride_cells_ride. Left behind they would name a
-     ride that is not there, which a read drops at the lookup by id. */
-  try {
-    await env.DB.prepare('DELETE FROM ride_cells WHERE ride = ?').bind(id).run();
-  } catch (e) { /* No ride_cells yet. */ }
   return json({ ok: true }, 200);
 }
 
@@ -620,7 +514,7 @@ async function count(env, ride) {
   return json({ counted: true }, 200);
 }
 
-/* A ride with an account behind it: kept, filed and counted, and its
+/* A ride with an account behind it: kept and counted, and its
    numbers added to the account's — or, with no line long enough to keep,
    its numbers alone. */
 async function keep(env, user, body, ride) {
@@ -649,7 +543,7 @@ async function keep(env, user, body, ride) {
       randomHex(6), user.id, name, run.meters,
       Math.max(1, Math.round(seconds * run.meters / whole)), JSON.stringify(run.line),
       Math.min(...lats), Math.min(...lngs), Math.max(...lats), Math.max(...lngs),
-      /* A millisecond apart, so Your rides lists the runs in the order they
+      /* A millisecond apart, so ?since= answers the runs in the order they
          were ridden. */
       now + i
     ];
@@ -665,13 +559,6 @@ async function keep(env, user, body, ride) {
       .prepare('INSERT INTO rides (' + columns + ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
       .bind(...row)));
   }
-  /* The squares it passes through, so a read of the rides near a way can
-     find it by the key — ./_ridecells.js. Not there yet, or failed: the
-     ride is kept, and the rebuild beside ride_cells in db/schema.sql
-     files it. */
-  try {
-    await env.DB.batch(rows.map((row, i) => fileCells(env, row[0], row[10], runs[i].line)));
-  } catch (e) { /* No ride_cells yet. */ }
   /* WHAT THE RIDE SAYS ABOUT THE STREETS, each run under its own row's id.
      Not there yet, or failed: the ride is kept, uncounted. */
   try {
@@ -740,21 +627,4 @@ function lengthOf(line) {
   let m = 0;
   for (let i = 1; i < line.length; i++) m += leg(line[i - 1], line[i]);
   return m;
-}
-
-/* `south,west,north,east`, rounded outward to two decimals, inside the
-   site's box and no bigger than MAX_BOX a side; null otherwise. */
-function roundedBox(raw) {
-  const n = String(raw || '').split(',').map(Number);
-  if (n.length !== 4 || !n.every(Number.isFinite)) return null;
-  const box = {
-    south: Math.floor(n[0] * 100) / 100,
-    west: Math.floor(n[1] * 100) / 100,
-    north: Math.ceil(n[2] * 100) / 100,
-    east: Math.ceil(n[3] * 100) / 100
-  };
-  if (box.north < box.south || box.east < box.west) return null;
-  if (box.north - box.south > MAX_BOX || box.east - box.west > MAX_BOX) return null;
-  if (!nearCity(box.south, box.west) || !nearCity(box.north, box.east)) return null;
-  return box;
 }

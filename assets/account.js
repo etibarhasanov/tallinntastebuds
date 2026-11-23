@@ -172,7 +172,6 @@
   var ACCOUNT_API = '/api/v1/account';
   var VENUES_API = '/api/venues?ids=';
   var LISTS_API = '/api/v1/me/lists';
-  var RIDES_API = '/api/v1/rides?mine=1';
 
   /* The same two keys the map writes and the lists page reads. Walking from
      the map to here should not feel like leaving. */
@@ -180,7 +179,7 @@
   var LANG_KEY = 'ttb.lang';
   var SAVED_KEY = 'ttb.saved';
 
-  /* Which of this page's four folds are open, comma-joined. Nothing
+  /* Which of this page's three folds are open, comma-joined. Nothing
      else on the site reads it, and a browser that refuses storage simply gets
      the folded page every time — which is the page a first visit gets
      anyway. */
@@ -221,9 +220,7 @@
     saved: [],       // place ids, newest first
     places: {},      // id -> { name, address }
     lists: [],       // the ones you wrote
-    kept: [],        // the ones you kept, which are somebody else's
-    rides: [],       // the bike rides you recorded, newest first
-    totals: null     // all of them added up — see ridesTotals(); null before any
+    kept: []         // the ones you kept, which are somebody else's
   };
 
   /* The one element on the page that is not furniture. Everything below
@@ -487,7 +484,7 @@
     ].concat(kids));
 
     /* Written on the way out of the fold rather than read on the way in:
-       whichever of the four moved is the only one that changed. */
+       whichever of the three moved is the only one that changed. */
     box.addEventListener('toggle', function () {
       var open = openFolds().filter(function (n) { return n && n !== name; });
       if (box.open) open.push(name);
@@ -801,104 +798,6 @@
     if (!state.kept.length) return null;
     return card([fold('kept', t('listsKept'), listsLabel(state.kept.length),
       column('kept', state.kept, listRow))]);
-  }
-
-  /* The bike rides you recorded, newest first: what you called each, how
-     far, how long and the day. The one place a ride is under anybody's
-     name, and only its rider reads it, which the line under the title says.
-     The same shape as the lists you kept: a fold with the count on it, and
-     no card at all until there is a ride to list.
-
-     Nothing here records one. The website's own recorder, assets/ride.js,
-     was taken out on 2026-11-18: the site gives directions and takes
-     nobody's movements, and a ride is recorded in Rattatee, the iPhone app,
-     which saves it through /api/v1/rides. So the card has no button along its
-     foot and no empty state — "No rides yet" could only send somebody to a
-     button that is not there.
-
-     A row is not a link. There is nowhere on the website to open a ride,
-     and a chevron on a row that goes nowhere is a promise the page cannot
-     keep; the page that opens one is the app's. */
-  function rideRow(ride) {
-    var day = new Date(ride.at);
-    var month = t('months').split('|')[day.getMonth()] || '';
-    return el('li', { className: 'lists-index-row' }, [
-      el('div', { className: 'lists-all-card is-still' }, [
-        el('p', { className: 'lists-index-title', textContent: ride.name || t('rideUnnamed') }),
-        el('p', {
-          className: 'lists-all-meta mono',
-          textContent: [distance(ride.meters), t('walkMin', { n: Math.max(1, Math.round(ride.seconds / 60)) }),
-            day.getDate() + ' ' + month].join(' · ')
-        })
-      ])
-    ]);
-  }
-
-  function ridesCard() {
-    var n = state.rides.length;
-    if (!n) return null;
-    var say = el('p', { className: 'lists-say', textContent: t('ridesWhat') });
-    var top = state.totals ? [say, ridesTotals(state.totals)] : [say];
-    return card([fold('rides', t('ridesYours'), n === 1 ? t('ridesCountOne') : t('ridesCount', { n: n }),
-      top.concat(column('rides', state.rides, rideRow)))]);
-  }
-
-  /* How far, a ride's or all of them: metres under a kilometre, a tenth of a
-     kilometre under a hundred, and whole kilometres past that. */
-  function distance(meters) {
-    if (meters < 1000) return t('askMetres', { n: Math.round(meters / 10) * 10 });
-    var k = meters / 1000;
-    return t('askKm', { n: k < 100 ? k.toFixed(1) : String(Math.round(k)) });
-  }
-
-  /* A length of time as a rider reads one, every number with its unit —
-     "9:43" alone was read as a clock by the owner, on the first day: minutes
-     under an hour, hours and minutes past it. */
-  function hours(seconds) {
-    var m = Math.round(seconds / 60);
-    if (m < 60) return t('walkMin', { n: m });
-    return t('ridesHours', { h: Math.floor(m / 60), m: m % 60 });
-  }
-
-  /* All your rides added up, over the list of them: the account's one row of
-     ride_totals, which every ride saved signed in adds to from whichever
-     phone saved it — A RIDE IN NUMBERS in functions/api/rides.js. Two rows
-     of three figures, the Discover counter's, and a line under them. A
-     figure with nothing to say — no ride with a top speed or a whole
-     kilometre yet, which is a ride saved by the map app — is left out
-     rather than drawn as a dash. Only to the account, like the rest of
-     this card. */
-  function ridesTotals(totals) {
-    var figure = function (big, small) {
-      return el('div', { className: 'counter-figure' }, [
-        el('b', { textContent: big }),
-        el('span', { textContent: small })
-      ]);
-    };
-    var speeds = [figure((totals.meters / totals.seconds * 3.6).toFixed(1), t('ridesTotalsAverage'))];
-    if (totals.top) speeds.push(figure(totals.top.toFixed(1), t('ridesTotalsTop')));
-    if (totals.fastest) {
-      speeds.push(figure(t('ridesMinSec', { m: Math.floor(totals.fastest / 60), s: totals.fastest % 60 }), t('ridesTotalsFastest')));
-    }
-    return el('div', { className: 'ride-totals' }, [
-      el('p', { className: 'counter-title', textContent: t('ridesTotalsTitle') }),
-      el('div', { className: 'counter-three' }, [
-        figure(distance(totals.meters), t('ridesTotalsRidden')),
-        figure(hours(totals.seconds), t('ridesTotalsRiding')),
-        figure(String(totals.rides), t('ridesTotalsRides'))
-      ]),
-      el('div', { className: 'counter-three' }, speeds),
-      el('p', {
-        className: 'ride-totals-more',
-        textContent: t('ridesTotalsMore', {
-          stopped: hours(totals.stopped),
-          longest: distance(totals.longest),
-          /* In the page's language with the month in the case it takes
-             there — 3 октября, not 3 октябрь — which `months` cannot do. */
-          date: new Date(totals.since).toLocaleDateString(state.lang, { day: 'numeric', month: 'long', year: 'numeric' })
-        })
-      })
-    ]);
   }
 
   /* ------------------------------------------------------------------- you */
@@ -1263,7 +1162,6 @@
       add(studentCard());
       add(savedCard());
       add(listsCard());
-      add(ridesCard());
       add(keptCard());
     }
 
@@ -1306,8 +1204,7 @@
       loadWords(),
       getJSON(PLACES_URL).catch(function () { return []; }),
       ask(ACCOUNT_API),
-      ask(LISTS_API),
-      ask(RIDES_API)
+      ask(LISTS_API)
     ]).then(function (loaded) {
       state.ui = loaded[0].ui;
       state.lang = loaded[0].lang;
@@ -1337,14 +1234,12 @@
         ? account.out.saved
         : [];
 
-      /* Both asked in the same breath as the one that says whether there is
-         anybody to ask about. Signed out the first holds nothing and costs one
-         request; waiting for the account's answer before making either would
-         be a second round trip, and a page that draws itself twice. */
+      /* Asked in the same breath as the one that says whether there is
+         anybody to ask about. Signed out it holds nothing and costs one
+         request; waiting for the account's answer before making it would be a
+         second round trip, and a page that draws itself twice. */
       state.lists = loaded[3].out.lists || [];
       state.kept = loaded[3].out.kept || [];
-      state.rides = loaded[4].out.rides || [];
-      state.totals = loaded[4].out.totals || null;
       /* A list somebody kept can be one Google wrote — see assets/googlewords.js. */
       TTBGoogleWords.lists(state.kept, t, state.lang);
 
