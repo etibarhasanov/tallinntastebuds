@@ -4128,6 +4128,22 @@ before them. A ride under a
 kilometre as the crow flies has no sides to speak of and is not asked, and
 neither is a way with a `heading`, where a way round is a way back.
 
+**Not by sea.** A point either side can land in the water, and the router
+takes it to the nearest thing out there it can travel, which is a ferry's
+line. On 2026-11-23 the owner sent a picture from the map app of a ride from
+Tõnismägi to a kebab shop in Viimsi: the straight line runs beside Tallinna
+laht, the point on its west side was out in the bay, and the router took it
+to the Aegna ferry forty metres off. The way rode down to the ferry's pier
+by Linnahall and back, and since the router's own ways rode a street kept
+off it was offered first — 66 minutes and 14.8 km, ahead of 54 minutes and 12.5 km. So
+a way asked through a made-up point — either side, round a street kept off,
+or settling — that boards a ferry anywhere is no way at all, and that side
+offers none. The router marks every crossing where it boards a ferry, and
+that mark is what is read, not the way's mode, which for this ferry says a
+bike is being pushed. A ride that does want a ferry, to Aegna, keeps the
+router's own way and is offered no way round it. **At sea** in
+`functions/api/route.js`.
+
 **What it costs.** No row of the database. Two router requests, and up to
 sixteen more where both sides have to be taken off a street twice, for a ride
 with fewer than three ways that nobody asked for between those two rounded
