@@ -683,6 +683,12 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   train's `kind: "train"`, `line`, `name`, `from`, `to` and `at`. A train's
   first ride ends in `arrive` at the station, which the app turns into the
   train's own corner, so that word there is a promise too.
+  And, from 2026-11-23, a ride's `seconds` and the train's `until`, for the
+  row on its card: the minutes of each ride, and when the train gets in.
+  `leave` is added to there — the time at the door is `leave` and the way's
+  `seconds` on — so it stays a clock, `HH:MM`, as `at` and `until` are
+  printed; in any other shape the row says when to set off and not when
+  the rider arrives.
 - Its new way mid-ride, from 2026-11-18: the same two questions with
   `heading` beside them, whole degrees from north, the way the rider is
   going — answered in the same fields, the way setting off that way. An
