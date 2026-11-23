@@ -46,11 +46,13 @@
  *
  * WHERE EACH ANSWER COMES FROM
  *
- * Walking, cycling and driving are the OpenStreetMap Germany routing service,
- * its foot, bike and car profiles: the same request shape, a different path.
- * The bike profile prefers cycle paths and lanes and, where there is none,
- * takes a pedestrian street or a footpath at walking pace — so one line can
- * cross the Old Town, which is the thing a bike route from Google cannot do.
+ * Walking and driving are the OpenStreetMap Germany routing service, its foot
+ * and car profiles: the same request shape, a different path. Cycling is
+ * BRouter first, under the owner's rules — NICE WAYS BY BIKE below — and
+ * that service's bike profile where BRouter has no answer. The bike
+ * profile prefers cycle paths and lanes and, where there is none, takes a
+ * pedestrian street or a footpath at walking pace — so one line can cross
+ * the Old Town, which is the thing a bike route from Google cannot do.
  * The bus is
  * peatus.ee, the national journey planner the Transport Administration
  * (Transpordiamet) runs — an OpenTripPlanner over the consolidated timetable
@@ -59,6 +61,23 @@
  * leaving now" and answers up to TRIPS journeys, each a run of legs: a walk
  * to a stop, a ride, maybe a change, a walk to the door. A journey that is
  * all walking is dropped, because Walk already says that better.
+ *
+ * NICE WAYS BY BIKE
+ *
+ * Since 2026-11-23 a bike way is asked of BRouter first, which takes
+ * rules with a request where the router takes none. The owner's: a
+ * park is ridden, at ten kilometres an hour; a main road, its lane and the
+ * path beside it are dearer for their traffic; no way is a big round trip;
+ * and of the ways found the quietest is the first. ./_brouter.js asks, and
+ * NICE WAYS below is what is made of the answer: up to three ways, kept off
+ * the streets every bike way keeps off, through a door where one is still
+ * a shortcut, in the same fields and the same words as ever.
+ *
+ * The doors, the ridden way first, keeping off, the spurs, the settling
+ * and the ways either side, as the sections after this one have them, are
+ * the bike way the router makes. It is the answer where BRouter has none,
+ * where the asker gave a heading, and at the two ends of a ride between
+ * cities.
  *
  * A BIKE ROUTE AND THE DOORS
  *
@@ -122,7 +141,8 @@
  * installed app that reads `meters`, `seconds` and `line` and nothing else
  * is answered exactly as before; `others` is the only thing added. The
  * router says how long and how far and never why one is nicer, so neither
- * does this.
+ * does this — though by bike the order says it: BRouter's ways come the
+ * quietest first.
  *
  * And by bike, where that leaves fewer than three, the router is asked for
  * a way round on either side of the straight line — EITHER SIDE below.
@@ -162,6 +182,10 @@
  * otherwise be saying the next while the rider is in this one. It is a
  * field added beside `line` in each way and nothing else moves, so the map
  * and an app installed before it read what they always did.
+ *
+ * A way of BRouter's has the same steps in the same words, out of its own
+ * turn hints, and no street's name in any of them: its map carries none.
+ * Rattatee's row is then the turn alone.
  *
  * One step is not a corner: `tunnel`, where the way goes into one, with the
  * tunnel's name where the router has it, so Rattatee can say "enter the
@@ -221,6 +245,7 @@
 
 import { json, inEstonia, cityOf, km, dataFile, wrongDatabase } from './_lib.js';
 import { riddenShare } from './_sections.js';
+import { brouterWays } from './_brouter.js';
 import { VERSION } from '../_public.js';
 
 const OSRM = {
@@ -329,6 +354,12 @@ async function street(context, mode, from, to, heading) {
   const long = mode === 'bike' && heading === null ? await longRide(context, from, to) : null;
   if (long) return answered(from, to, long, asked);
 
+  /* By bike the ways are BRouter's, found by the owner's rules — NICE WAYS
+     below. Where it has none the ride is the router's, as below; with a
+     heading it is not asked, and a ride between cities has gone above. */
+  const nice = mode === 'bike' && heading === null ? await niceWays(context, from, to) : null;
+  if (nice) return answered(from, to, nice, asked, (a, b) => niceRide(context, a, b));
+
   /* By bike the ways round either side need nothing but the two ends, so
      they are asked now, beside the router — ONE ROUND AT A TIME in the
      header. */
@@ -420,17 +451,24 @@ async function street(context, mode, from, to, heading) {
   return answered(from, to, ways, asked);
 }
 
+/* A way as it is answered: the fields the pages and the apps read, and
+   nothing it carries for the work here — how much of it is beside traffic.
+   `ridden` is on the way riders made the most of, wherever it comes. */
+const shown = (way) => Object.assign({ meters: way.meters, seconds: way.seconds, line: way.line, steps: way.steps },
+  way.ridden ? { ridden: true } : {});
+
 /* The ways as the answer: the first at the top level, the rest as
-   `others`, and by bike the trains that beat them. */
-async function answered(from, to, ways, asked) {
+   `others`, and by bike the trains that beat them — their rides to and
+   from the station by `leg`, the router the ways came from. */
+async function answered(from, to, ways, asked, leg = ride) {
   const best = ways[0];
-  const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1) };
+  const answer = { meters: best.meters, seconds: best.seconds, line: best.line, steps: best.steps, others: ways.slice(1).map(shown) };
   if (best.ridden) answer.ridden = true;
   if (!asked) return json(answer, 200, 3600);
   /* A train leaves at a time and the time goes, so an answer with one in it
      is kept a minute, as a bus journey is; one without, the hour the ways
      alone would be. */
-  answer.trains = await byTrain(from, to, await asked, Math.min(...ways.map((w) => w.seconds)));
+  answer.trains = await byTrain(from, to, await asked, Math.min(...ways.map((w) => w.seconds)), leg);
   return json(answer, 200, answer.trains.length ? CACHE_SECONDS.bus : 3600);
 }
 
@@ -439,8 +477,8 @@ async function answered(from, to, ways, asked) {
  * can only join the long way round, or only by having the bike pushed: a
  * gap in a fence, a crossing, a path OpenStreetMap does not have, a path
  * across a park it has as a footpath. tools/doors.mjs finds them in the
- * saved rides and writes data/doors.json — { id, meters, around, line }
- * each — and a bike route is the router's way or, where it is better, the
+ * saved rides and writes data/doors.json — { id, meters, around, brouter,
+ * line } each — and a bike route is the router's way or, where it is better, the
  * router to one end of a door, the door, and the router on from the other.
  * Doors in docs/handbook.md is the reasoning.
  *
@@ -496,7 +534,9 @@ const AT_DOOR = 15;
 
 const metres = (a, b) => km({ lat: a[0], lng: a[1] }, { lat: b[0], lng: b[1] }) * 1000;
 
-/* The doors as { meters, line }, each both ways round, or none. */
+/* The doors as { meters, around, brouter, line }, each both ways round, or
+   none: how long the door is, and how far the router and BRouter go
+   instead. */
 async function doors(context) {
   let file;
   try { file = await dataFile(context, '/data/doors.json'); } catch (e) { return []; }
@@ -504,17 +544,22 @@ async function doors(context) {
   for (const door of Array.isArray(file) ? file : []) {
     const line = door && Array.isArray(door.line) ? door.line : [];
     if (line.length < 2 || !Number.isFinite(door.meters)) continue;
-    const around = Number(door.around) || 0;
-    both.push({ meters: door.meters, around: around, line: line }, { meters: door.meters, around: around, line: line.slice().reverse() });
+    const round = { meters: door.meters, around: Number(door.around) || 0, brouter: Number(door.brouter) || 0 };
+    both.push(Object.assign({ line: line }, round), Object.assign({ line: line.slice().reverse() }, round));
   }
   return both;
 }
 
+/* How a way to a door is asked for and what it is counted as: the router's
+   one way and its reach. NICE WAYS has BRouter's, counted by its metres. */
+const BY_ROUTER = { leg: leg, cost: reach };
+
 /* The way from one [lat, lng] to another through a door, where that
    reaches less than `best` — the least reach of the ways the router has
    between them — by enough, or null. `deep` is how many more times its
-   two legs may be put through a door of their own. */
-async function viaDoor(all, start, end, best, deep) {
+   two legs may be put through a door of their own, and `by` which router
+   the legs are asked of. */
+async function viaDoor(all, start, end, best, deep, by = BY_ROUTER) {
   const worth = (meters) => best - meters >= DOOR_GAIN && meters <= best * DOOR_RATIO;
   const tries = all
     .map((door) => ({ door: door, least: metres(start, door.line[0]) + door.meters + metres(door.line[door.line.length - 1], end) }))
@@ -523,14 +568,14 @@ async function viaDoor(all, start, end, best, deep) {
 
   for (const { door } of tries.slice(0, DOORS)) {
     const [head, tail] = await Promise.all([
-      leg(start, door.line[0]),
-      leg(door.line[door.line.length - 1], end)
+      by.leg(start, door.line[0]),
+      by.leg(door.line[door.line.length - 1], end)
     ]);
-    if (!head || !tail || !worth(reach(head) + door.meters + reach(tail))) continue;
+    if (!head || !tail || !worth(by.cost(head) + door.meters + by.cost(tail))) continue;
     if (!deep) return stitch(head, door, tail);
     const [in2, on2] = await Promise.all([
-      viaDoor(all, start, door.line[0], reach(head), deep - 1),
-      viaDoor(all, door.line[door.line.length - 1], end, reach(tail), deep - 1)
+      viaDoor(all, start, door.line[0], by.cost(head), deep - 1, by),
+      viaDoor(all, door.line[door.line.length - 1], end, by.cost(tail), deep - 1, by)
     ]);
     return stitch(in2 || head, door, on2 || tail);
   }
@@ -571,7 +616,8 @@ async function oneWay(points, heading = null) {
    the line bends there, CORNER metres either side, in the router's own
    words and with no street to name. So are the corners inside it, which a
    door of a few dozen metres seldom has and a longer one does. The leg in
-   loses its `arrive`, since it has not. */
+   loses its `arrive`, since it has not. What BRouter's legs have beside
+   traffic is added up, for NICE WAYS to order by; a door has none. */
 function stitch(head, door, tail) {
   const into = head.meters;
   const out = head.meters + door.meters;
@@ -588,7 +634,8 @@ function stitch(head, door, tail) {
     meters: out + tail.meters,
     seconds: head.seconds + Math.round(door.meters / DOOR_SPEED) + tail.seconds,
     line: thin(line, MAX_POINTS),
-    steps: untie(steps, line)
+    steps: untie(steps, line),
+    loud: (head.loud || 0) + (tail.loud || 0)
   };
 }
 
@@ -1189,6 +1236,164 @@ function afloat(route) {
     (Array.isArray(leg.steps) ? leg.steps : []).some((s) =>
       (s && Array.isArray(s.intersections) ? s.intersections : []).some((i) =>
         Array.isArray(i.classes) && i.classes.includes('ferry'))));
+}
+
+/* -------------------------------------------------------------- nice ways
+ * A bike way is BRouter's, found by the owner's rules in data/bike.brf —
+ * ./_brouter.js says why a second router, and what a way of its carries.
+ * This is what is made of its ways. Nothing here is asked through a
+ * made-up point, so nothing here needs its bend taken out.
+ *
+ * ASKED FOR at once: the way it likes best and the OTHERS after it, with
+ * the streets in KEEP_OFF sent as areas to stay out of. An area is a band
+ * along a stretch of the street, AREA_EXTRA metres wider than half the
+ * street's `width` either side of its line, and has a weight rather than
+ * being closed: riding a street's length is dear and crossing it is not.
+ * On 2026-11-23, at AREA_WEIGHT, a ride that took 1.7 km of Tartu maantee
+ * took 72 m of it, and crossing Liivalaia in its middle cost what some
+ * 250 m of quiet street do. BRouter ignores an area that one end of the
+ * way stands in, so a street is cut at its corners into stretches of
+ * AREA_PIECE metres or more and a place on Liivalaia puts out only the
+ * stretch it is on; and only the stretches within AREA_NEAR of the trip
+ * are sent, since the address has to carry them.
+ *
+ * OFFERED, of what comes back:
+ *
+ *   Two ways that are one are offered once, and a way more than
+ *   NICE_LONGER times the shortest is not offered at all — no big round
+ *   trips, in the owner's words.
+ *
+ *   A way through a door — DOORS above — goes in where it is DOOR_GAIN
+ *   metres and a tenth shorter than the shortest of them, its two legs
+ *   BRouter's and counted by their metres, and the way of BRouter's it
+ *   shortens goes out as the same way. The doors left in data/doors.json
+ *   are the ones BRouter cannot get through either: tools/doors.mjs holds
+ *   each to both routers and writes how far BRouter goes round it, and a
+ *   door that could not save a tenth of the trip is not asked about — on
+ *   a ride across town, none is. A door that could is a round of requests
+ *   more.
+ *
+ *   Quiet first, always, and beside traffic next: the owner's order, given
+ *   on seeing ten trips drawn. The ways are put by how much of each is
+ *   beside traffic, to the QUIET_STEP — less than that apart they are as
+ *   quiet as each other — and then the shorter first. Three at the most,
+ *   and a way through a door is one of the three.
+ *
+ *   KEEPING OFF's other rule, that where any way keeps off only those are
+ *   offered, is the router's and not held here. The areas keep BRouter's
+ *   first way off those streets — 94 m at the most on the ten trips — and
+ *   a way that rides one is as far beside traffic as a way gets, so it
+ *   comes last and is still there to choose: beside traffic next.
+ *
+ *   The way riders made the most of — RIDDEN above — says `ridden: true`
+ *   where it comes in that order and is not moved to the front.
+ *
+ * NOT ASKED with a heading, nor between cities. BRouter's own heading
+ * does nothing on brouter.de, and a closed circle behind the rider turned
+ * one start of three round when it was tried; a ride between cities is cut
+ * at junctions that are the router's. Both are the router's ways as they
+ * were, and so is any ride BRouter has no answer for.
+ *
+ * It costs three requests to BRouter a ride, two more for each door that
+ * could win and one for each ride to or from a station, where the router's
+ * refinements took eight to thirty; and the one read of `ride_sections` a
+ * bike ride always made.
+ */
+const NICE_LONGER = 1.25;
+const QUIET_STEP = 100;
+const AREA_PIECE = 300;
+const AREA_EXTRA = 5;
+const AREA_WEIGHT = 50;
+const AREA_NEAR = 1500;
+
+/* A line as the corners of a band `half` metres either side of it, the way
+   BRouter takes a polygon: lon,lat after lon,lat round the outside. */
+function band(line, half) {
+  const left = [];
+  const right = [];
+  line.forEach((p, i) => {
+    const [ax, ay] = flat(line[Math.max(0, i - 1)]);
+    const [bx, by] = flat(line[Math.min(line.length - 1, i + 1)]);
+    const length = Math.hypot(bx - ax, by - ay) || 1;
+    const east = -(by - ay) / length * half / EAST;
+    const north = (bx - ax) / length * half / NORTH;
+    left.push([p[1] + east, p[0] + north]);
+    right.push([p[1] - east, p[0] - north]);
+  });
+  return left.concat(right.reverse()).map((q) => q[0].toFixed(5) + ',' + q[1].toFixed(5)).join(',');
+}
+
+/* The streets to keep off as the areas BRouter is sent for a trip between
+   two [lat, lng] points — ASKED FOR above. The stretches are cut once an
+   isolate. */
+let stretches = null;
+
+function keptOffAreas(a, b) {
+  if (!stretches) {
+    stretches = [];
+    for (const street of KEEP_OFF) {
+      let piece = [street.line[0]];
+      let run = 0;
+      for (let i = 1; i < street.line.length; i++) {
+        piece.push(street.line[i]);
+        run += metres(street.line[i - 1], street.line[i]);
+        if (run >= AREA_PIECE || i === street.line.length - 1) {
+          stretches.push({ line: piece, area: band(piece, street.width / 2 + AREA_EXTRA) + ',' + AREA_WEIGHT });
+          piece = [street.line[i]];
+          run = 0;
+        }
+      }
+    }
+  }
+  const [ax, ay] = flat(a);
+  const [bx, by] = flat(b);
+  const near = (p) => {
+    const [x, y] = flat(p);
+    return x > Math.min(ax, bx) - AREA_NEAR && x < Math.max(ax, bx) + AREA_NEAR &&
+      y > Math.min(ay, by) - AREA_NEAR && y < Math.max(ay, by) + AREA_NEAR;
+  };
+  return stretches.filter((stretch) => stretch.line.some(near)).map((stretch) => stretch.area).join('|');
+}
+
+/* BRouter's one way between two points, as it answers it, or a way of no
+   length where they are the same place, or null where it has none. */
+async function niceLeg(context, a, b) {
+  if (metres(a, b) < AT_DOOR) return { meters: 0, seconds: 0, line: [], steps: [], loud: 0 };
+  const found = await brouterWays(context, [a, b], 1, keptOffAreas(a, b));
+  return found && found[0] ? found[0] : null;
+}
+
+/* The ways by bike from one point to another, quietest first, or null
+   where BRouter has none — OFFERED above. */
+async function niceWays(context, from, to) {
+  const start = [from.lat, from.lng];
+  const end = [to.lat, to.lng];
+  const found = await brouterWays(context, [start, end], 1 + OTHERS, keptOffAreas(start, end));
+  if (!found || !found.length) return null;
+
+  const once = (way, i, all) => !all.slice(0, i).some((before) => alike(way, before));
+  let ways = found
+    .map((way) => Object.assign({}, way, { line: thin(way.line, MAX_POINTS), steps: untie(way.steps, way.line) }))
+    .filter(once);
+  const shortest = Math.min(...ways.map((way) => way.meters));
+  ways = ways.filter((way) => way.meters <= shortest * NICE_LONGER);
+
+  /* Only the doors that could win are asked about: one saves at most what
+     BRouter goes round it, `brouter` less `meters`, and has to save a
+     tenth of the way. */
+  const could = (await doors(context)).filter((door) =>
+    door.brouter - door.meters >= Math.max(DOOR_GAIN, shortest * (1 - DOOR_RATIO)));
+  const through = await viaDoor(could, start, end, shortest, DOORS_DEEP,
+    { leg: (a, b) => niceLeg(context, a, b), cost: (way) => way.meters });
+  if (through) ways = [through].concat(ways).filter(once);
+
+  ways.sort((a, b) => Math.round(a.loud / QUIET_STEP) - Math.round(b.loud / QUIET_STEP) || a.meters - b.meters);
+  const offered = ways.slice(0, 1 + OTHERS);
+  if (through && !offered.includes(through)) offered[OTHERS] = through;
+
+  const best = await riddenBest(context, offered, Math.min(...offered.map((way) => way.meters)));
+  if (best >= 0) offered[best] = Object.assign({}, offered[best], { ridden: true });
+  return offered;
 }
 
 /* ------------------------------------------------------------- long rides
@@ -1861,10 +2066,11 @@ async function departures(from, to) {
 }
 
 /* The departures as ways to choose: a ride to the station and one from it
-   for each pair of stations, and the first departure of each pair that can
+   for each pair of stations, by `leg` — ride() or niceRide() — and the
+   first departure of each pair that can
    be caught within TRAIN_WAIT, kept where it beats `quickest`, the best
    bike way's seconds — and of those, the quickest TRAINS. */
-async function byTrain(from, to, found, quickest) {
+async function byTrain(from, to, found, quickest, leg) {
   const pairs = new Map();
   for (const d of found) {
     const key = d.from.name + '>' + d.to.name;
@@ -1876,8 +2082,8 @@ async function byTrain(from, to, found, quickest) {
   for (const list of Array.from(pairs.values()).slice(0, TRAIN_PAIRS)) {
     const first = list[0];
     const [head, tail] = await Promise.all([
-      ride(from, first.from),
-      ride(first.to, to)
+      leg(from, first.from),
+      leg(first.to, to)
     ]);
     if (!head || !tail) continue;
     const setOff = (d) => d.at - (head.seconds + TRAIN_BOARD) * 1000;
@@ -1920,6 +2126,17 @@ async function ride(a, b) {
   const [kept] = await keepOff([one], { lat: a.lat, lng: a.lng }, { lat: b.lat, lng: b.lng }, one.meters);
   const way = await settle(kept || one);
   return { meters: way.meters, seconds: way.seconds, line: thin(way.line, MAX_POINTS / 3), steps: way.steps };
+}
+
+/* The same ride by BRouter, for a train offered beside its ways, and the
+   router's where it has none. */
+async function niceRide(context, a, b) {
+  const start = [a.lat, a.lng];
+  const end = [b.lat, b.lng];
+  if (!start.concat(end).every(Number.isFinite)) return null;
+  const one = await niceLeg(context, start, end);
+  if (!one) return ride(a, b);
+  return { meters: one.meters, seconds: one.seconds, line: thin(one.line, MAX_POINTS / 3), steps: untie(one.steps, one.line) };
 }
 
 /* The answer before `version` goes on it: every refusal here is a return of

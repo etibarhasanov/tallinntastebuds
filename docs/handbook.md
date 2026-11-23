@@ -3195,12 +3195,14 @@ the bus's departures sit in: the one chosen is drawn solid and its button
 wears the mode's colour, the others are faint lines in the same colour, and
 pressing another draws that one solid and changes the sentence, with the map
 left where it is. The buttons say how long and how far and nothing about
-which is nicer, because the router does not say. One way is no buttons, which
+which is nicer, because the router does not say — though by bike the order
+does: the quietest way is the first (**Nice ways by bike**). One way is no buttons, which
 is what a short way mostly is. A way asked for again because the dot moved
 comes back on the first: the ways from the new place are not the ones the
 button was pressed among. Rattatee reads the same field for the same choice
-on its card before a ride. By bike a ride with fewer than three ways is
-asked for one round each side as well: **A way on either side** below.
+on its card before a ride. By bike the ways are BRouter's, and where it
+has none a ride with fewer than three ways is asked for one round each
+side as well: **A way on either side** below.
 
 **And each way says where it turns.** The router is asked for its steps as
 well as its line, and each way carries them as `steps`: the corner (`at`), how
@@ -3798,6 +3800,142 @@ for — a ride on Your rides saying how much of itself had been ridden before
 and where it waited; a warning on a stretch people push through. Each
 wants more than one rider's rides under it.
 
+## Nice ways by bike
+
+A bike way comes from BRouter, found by rules the owner gave on
+2026-11-23, and the router every other way comes from is asked only where
+BRouter has no answer, with a heading, and between cities. `functions/api/_brouter.js` asks it,
+`data/bike.brf` is the rules, and **NICE WAYS** in `functions/api/route.js`
+is what is made of the answer.
+
+**What was wrong.** The bike router, OSRM's public server, answers the
+fastest way under one fixed profile and takes no preference. So every
+preference the owner had was worked round it by asking again through a
+point made up for the purpose: a street to keep off was a point beside it
+(**Roads a bike route keeps off**), a way on the other side was a point
+square to the straight line (**A way on either side**). The router has to
+touch the point wherever it snaps, and bends the way to get there. Each
+bend arrived as a shape of its own and was given a rule of its own — a stub
+up into Vabaduse väljak, a loop through a car park, a hook to a dead end in
+the sports grounds, and on 2026-11-23 a trip down to the Aegna ferry's pier,
+offered first at 66 minutes ahead of a way of 54. On eight trips across
+town that day, eleven of the twenty ways offered had come from a made-up
+point. And each workaround was another round of requests: a bike way took
+two to four seconds, and six to Viimsi, where a walk takes one request. The
+owner asked what the real issue was, and that was it: the router could be
+steered only by being asked for somewhere the ride was not going.
+
+**The parks were the other half.** OSRM has a bike pushed along a park path
+at walking pace, so it sends a ride round every park, and a park path
+became a door only once somebody had ridden it (**Doors**). When the owner
+asked why most doors seemed to be parks, 131 of the 240 were. Tallinn has
+far more park paths than anybody has ridden.
+
+**The rules, in the owner's words:** a park can be used, at ten kilometres
+an hour; it is not about going fast; it is always about nice roads and not
+big round trips; and a road's shoulder is usually the fastest and not the
+safest, like Pärnu maantee. BRouter takes its rules with the request, as a
+profile, and `data/bike.brf` is its own trekking profile with those written
+in, each marked `Tastebuds:` where it is:
+
+- A park path, a footpath or a square is a way to ride unless it is signed
+  against bikes, and is counted at ten kilometres an hour.
+- A road is counted at sixteen. The speeds make the minutes and nothing
+  else; which way is taken is decided by the prices below.
+- A main road costs more with a painted lane as well as without, since the
+  lane is on the road. And whatever BRouter's map marks as loud — a main
+  road, its pavement, the path along it — costs more again, by how loud: at
+  its loudest a kilometre of main road counts as a little over two quiet
+  ones.
+- A way with green beside it costs a little less.
+- And none of it so much that the nice way is a big round trip. A quiet way
+  up to about twice as long is taken, and one longer than that is not.
+
+**Quiet first, always.** BRouter is asked for the way it likes best and the
+two after it, at once. Shown ten trips drawn both ways, the owner chose the
+order: the quiet one first, always, and the one beside traffic next. So the
+ways are put by how many metres of each run beside traffic — BRouter's
+noise class four and up — to the hundred metres, and the shorter first
+where two are as quiet as each other. From Mustamäe to Vabaduse väljak that
+puts a way of 7.0 km with 0.1 km beside traffic ahead of one of 6.5 km with
+1.7. A way more than a quarter longer than the shortest is not offered at
+all, and neither is one that is another over again.
+
+**The streets kept off are kept off still.** Tartu maantee, Liivalaia,
+Pärnu maantee by Vabaduse väljak and Laagna tee go to BRouter as areas to
+stay out of: a band along each stretch of the street, weighted rather than
+closed, so that riding its length is dear and crossing it is not. A ride
+that took 1.7 km of Tartu maantee took 72 m with the areas sent, and
+crossing Liivalaia in its middle cost what some 250 m of quiet street do.
+BRouter ignores an area one end of the way stands in, so a street is sent
+in stretches of three hundred metres or more and a place on Liivalaia puts
+out only the stretch it is on. The router's other rule, that where any way
+keeps off only those are offered, is not put to BRouter's ways. The order
+the owner gave them is quiet first and beside traffic next, and a way
+along Tartu maantee is as far beside traffic as a way gets: it comes last,
+and is still there to choose.
+
+**A door where one is still a shortcut.** Put to BRouter, 18 of the 201
+doors were still the long way round for it, both ways, and those are the
+doors now (**Doors**). A way through one goes in where it is fifty metres
+and a tenth shorter than the shortest BRouter found, its two legs
+BRouter's, and takes the place of the way it shortens. The file says how
+far BRouter goes round each door, so only one that could save a tenth of
+the trip is asked about: a ride across town asks about none, and a short
+one beside a door is a round of requests more.
+
+**The way riders made the most of** (**Ways people have ridden**) says
+`ridden: true` where it comes in that order, first or not. It is not moved
+to the front: quiet first is always. The map's bar and Rattatee's card both
+read the word on whichever way carries it.
+
+**The turns are BRouter's own.** Each way carries `steps` in the same words
+as before, out of BRouter's turn hints: a turn and a sharp one are a turn,
+a slight one and a fork are keeping left or right, a roundabout has its
+exit, a tunnel is said where the way goes into one. Corners closer than
+thirty metres are still one step, as **Sharing a place** has it. No step
+has a street's name — BRouter's map carries none — so Rattatee's row is the
+turn alone where it was the turn and the street. Of 254 turns on eight
+ways, seven were said on the other side from how the line bends over the
+twenty-five metres either side: each a keep left or keep right at a fork
+on a path that then curves away. Nobody has ridden to them yet; that is
+the owner's to do.
+
+**What it changed on the ten trips.** The first way was within half a
+kilometre of the router's on every one. It had between one and six
+kilometres of park and foot path in it, where the router's had whatever a
+door happened to open; at most a kilometre beside traffic; and never more
+than 94 m on a street kept off, where the router's rode 229 m to Viimsi and
+186 m to Ülemiste. Asked from this session, which reaches both routers by
+way of Chicago, BRouter's three ways came in half a second on average and
+the router's refinements in 2.2 seconds over fourteen requests.
+
+**What is still the router's.** A way asked for with a `heading`, which is
+Rattatee finding a new way mid-ride: BRouter's own heading does nothing on
+brouter.de, and closing a small circle behind the rider turned one start
+of three round when it was tried, which is not enough to say aloud to
+somebody riding. A ride between cities, whose long middle is cut at the
+router's junctions (**A long ride between cities**). And any ride BRouter
+has no answer for: a request is given four seconds, and one that runs out,
+or a server that is busy, down or refusing, rests BRouter for a minute in
+that isolate, so an outage costs one rider the wait. The router's answer is
+then the one it always was, with every refinement below.
+
+**What it costs.** No row of the database beyond the one read of
+`ride_sections` a bike ride always made. Three requests to BRouter a ride,
+two more for each door asked about and one for each ride to or from a
+station, each kept a day at the edge. The rules are posted to brouter.de
+once and asked for by the id it answers with; the id is kept by the isolate
+and, a week, by the colo, under a mark of the file's text, and sent again
+when brouter.de has forgotten it, which it says with a 500. brouter.de is
+one person's free server, and it refuses an address that asks too fast.
+Measured on 2026-11-23 it took thirty requests in a row and then about
+four a minute, which for one of Cloudflare's addresses is some ten rides
+in a burst and about one a minute after; past that it answers a 403,
+BRouter rests for a minute in that isolate, and the rider gets the
+router's way. Answers kept at the edge do not count. If the site outgrows
+that, BRouter is open source and one small server runs it.
+
 ## Doors
 
 A door is a stretch somebody really cycled between two points that
@@ -3862,6 +4000,31 @@ corners, or a line the router's own ways run along once they are timed by
 their streets. The route still counts a whole ride's corners, at `PACE`,
 since every way it compares has them.
 
+**And BRouter cannot get through either.** The same day a bike way became
+BRouter's first (**Nice ways by bike**), and BRouter rides a park path,
+which is what most doors were. A door a bike way no longer needs is a
+shortcut it would be stitched through for nothing, so a stretch that has
+passed everything above is put to BRouter as well, under the rules a
+rider's way is found by, and is a door only where BRouter too needs a
+hundred metres and half as much again, both ways — by its metres, since it
+has nobody push — and can ride to both ends at all. Of the 201 doors, 159
+were ways BRouter gets through by itself, and 24 had an end on a scrap of
+path BRouter cannot reach, so nobody could be sent to them; six of those
+are real shortcuts, and are lost until their ends are cut back to
+somewhere it can reach. Eighteen are left, and `data/doors.json` is those,
+each with how far BRouter goes round it written beside it as `brouter` —
+149 m to 509 m, for doors of 30 m to 213 m — so the route asks about a
+door only on a trip short enough for it to save a tenth: 4.4 km for the
+best of them.
+The first was BRouter's answers for every door, taken for the owner's
+picture of them, with the tool's test put to them; `--recheck` then
+confirmed the eighteen, and a run of it over all 201, stopped a third of
+the way through, had agreed on every one of the 64 it reached. It was
+stopped because brouter.de takes some thirty requests in a row and then
+about four a minute, which `--recheck` over two hundred doors spends an
+hour waiting on; a run over new rides asks BRouter about the handful of
+stretches the router has already let through and never meets it.
+
 **A run adds to the file.** `/api/v1/rides` answers the newest forty rides of
 a box and a rider can delete theirs, so a run that wrote only what it found
 lost the Merimetsa door the day its ride was no longer answered. The doors
@@ -3917,7 +4080,10 @@ a door that should not be one — a ride over a railway where there is no
 crossing — is a line taken out of `data/doors.json`, and the day strangers
 record is the day this paragraph is looked at again.
 
-**Used wherever it wins.** `viaDoor()` in
+**Used wherever it wins.** Among BRouter's ways a door goes in as **Nice
+ways by bike** says: its legs BRouter's, counted by their metres, in place
+of the way it shortens, and in the order of the rest, quiet first. What
+follows is the router's way, where BRouter had no answer. `viaDoor()` in
 `functions/api/route.js` looks at the doors as the crow flies first, asks
 the router about at most two, two requests each, and takes a way through a
 door when it beats the best way the router offered by fifty metres and by
@@ -3983,6 +4149,13 @@ people have ridden*. It is one of the ways already there, moved to the
 front, and the rest follow in the order they had. The answer's shape is
 what it was, so both apps draw and speak it without knowing.
 
+**Said and not moved, among BRouter's ways.** Since 2026-11-23 a bike way
+is BRouter's first (**Nice ways by bike**) and the order of its ways is
+the owner's: quiet first, always. There the ridden way is found by the
+same score and says `ridden: true` where it stands, first or not, and the
+button reads *Ridden* on whichever it is. It is moved to the front only
+among the router's ways, where BRouter had no answer.
+
 **What it gives up.** A way no router knows is no longer invented from
 somebody's line: a ride across a yard is offered once it is a door, which
 `tools/doors.mjs` finds in the same rides. And a new cycle path scores
@@ -4038,6 +4211,12 @@ at the Väo junction. After, from Herne to Tondiraba the first way is Narva
 maantee and Juhan Smuuli tee, 7.8 km and 34 minutes against 6.6 km and 28
 down Laagna tee, and back the same way 8.1 km and 32 minutes against 6.6
 and 27; no way offered on the ten rides more of it than a crossing.
+
+**BRouter can be told.** Since 2026-11-23 a bike way is BRouter's first,
+and it is sent the four streets as areas to stay out of, with no point
+made up (**Nice ways by bike**). The rest of this section is how the
+router is kept off them, where BRouter had no answer, with a heading, and
+at the two ends of a ride between cities.
 
 **The router cannot be told, so it is asked again.** OpenStreetMap
 Germany's public router takes no list of streets to avoid. So where a way
@@ -4126,6 +4305,10 @@ from Juhkentali to Kalamaja and was offered one, through the Old Town: the
 router's way west of Toompea rode Liivalaia and Pärnu maantee and had been
 dropped, and nothing went round to the east. His words: one is above the
 Old Town, one below, another through it.
+
+Since 2026-11-23 this is for the router's ways alone. BRouter is asked for
+three ways and answers them without a point being made up (**Nice ways by
+bike**), so a way round is asked for only where BRouter had no answer.
 
 So where a bike ride has fewer than three ways, `eitherSide()` in
 `functions/api/route.js` asks the router twice more, through a point either
@@ -4238,6 +4421,10 @@ again, a hundred and fifty metres after they rode past it the first time —
 and again every hundred and fifty after. The owner's word for what it
 should do: see which way the person wants to go, and if they keep going,
 find the way from that direction.
+
+A way asked for with a heading is the router's, as below. BRouter is not
+asked: its own heading does nothing on brouter.de (**Nice ways by bike**,
+*What is still the router's*).
 
 **`heading` is that direction.** `GET /api/v1/route` takes it beside
 `from` and `to`, in degrees from north, and the router is told
