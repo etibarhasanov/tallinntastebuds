@@ -3866,7 +3866,13 @@ newest ride it looked at was saved, and that ride's id — and a run asks
 page of twenty at a time, wherever they were ridden. The site answers that
 off `idx_rides_created`, on `rides (created_at, id)`, so a run with nothing
 new reads one row and one with five new rides six. `--all` starts from
-nothing again, for the day the way a door is found changes. And the router
+nothing again, for the day the way a door is found changes. Both files are
+written after every ride, the bookmark moved to it, because the first run
+over all 37 rides went past ninety minutes and was stopped having written
+nothing; the next took 99 minutes and 4,829 router calls, saying after each
+ride how many calls and doors it had come to, and took the doors from 56 to
+240. Most of those calls are the tightening, a router question for every
+point trimmed off either end of a door. And the router
 is asked directly rather than through `/api/v1/route`: that is a route
 somebody would be given, through the doors already found and off the
 streets kept off, and every one of its answers read `ride_sections` — rows
