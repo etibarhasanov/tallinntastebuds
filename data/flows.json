@@ -397,7 +397,7 @@
     {
       "id": "owner",
       "name": "The owner",
-      "who": "The person whose site this is, and any account ADMINS names. /admin.html, signed in as one of them, posts stories and discounts straight to the live branch and puts a place on a branch of its own that lands by itself when every check passes; /admin/stats, /admin/visitors, /admin/found, /admin/flows and /admin/google answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.",
+      "who": "The person whose site this is, and any account ADMINS names. /admin.html, signed in as one of them, posts stories and discounts straight to the live branch and puts a place on a branch of its own that lands by itself when every check passes; /admin/stats, /admin/visitors, /admin/found, /admin/flows, /admin/google, /admin/doors and /admin/ways answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.",
       "lanes": [
         { "id": "owner", "name": "Owner" },
         { "id": "github", "name": "GitHub" },
@@ -423,6 +423,10 @@
         {"id": "discount-commit", "type": "service", "lane": "github", "name": "Commits deals.json to the live branch", "ref": ["data/deals.json"]},
         {"id": "staff-link", "type": "user", "lane": "owner", "name": "Sends the restaurant its staff link, once", "ref": ["staff.html"]},
         {"id": "discount-live", "type": "end", "lane": "owner", "name": "Offer live"},
+        {"id": "ways", "type": "user", "lane": "owner", "name": "Tries a bike trip on /admin/ways, and says which ways are right and which are wrong", "note": "Two taps on the map are a trip; the ways are the ones a rider is given. A verdict is kept on the phone until Save.", "ref": ["admin/ways.html", "assets/ways.js", "data/bike-trips.json"]},
+        {"id": "ways-commit", "type": "service", "lane": "github", "name": "One commit on admin/ways-<time>", "note": "Every verdict since the last save, laid over the file as the live branch has it.", "ref": ["assets/ways.js save()", "data/bike-trips.json"]},
+        {"id": "ways-land", "type": "service", "lane": "github", "name": "A trip pinned there is recorded and checked; lands on the live branch if green", "note": "The routers are asked once for a new trip, and its ways pinned as the code answers them.", "ref": [".github/workflows/generated.yml land", "tools/routecheck.mjs"]},
+        {"id": "ways-held", "type": "end", "lane": "owner", "name": "Every change to the bike route is held to it"},
         {"id": "stats", "type": "user", "lane": "owner", "name": "Reads the stats, the visitors, how they found the site, the diagrams and their numbers, Google's directory and budget, and the doors", "ref": ["admin/stats.html", "admin/visitors.html", "admin/found.html", "admin/flows.html", "admin/google.html", "admin/doors.html", "admin.html"]},
         {"id": "owner-only", "type": "service", "lane": "site", "name": "Answers the owner only", "note": "Anybody else gets a 404 for the pages and a 403 for the data.", "ref": ["functions/_middleware.js", "functions/api/_admin.js adminUser()", "functions/api/admin/stats.js GET", "functions/api/admin/visitors.js GET", "functions/api/admin/found.js GET", "functions/api/admin/live.js GET", "functions/api/admin/flows.js GET", "functions/api/admin/venues.js GET", "functions/api/admin/top100.js GET", "functions/api/admin/growth.js GET", "functions/api/admin/refreshes.js GET", "functions/api/admin/refreshes.js POST", "functions/api/admin/github/[[path]].js"]},
         {"id": "knows", "type": "end", "lane": "owner", "name": "Knows what gets opened"}
@@ -445,6 +449,10 @@
         ["place-commit", "place-land"],
         ["place-land", "place-deploy"],
         ["place-deploy", "place-live"],
+        ["what-now", "ways", "a bike way"],
+        ["ways", "ways-commit"],
+        ["ways-commit", "ways-land"],
+        ["ways-land", "ways-held"],
         ["what-now", "discount", "discount"],
         ["discount", "discount-commit"],
         ["discount-commit", "staff-link"],

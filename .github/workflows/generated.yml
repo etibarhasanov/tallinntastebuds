@@ -159,6 +159,14 @@ jobs:
             done
 
             node tools/generate.mjs
+
+            # A bike trip the owner pinned on /admin/ways arrives without the
+            # routers' answers, which a phone cannot record: this asks them,
+            # once for that trip, and pins what the code makes of it. Every
+            # other trip is answered out of its recording and asks nobody.
+            # A router that will not answer stops the run and nothing lands.
+            node tools/routecheck.mjs
+
             git add -A
             git diff --cached --quiet || git commit -q --amend --no-edit
 
@@ -172,6 +180,7 @@ jobs:
             node tools/chessperf.mjs --check
             node tools/mcpcheck.mjs --check
             node tools/apicheck.mjs --check
+            node tools/routecheck.mjs --check
             node .claude/hooks/d1-write-gate.mjs --check
 
             if git push origin "HEAD:${LIVE}"; then landed=true; break; fi

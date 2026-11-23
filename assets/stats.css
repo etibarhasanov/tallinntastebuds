@@ -506,3 +506,107 @@ a.stats-name:hover { color: var(--accent); }
   background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
 }
 .doors-id { flex: none; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+/* /admin/ways — assets/ways.js. The map a trip is tried on, shorter than
+   the doors' so the ways under it are on the same screen of a phone; the
+   line that says what the map is waiting for; and the panel of the trip in
+   hand, a card of the same paper and corner as the map's frame. */
+.ways-map { height: min(46vh, 400px); }
+.ways-say { margin: 12px 0 4px; color: var(--muted); font-family: var(--body); font-size: 14px; line-height: 1.5; }
+.ways-say strong { color: var(--ink); font-weight: 600; }
+.ways-panel {
+  margin: 14px 0 0; padding: 16px 16px 6px;
+  background: var(--paper); border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft); box-shadow: var(--shadow);
+}
+.ways-panel .eyebrow { margin: 0 0 2px; }
+.ways-panel .go { margin: 0 0 4px; }
+.ways-name { margin: 0; font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: -.01em; }
+.ways-why { margin: 6px 0 10px; color: var(--muted); font-family: var(--body); font-size: 14px; line-height: 1.5; }
+.ways-head { margin: 16px 0 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.ways-back {
+  display: inline-block; margin: 0 0 10px; padding: 0; border: 0; background: none;
+  font-family: var(--mono); font-size: 12px; color: var(--muted); cursor: pointer;
+}
+.ways-back:hover { color: var(--ink); }
+
+/* Where a trip stands with the owner, said by the shape of the dot as well
+   as by its colour: a ring for one not looked at, a filled dot for one
+   confirmed, a square in the accent for one that is wrong. */
+.ways-state { display: flex; align-items: center; gap: 7px; margin: 6px 0 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.ways-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--muted); }
+.ways-state.is-yes .ways-dot { background: var(--ink); border-color: var(--ink); }
+.ways-state.is-no { color: var(--accent); }
+.ways-state.is-no .ways-dot { background: var(--accent); border-color: var(--accent); border-radius: 2px; }
+/* The owner's own words for what is wrong, as the notice on the account
+   sheet is drawn: a rule down its edge in the accent. */
+.ways-quote {
+  margin: 8px 0 10px; padding: 9px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius) var(--radius-soft) var(--radius-soft) var(--radius);
+  background: var(--wash); font-size: 14px; line-height: 1.45;
+}
+
+/* A way a row: its number in its line's colour — set by the script, as a
+   line's is — then how far, how long and how many turns, and under that
+   whatever else is known of it. A pinned way the live site no longer
+   answers wears no colour, as its line on the map is dashed and dark. */
+.ways-rows { list-style: none; margin: 0; padding: 0; }
+.ways-way { display: flex; gap: 10px; align-items: flex-start; padding: 11px 2px; border-top: 1px solid var(--hairline); }
+.ways-num {
+  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  color: var(--paper); font-family: var(--mono); font-size: 12px; font-weight: 600; line-height: 22px; text-align: center;
+}
+.ways-num.is-pinned { background: var(--muted); }
+.ways-size { font-family: var(--display); font-size: 15px; font-weight: 600; }
+.ways-streets { margin-top: 2px; font-family: var(--mono); font-size: 11px; line-height: 1.45; color: var(--muted); }
+
+/* The same number on the line itself, and the two ends of the trip: A a
+   ring, B filled, so the start is told from the end without the letters. */
+.ways-badge {
+  width: 20px; height: 20px; border-radius: 50%;
+  color: var(--paper); font: 600 11px/20px var(--mono); text-align: center;
+  box-shadow: 0 0 0 2px var(--paper);
+}
+.ways-end {
+  box-sizing: border-box; width: 22px; height: 22px; border-radius: 50%;
+  border: 3px solid var(--ink); background: var(--paper); color: var(--ink);
+  font: 700 11px/16px var(--mono); text-align: center;
+}
+.ways-end.is-to { background: var(--ink); color: var(--paper); }
+
+/* What can be said of the trip, as rows — the account sheet's .menu, which
+   this page is the first under /admin/ to use, so a row here takes the
+   page's type rather than a button's. */
+.ways-choices, .ways-list { list-style: none; margin: 6px 0 10px; padding: 0; }
+.ways-list { margin-top: 0; }
+.ways-choices .menu-row, .ways-list .menu-row { font: inherit; }
+.menu-name.is-danger { color: var(--accent); }
+.menu-why.is-wrong { color: var(--accent); }
+.ways-list-title { margin: 30px 0 4px; font-family: var(--display); font-size: 19px; font-weight: 600; }
+
+/* The two steps that ask for words: a name, how the ways look, what is
+   wrong. A 16px field, as everywhere, so a phone does not zoom into it. */
+.ways-form { display: flex; flex-direction: column; gap: 12px; margin: 12px 0 14px; }
+.ways-form textarea {
+  font: inherit; font-size: 16px; min-height: 76px; padding: 10px 12px;
+  border: 1px solid var(--hairline); border-radius: var(--radius-soft);
+  background: var(--paper); color: var(--ink); resize: vertical;
+}
+.ways-form textarea:focus-visible { outline: 2px solid var(--accent-lit); outline-offset: 1px; border-color: transparent; }
+.ways-pick { display: flex; align-items: center; gap: 10px; padding: 11px 2px; border-top: 1px solid var(--hairline); font-size: 15px; cursor: pointer; }
+.ways-pick:last-child { border-bottom: 1px solid var(--hairline); }
+.ways-pick input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+
+/* What is on the phone and not in the repository yet, and the page's one
+   filled button: at the foot of the screen for as long as there is
+   anything to save, wherever the page is scrolled to. */
+.ways-save {
+  position: sticky; bottom: 0; z-index: 500;
+  display: flex; align-items: center; gap: 12px;
+  margin: 18px calc(-1 * var(--gap)) 0;
+  padding: 12px var(--gap) calc(12px + var(--safe-b, 0px));
+  background: var(--paper); border-top: 1px solid var(--hairline); box-shadow: var(--shadow);
+}
+.ways-save[hidden] { display: none; }
+.ways-save p { flex: 1 1 auto; margin: 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
