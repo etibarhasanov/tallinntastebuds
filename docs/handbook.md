@@ -4150,7 +4150,10 @@ rides are: lines with nobody's name and their ends already off.
 
 The tool is not one of the generators and the validator does not hold the
 file to it: what it writes depends on rides saved since it last ran and on
-a router outside the repository. It is run when there are new rides.
+a router outside the repository. It is run when there are new rides, and
+`node tools/routecheck.mjs` after it: a door found near a pinned trip is a
+question that trip's recording has no answer to, and may be a new first
+way — **The bike ways, pinned**.
 
 ## Ways people have ridden
 
@@ -4478,6 +4481,194 @@ and no way put first as ridden, which is a read of the database. The streets a b
 are still kept off, the ways round asked for with the same heading. A page
 or an app that sends none is answered exactly as before, which is every
 caller but a reroute in Rattatee.
+
+## The bike ways, pinned
+
+A bike route here is two routers with rules laid over them — **Nice ways
+by bike**, **Doors**, **Ways people have ridden**, **Roads a bike route
+keeps off**, **A way on either side**, **A long ride between cities** — and
+nearly every rule was written for one ride the owner sent a picture of.
+Each then runs on every other ride too, and until 2026-11-23 nothing held
+those still: the files were checked for consistency and the answers for
+nothing. A rule that took Laagna tee out of the way from Herne to Tondiraba
+could bend the way from Juhkentali to Kalamaja, and the first anybody would
+know of it was a rider at a corner. The owner asked for trips to be pinned
+at different places and the ways between them confirmed, so that when a way
+changes somebody says which is right, and it stays said.
+
+**Who makes sure of what.** The owner says whether a way is right: only
+somebody who rides there can. The check makes sure no pinned way changes
+without the owner seeing it: it cannot tell good from bad, only the same
+from different. And a session makes a change, shows before and after of
+every trip it moved, and waits for the owner's word.
+
+**A pin is two points and the ways between them.** `data/bike-trips.json`
+holds a trip an object: an `id`, the `name` the owner knows it by, `from`
+and `to`, a `heading` where it is Rattatee asking mid-ride, `why` — what
+the trip is there to hold — and `ways`, each way the route answered when
+it was pinned, with its metres, seconds, turns and line. `node
+tools/routecheck.mjs` runs the route for each trip and fails where the
+ways are not those, to the metre, the second, the turn and the point; what
+it says about a way that differs is rounder, how much of it runs elsewhere
+and the first turn that is not the turn it was. The file is in `data/`
+because the owner's page reads and writes it — **Bike ways, for the
+owner** below.
+
+**Right and wrong are the owner's, and are kept on the trip.** A trip is
+pinned the first time the tool runs it, as whatever the code answered that
+day. That holds it still and says nothing about whether it is right.
+`confirmed` is the day the owner looked at the pinned ways drawn on the map
+and said they are. `wrong` is the owner's own words for what is wrong with
+them, with `said`, the day: it fixes nothing by itself and is the work to
+do — the tool prints every one each time it runs, so whoever next changes
+the route starts from them. When the ways of a trip said to be wrong then
+change, `fixed` is the day they did, and the page asks the owner to look
+again; their yes is `confirmed`, and the words come off. The first two were
+said on the first day, of pictures drawn under the older router: from
+Stroomi beach the way went round by Merimetsa tee where there is a path
+along the sea, and across Kalamaja kalmistupark only one way went through
+the park. BRouter, which landed the same afternoon, answers both as the
+owner asked, and they wait for that look.
+
+**The routers are recorded.** Neither is in this repository, their map is
+OpenStreetMap's and changes daily, and CI should neither lean on somebody's
+free server nor go red because a path in Kopli was redrawn. So each trip
+has `tools/routecheck/<id>.json.gz`: every question
+`functions/api/route.js` put to a router for that trip and what the router
+said, whole — three to thirty questions a trip, 93 for the seventeen on
+the day BRouter arrived, 3.3 MB of answers packed into 508 KB. The check
+runs the real Function, `onRequestGet()`, over the real `data/doors.json`
+and `data/bike.brf`, with `fetch` answered out of the recording. What is
+held is this repository's half: given what the routers said, these are the
+ways. Put to the live site as well that day, every way in town came back
+the pinned one to the digit.
+
+**BRouter's rules are a mark, not an id.** BRouter answers the rules file
+with an id that is another one each time the file is sent, so a recording
+cannot be filed under it. The tool answers the file with a mark of its
+text and records the questions under that: the same rules are the same
+questions on any day, and a rule changed in `data/bike.brf` is every
+question asked anew, which is what it should be. It asks BRouter slowly —
+two seconds apart, and twenty and more after a refusal — since brouter.de
+refuses an address that asks too fast.
+
+**When a trip fails**, it is one of two things. The ways are not the pin:
+a change here changed the answer, `node tools/routecheck.mjs --page <file>`
+draws the pinned ways and the new ones on the map, a session photographs
+the trip and sends the picture, and the owner says which is right. If the
+new one is, `--pin <id>` makes it the pin and the owner's yes is
+`--confirm`, or the row on the page; if the pinned one is, the change is
+wrong for that trip and is what gets fixed. A session does not re-pin a
+confirmed way on its own reasoning: the whole use of a pin is that
+somebody who rides there said so. Or the route asks a router something the
+recording has no answer to — a rule changed, a street kept off, a new door
+near the way — which under `--check` fails, since there is no telling
+what the answer would be. Run without `--check` the question is asked
+under the site's own name, the answer is kept, and the trip passes or is
+the first case. Both files are committed with the change that moved them.
+
+**So a change to the route, to the rules, and a run of the doors, are each
+followed by it.** `data/doors.json` decides which doors a way is asked
+about, so `node tools/doors.mjs` finding a door near a pinned trip is a new
+question and may be a new way, which is exactly what the owner wants shown.
+
+**A trip is added** on the page, or by writing its `id`, `name`, `from`,
+`to` and `why` into the file and running the tool: it asks the routers,
+keeps the recording and pins what came back, unconfirmed. The points are
+public, as the repository is: a corner, not a door. One is taken out on
+the page, or by deleting its object and its recording.
+
+**What is not held.** Which way is said to be ridden: that is read off
+`ride_sections`, there is no database here, and it moves with every ride
+saved — the ways are the ones the live site offers, in its order. A train,
+which leaves at a time: the planner is answered as down. The kept middle
+of a long ride, which is a row: Tallinn to Tartu asks the long way every
+time here. And what the routers would say today — `--fresh` throws the
+recordings away and asks again, and says how many answers are not the ones
+recorded; a trip that then differs moved with the map and not with the
+code, and is the owner's to look at the same way.
+
+**What it costs.** No row, and under `--check` no request: under two
+seconds for the seventeen. Recording a trip is the routers asked what the
+route would ask them, once; `--fresh` is that for every trip, about a
+hundred questions and five minutes, and is run when somebody wants to know
+whether the map has moved, not on a schedule.
+
+## Bike ways, for the owner
+
+`/admin/ways`, behind the owner's lock with the other pages under
+`/admin/`, is where a bike way is looked at by the person who can judge
+it. The owner asked for it on the day the trips were first pinned, having
+been sent seventeen pictures: the results on a page of their own, two
+points pinned on a map and the way between them tried there, and
+something done about a wrong one from the same place. It is built for the
+phone, 390 px first, because that is where a rider is.
+
+**A trip tried.** Tap the map where a ride starts and where it ends, and
+`assets/ways.js` asks `/api/v1/route` by bike exactly as Rattatee does, so
+what is drawn is what a rider is given this minute: the first way thick
+and the others beside it, each with its number on the line and on its row,
+how far, how long and how many turns. Either end drags to move it. A way
+that runs through a door of `data/doors.json` says so and has the door
+dotted on it, since whether a way is using one of the site's gates is the
+first thing asked of one that looks wrong. Swap the ends asks the way back
+for itself, which is not the way out turned round.
+
+**A trip pinned.** Under the map are the trips of `data/bike-trips.json`,
+the ones said to be wrong first — those whose ways have changed since
+ahead of the rest, to be looked at again — then the ones nobody has looked
+at, then the confirmed. Opening one draws its ways as they are pinned.
+Those are the code's as of the day it was pinned, and the live site can
+have moved since with the map under the routers, so **Ask the route now**
+puts the same question to the live site: it says the answer is the pinned
+ways, or draws what is answered now with the pinned ways it has lost
+dashed under them.
+
+**What the owner can say.** That the ways are right. That something is
+wrong, in their own words — a step of its own, one field. That a trip
+tried is worth holding, which pins it, with a name and one of the three:
+right, wrong, not decided. That the live answer is the right one now,
+which pins that. And that a pin is not wanted. A row is a `.menu-row`, the
+account sheet's, with a line under it saying what it does.
+
+**Nothing is written when it is said.** A verdict is kept on the phone, in
+`localStorage`, and its row says *not saved yet*; the bar at the foot of
+the screen says how many there are and carries **Save**, the one filled
+button on the page. A save is one commit however many verdicts are in it,
+because a commit is a deploy and there are five hundred a month. It goes
+the way a place goes from `/admin.html`: through `/api/admin/github`, as
+one commit on a branch of its own, `admin/ways-<time>`, which the `land`
+job of `.github/workflows/generated.yml` replays onto the live branch,
+checks and pushes. The file is read fresh from the live branch first and
+the verdicts laid over that. For twenty minutes after, the rows say
+*saved, landing* over the deployed file until it says the same.
+
+**A phone cannot record a router.** A pin needs the routers' answers kept,
+and the route run without the rides, and a page can do neither. So for a
+trip it pins the page writes what the owner was looking at — `saw`, the
+metres and seconds of each way — and the land job runs
+`node tools/routecheck.mjs` before its checks, which asks the routers once
+for that trip, pins what the code answers, and keeps the owner's yes only
+where those are the ways they saw: a yes is to a picture and to no other.
+A pin made again from the live answer carries `fresh` and is recorded
+anew the same way. A router that will not answer stops the landing, and
+the branch stays for somebody to look at.
+
+**What it costs.** No table, no route of its own and no row of its own.
+Two files read on opening. A trip tried or asked again is one
+`/api/v1/route`, asked when the second pin lands or the row is pressed and
+never while a finger moves: three requests to BRouter the first time that
+day, and the one lookup of `ride_sections` a bike route always makes, six
+hundred rows at the very worst — twenty trips an afternoon are twelve
+thousand of the day's five million at that worst, and a few hundred as
+measured. A save is four requests to GitHub and one deploy.
+
+**What it does not do.** Draw the stretch a way should take: a door made
+by hand would change what every rider is given and move other pinned
+trips, and wants a picture of its own first. Search for a place by name or
+start from where the owner is standing. Change a street kept off or a
+rule, which are the route's and a session's. Show a train. And it is in
+English alone, like `/admin.html` and Doors.
 
 ## Languages
 
@@ -19204,7 +19395,7 @@ to read and write first.
 `npm install`. It runs on every push and pull request via
 `.github/workflows/validate.yml`.
 
-The same workflow runs seven checks beside it. Three hold one piece of code
+The same workflow runs eight checks beside it. Three hold one piece of code
 each to answers recorded somewhere other than the code; `tools/mcpcheck.mjs`
 and `tools/apicheck.mjs` hold the two doors an outside program reads through
 to what each promised, and their own sections say how. `node tools/qrperf.mjs
@@ -19245,6 +19436,12 @@ once; the comment above `languageIndex()` in `functions/api/_lib.js` is the
 record. An ES module resolves its imports before any of it runs, so importing
 each file under Node fails on exactly what the bundle would, on the push
 instead of a minute after the merge.
+
+The eighth holds answers rather than code: `node tools/routecheck.mjs
+--check` runs `/api/v1/route` by bike for every trip pinned in
+`data/bike-trips.json`, over what the routers were recorded answering,
+and fails where a way is not the one pinned there — **The bike ways,
+pinned**.
 
 **It fails the build on:**
 
@@ -19730,6 +19927,10 @@ tools/chessperf.mjs        holds functions/api/_chess.js to published move
                            times it
 tools/functions-check.mjs  imports every module under functions/, the way the
                            deploy bundles them, and fails on what it would
+tools/routecheck.mjs       holds the bike ways /api/v1/route offers between
+                           the trips pinned in data/bike-trips.json to the
+                           ways pinned there, over the routers' answers
+                           recorded in tools/routecheck/
 tools/ogcard.mjs           draws assets/logo/og-flashcard.png, the card a link to
                            the flashcards unfurls as, out of the page's own CSS
 tools/flows.mjs            lays out data/flows.json and writes flows/<id>.bpmn

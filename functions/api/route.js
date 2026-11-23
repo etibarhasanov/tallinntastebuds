@@ -110,6 +110,17 @@
  * leaves the one city and enters the other, and kept in `route_middles` so
  * the next rider is not asked for it again — LONG RIDES below.
  *
+ * And every one of those rules is held to the trips it must not move.
+ * data/bike-trips.json pins trips across town, two points each and the
+ * ways answered between them, confirmed where the owner has looked at them
+ * on the map and said they are right, and carrying their words where they
+ * said they are wrong. `node tools/routecheck.mjs` runs this file for each
+ * over what the two routers were recorded answering, and a change here is
+ * run against it before it is pushed: a way that moved is the owner's to
+ * judge from a picture, not a pin to rewrite. The owner tries a trip
+ * against this route on /admin/ways. The bike ways, pinned in
+ * docs/handbook.md.
+ *
  * SETTING OFF THE WAY THEY ARE GOING
  *
  * A way asked for in the middle of a ride is not the same question as one

@@ -41,10 +41,24 @@ does not have to:
 - **There is no test suite.** `node tools/validate.mjs`, `node
   tools/functions-check.mjs`, `node tools/sqlcheck.mjs`, `node tools/qrperf.mjs --check`, `node
   tools/chessperf.mjs --check`, `node tools/mcpcheck.mjs --check`, `node
-  tools/apicheck.mjs --check` and `node .claude/hooks/d1-write-gate.mjs
-  --check` are the whole of CI. Anything with a visible effect is driven in a
-  browser; the `/site` and `/api` skills say how. Do not go looking for a
-  test runner, and do not write one into a PR that was about something else.
+  tools/apicheck.mjs --check`, `node tools/routecheck.mjs --check` and `node
+  .claude/hooks/d1-write-gate.mjs --check` are the whole of CI. Anything with
+  a visible effect is driven in a browser; the `/site` and `/api` skills say
+  how. Do not go looking for a test runner, and do not write one into a PR
+  that was about something else.
+- **The bike ways are pinned.** `data/bike-trips.json` holds trips across
+  town and the ways `/api/v1/route` offers by bike between their two points
+  — `confirmed` where the owner has looked at them drawn on the map and
+  said they are right, `wrong` with their own words where they said they
+  are not — and `node tools/routecheck.mjs --check` fails when the route
+  answers anything else. A change to `functions/api/route.js`,
+  `functions/api/_brouter.js` or `data/bike.brf`, or a run of
+  `tools/doors.mjs`, is followed by `node tools/routecheck.mjs`, which
+  prints what the owner says is wrong every time it runs: start there. A
+  way that moved is the owner's to judge from a picture, never a session's
+  to re-pin on its own reasoning. The owner tries a trip, and says right or
+  wrong, on `/admin/ways` — **The bike ways, pinned** and **Bike ways, for
+  the owner** in `docs/handbook.md`.
 - **Line numbers in the docs are not to be trusted; names are.** The skills
   and the README name functions and constants — `applyStyle()`,
   `STORY_HOURS`, `DEAL_KEYS`, `KITCHENS` — and `grep -n` finds them. A line
@@ -880,7 +894,7 @@ repo, a UI string present in one language and missing in another, a deal whose
 place does not exist, `wrangler.toml` pointing preview and production at the
 same database. CI runs exactly this on every push and every PR, with no
 install step in front of it. Warnings never fail the build; errors do. CI runs
-six more checks alongside it: `node tools/functions-check.mjs`, which imports
+eight more checks alongside it: `node tools/functions-check.mjs`, which imports
 every module under `functions/` so that a name imported from a module that no
 longer exports it, or a syntax error, fails the build here — Pages bundles
 them into one Worker, and on a deploy that takes every route down rather than
@@ -896,7 +910,10 @@ by hand; `node tools/mcpcheck.mjs --check`, which calls `/mcp` and the flashcard
 data files the way an assistant would and holds the answers to what it was
 promised; `node tools/apicheck.mjs --check`, which calls every address of the
 public API at `/api/v1` and fails when an answer has lost a field or changed a
-type that `data/api-v1.json` froze; and `node .claude/hooks/d1-write-gate.mjs --check`, which runs the
+type that `data/api-v1.json` froze; `node tools/routecheck.mjs --check`, which
+runs `/api/v1/route` by bike over what the routers were recorded answering for
+each trip in `data/bike-trips.json` and fails when a way is not the
+one pinned there; and `node .claude/hooks/d1-write-gate.mjs --check`, which runs the
 gate's own cases so that the thing standing between a session and the database
 cannot be loosened without the build saying so.
 
@@ -945,7 +962,8 @@ ones are the ones that ship broken.
    to send. There is no template.
 5. **CI** runs `node tools/validate.mjs`, `node tools/functions-check.mjs`,
    `node tools/sqlcheck.mjs`, `node tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check`,
-   `node tools/mcpcheck.mjs --check`, `node tools/apicheck.mjs --check` and
+   `node tools/mcpcheck.mjs --check`, `node tools/apicheck.mjs --check`,
+   `node tools/routecheck.mjs --check` and
    `node .claude/hooks/d1-write-gate.mjs --check` on the push and on the PR.
    Red CI is yours to fix before anything else happens. **There is no preview
    URL** — pushing the branch deploys nothing, and the PR's checks carry no

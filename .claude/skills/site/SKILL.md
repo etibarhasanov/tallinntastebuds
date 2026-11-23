@@ -303,7 +303,8 @@ browser cannot import from `tools/`; change one, change the other.
 ## What the validator holds a page change to
 
 `tools/validate.mjs`, and CI runs exactly it plus `functions-check.mjs`,
-`qrperf --check`, `chessperf --check` and the write gate's `--check`:
+`sqlcheck.mjs`, `qrperf --check`, `chessperf --check`, `mcpcheck --check`,
+`apicheck --check`, `routecheck --check` and the write gate's `--check`:
 
 - **Parity in `ui.json`**: a key that is a non-empty string in some
   languages and not all fails; every language needs `langName`.
@@ -347,12 +348,13 @@ browser cannot import from `tools/`; change one, change the other.
 - **The lean copies**: every copy `LEAN` in `tools/lean.mjs` names —
   `app`, `styles`, `lists` and `lists.css` today — must be what the tool
   writes from its source, and no stamped page may load a source directly.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty-one pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty-six pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
-  `lists.html`, `account.html`, `blog.html`, `feedback.html`,
+  `lists.html`, `account.html`, `blog.html`, `feedback.html`, `azeri.html`,
   `deal.html`, `verify.html`, `staff.html`,
-  `flashcard.html`, `edit.html`, `write.html`, `insights.html`, `chess.html`, `404.html`, `privacy.html`, and the owner's six under
-  `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html`, `admin/doors.html`, and `admin.html`, the door to them — must carry `?v=` equal to the first
+  `flashcard.html`, `edit.html`, `write.html`, `insights.html`, `chess.html`, `404.html`, `privacy.html`,
+  `developers.html`, `embed.html`, and the owner's seven under
+  `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html`, `admin/doors.html`, `admin/ways.html`, and `admin.html`, the door to them — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of
   `assets/` is added to that list, or it never gets stamped. `admin.html` was
   the exception once, because it is served `no-store`, and drew new markup

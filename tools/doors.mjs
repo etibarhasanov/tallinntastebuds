@@ -23,7 +23,9 @@
  * does not hold the file to it: what it writes depends on the rides people
  * saved since it last ran and on a router that is not in this repository, so
  * there is nothing in the tree to regenerate it from. It is run when there
- * are new rides, and what it writes is committed.
+ * are new rides, and what it writes is committed — after `node
+ * tools/routecheck.mjs`, since a door found near a pinned trip is a question
+ * that trip's recording has no answer to and may be a new first way.
  *
  * HOW A DOOR IS FOUND
  *
