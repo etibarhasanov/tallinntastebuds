@@ -111,6 +111,7 @@ import { recentViews } from './_visits.js';
 import { adminIds, ownerCookie } from './_admin.js';
 import { postsReady } from './_posts.js';
 import { statsReady, forgetStatements } from './_ridestats.js';
+import { forgetRides } from './_ridecells.js';
 import { forgetMember } from './_community.js';
 /* A new name is a new byline on every list the account wrote, and a deleted
    account takes its lists with it: both move the mark every copy of a list
@@ -918,6 +919,8 @@ export async function onRequestPost(context) {
    *   walks, walk_checks            the lists it walked, where it checked in
    *                                 and what it said there
    *   ride_stats, ride_totals       its rides in numbers, and their totals
+   *   rides, ride_cells             every ride it saved, and the squares each
+   *                                 was filed under
    *
    * WHAT STAYS, AND WHY IT IS NOT THE PERSON
    *
@@ -997,6 +1000,11 @@ export async function onRequestPost(context) {
     /* Its riding in numbers, on the same terms: only where the two tables
        are there — WHEN THE TABLES ARE NOT THERE in ./_ridestats.js. */
     if (await statsReady(env)) statements.unshift(...forgetStatements(env, id));
+
+    /* And the rides themselves, the way each was ridden and the squares it
+       was filed under — WHAT DELETING AN ACCOUNT TAKES OF ITS RIDES in
+       ./_ridecells.js. Until 2026-11-23 they stayed under an id nobody had. */
+    statements.unshift(...(await forgetRides(env, id)));
 
     statements.push(
       env.DB

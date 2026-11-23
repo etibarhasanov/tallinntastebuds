@@ -147,3 +147,42 @@ export function fileCells(env, id, createdAt, line) {
     cells.map((c) => `(${c}, ${createdAt}, '${id}')`).join(', ')
   );
 }
+
+/* WHAT DELETING AN ACCOUNT TAKES OF ITS RIDES
+
+   Every ride it saved, and the squares each was filed under, by
+   idx_rides_user and idx_ride_cells_ride — the statements for
+   ./account.js to put in its one batch. A deleted account used to leave its
+   rides behind under an id nobody had: their numbers went (forgetStatements
+   in ./_ridestats.js) but the way each was ridden stayed, and Rattatee's
+   privacy policy had to say so. What a ride added to `ride_sections` stays,
+   as a ride saved with no account does: counts of a street, under nobody.
+
+   The squares first, while the rides they name are still there to be found
+   by the subquery. Either table may not be in a database yet, and the
+   batch is all or nothing, so a statement is offered only for a table that
+   answers — asked once per isolate, as postsReady() in ./_posts.js does —
+   or a missing table would keep anybody from deleting their account. */
+const there = new Map();
+async function answers(env, sql) {
+  if (there.get(sql)) return true;
+  try {
+    await env.DB.prepare(sql).first();
+    there.set(sql, true);
+  } catch (e) {
+    there.set(sql, false);
+  }
+  return there.get(sql);
+}
+
+export async function forgetRides(env, userId) {
+  if (!(await answers(env, 'SELECT 1 FROM rides LIMIT 1'))) return [];
+  const statements = [];
+  if (await answers(env, 'SELECT 1 FROM ride_cells LIMIT 1')) {
+    statements.push(env.DB
+      .prepare('DELETE FROM ride_cells WHERE ride IN (SELECT id FROM rides WHERE user_id = ?)')
+      .bind(userId));
+  }
+  statements.push(env.DB.prepare('DELETE FROM rides WHERE user_id = ?').bind(userId));
+  return statements;
+}
