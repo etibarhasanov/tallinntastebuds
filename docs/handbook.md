@@ -11603,8 +11603,8 @@ else is switched on or off.
 ## Flashcards
 
 A site about eating in Tallinn is read mostly by people who cannot read the
-menu. **flashcard.tallinntastebuds.ee** is the other half of that: fifty-three
-decks of Estonian, two thousand five hundred and thirty-two cards, the
+menu. **flashcard.tallinntastebuds.ee** is the other half of that: fifty-four
+decks of Estonian, two thousand five hundred and forty-three cards, the
 Estonian on the front and what it means on the back — in English, Azerbaijani
 or Russian, whichever the page is being read in — and one card at a time with
 two words under it — *Knew it*, and *Show me again*. Over the card, how the
@@ -11788,7 +11788,7 @@ the one people are given; this only settles which of them a crawler keeps.
 
 ### Where the words are, and it is mostly not the database
 
-`data/decks.json` is the Estonian the site ships: fifty-three decks, two
+`data/decks.json` is the Estonian the site ships: fifty-four decks, two
 thousand five hundred cards, deployed as a file and read as the files
 `tools/decks.mjs` writes from it, below. It
 is **content** — somebody edits the repository, the deploy carries it, every
@@ -13491,7 +13491,7 @@ already remembered the word is done before they reach it.
 `sentence` is an optional `{ et, en, az, ru }` on a card — the Estonian, and
 what it means in each of the three the decks are written in — and the validator
 wants the Estonian and the English or neither, since half of one drawn on a card
-would be a stray clause with no translation. **1,014 of the 2,532 cards** carry
+would be a stray clause with no translation. **1,025 of the 2,543 cards** carry
 one: every card in the twenty-three newer decks, in **Verbs of two words** and in **Family and relatives**
 bar the ones that are a whole sentence already, every card but the question in
 the comparatives' deck, every card in the songs' decks —
@@ -13904,7 +13904,7 @@ pull request.
 A card teaches a word and a lesson says why it changes shape, and neither is
 how anybody actually comes to like a language. A song is. So the shelf carries
 a third heading, **Songs**, straight after **Grammar**, and under it a tile for
-each song and a tile for the deck of its words. There are four:
+each song and a tile for the deck of its words. There are five:
 
 | Song | Words | Music | Its deck |
 |---|---|---|---|
@@ -13912,6 +13912,7 @@ each song and a tile for the deck of its words. There are four:
 | *Stopp, seisku aeg!* | Velly Joonas | Jim Rafferty — it is his *I See Red*, which Frida sang | twenty-four of its eighty-seven |
 | *Rändaja õhtulaul* | Ernst Enno, 1910 | not yet known | twenty-two of its sixty-eight |
 | *Täna ma ei skoori* | Genialistid sing it; who wrote it is not yet known | not yet known | nineteen of its seventy-one |
+| *Mu isamaa, mu õnn ja rõõm* | Johann Voldemar Jannsen, 1869 | Fredrik Pacius, 1848 | eleven of its fifty-three |
 
 The first was asked for with the lyrics pasted in and a list of every word in it
 with what it means. The second is Velly Joonas's *Stopp, seisku aeg!* — a camel
@@ -13919,6 +13920,12 @@ caravan in the desert and a limousine on the road, one refrain over both — and
 it was asked for with the lyrics alone, so every gloss in it is ours; so was the
 third, Ernst Enno's wanderer on the grey road, which came with its video. The
 fourth, Genialistid's *Täna ma ei skoori*, came with its lyrics and its video.
+The fifth is the national anthem, and it came as a video of another song
+altogether: the link was *Mu isamaa on minu arm*, Koidula's words to Ernesaks's
+tune, from the 2019 song festival, and the words pasted in a minute later were
+*Mu isamaa, mu õnn ja rõõm*. The owner chose the anthem, so its video is the
+anthem as the same festival sang it, and *Mu isamaa on minu arm* is not on the
+shelf yet.
 
 **The song is one page.** The video at the top — YouTube's own player, from
 `youtube-nocookie.com`, which sets nothing until play is pressed — and under it
@@ -14006,6 +14013,20 @@ on hea ja piiri pead ei küpsus ega toorus loe* is read with *pead* as *pidama*,
 *piiri pidama*, to keep within bounds — it may as well be *peal*, on the line —
 and it is translated for the sense until somebody who has the sleeve can say.
 
+*Mu isamaa, mu õnn ja rõõm* has fifty-three words and a deck of eleven, from
+*isamaa* to *õnnistama*: fewer than the others, because an anthem is made of the
+words everybody already has — *suur*, *lai*, *armas*, *kallis* — and what it
+teaches is mostly in the notes. It is over a hundred and fifty years old, and sung
+in the Estonian of 1869: *teal* is an old word for *siin* and is on no card,
+*see suure laia ilma peal* is what today would be *selle*, *sünnitand*,
+*kasvatand*, *sull'*, *rohkest* and *õnnista* are clipped for the tune, and
+*võtku õnnista* is a turn nobody uses now, *may He take it upon Himself to
+bless*. Each says so in its box, and the cards carry the word as it is written
+today — *Kaitsja* for the anthem's *kaitseja*, *Rohkesti* for *rohkest*. It is
+printed whole, all three verses as they were pasted, and nobody has yet
+watched the video against the page to see whether it sings all three. *Teal*
+as *siin* is the reading most worth a native's look.
+
 **Where it lives, and what shape it is.** `songs` in `data/decks.json`, beside
 the lessons: an `id` in the decks' namespace, a `name` and a `why`, `video` — the
 eleven characters of a YouTube id — an optional `credit`, `deck`, the id of the deck of its words,
@@ -14034,12 +14055,13 @@ decks and the lessons.
 
 **What it does not do.** The lines do not light up in time with the singing:
 that wants YouTube's player API and a timestamp on every line, and is worth
-building once it is clear people use the page. There are four songs. The words
+building once it is clear people use the page. There are five songs. The words
 are in the three languages the cards are, and the site's other seven get
 English. The video cannot be told apart from a missing one on this side — a
 frame from another origin says nothing about itself — so a video YouTube has
 taken down is YouTube's own message in the box, with every line under it still
-working. Enno died in 1934 and his poem is free to print; Viivi Luik's words
+working. Enno died in 1934 and his poem is free to print, and so are Jannsen's
+words, who died in 1890; Viivi Luik's words
 are hers, and so are Genialistid's, and printing every verse of them is the
 owner's call, which has been put to them.
 
@@ -19742,9 +19764,9 @@ assets/flashcard.js        its five states, and the third sign-in form on the
                            site — the header says what would end that
 assets/flashcard.css       the card that turns over, and nothing else the
                            other pages already have
-data/decks.json            fifty-three decks of Estonian, 2,532 cards under four
+data/decks.json            fifty-four decks of Estonian, 2,543 cards under four
                            headings, the songs' and the cases', eleven lessons of
-                           grammar, four songs, thirty-eight conversations and the
+                           grammar, five songs, thirty-eight conversations and the
                            glossary their words share; content
                            rather than interface, and written in three
                            languages rather than the site's eleven

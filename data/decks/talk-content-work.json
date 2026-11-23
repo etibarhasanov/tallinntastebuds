@@ -1441,7 +1441,8 @@
     "en": "joy",
     "az": "sevinc",
     "ru": "радость"
-   }
+   },
+   "deck": "isamaa-words"
   },
   "suurem": {
    "base": "suur",
@@ -1458,7 +1459,8 @@
     "en": "joy",
     "az": "sevinc",
     "ru": "радость"
-   }
+   },
+   "deck": "isamaa-words"
   },
   "sealt": {
    "base": "sealt",

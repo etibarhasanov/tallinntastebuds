@@ -1,0 +1,222 @@
+{
+ "id": "isamaa-words",
+ "added": "2026-11-23",
+ "name": {
+  "en": "The words of Mu isamaa, mu õnn ja rõõm",
+  "az": "Mu isamaa, mu õnn ja rõõm himninin sözləri",
+  "ru": "Слова из гимна Mu isamaa, mu õnn ja rõõm"
+ },
+ "why": {
+  "en": "The words from the anthem the other decks do not have yet, each with its line",
+  "az": "Himndən digər dəstlərdə hələ olmayan sözlər, hər biri öz misrası ilə",
+  "ru": "Слова из гимна, которых ещё нет в других колодах, каждое со своей строкой"
+ },
+ "level": "song",
+ "cards": [
+  {
+   "id": "isamaa",
+   "front": "Isamaa",
+   "back": {
+    "en": "Fatherland, homeland",
+    "az": "Vətən, ata yurdu",
+    "ru": "Отчизна, родина"
+   },
+   "forms": [
+    "isamaa",
+    "isamaad"
+   ],
+   "sentence": {
+    "et": "Mu isamaa, mu õnn ja rõõm,",
+    "en": "My fatherland, my happiness and joy,",
+    "az": "Vətənim, səadətim və sevincim,",
+    "ru": "Моя отчизна, моё счастье и радость,"
+   }
+  },
+  {
+   "id": "room",
+   "front": "Rõõm",
+   "back": {
+    "en": "Joy",
+    "az": "Sevinc",
+    "ru": "Радость"
+   },
+   "forms": [
+    "rõõmu",
+    "rõõmu"
+   ],
+   "sentence": {
+    "et": "Mu isamaa, mu õnn ja rõõm,",
+    "en": "My fatherland, my happiness and joy,",
+    "az": "Vətənim, səadətim və sevincim,",
+    "ru": "Моя отчизна, моё счастье и радость,"
+   }
+  },
+  {
+   "id": "sunnitama",
+   "front": "Sünnitama",
+   "back": {
+    "en": "To give birth",
+    "az": "Doğmaq",
+    "ru": "Рожать"
+   },
+   "forms": [
+    "sünnitada",
+    "sünnitan"
+   ],
+   "sentence": {
+    "et": "Sa oled mind ju sünnitand",
+    "en": "You gave birth to me, after all,",
+    "az": "Axı məni sən doğmusan",
+    "ru": "Ведь ты меня родила"
+   }
+  },
+  {
+   "id": "ules-kasvatama",
+   "front": "Üles kasvatama",
+   "back": {
+    "en": "To bring up, to raise",
+    "az": "Böyütmək, tərbiyə etmək",
+    "ru": "Вырастить, воспитать"
+   },
+   "forms": [
+    "üles kasvatada",
+    "kasvatan üles"
+   ],
+   "sentence": {
+    "et": "ja üles kasvatand;",
+    "en": "and brought me up;",
+    "az": "və böyütmüsən;",
+    "ru": "и вырастила;"
+   }
+  },
+  {
+   "id": "truu",
+   "front": "Truu",
+   "back": {
+    "en": "Faithful, loyal",
+    "az": "Sadiq",
+    "ru": "Верный"
+   },
+   "forms": [
+    "truu",
+    "truud"
+   ],
+   "sentence": {
+    "et": "ja jään sull' truuiks surmani,",
+    "en": "and stay faithful to you until death,",
+    "az": "və ölənə qədər sənə sadiq qalacağam,",
+    "ru": "и останусь тебе верен до смерти,"
+   }
+  },
+  {
+   "id": "surm",
+   "front": "Surm",
+   "back": {
+    "en": "Death",
+    "az": "Ölüm",
+    "ru": "Смерть"
+   },
+   "forms": [
+    "surma",
+    "surma"
+   ],
+   "sentence": {
+    "et": "ja jään sull' truuiks surmani,",
+    "en": "and stay faithful to you until death,",
+    "az": "və ölənə qədər sənə sadiq qalacağam,",
+    "ru": "и останусь тебе верен до смерти,"
+   }
+  },
+  {
+   "id": "jumal",
+   "front": "Jumal",
+   "back": {
+    "en": "God",
+    "az": "Tanrı",
+    "ru": "Бог"
+   },
+   "forms": [
+    "jumala",
+    "jumalat"
+   ],
+   "sentence": {
+    "et": "Su üle Jumal valvaku",
+    "en": "May God watch over you,",
+    "az": "Səni Tanrı qorusun,",
+    "ru": "Да хранит тебя Бог,"
+   }
+  },
+  {
+   "id": "valvama",
+   "front": "Valvama",
+   "back": {
+    "en": "To watch over, to guard",
+    "az": "Keşik çəkmək, qorumaq",
+    "ru": "Охранять, стеречь"
+   },
+   "forms": [
+    "valvata",
+    "valvan"
+   ],
+   "sentence": {
+    "et": "Su üle Jumal valvaku",
+    "en": "May God watch over you,",
+    "az": "Səni Tanrı qorusun,",
+    "ru": "Да хранит тебя Бог,"
+   }
+  },
+  {
+   "id": "kaitsja",
+   "front": "Kaitsja",
+   "back": {
+    "en": "Protector, defender",
+    "az": "Qoruyucu, müdafiəçi",
+    "ru": "Защитник"
+   },
+   "forms": [
+    "kaitsja",
+    "kaitsjat"
+   ],
+   "sentence": {
+    "et": "Ta olgu sinu kaitseja",
+    "en": "may He be your protector",
+    "az": "O sənin hamin olsun",
+    "ru": "пусть Он будет твоим защитником"
+   }
+  },
+  {
+   "id": "rohkesti",
+   "front": "Rohkesti",
+   "back": {
+    "en": "Plenty, abundantly",
+    "az": "Bol-bol, çoxlu",
+    "ru": "Много, обильно"
+   },
+   "sentence": {
+    "et": "ja võtku rohkest õnnista,",
+    "en": "and richly bless",
+    "az": "və bol-bol xeyir-dua versin",
+    "ru": "и щедро благословит"
+   }
+  },
+  {
+   "id": "onnistama",
+   "front": "Õnnistama",
+   "back": {
+    "en": "To bless",
+    "az": "Xeyir-dua vermək",
+    "ru": "Благословлять"
+   },
+   "forms": [
+    "õnnistada",
+    "õnnistan"
+   ],
+   "sentence": {
+    "et": "ja võtku rohkest õnnista,",
+    "en": "and richly bless",
+    "az": "və bol-bol xeyir-dua versin",
+    "ru": "и щедро благословит"
+   }
+  }
+ ]
+}

@@ -2,7 +2,7 @@
  * Tallinn Tastebuds — flashcards, and the Estonian on them.
  *
  * A site about eating in Tallinn is read mostly by people who cannot read the
- * menu. This is the other half of that: fifty-three decks of Estonian, two
+ * menu. This is the other half of that: fifty-four decks of Estonian, two
  * thousand five hundred cards, Estonian on the front and what it
  * means on the back, and a person turning them over one at a time. It lives
  * on its own subdomain — flashcard.tallinntastebuds.ee, routed by
