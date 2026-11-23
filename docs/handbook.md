@@ -3840,11 +3840,27 @@ draws them as footpaths — and has a bike pushed along them at walking pace:
 it answered the very line that was ridden, 266 m in 171 seconds, and by
 length alone that is a way the map has. So a way is measured by what it
 costs a rider: its metres, or the metres a ride covers in the router's
-time for it, at `PACE`, twelve kilometres an hour, where that is more. An
+time for it, at `SPEED`, fifteen kilometres an hour, where that is more. An
 ordinary street comes out at its own length and a pushed path at more than
 twice it, and a way the router pushes is not one a stretch can be dismissed
-for lying along. The tool and the route measure the same way, with the same
-number.
+for lying along.
+
+**A corner is not a door.** The time is the router's time on its streets
+and paths, stretch by stretch, and not the whole way's, which adds a few
+seconds at every corner and every light. Until 2026-11-23 it was the whole
+way's, at twelve kilometres an hour, and on a stretch of two hundred metres
+the corners were half of it: round from Narva maantee into Weizenbergi the
+router rides 171 m in 56 seconds of street and took 103 in all, which
+counted as 340 m against the 197 ridden — a door along two streets it
+rides. The owner asked that day why most doors seemed to be parks, and the
+answer was that they were: 131 of the 240 lay along paths the router has
+and rides at about six kilometres an hour, which are doors as they always
+were, and the rest were missing links, or corners that were not doors at
+all. `node tools/doors.mjs --recheck` held every door to the test again,
+the router asked both ways, and 201 were kept; the 39 that went were
+corners, or a line the router's own ways run along once they are timed by
+their streets. The route still counts a whole ride's corners, at `PACE`,
+since every way it compares has them.
 
 **A run adds to the file.** `/api/v1/rides` answers the newest forty rides of
 a box and a rider can delete theirs, so a run that wrote only what it found
@@ -3852,7 +3868,10 @@ lost the Merimetsa door the day its ride was no longer answered. The doors
 already in `data/doors.json` are kept, the new ones are joined to them, and
 two that are one — ends within thirty metres, or most of the shorter lying
 along the longer — are the shorter. A door taken out by hand stays out for
-as long as its ride is not found again.
+as long as its ride is not found again. When the way a door is found
+changes, `--recheck` holds the doors already in the file to the test again
+and keeps those that pass; it looks at no ride and does not move the
+bookmark.
 
 **A ride is looked at once.** Until 2026-11-22 a run looked at every ride
 `?bbox=` answered for nine boxes of Tallinn, the last run's included: 37

@@ -479,8 +479,10 @@ const DOOR_RATIO = 0.9;
 const DOOR_SPEED = 4.2;
 
 /* And what the router makes of a street once its corners are counted,
-   twelve: the pace a way's time is turned back into metres at. The same
-   number is in tools/doors.mjs, which measures a way the same way. */
+   twelve: the pace a way's time is turned back into metres at. A whole
+   ride has its corners on every way compared, so they are counted here;
+   tools/doors.mjs, which measures stretches of two hundred metres, leaves
+   them out and counts at DOOR_SPEED — A CORNER IS NOT A DOOR there. */
 const PACE = 3.3;
 const reach = (way) => Math.max(way.meters, way.seconds * PACE);
 
