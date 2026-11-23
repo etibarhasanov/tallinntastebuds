@@ -198,7 +198,7 @@ function onLines(line, others) {
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 
 /* The rides saved after `from` — { at, id } — oldest first, every page of
-   them, and where the last of them leaves off. */
+   them. */
 async function rides(from) {
   const found = [];
   let at = from;
@@ -207,11 +207,9 @@ async function rides(from) {
     if (!res.ok) throw new Error('/api/v1/rides?since= answered ' + res.status);
     const body = await res.json();
     if (!body.ready) throw new Error('/api/v1/rides?since= is not ready');
-    for (const ride of body.rides) {
-      found.push(ride);
-      at = { at: ride.at, id: ride.id };
-    }
-    if (!body.next) return { found, until: at };
+    for (const ride of body.rides) found.push(ride);
+    if (!body.next) return found;
+    at = body.next;
   }
 }
 
@@ -221,12 +219,14 @@ async function rides(from) {
    rides. Kept by the pair, since the tightening asks about the same ends
    more than once. */
 const asked = new Map();
+let calls = 0;
 async function routed(a, b) {
   const key = a.join(',') + ';' + b.join(',');
   if (asked.has(key)) return asked.get(key);
   let found = null;
   for (let attempt = 0; attempt < 3 && !found; attempt++) {
     await sleep(PAUSE);
+    calls++;
     try {
       const res = await fetch(ROUTER + a[1] + ',' + a[0] + ';' + b[1] + ',' + b[0] +
         '?overview=full&geometries=geojson&alternatives=true', { headers: { 'User-Agent': AGENT } });
@@ -308,10 +308,10 @@ let from = { at: 0, id: '' };
 if (!process.argv.includes('--all')) {
   try { from = JSON.parse(readFileSync(CHECKED, 'utf8')); } catch (e) { /* no file yet: every ride */ }
 }
-const { found: fresh, until } = await rides(from);
-const lines = fresh.flatMap((ride) => Array.isArray(ride.line) ? piecesOf(ride.line) : []);
+const fresh = await rides(from);
+const piecesOfRide = (ride) => Array.isArray(ride.line) ? piecesOf(ride.line) : [];
 console.log(fresh.length + ' rides saved since ' + (from.at ? new Date(from.at).toISOString() : 'the start') +
-  ': ' + lines.length + ' ridden pieces');
+  ': ' + fresh.reduce((n, ride) => n + piecesOfRide(ride).length, 0) + ' ridden pieces');
 
 /* The doors the file already has first — AND THE DOORS IT ALREADY HAD —
    then each one found, joined to its twin where it has one. */
@@ -333,24 +333,40 @@ function keep(door) {
   else if (door.meters < doors[twin].meters) doors[twin] = door;
 }
 
-for (const line of lines) {
-  for (const door of await doorsIn(line)) keep(door);
+/* The doors as the file has them: an id out of the line, sorted by it. */
+function written() {
+  return doors.map((door) => ({
+    id: createHash('sha256').update(JSON.stringify(door.line)).digest('hex').slice(0, 8),
+    meters: door.meters,
+    around: door.around,
+    line: door.line
+  })).sort((a, b) => a.id.localeCompare(b.id));
 }
 
-const out = doors.map((door) => ({
-  id: createHash('sha256').update(JSON.stringify(door.line)).digest('hex').slice(0, 8),
-  meters: door.meters,
-  around: door.around,
-  line: door.line
-})).sort((a, b) => a.id.localeCompare(b.id));
+/* Both files are written after every ride, the bookmark moved to it. The
+   rides come oldest first, so a run that is stopped part-way — the first
+   one, over every ride, ran past ninety minutes and was stopped having
+   written nothing — leaves what it found and starts again after the last
+   ride it finished. */
+function save(at) {
+  if (process.argv.includes('--dry')) return;
+  const out = written();
+  writeFileSync(OUT, '[\n' + out.map((door) => '  ' + JSON.stringify(door)).join(',\n') + (out.length ? '\n' : '') + ']\n');
+  writeFileSync(CHECKED, JSON.stringify(at) + '\n');
+}
 
-for (const door of out) {
+const began = Date.now();
+for (const [n, ride] of fresh.entries()) {
+  for (const piece of piecesOfRide(ride)) {
+    for (const door of await doorsIn(piece)) keep(door);
+  }
+  save({ at: ride.at, id: ride.id });
+  console.log('ride ' + (n + 1) + ' of ' + fresh.length + ': ' + calls + ' router calls, ' + doors.length + ' doors, ' +
+    Math.round((Date.now() - began) / 60000) + ' min');
+}
+
+for (const door of written()) {
   console.log(door.id + '  ' + door.meters + ' m ridden, ' + door.around + ' m by the router  ' + door.line[0].join(','));
 }
-console.log(out.length + ' doors, ' + had + ' of them in the file already');
-
-if (!process.argv.includes('--dry')) {
-  writeFileSync(OUT, '[\n' + out.map((door) => '  ' + JSON.stringify(door)).join(',\n') + (out.length ? '\n' : '') + ']\n');
-  writeFileSync(CHECKED, JSON.stringify(until) + '\n');
-  console.log('wrote data/doors.json and data/doors-checked.json');
-}
+console.log(doors.length + ' doors, ' + had + ' of them in the file already; ' + calls + ' router calls in ' +
+  Math.round((Date.now() - began) / 60000) + ' min' + (process.argv.includes('--dry') ? ', nothing written' : ''));
