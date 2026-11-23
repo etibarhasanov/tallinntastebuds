@@ -609,7 +609,7 @@ Read out of Kohuke on 2026-11-11, the day it was written, and the files on
 2026-11-19, the day it began reading them.
 
 **And a third records rides.** Rattatee (`etibarhasanov/rattatee`, SwiftUI,
-bundle id `ee.tallinntastebuds.rattatee`) records a bike ride with the screen
+bundle id `ee.tallinntastebuds.rattatee.app`) records a bike ride with the screen
 locked and the phone in a pocket, which a web page cannot, and saves it
 through `/api/v1/rides`. It is the recorder: the website has none. No backend, the same
 accounts, the same cookie, the same rule — **add a field, never rename or
