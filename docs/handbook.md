@@ -7292,6 +7292,23 @@ afternoon asked about the same thirty-two places in the same order, with two
 walks of the table where it had taken eleven and one count where it had
 taken six. `dayQueue()` in `functions/api/_refresh.js`.
 
+The one walk that is left was trimmed the day after, when D1's own list of
+statements still showed it at 21,940 rows read over ten runs — at least
+eight of them from before the queue, since the log has one walk on the
+evening it shipped and one the day after. Two things in it read rows that
+could not change the answer. It asked `google_scores` whether a row was busy for
+every row below four hundred that had ever been asked about, three rows read
+each, though a row asked about within the month is not due whichever way
+that comes out; now it asks only about the ones a month old, 24 rows of 149
+on 2026-11-23, where the 149 were on their way to 658. And the count of
+closed rows asked about today did not name `hidden`, so no index started
+where the question did and it scanned the table; with it, it reads the
+closed rows alone. Measured on production that day: the walk 1,827 rows
+where it had been 2,194, the count 69 where it had been 1,191, and against
+the export with Google stubbed the same thirty-two places asked in the same
+order on each of twelve days. What is left of the walk is the table itself,
+1,189 rows the directory shows, and a row for each due one it sorts.
+
 **How often a place is asked about.** It was every thirty days for every
 row, which spent the month evenly on a city that is not read evenly. The
 hundred at the top are the ones a ranking is printed for and the ones whose
