@@ -3425,25 +3425,31 @@ pressed Bike, and saw one of their own rides drawn under the way — a line
 that made no sense beside the suggestion and said where they had been. A
 bike route joins one place to another; it is not a map of where members
 ride. So `drawRidden()` and `TTBRide.under()` went, with their two strings.
-`GET /api/v1/rides?bbox=` stays, because the iPhone app reads it — **What the
-app reads** in `CLAUDE.md` — and what a ride is for now is **Doors**, below:
-it steers the suggestion instead of standing beside it.
+`GET /api/v1/rides?bbox=` stayed for the iPhone map app, and what a ride is
+for now is **Doors**, below: it steers the suggestion instead of standing
+beside it.
 
-**Found by the square, not by reading every ride.** `?bbox=` asks for the
-newest rides whose box meets a box — and for a day so did the ridden way
-under a bike route, which weighs squares now and reads no ride — and a box
-is four ranges no key answers, so until 2026-11-18 each asking read every
-ride there was, with its line, and every ride Rattatee saved made every
-bike route dearer for ever. Now a save also files each
-ride under the squares of the city its line passes through, 1/50 by 1/25 of
-a degree, about 2.2 km a side, in `ride_cells`; a read looks under the
-squares beneath the box, the newest few of each by the key, and asks `rides`
-for those by id. The worst read is a fixed number of rows however many
-rides there are. A ride whose box meets the one asked about while its line
-never comes within a square of it is no longer answered, which it should
-not have been — one ride across the city has a box over half of it.
-`functions/api/_ridecells.js` is the whole of it, and **Every read has a
-price, set before it is written** in `CLAUDE.md` is why.
+**No list and no map of rides, since 2026-11-23.** `?bbox=` asked for the
+newest rides whose box met a box. A box is four ranges no key answers, so
+until 2026-11-18 each asking read every ride there was; from then a save
+also filed each ride under the squares of the city its line passed through,
+in `ride_cells`, and a read looked under the squares by the key. And
+`?mine=1` answered somebody's own rides, up to two hundred rows a look, for
+the account page's **Your rides** card and the map app's. On 2026-11-23 the
+owner took the bike stats off the website for what they read, and kept
+what Rattatee asks for: a save, `?totals=1`, a ride's own page and the bike
+route the rides steer. The rides near a way alone came to about fifteen
+hundred rows a day on the read meter, all of it the map app's, and the
+card was the website's only bike stats. So `?bbox=`, `?mine=1`,
+`?mine=1&lines=1` and `GET /api/v1/rides` with nothing asked answer `{
+ready: false, user: null, rides: [] }` — what every installed map app
+already reads as a deployment without the table — and read nothing, not
+even the session. Nothing files a ride under `ride_cells` now, and the
+table went from `db/schema.sql` and, the same day, from production, which
+the owner dropped by hand. `rename` and `drop` stay: a row or two by a key, only when
+somebody asks, and a drop is the one way to take a single ride off the
+site. Rattatee lists the rides on its own phone and asks the site for
+neither list. **NO LIST AND NO MAP OF RIDES** in `functions/api/rides.js`.
 
 **Nobody's name is on a ride.** The points are sent once, on Save, and the
 server takes 200 m off each end before it stores anything — that is where a
@@ -3488,8 +3494,8 @@ is wanted of that ride is what it says about the streets, and that is a
 count. So a save that says `anon: true` and carries no session is checked
 as any ride is, cut into its runs with the ends off each, counted into
 `ride_sections` — **What the rides say about a street**, below — and let
-go: no row in `rides`, none in `ride_cells`, nothing under `?bbox=`, nothing
-for `tools/doors.mjs` to read, and an answer of `{ counted: true }` with no
+go: no row in `rides`, nothing for `tools/doors.mjs` to read, and an
+answer of `{ counted: true }` with no
 `ride` in it, since there is none to name. It has to say `anon`, because a
 recorder that does ask for a sign-in first — the map app's, and the
 website's while it had one — is making a ride one of **Your rides**, and
@@ -3540,16 +3546,17 @@ the card said is what happens. Nothing on the phone tells a counted ride
 from a kept one beyond that, and nothing offers to move a ride to an
 account afterwards: the owner's line was that neither is needed.
 
-**Your rides, on the account page.** The one place a ride is under a name is
-its rider's own `/account.html`: a **Your rides** card between your lists
-and the ones you kept, a fold with the count on it, each ride a row — what
-you called it, or *Bike ride*, then how far, how long and the day. Nothing
-on it records one, and somebody with no rides has no card: the only
-sentence an empty one could say is where to go and record, and that is an
-app, not a button here. It reads `GET /api/v1/rides?mine=1`, which answers the
-session's own rides with their names and no lines, uncached — and so does
-`GET /api/v1/rides` with nothing asked, which is how the iPhone app asks. A row
-on the website opens nothing yet: the page that opens one is the app's.
+**Your rides, on the account page, for five days.** From 2026-11-18 its
+rider's own `/account.html` had a **Your rides** card between your lists and
+the ones you kept, a fold with the count on it, each ride a row — what you
+called it, or *Bike ride*, then how far, how long and the day — read from
+`GET /api/v1/rides?mine=1`, and from 2026-11-22 the account's totals over
+it. The owner took it off on 2026-11-23 with the rest of the website's bike
+stats — **No list and no map of rides**, above — and the ten strings that
+were the totals' alone went with it, `ridesTotals*`, `ridesHours` and
+`ridesMinSec`. The card's other five, `ridesYours`, `ridesWhat`,
+`ridesCount`, `ridesCountOne` and `rideUnnamed`, stay with the recorder's,
+for the map app, under the rule above.
 
 **A ride in numbers, and all of them added up.** The line a ride is kept as
 is not the ride: its ends are off, and anything ridden outside the four
@@ -3565,11 +3572,8 @@ out of the line it kept, and a ride ridden wholly outside the cities is
 sent with an empty line and kept as its numbers alone. A ride saved with
 no account keeps no numbers, as it keeps nothing else: the owner's word on
 the day was that a rider signs in and their rides add up from then on.
-`?mine=1` answers the totals beside the rides, and Your rides draws them
-over the list in two rows of the Discover counter's figures — distance,
-riding time and rides, then the average, the top speed and the fastest
-kilometre — with the time standing, the longest ride and the first ride's
-day under them; `?totals=1` answers them alone, for Rattatee's My rides.
+`?totals=1` answers them, for Rattatee's My rides; for a day the account
+page drew them too, over its Your rides card.
 Each kept run's `seconds` is now its share of the whole ride's distance,
 not of the kept line's, so a run inside town no longer carries a day's
 riding at four kilometres an hour. The phone's numbers for the parts the
@@ -3591,18 +3595,15 @@ to 34.4 km/h. The same pause was 231 m in the square it ended in, in
 `ride_sections`, since a step of two minutes or more counted its metres and
 nothing else; a pause counts nowhere now, as a step over `GAP` never did.
 
-**One ride, opened, in the iPhone app.** The app's Me tab has **Your rides**:
-the same rides with a range — 7, 28, 90 days, all time — the distance, the
-riding time and the number of rides against the range before, a line of
-kilometres, **Where you rode** — every ride of the range drawn on one map,
-each a see-through line, so a street ridden more than once comes out darker
-— and every ride a row that opens it. The map asks `GET
-/api/v1/rides?mine=1&lines=1`: the list again with a `line` on each ride,
-thinned to a point every fifty metres or so (`THIN` in
-`functions/api/rides.js`), since the map is the size of a card and two
-hundred whole lines are megabytes. Only with `lines=1`, so the list the
-account page and an installed app ask for is the size it was. The page
-that opens one ride is `GET
+**One ride, opened, in the iPhone app.** The map app's Me tab had **Your
+rides**: the same rides with a range — 7, 28, 90 days, all time — the
+distance, the riding time and the number of rides against the range
+before, a line of kilometres, **Where you rode** — every ride of the range
+drawn on one map, from `GET /api/v1/rides?mine=1&lines=1`, the list again
+with a thinned `line` on each ride — and every ride a row that opens it.
+Since 2026-11-23 both answer no rides — **No list and no map of rides**,
+above — so an installed map app lists none. The page that opens one ride
+is `GET
 /api/v1/rides/<id>` (`functions/api/rides/[id].js`): the ride's line on a map,
 its distance, time and average, and — where it has a `track` — the fastest
 kilometre, the top speed over two hundred metres, how long was spent
@@ -3658,7 +3659,7 @@ and last 200 m off **every** run, since where somebody stopped recording is
 as likely to be a door as where they began. A run under 300 m after that is
 dropped, and a ride with none left is `short`. The answer is still one
 `ride`, the first run's id with the metres of them all, so nothing an
-installed app reads has moved; Your rides lists the runs as the rides they
+installed app reads has moved; Your rides listed the runs as the rides they
 now are. It is a row a run and not a row with several lines because `line`
 is one line to every page and app that draws it. The page's recorder still
 draws the step while the ride is being recorded, and counts it in the
@@ -3796,7 +3797,7 @@ save.
 **One thing reads it, and nothing answers it.** A bike route weighs its
 ways by it. It is counts and no rider, and still no square is published:
 with one rider a square's pace is one person's afternoon. What else it is
-for — a ride on Your rides saying how much of itself had been ridden before
+for — a ride's own page saying how much of itself had been ridden before
 and where it waited; a warning on a stretch people push through. Each
 wants more than one rider's rides under it.
 
@@ -3954,7 +3955,7 @@ doors are the site's own, in `data/doors.json`, and the bike route is the
 two together.
 
 **Found by distance, not by shape.** `node tools/doors.mjs` reads the saved
-rides off `GET /api/v1/rides?bbox=`, cuts each into stretches of two hundred
+rides off `GET /api/v1/rides?since=`, cuts each into stretches of two hundred
 metres, twice, and puts each stretch's ends to the bike router itself. A
 stretch the router needs a hundred metres and half as much again for, by
 the shortest way it offers, is a door; it is then tightened to the part that makes the saving, and kept only
@@ -6595,10 +6596,11 @@ Your lists             3 lists  a fold: six rows a list
 Lists you saved         1 list  a fold: six rows somebody else's
 ```
 
-Five cards, one thing each, in the order of how much each is yours: who you
-are, what you kept, what you wrote, where you rode — **Your rides**, under
-**Recorded rides** — and what you kept of other people's. There
-was a fifth under them — **Everybody's lists**, the way on to the directory —
+Four cards, one thing each, in the order of how much each is yours: who you
+are, what you kept, what you wrote, and what you kept of other people's.
+**Your rides**, where you rode, stood between the last two for five days
+and went with the website's bike stats — **Recorded rides**. There
+was another under them — **Everybody's lists**, the way on to the directory —
 and **Everybody's lists is not on this page** below is where it went. The last
 three were a group with a heading over them for a while, **Yours**, and
 another over that fifth card, **Everybody else's**, the quiet heading `/lists`

@@ -11,8 +11,9 @@
  * all of it out for its save card and its ride page already. So since
  * 2026-11-22 a save may carry that `summary`, and a signed-in save keeps it
  * here as a row of `ride_stats` and adds it into the account's one row of
- * `ride_totals`, which the account page and the app's My rides show to
- * that account and to nobody else.
+ * `ride_totals`, which Rattatee's My rides shows to that account and to
+ * nobody else. The account page showed it too, for a day, until the owner
+ * took the bike stats off the website on 2026-11-23.
  *
  * ONLY AN ACCOUNT'S RIDES ADD UP
  *
@@ -70,10 +71,9 @@
  * its key's index and its three others, measured on the 37 written by hand
  * — and upserts one `ride_totals` row by its key, one row read and one or
  * two written: about seven a save, beside the hundred or more a save
- * already writes into ride_sections. The
- * totals are read by the key, one row, on the account page's ?mine=1 and
- * on Rattatee's ?totals=1, which it asks when its My rides opens and not
- * more than once a minute. At a thousand saves and five thousand opens a
+ * already writes into ride_sections. The totals are read by the key, one
+ * row, on Rattatee's ?totals=1, which it asks when its My rides opens and
+ * not more than once a minute. At a thousand saves and five thousand opens a
  * day that is six thousand rows read of five million and seven thousand
  * written of a hundred thousand. A drop reads under ten rows, each by a
  * key; deleting an account, one row a ride it saved since this file.
@@ -208,7 +208,7 @@ export function statsStatements(env, userId, id, at, s) {
   ];
 }
 
-/* An account's totals as ?mine=1 and ?totals=1 answer them, or null: no
+/* An account's totals as ?totals=1 answers them, or null: no
    ride counted yet, every one of them dropped, or no table. A lookup by
    ride_totals' key, one row. */
 export async function totalsOf(env, userId) {
@@ -271,4 +271,34 @@ export async function statsReady(env) {
     ready = true;
   } catch (e) { /* Not yet: asked again next time. */ }
   return ready;
+}
+
+/* WHAT DELETING AN ACCOUNT TAKES OF ITS RIDES
+
+   Every ride it saved, by idx_rides_user — the statement for ./account.js to
+   put in its one batch, beside forgetStatements() above. A deleted account
+   used to leave its rides behind under an id nobody had: their numbers went
+   but the way each was ridden stayed, and Rattatee's privacy policy had to
+   say so. What a ride added to `ride_sections` stays, as a ride saved with
+   no account does: counts of a street, under nobody.
+
+   For half a day it took the squares each ride was filed under in
+   `ride_cells` too, until nothing filed a ride there and the owner dropped
+   the table on 2026-11-23 — NO LIST AND NO MAP OF RIDES in ./rides.js.
+
+   `rides` may not be in a database, and the batch is all or nothing, so the
+   statement is offered only where the table answers — asked once per
+   isolate until it does, as statsReady() above — or a missing table would
+   keep anybody from deleting their account. */
+let ridesThere = false;
+export async function forgetRides(env, userId) {
+  if (!ridesThere) {
+    try {
+      await env.DB.prepare('SELECT 1 FROM rides LIMIT 1').first();
+      ridesThere = true;
+    } catch (e) {
+      return [];
+    }
+  }
+  return [env.DB.prepare('DELETE FROM rides WHERE user_id = ?').bind(userId)];
 }

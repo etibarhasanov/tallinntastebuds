@@ -361,16 +361,6 @@
 .lists-fold > summary:hover .menu-go { color: var(--accent); }
 .lists-fold[open] > summary .menu-go { transform: rotate(90deg); }
 
-/* All your rides added up, at the head of the account page's Your rides —
-   ridesTotals() in assets/account.js. The figures are the Discover
-   counter's, .counter-three and .counter-figure in styles.css, so this is
-   only the room round them: the rule under the second row comes off, since
-   the line under both says where the figures end. */
-.ride-totals { margin: 4px 0 14px; }
-.ride-totals .counter-title { margin-bottom: 8px; }
-.ride-totals .counter-three + .counter-three { border-bottom: 0; }
-.ride-totals-more { margin: 0; font: 12px var(--mono); color: var(--muted); }
-
 /* ---------- the button states this page adds ---------- */
 
 /* The two buttons themselves are .go and .alt out of assets/styles.css, the
@@ -1368,10 +1358,6 @@
 .lists-all-card.has-keep { padding-bottom: 54px; }
 .lists-all-card:hover { border-color: var(--accent); }
 .lists-all-card:hover .lists-index-title { color: var(--accent); }
-/* A row that opens nothing — a ride on the account page — does not light
-   up as though it would. */
-.lists-all-card.is-still:hover { border-color: var(--hairline); }
-.lists-all-card.is-still:hover .lists-index-title { color: inherit; }
 
 /* The bookmark in the row's bottom corner, laid inside the card the way the
    map pill is on an index row: above the title's link in the stacking order, so

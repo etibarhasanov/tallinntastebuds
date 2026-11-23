@@ -139,7 +139,6 @@ const ROWS = [
   { file: 'api/lists.js', has: 'FROM lists l WHERE l.owner = ? ORDER BY l.updated_at DESC', why: 'one account\'s own lists: MAX_LISTS, twenty-four' },
   { file: 'api/_visits.js', has: 'SELECT l.id, l.title, l.public, ? AS n FROM lists l WHERE l.owner = ?', why: 'one account\'s lists: MAX_LISTS, twenty-four' },
   { file: 'api/_visits.js', has: 'SELECT id, title FROM lists WHERE owner = ? AND public = 1', why: 'one account\'s public lists: MAX_LISTS, twenty-four' },
-  { file: 'api/_ridecells.js', has: 'WITH RECURSIVE r(n)', why: 'LIMIT ?6 is `near`: NEAR in rides.js, forty, its one caller' },
   { file: 'api/_visitors.js', has: 'SELECT minute, n FROM visitor_live WHERE minute > ?', why: 'the last LIVE_SPAN minutes, thirty rows' },
   { file: 'api/_visitors.js', has: 'SELECT day, fresh, visits, secs FROM counter_days WHERE day >= ?', why: 'the last COUNTER_SECS_DAYS days, a row a day, twenty-eight' },
   { file: 'api/chess.js', has: 'SELECT g.*, u.username AS challenger_name FROM chess_games g LEFT JOIN users u ON u.id = g.challenger', why: 'GAME_SQL, a fragment: every use adds the WHERE that names its game and LIMIT 1' },
@@ -173,7 +172,6 @@ const ROWS = [
   { file: '_public.js', has: 'WHERE l.public = 1 ORDER BY l.id, i.pos LIMIT ?', why: "publicLists(): LIMIT READ_CAP, two thousand, every public list's places for /mcp and /api/v1, once per isolate per edit to a list", fix: SESSION },
   { file: 'blog/sitemap.js', has: "SELECT id, updated_at FROM posts WHERE status = 'published'", why: 'LIMIT MOST, five thousand: every published post, an hour at the edge', fix: SESSION },
   { file: 'blog.js', has: 'SELECT list_id, name FROM list_items WHERE list_id IN', why: "a post's lists' places: MAX_LISTS ten lists of MAX_ITEMS fifty, five hundred", fix: SESSION },
-  { file: 'api/rides.js', has: 'FROM rides WHERE user_id = ? ORDER BY created_at DESC LIMIT ?', why: 'LIMIT MINE, two hundred of somebody\'s rides, with their lines when asked', fix: SESSION },
   { file: 'api/flashcard.js', has: 'SELECT id, front, back FROM flashcard_cards WHERE deck_id = ?', why: 'LIMIT MAX_CARDS, two hundred cards of one deck', fix: SESSION },
   { file: 'api/flashcard.js', has: 'SELECT day FROM flashcard_days WHERE user_id = ? ORDER BY day DESC LIMIT 366', why: 'a year of days, for the streak', fix: SESSION },
   { file: 'api/lists.js', has: 'k.created_at AS kept_at', why: "the lists one account keeps: MAX_KEPT, two hundred", fix: SESSION },
@@ -191,7 +189,6 @@ const ROWS = [
    fails the build until it is read or listed here. */
 const UNREAD = [
   { file: 'api/_lib.js', has: 'SET ip_hash = ', why: "forgetFingerprints(): UPDATE ${table} for the four tables in FORGET. Each WHERE is length(ip_hash) = 64 AND <at> < ?, and none of the four has an index on <at>, so each walks its table — feedback, chess_notes, saves, flashcard_reports — after every write to them. To fix: a partial index on <at> WHERE length(ip_hash) = 64 would make it the rows still holding one" },
-  { file: 'api/_ridecells.js', has: 'INSERT OR IGNORE INTO ride_cells', why: "fileCells(): one INSERT of a ride's squares, the values written in; a write, and no rows read but the key's" },
   { file: 'api/lists.js', has: 'UPDATE lists SET ', why: 'the edit: the columns being set spliced in, WHERE id = ?, one row by the key' },
   { file: 'api/rides.js', has: 'INSERT INTO rides (', why: 'a save: the column list spliced in, one row a run, no read' }
 ];
@@ -304,7 +301,7 @@ function chain(src, k) {
 }
 
 /* A statement whose LIMIT is a `?` bound to a constant, read with the
-   constant's number in its place: `LIMIT ?` .bind(id, MINE) is LIMIT 200. A
+   constant's number in its place: `LIMIT ?` .bind(id, PAGE) is LIMIT 50. A
    `?` with a number, ?3, is that argument; a bare one is the next; and
    PAGE + 1 is read as the number it comes to. */
 function limitOf(s, used) {

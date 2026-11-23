@@ -354,7 +354,7 @@ const SIZES = {
   feedback: 2, feedback_hearts: 2, meta: 1, flashcard_decks: 1, flashcard_cards: 170,
   flashcard_known: 3956, flashcard_reports: 4, chess_games: 4, chess_moves: 42,
   chess_notes: 6, chess_asks: 1, posts: 1, post_texts: 4, walks: 5, walk_checks: 9,
-  rides: 15, ride_sections: 1920, ride_cells: 39, usage_people: 37, flashcard_days: 15,
+  rides: 15, ride_sections: 1920, usage_people: 37, flashcard_days: 15,
   /* Its ceiling rather than a measure: twelve ordered pairs of the four
      CITIES, MIDDLES (three) each — LONG RIDES in functions/api/route.js. */
   route_middles: 36,
