@@ -247,8 +247,8 @@ if (ui !== null) {
 if (languages.length === 0) languages = ['en'];
 
 /* -------------------------------------------------------------- FLASHCARDS
-   data/decks.json — the Estonian the flashcards page ships: fifty-three decks
-   and two thousand five hundred and thirty-two cards, deployed as a file and
+   data/decks.json — the Estonian the flashcards page ships: fifty-four decks
+   and two thousand five hundred and forty-three cards, deployed as a file and
    read as one.
    It is content rather than interface, so the eleven languages of data/ui.json
    do not apply to it wholesale the way they do to a button — what it carries

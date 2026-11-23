@@ -3248,6 +3248,34 @@
    ]
   },
   {
+   "id": "isamaa-words",
+   "added": "2026-11-23",
+   "name": {
+    "en": "The words of Mu isamaa, mu õnn ja rõõm",
+    "az": "Mu isamaa, mu õnn ja rõõm himninin sözləri",
+    "ru": "Слова из гимна Mu isamaa, mu õnn ja rõõm"
+   },
+   "why": {
+    "en": "The words from the anthem the other decks do not have yet, each with its line",
+    "az": "Himndən digər dəstlərdə hələ olmayan sözlər, hər biri öz misrası ilə",
+    "ru": "Слова из гимна, которых ещё нет в других колодах, каждое со своей строкой"
+   },
+   "level": "song",
+   "cards": [
+    "isamaa",
+    "room",
+    "sunnitama",
+    "ules-kasvatama",
+    "truu",
+    "surm",
+    "jumal",
+    "valvama",
+    "kaitsja",
+    "rohkesti",
+    "onnistama"
+   ]
+  },
+  {
    "id": "cases-three-cards",
    "added": "2026-10-06",
    "name": {
@@ -3686,6 +3714,27 @@
    },
    "video": "llwKncMXrc0",
    "deck": "tana-words"
+  },
+  {
+   "id": "mu-isamaa-mu-onn-ja-room",
+   "added": "2026-11-23",
+   "name": {
+    "en": "Mu isamaa, mu õnn ja rõõm — the national anthem",
+    "az": "Mu isamaa, mu õnn ja rõõm — Estoniyanın himni",
+    "ru": "Mu isamaa, mu õnn ja rõõm — гимн Эстонии"
+   },
+   "why": {
+    "en": "Estonia's anthem, all three verses, line by line",
+    "az": "Estoniyanın himni, hər üç bəndi, misra-misra",
+    "ru": "Гимн Эстонии, все три куплета, строка за строкой"
+   },
+   "taste": "Mu isamaa, mu õnn ja rõõm",
+   "video": "bPdZMdbp-fo",
+   "credit": {
+    "words": "Johann Voldemar Jannsen, 1869",
+    "music": "Fredrik Pacius, 1848"
+   },
+   "deck": "isamaa-words"
   }
  ],
  "talks": [

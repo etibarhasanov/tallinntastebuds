@@ -1,0 +1,737 @@
+{
+ "id": "mu-isamaa-mu-onn-ja-room",
+ "added": "2026-11-23",
+ "name": {
+  "en": "Mu isamaa, mu õnn ja rõõm — the national anthem",
+  "az": "Mu isamaa, mu õnn ja rõõm — Estoniyanın himni",
+  "ru": "Mu isamaa, mu õnn ja rõõm — гимн Эстонии"
+ },
+ "why": {
+  "en": "Estonia's anthem, all three verses, line by line",
+  "az": "Estoniyanın himni, hər üç bəndi, misra-misra",
+  "ru": "Гимн Эстонии, все три куплета, строка за строкой"
+ },
+ "taste": "Mu isamaa, mu õnn ja rõõm",
+ "video": "bPdZMdbp-fo",
+ "credit": {
+  "words": "Johann Voldemar Jannsen, 1869",
+  "music": "Fredrik Pacius, 1848"
+ },
+ "deck": "isamaa-words",
+ "verses": [
+  [
+   {
+    "et": "Mu isamaa, mu õnn ja rõõm,",
+    "en": "My fatherland, my happiness and joy,",
+    "az": "Vətənim, səadətim və sevincim,",
+    "ru": "Моя отчизна, моё счастье и радость,"
+   },
+   {
+    "et": "kui kaunis oled sa!",
+    "en": "how beautiful you are!",
+    "az": "nə qədər gözəlsən!",
+    "ru": "как ты прекрасна!"
+   },
+   {
+    "et": "Ei leia mina iial teal",
+    "en": "Never shall I find here,",
+    "az": "Heç vaxt tapmaram burada,",
+    "ru": "Никогда не найти мне здесь,"
+   },
+   {
+    "et": "see suure, laia ilma peal,",
+    "en": "on this great, wide world,",
+    "az": "bu böyük, geniş dünyada,",
+    "ru": "на этом большом, широком свете,"
+   },
+   {
+    "et": "mis mul nii armas oleks ka,",
+    "en": "anything that would be as dear to me",
+    "az": "mənə elə əziz olacaq bir şey",
+    "ru": "того, что было бы мне так же мило,"
+   },
+   {
+    "et": "kui sa, mu isamaa!",
+    "en": "as you, my fatherland!",
+    "az": "sənin kimi, vətənim!",
+    "ru": "как ты, моя отчизна!"
+   }
+  ],
+  [
+   {
+    "et": "Sa oled mind ju sünnitand",
+    "en": "You gave birth to me, after all,",
+    "az": "Axı məni sən doğmusan",
+    "ru": "Ведь ты меня родила"
+   },
+   {
+    "et": "ja üles kasvatand;",
+    "en": "and brought me up;",
+    "az": "və böyütmüsən;",
+    "ru": "и вырастила;"
+   },
+   {
+    "et": "sind tänan mina alati",
+    "en": "I thank you always",
+    "az": "sənə həmişə təşəkkür edirəm",
+    "ru": "тебя благодарю я всегда"
+   },
+   {
+    "et": "ja jään sull' truuiks surmani,",
+    "en": "and stay faithful to you until death,",
+    "az": "və ölənə qədər sənə sadiq qalacağam,",
+    "ru": "и останусь тебе верен до смерти,"
+   },
+   {
+    "et": "mul kõige armsam oled sa,",
+    "en": "to me you are the dearest of all,",
+    "az": "mənim üçün ən əzizi sənsən,",
+    "ru": "ты мне милее всех,"
+   },
+   {
+    "et": "mu kallis isamaa!",
+    "en": "my dear fatherland!",
+    "az": "mənim əziz vətənim!",
+    "ru": "моя дорогая отчизна!"
+   }
+  ],
+  [
+   {
+    "et": "Su üle Jumal valvaku",
+    "en": "May God watch over you,",
+    "az": "Səni Tanrı qorusun,",
+    "ru": "Да хранит тебя Бог,"
+   },
+   {
+    "et": "mu armas isamaa!",
+    "en": "my beloved fatherland!",
+    "az": "sevimli vətənim!",
+    "ru": "моя милая отчизна!"
+   },
+   {
+    "et": "Ta olgu sinu kaitseja",
+    "en": "may He be your protector",
+    "az": "O sənin hamin olsun",
+    "ru": "пусть Он будет твоим защитником"
+   },
+   {
+    "et": "ja võtku rohkest õnnista,",
+    "en": "and richly bless",
+    "az": "və bol-bol xeyir-dua versin",
+    "ru": "и щедро благословит"
+   },
+   {
+    "et": "mis iial ette võtad sa,",
+    "en": "whatever you take on,",
+    "az": "nəyə başlasan,",
+    "ru": "всё, за что бы ты ни взялась,"
+   },
+   {
+    "et": "mu kallis isamaa!",
+    "en": "my dear fatherland!",
+    "az": "mənim əziz vətənim!",
+    "ru": "моя дорогая отчизна!"
+   }
+  ]
+ ],
+ "words": {
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   },
+   "note": {
+    "en": "Mu is the short minu, the way ma is the short mina.",
+    "az": "Mu — minu sözünün qısası, ma da mina sözünün qısası kimi.",
+    "ru": "Mu — краткое minu, как ma — краткое mina."
+   }
+  },
+  "isamaa": {
+   "base": "isamaa",
+   "means": {
+    "en": "fatherland, homeland",
+    "az": "vətən, ata yurdu",
+    "ru": "отчизна, родина"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "Isa is father and maa is land: the land of the fathers.",
+    "az": "Isa — ata, maa — torpaq, yurd: ataların yurdu.",
+    "ru": "Isa — отец, maa — земля: земля отцов."
+   }
+  },
+  "õnn": {
+   "base": "õnn",
+   "means": {
+    "en": "happiness",
+    "az": "səadət, xoşbəxtlik",
+    "ru": "счастье"
+   },
+   "deck": "feelings"
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "rõõm": {
+   "base": "rõõm",
+   "means": {
+    "en": "joy",
+    "az": "sevinc",
+    "ru": "радость"
+   },
+   "deck": "isamaa-words"
+  },
+  "kui": {
+   "base": "kui",
+   "means": {
+    "en": "how; as",
+    "az": "nə qədər; kimi",
+    "ru": "как"
+   },
+   "deck": "everyday",
+   "note": {
+    "en": "Kui is if and when on a card. Here it is how — kui kaunis, how beautiful — and as: kui sa, as you.",
+    "az": "Kartda kui — əgər, nə vaxt. Burada isə «nə qədər»dir — kui kaunis, nə qədər gözəl — və «kimi»: kui sa, sənin kimi.",
+    "ru": "На карточке kui — «если, когда». Здесь это «как»: kui kaunis — как прекрасна, kui sa — как ты."
+   }
+  },
+  "kaunis": {
+   "base": "kaunis",
+   "means": {
+    "en": "beautiful",
+    "az": "gözəl",
+    "ru": "прекрасна, красива"
+   },
+   "deck": "stopp-words"
+  },
+  "oled": {
+   "base": "olema",
+   "means": {
+    "en": "you are",
+    "az": "sənsən",
+    "ru": "ты (есть)"
+   },
+   "deck": "verbs"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you — one person",
+    "az": "sən",
+    "ru": "ты"
+   },
+   "note": {
+    "en": "Sa is the short sina, the way song and speech both say it.",
+    "az": "Sa — sina sözünün qısasıdır, həm mahnıda, həm danışıqda.",
+    "ru": "Sa — краткое sina, так и поют, и говорят."
+   }
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not",
+    "az": "yox, deyil",
+    "ru": "не"
+   },
+   "deck": "basics"
+  },
+  "leia": {
+   "base": "leidma",
+   "means": {
+    "en": "find — ei leia, shall not find",
+    "az": "tapmaq — ei leia, tapmaram",
+    "ru": "найти — ei leia, не найду"
+   },
+   "deck": "moreverbs"
+  },
+  "mina": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   }
+  },
+  "iial": {
+   "base": "iial",
+   "means": {
+    "en": "ever — ei … iial, never",
+    "az": "heç vaxt",
+    "ru": "когда-либо — ei … iial, никогда"
+   },
+   "note": {
+    "en": "Iial is ever, and with ei never. Iialgi, on a card in How often, is the same word said harder.",
+    "az": "Iial — nə vaxtsa, ei ilə isə heç vaxt. «Nə qədər tez-tez» dəstindəki iialgi eyni sözün daha qətiyyətli formasıdır.",
+    "ru": "Iial — когда-либо, а с ei — никогда. Iialgi на карточке в «Как часто» — то же слово, только твёрже."
+   }
+  },
+  "teal": {
+   "base": "teal",
+   "means": {
+    "en": "here",
+    "az": "burada",
+    "ru": "здесь"
+   },
+   "note": {
+    "en": "An old word for here, which today is siin. Nobody says it any more, so it is on no card.",
+    "az": "Burada deməkdir — bu gün siin deyilir. Artıq işlənmir, ona görə heç bir kartda yoxdur.",
+    "ru": "Старое слово, значит «здесь» — сегодня говорят siin. Больше так не говорят, поэтому карточки нет."
+   }
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "this",
+    "az": "bu",
+    "ru": "этом"
+   },
+   "deck": "pronouns",
+   "note": {
+    "en": "Today this would be selle: selle suure laia ilma peal. The anthem keeps the older see.",
+    "az": "Bu gün burada selle deyilərdi: selle suure laia ilma peal. Himn köhnə see formasını saxlayır.",
+    "ru": "Сегодня сказали бы selle: selle suure laia ilma peal. Гимн сохраняет старое see."
+   }
+  },
+  "suure": {
+   "base": "suur",
+   "means": {
+    "en": "great, big",
+    "az": "böyük",
+    "ru": "большом"
+   },
+   "deck": "basics"
+  },
+  "laia": {
+   "base": "lai",
+   "means": {
+    "en": "wide",
+    "az": "geniş",
+    "ru": "широком"
+   },
+   "deck": "describing"
+  },
+  "ilma": {
+   "base": "ilm",
+   "means": {
+    "en": "the world",
+    "az": "dünya",
+    "ru": "свет, мир"
+   },
+   "deck": "weather",
+   "note": {
+    "en": "Ilm is weather on a card, and the world in a song: ilma peal, on the world.",
+    "az": "Kartda ilm hava deməkdir, mahnıda isə dünya: ilma peal — dünyada.",
+    "ru": "На карточке ilm — погода, в песне — мир: ilma peal — на свете."
+   }
+  },
+  "peal": {
+   "base": "peal",
+   "means": {
+    "en": "on",
+    "az": "üstündə, -da",
+    "ru": "на"
+   },
+   "deck": "around"
+  },
+  "mis": {
+   "base": "mis",
+   "means": {
+    "en": "that which; whatever",
+    "az": "nə ki; nə olursa",
+    "ru": "то, что; что бы ни"
+   }
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "to me",
+    "az": "mənə, mənim üçün",
+    "ru": "мне"
+   },
+   "note": {
+    "en": "Mul is at me — mul on, I have. Beside armas it is to me: mul armas, dear to me.",
+    "az": "Mul — məndə: mul on, məndə var. Armas ilə isə «mənə»: mul armas, mənə əziz.",
+    "ru": "Mul — у меня: mul on, у меня есть. Рядом с armas — «мне»: mul armas, мне мило."
+   }
+  },
+  "nii": {
+   "base": "nii",
+   "means": {
+    "en": "so",
+    "az": "elə",
+    "ru": "так"
+   },
+   "deck": "everyday"
+  },
+  "armas": {
+   "base": "armas",
+   "means": {
+    "en": "dear, beloved",
+    "az": "əziz, sevimli",
+    "ru": "милый, дорогой"
+   },
+   "deck": "looks",
+   "note": {
+    "en": "Armas is lovely on a card. Said of a person, or a country, it is dear.",
+    "az": "Kartda armas — şirin, xoşagələn. İnsan, ya da ölkə haqqında deyiləndə — əziz.",
+    "ru": "На карточке armas — милый, славный. О человеке или о стране — дорогой, любимый."
+   }
+  },
+  "oleks": {
+   "base": "olema",
+   "means": {
+    "en": "would be",
+    "az": "olardı",
+    "ru": "было бы"
+   },
+   "deck": "verbs"
+  },
+  "ka": {
+   "base": "ka",
+   "means": {
+    "en": "also, too",
+    "az": "də, da",
+    "ru": "тоже, и"
+   },
+   "deck": "everyday"
+  },
+  "mind": {
+   "base": "mina",
+   "means": {
+    "en": "me",
+    "az": "məni",
+    "ru": "меня"
+   }
+  },
+  "ju": {
+   "base": "ju",
+   "means": {
+    "en": "after all, you know",
+    "az": "axı",
+    "ru": "ведь"
+   },
+   "deck": "everyday"
+  },
+  "sünnitand": {
+   "base": "sünnitama",
+   "means": {
+    "en": "given birth to",
+    "az": "doğmusan",
+    "ru": "родила"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "Sünnitand is sünnitanud with its end clipped for the tune: oled sünnitanud, you have given birth.",
+    "az": "Sünnitand — melodiya üçün sonu kəsilmiş sünnitanud sözüdür: oled sünnitanud, doğmusan.",
+    "ru": "Sünnitand — sünnitanud с отрезанным ради мелодии концом: oled sünnitanud — ты родила."
+   }
+  },
+  "üles": {
+   "base": "üles kasvatama",
+   "means": {
+    "en": "up",
+    "az": "yuxarı",
+    "ru": "вверх"
+   },
+   "deck": "isamaa-words"
+  },
+  "kasvatand": {
+   "base": "üles kasvatama",
+   "means": {
+    "en": "brought up",
+    "az": "böyütmüsən",
+    "ru": "вырастила"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "Kasvatand is kasvatanud, clipped like sünnitand. Üles kasvatama is to bring a child up; kasvatama alone is on a card in Out of the city.",
+    "az": "Kasvatand — sünnitand kimi qısaldılmış kasvatanud sözüdür. Üles kasvatama — uşaq böyütmək; təkcə kasvatama «Şəhərdən kənarda» dəstindədir.",
+    "ru": "Kasvatand — kasvatanud, сокращённое, как sünnitand. Üles kasvatama — вырастить ребёнка; просто kasvatama есть на карточке в «За городом»."
+   }
+  },
+  "sind": {
+   "base": "sina",
+   "means": {
+    "en": "you",
+    "az": "səni, sənə",
+    "ru": "тебя"
+   }
+  },
+  "tänan": {
+   "base": "tänama",
+   "means": {
+    "en": "I thank",
+    "az": "təşəkkür edirəm",
+    "ru": "благодарю"
+   },
+   "deck": "moreverbs"
+  },
+  "alati": {
+   "base": "alati",
+   "means": {
+    "en": "always",
+    "az": "həmişə",
+    "ru": "всегда"
+   },
+   "deck": "often"
+  },
+  "jään": {
+   "base": "jääma",
+   "means": {
+    "en": "I stay, I remain",
+    "az": "qalıram, qalacağam",
+    "ru": "остаюсь, останусь"
+   },
+   "deck": "stopp-words"
+  },
+  "sull": {
+   "base": "sina",
+   "means": {
+    "en": "to you",
+    "az": "sənə",
+    "ru": "тебе"
+   },
+   "note": {
+    "en": "Sull' is sulle, to you, clipped for the tune.",
+    "az": "Sull' — melodiya üçün qısaldılmış sulle, «sənə» deməkdir.",
+    "ru": "Sull' — sulle, «тебе», сокращённое ради мелодии."
+   }
+  },
+  "truuiks": {
+   "base": "truu",
+   "means": {
+    "en": "faithful",
+    "az": "sadiq",
+    "ru": "верным"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "Jääma truuks is to stay faithful: -ks is what you stay or become. Truuiks is the older way of writing truuks.",
+    "az": "Jääma truuks — sadiq qalmaq: -ks nə olaraq qaldığını, ya da nəyə çevrildiyini deyir. Truuiks truuks sözünün köhnə yazılışıdır.",
+    "ru": "Jääma truuks — остаться верным: -ks — кем остаёшься или становишься. Truuiks — старое написание truuks."
+   }
+  },
+  "surmani": {
+   "base": "surm",
+   "means": {
+    "en": "until death",
+    "az": "ölənə qədər",
+    "ru": "до смерти"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "-ni is until: surmani, until death; homseni, until tomorrow.",
+    "az": "-ni «-a qədər» deməkdir: surmani — ölənə qədər; homseni — sabaha qədər.",
+    "ru": "-ni значит «до»: surmani — до смерти; homseni — до завтра."
+   }
+  },
+  "kõige": {
+   "base": "kõige",
+   "means": {
+    "en": "most — kõige armsam, the dearest",
+    "az": "ən — kõige armsam, ən əziz",
+    "ru": "самый — kõige armsam, милее всех"
+   },
+   "note": {
+    "en": "Kõige in front of a comparative makes it the most: kõige parem, the best. The lesson Bigger, biggest, and the opposite teaches it.",
+    "az": "Müqayisə dərəcəsinin önündə kõige onu «ən» edir: kõige parem — ən yaxşı. «Daha böyük, ən böyük, və əksi» dərsi bunu öyrədir.",
+    "ru": "Kõige перед сравнительной степенью делает её превосходной: kõige parem — самый лучший. Этому учит урок «Больше, самый большой, и наоборот»."
+   }
+  },
+  "armsam": {
+   "base": "armas",
+   "means": {
+    "en": "dearer",
+    "az": "daha əziz",
+    "ru": "милее"
+   },
+   "deck": "looks",
+   "note": {
+    "en": "The -m makes it more: armas, armsam. Kõige in front makes it most.",
+    "az": "-m «daha» edir: armas, armsam. Önündəki kõige isə «ən» edir.",
+    "ru": "-m даёт «более»: armas, armsam. А kõige впереди — «самый»."
+   }
+  },
+  "kallis": {
+   "base": "kallis",
+   "means": {
+    "en": "dear",
+    "az": "əziz",
+    "ru": "дорогая"
+   },
+   "deck": "shops",
+   "note": {
+    "en": "Kallis is expensive on a card in a shop, and dear when it is said of somebody — or of a country.",
+    "az": "Mağaza kartında kallis bahalı deməkdir, kimsə haqqında — ya da ölkə haqqında deyiləndə isə əziz.",
+    "ru": "На карточке в магазине kallis — дорогой по цене, а о человеке — или о стране — дорогой сердцу."
+   }
+  },
+  "su": {
+   "base": "sina",
+   "means": {
+    "en": "you; your",
+    "az": "sən; sənin",
+    "ru": "тебя; твой"
+   },
+   "note": {
+    "en": "Su is the short sinu. Su üle is over you.",
+    "az": "Su — sinu sözünün qısasıdır. Su üle — sənin üzərində.",
+    "ru": "Su — краткое sinu. Su üle — над тобой."
+   }
+  },
+  "üle": {
+   "base": "üle",
+   "means": {
+    "en": "over",
+    "az": "üzərində",
+    "ru": "над"
+   },
+   "deck": "everyday"
+  },
+  "jumal": {
+   "base": "jumal",
+   "means": {
+    "en": "God",
+    "az": "Tanrı",
+    "ru": "Бог"
+   },
+   "deck": "isamaa-words"
+  },
+  "valvaku": {
+   "base": "valvama",
+   "means": {
+    "en": "may He watch over",
+    "az": "qorusun",
+    "ru": "да хранит"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "-ku is may, or let: valvaku, may He watch over. Olgu and võtku in the next lines are the same.",
+    "az": "-ku «qoy, -sın» deməkdir: valvaku — qorusun. Növbəti misralardakı olgu və võtku da elədir.",
+    "ru": "-ku значит «пусть, да»: valvaku — да хранит. Olgu и võtku в следующих строках — то же самое."
+   }
+  },
+  "ta": {
+   "base": "tema",
+   "means": {
+    "en": "He — God",
+    "az": "O — Tanrı",
+    "ru": "Он — Бог"
+   },
+   "note": {
+    "en": "Ta is the short tema.",
+    "az": "Ta — tema sözünün qısasıdır.",
+    "ru": "Ta — краткое tema."
+   }
+  },
+  "olgu": {
+   "base": "olema",
+   "means": {
+    "en": "may He be",
+    "az": "olsun",
+    "ru": "пусть будет"
+   },
+   "deck": "verbs",
+   "note": {
+    "en": "Olgu is all right on a card in The words in between. Here it says what it is made of: may He be.",
+    "az": "«Aradakı sözlər» dəstindəki kartda olgu «yaxşı, olsun» deməkdir. Burada isə öz mənasındadır: olsun.",
+    "ru": "На карточке в «Словах между словами» olgu — «ладно». Здесь оно значит то, из чего сделано: пусть будет."
+   }
+  },
+  "sinu": {
+   "base": "sina",
+   "means": {
+    "en": "your — one person",
+    "az": "sənin",
+    "ru": "твоим"
+   }
+  },
+  "kaitseja": {
+   "base": "kaitsja",
+   "means": {
+    "en": "protector",
+    "az": "hami, qoruyucu",
+    "ru": "защитник"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "Today the word is written kaitsja. The anthem keeps the older kaitseja.",
+    "az": "Bu gün bu söz kaitsja yazılır. Himn köhnə kaitseja formasını saxlayır.",
+    "ru": "Сегодня пишут kaitsja. Гимн сохраняет старое kaitseja."
+   }
+  },
+  "võtku": {
+   "base": "võtma",
+   "means": {
+    "en": "may He take to",
+    "az": "götürsün",
+    "ru": "пусть возьмётся"
+   },
+   "deck": "verbs",
+   "note": {
+    "en": "Võtku õnnista is old: may He take it upon Himself to bless. Today it would be õnnistagu, may He bless.",
+    "az": "Võtku õnnista köhnə ifadədir: xeyir-dua verməyi öz üzərinə götürsün. Bu gün õnnistagu deyilərdi — xeyir-dua versin.",
+    "ru": "Võtku õnnista — старый оборот: пусть возьмётся благословить. Сегодня сказали бы õnnistagu — пусть благословит."
+   }
+  },
+  "rohkest": {
+   "base": "rohkesti",
+   "means": {
+    "en": "richly, abundantly",
+    "az": "bol-bol",
+    "ru": "щедро, обильно"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "Rohkest is rohkesti with its end clipped for the tune.",
+    "az": "Rohkest — melodiya üçün sonu kəsilmiş rohkesti sözüdür.",
+    "ru": "Rohkest — rohkesti с отрезанным ради мелодии концом."
+   }
+  },
+  "õnnista": {
+   "base": "õnnistama",
+   "means": {
+    "en": "bless",
+    "az": "xeyir-dua vermək",
+    "ru": "благословить"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "Õnnista is õnnistada, clipped for the tune. It is õnn, happiness, made into a verb.",
+    "az": "Õnnista — melodiya üçün qısaldılmış õnnistada sözüdür. Bu, feilə çevrilmiş õnn, yəni səadətdir.",
+    "ru": "Õnnista — õnnistada, сокращённое ради мелодии. Это õnn, счастье, ставшее глаголом."
+   }
+  },
+  "ette": {
+   "base": "ette võtma",
+   "means": {
+    "en": "ette võtma: to take on",
+    "az": "ette võtma: girişmək",
+    "ru": "ette võtma: браться"
+   },
+   "deck": "twowords"
+  },
+  "võtad": {
+   "base": "võtma",
+   "means": {
+    "en": "you take — ette võtad, you take on",
+    "az": "götürürsən — ette võtad, girişirsən",
+    "ru": "берёшь — ette võtad, берёшься"
+   },
+   "deck": "verbs",
+   "note": {
+    "en": "Ette võtad is ette võtma, to take something on — in Verbs of two words.",
+    "az": "Ette võtad — ette võtma, bir işə girişmək deməkdir; «İki sözlü fellər» dəstindədir.",
+    "ru": "Ette võtad — это ette võtma, браться за что-то; есть в «Глаголах из двух слов»."
+   }
+  }
+ }
+}
