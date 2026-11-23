@@ -321,7 +321,10 @@ becomes a number. Three things keep a question under the line: ask `EXPLAIN
 QUERY PLAN` first, which reads nothing; never join a table's unpacked JSON
 to itself — walk it once, with `LAG()` for the row before; and when a table
 is priced as having no size, measure it and add its line to `SIZES` in the
-gate, with the case that needed it in `CASES`.
+gate, with the case that needed it in `CASES`. A window is billed for more
+than the rows it walks — `LAG()` and `LEAD()` over 144 rows of
+`google_scores` read 1,005 on 2026-11-23 — so try one on a slice of the key
+before the table.
 
 - **Name the key the statement uses**, out loud, in the comment above it:
   "a lookup on (user_id, deck_id)", "today's rows by (day, kind)". A
@@ -351,6 +354,17 @@ gate, with the case that needed it in `CASES`.
   INTEGER side, so `u.id = p.owner` could not use users' key and walked every
   account for every post read. A join on a column whose declared type is not
   the other side's is a walk until it is cast.
+- **A subquery is asked for every row that reaches it, and a sort is billed
+  too.** SQLite stops at the first arm of a `CASE` that is true and at the
+  first half of an `AND` that is false, so the test a column of the row can
+  answer goes in front of the one that reads another table. The day's Google
+  queue asked `google_scores` about every row below four hundred that had
+  ever been refreshed, three rows read each, though one asked about within
+  the month was not due whichever way that came out; with the row's age in
+  front it asked about 24 and not 149 — `BUSY_SQL` in `_refresh.js`. And an
+  `ORDER BY` no index answers reads a row more for each row it sorts,
+  whatever the `LIMIT`: that walk read the table's 1,189 and 545 more for
+  the 545 rows that were due.
 - **A total the page shows is a row, kept by the write.** Never a `SUM` or
   `COUNT(*)` over a history on a public route — `save_counts` beside
   `saves` is the pattern, and `RECOUNT_SQL` in `saves.js` the way it stays

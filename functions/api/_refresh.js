@@ -196,9 +196,19 @@ export const TIERS = [
    and is not busy yet. Thirteen places cleared the line when it was drawn
    and two of them stood below the top hundred, so it costs a handful of
    calls a month; it is checked only for rows whose tier waits longer than a
-   month, since for the rest it changes nothing. */
+   month, since for the rest it changes nothing.
+
+   And, of those, only for a row last asked about a month ago or more, which
+   is the first half of BUSY_SQL: a newer one is not due whichever way
+   google_scores answers. Without it the walk that makes the day's queue
+   asked google_scores about every row below four hundred that had ever been
+   asked about, three rows read each — some 450 of the 2,194 a walk read on
+   2026-11-23, for 149 such rows, and on its way to two thousand as the
+   other 509 were asked for the first time. With it the walk asks about the
+   ones a month old, 24 of them that day. `?1` is now, as in DUE_SQL. */
 export const BUSY_A_MONTH = 30;
 const BUSY_SQL =
+  'COALESCE(refreshed_at, 0) <= ?1 - ' + REFRESH_AFTER + ' AND ' +
   'EXISTS (SELECT 1 FROM google_scores a, google_scores b ' +
   'WHERE a.place_id = google_venues.place_id AND a.at = google_venues.refreshed_at ' +
   'AND b.place_id = a.place_id ' +
@@ -236,10 +246,10 @@ const TIER_SQL = 'CASE ' + tiered((t, i) => i, BUSY_TIER);
 const AFTER_SQL = "CASE WHEN status = '" + CLOSED + "' THEN " + REFRESH_AFTER + ' ' +
   tiered((t) => t.after, REFRESH_AFTER);
 
-/* Whether a row is due, as a WHERE clause with one `?` for now. Read by the
-   fill below and by ./admin/refreshes.js, whose "Due now" is this
-   count. */
-export const DUE_SQL = 'COALESCE(refreshed_at, 0) <= ? - (' + AFTER_SQL + ')';
+/* Whether a row is due, as a WHERE clause with `?1` for now — numbered,
+   because BUSY_SQL inside it asks for now as well. Read by the fill below
+   and by ./admin/refreshes.js, whose "Due now" is this count. */
+export const DUE_SQL = 'COALESCE(refreshed_at, 0) <= ?1 - (' + AFTER_SQL + ')';
 
 /* The spending limit, per kind of call. `details` is Place Details Enterprise,
    a thousand free a month: thirty-two a day is at most 992 in a thirty-one-day
@@ -630,8 +640,8 @@ export async function refreshOnOpen(env, id, source = 'open') {
   if (wait > REFRESH_AFTER) {
     try {
       const row = await env.DB
-        .prepare('SELECT ' + BUSY_SQL + ' AS busy FROM google_venues WHERE place_id = ?')
-        .bind(placeId)
+        .prepare('SELECT ' + BUSY_SQL + ' AS busy FROM google_venues WHERE place_id = ?2')
+        .bind(at, placeId)
         .first();
       wait = refreshAfter(before.rank, before.status, !!(row && row.busy));
     } catch (e) {
@@ -833,7 +843,8 @@ const CALLED = new Set(['changed', 'same', 'closed', 'gone', 'failed', 'error'])
  * used to walk it again to choose its six — on 2026-11-22 four knocks
  * between 12:00 and 12:45 UTC, each a scan to count the closed rows asked
  * about today (1,190 rows read to answer 2, measured on production that
- * day), another scan to choose, and the busy lookups beside it; google_venues was 14,141 rows read by 16:05, the dearest table on the
+ * day), another scan to choose, and the busy lookups beside it;
+ * google_venues was 14,141 rows read by 16:05, the dearest table on the
  * meter by ten times.
  *
  * Nothing about which rows are due changes in an afternoon but the rows the
@@ -856,7 +867,15 @@ const CALLED = new Set(['changed', 'same', 'closed', 'gone', 'failed', 'error'])
  *
  * What it costs: the walk once a day, where it was every knock with calls
  * left to spend, four to six an afternoon; then one row of `meta` read and
- * one written a knock, and a row read or two for each row taken. */
+ * one written a knock, and a row read or two for each row taken.
+ *
+ * The walk itself read 1,827 rows on 2026-11-23, measured on production,
+ * and the count before it 69. That is the 1,189 rows the directory shows;
+ * one more for each due row it puts in order, 545 that day, while five
+ * hundred of the bottom tier have never been asked about, and a few dozen
+ * once they have; and google_scores's three for each row below four hundred
+ * that is a month old — BUSY_SQL. They had been 2,194 and 1,191: D1's own
+ * list of statements had the walk at 21,940 rows over ten runs. */
 const QUEUE = 'fill_queue';
 const QUEUE_LENGTH = 2 * BUDGET.details.day;
 
@@ -879,10 +898,13 @@ async function dayQueue(env, now) {
      the queue is made — before the fill's first knock, so normally none. A
      row that answered open no longer counts; when that happens during the
      afternoon, the next closed row waits for tomorrow's queue, where each
-     knock used to let it through the same day. A scan: status is the second
-     column of idx_google_venues_open. */
+     knock used to let it through the same day. The closed rows alone, by
+     idx_google_venues_open, whose columns are hidden and then status:
+     sixty-nine rows read on 2026-11-23. Without `hidden` no index starts
+     where the question does and it was a scan, 1,191 rows to answer 2; a
+     hidden row is never asked about, so the count is the same. */
   const asked = await env.DB
-    .prepare('SELECT COUNT(*) AS n FROM google_venues WHERE status = ? AND refreshed_at >= ?')
+    .prepare('SELECT COUNT(*) AS n FROM google_venues WHERE hidden = 0 AND status = ? AND refreshed_at >= ?')
     .bind(CLOSED, Date.parse(day))
     .first();
   const shut = Math.max(0, CLOSED_A_DAY - ((asked && asked.n) || 0));
@@ -891,8 +913,8 @@ async function dayQueue(env, now) {
     .prepare(
       'SELECT place_id FROM google_venues ' +
       'WHERE hidden = 0 AND missing_since IS NULL' + only + ' AND ' + DUE_SQL + ' ' +
-      (closed ? 'AND status = ? ' : "AND COALESCE(status, '') <> ? ") +
-      'ORDER BY ' + TIER_SQL + ', COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?'
+      (closed ? 'AND status = ?2 ' : "AND COALESCE(status, '') <> ?2 ") +
+      'ORDER BY ' + TIER_SQL + ', COALESCE(refreshed_at, 0), rank IS NULL, rank LIMIT ?3'
     )
     .bind(now, CLOSED, limit)
     .all();
