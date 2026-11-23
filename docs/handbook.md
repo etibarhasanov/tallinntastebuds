@@ -3948,7 +3948,7 @@ rides had already been counted, a cost that grew with them.
 
 **Now the ways are weighed, not made.** The router and the doors offer
 their ways as before, with the ways round either side — kept off the
-streets in `KEEP_OFF`, their spurs off — and `riddenFirst()` in
+streets in `KEEP_OFF`, their spurs off — and `riddenBest()` in
 `functions/api/route.js` asks
 `riddenShare()` in `_sections.js` about each: how much of its length lies
 on squares people have ridden *in the direction it runs*, and how much of
@@ -4144,11 +4144,16 @@ bike is being pushed. A ride that does want a ferry, to Aegna, keeps the
 router's own way and is offered no way round it. **At sea** in
 `functions/api/route.js`.
 
-**What it costs.** No row of the database. Two router requests, and up to
-sixteen more where both sides have to be taken off a street twice, for a ride
-with fewer than three ways that nobody asked for between those two rounded
-points that day; each is kept a day at the edge. That first answer is slower
-for it, by a second or two on the rides tried.
+**What it costs.** No row of the database. Two router requests for every
+bike ride of a kilometre or more that nobody asked for between those two
+rounded points that day, and up to sixteen more where both sides have to be
+taken off a street twice; each is kept a day at the edge. The two are asked
+beside the router's own first request rather than after everything else, so
+they cost no time of their own, and they go unused where the ride already
+has three ways. Until 2026-11-23 they were asked last, only where they would
+be used, and every bike way waited a round longer for them; the owner found
+the bike ways very slow, and **One round at a time** in
+`functions/api/route.js` says what else was taken off the wait.
 
 ## A long ride between cities
 
