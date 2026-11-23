@@ -3503,6 +3503,24 @@ when its session ran out mid-ride it should be told `signed-out` and offer
 the sheet rather than have the ride counted and gone. A session, where
 there is one, wins, and that ride is kept exactly as it always was.
 
+**Answered before it is counted.** Until 2026-11-23 such a save was answered
+once its squares were written, and one whose write failed was told
+`not-ready`, so the phone kept the ride and sent it again later. The owner's
+point that day was that the ride is saved on the rider's phone either way:
+nothing of theirs hangs on the count, so the phone need not wait for it. The
+ride is still checked first — `malformed`, `short` and `fast` are told as
+they were, since the app lists such a ride as not kept — and the moment it
+passes it is answered `{ counted: true }`, with its squares written after
+the answer has gone, through `waitUntil`. The answer no longer waits on the
+database, which narrows the moment in which it can be lost and the ride
+sent, and counted, twice. What is given up is the second try: a count that
+fails — the database busy or past its day's writes, `ride_sections` not
+there — is a ride the squares never hear of, and the phone, told yes, does
+not send it again. It saves no work, since the squares are worked out
+before the answer and only the write waits. A session's save is not
+answered this way: its row in `rides` is the copy the account was made for,
+and it is written before the answer.
+
 **Nothing is remembered about it, and nothing caps it.** For an hour on
 2026-11-20 two small tables stood behind such a save, and neither was ever
 loaded into production. `ride_nets` kept a fingerprint of the network a
@@ -3752,8 +3770,10 @@ squares handed in as one JSON parameter. Every other count here is
 recomputed rather than nudged; this one cannot be. For a kept ride the
 nudge comes after its rows are in, and one that fails — the table not
 applied yet among the reasons — costs the save nothing. For a ride that is
-only counted the nudge is the save, so one that fails is a save that has
-not happened: `not-ready`, and the phone sends the ride again later.
+only counted the nudge is all the site does with it, and since 2026-11-23
+it comes after the answer: one that fails is a ride uncounted, and the
+phone, already told yes, does not send it again — **Answered before it is
+counted**, under **Recorded rides**.
 
 **A square takes fifty rides, then one in ten, and forgets.** D1 bills a
 row that is written, and a row updated is a row written: a ride crosses

@@ -58,7 +58,9 @@
  *   as its numbers and added to the account's totals — A RIDE IN NUMBERS.
  *   With `anon: true` and no session nothing of it is kept: its squares are
  *   counted and the answer has no `ride` — A RIDE WITHOUT AN ACCOUNT IS
- *   COUNTED, NOT KEPT — and `summary` is not read.
+ *   COUNTED, NOT KEPT — and `summary` is not read. That answer goes as soon
+ *   as the ride has passed its checks, before the squares are written —
+ *   ANSWERED BEFORE IT IS COUNTED.
  *
  *   `summary` is { meters, seconds, total, stopped, top, fastest, start,
  *   end } of the whole ride, worked out on the phone — ./_ridestats.js says
@@ -84,8 +86,8 @@
  *   Errors: 401 signed-out (no session and no `anon`), 400 malformed, 400
  *   short (under MIN_METERS once the ends are off), 400 fast (an average no
  *   bike rides at), 429 often (an account's DAY_RIDES today already), 503
- *   not-ready. No word is new: an installed app has a sentence, or a rule,
- *   for each.
+ *   not-ready, which a save with no session is never told. No word is new:
+ *   an installed app has a sentence, or a rule, for each.
  *
  * NOBODY'S NAME IS ON A RIDE
  *
@@ -121,6 +123,29 @@
  * out mid-ride should be told `signed-out` and offer the sheet rather than
  * have the ride counted and gone. A session, where there is one, wins over
  * the flag, and that ride is kept exactly as it always was.
+ *
+ * ANSWERED BEFORE IT IS COUNTED
+ *
+ * Until 2026-11-23 such a save was answered once its squares were written,
+ * and one whose write failed was told `not-ready`, so the phone kept the
+ * ride and sent it again later. The owner's point, that day: the ride is
+ * saved on the rider's phone either way, so nothing of theirs hangs on the
+ * count, and the phone need not wait for it. So the ride is checked as it
+ * always was — malformed, short and fast are still told, since the app
+ * lists such a ride as not kept — and the moment it passes it is answered
+ * `counted: true`, and its squares are written after the answer has gone,
+ * through waitUntil.
+ *
+ * What that buys is an answer that does not wait on the database, which
+ * narrows the moment in which an answer can be lost and the ride sent, and
+ * counted, twice. What it gives up is the second try: a count that fails —
+ * the database busy or past its day's writes, `ride_sections` not there,
+ * the thirty seconds waitUntil is given run out — is a ride the squares
+ * never hear of, and the phone, told yes, does not send it again. One ride
+ * among a street's fifty is not a ride anybody misses. It is no saving of
+ * work: the squares are worked out before the answer, as they were, and
+ * only the write waits. A session's save is not answered this way: its row
+ * in `rides` is the copy the account was made for, and it is written first.
  *
  * NOTHING IS REMEMBERED ABOUT IT, AND NOTHING CAPS IT
  *
@@ -250,8 +275,9 @@
  * fifty takes one ride in ten, and from there forgets a little of what it
  * held with each. For a ride that is kept this comes after its rows are
  * in, and the ride is kept whether or not it works. For a ride that is
- * only counted it is all there is, so where it does not work the save has
- * not happened: `not-ready`, and the phone sends the ride again later.
+ * only counted it is all there is, and it comes after the answer: where
+ * it does not work the ride goes uncounted, and nobody is told —
+ * ANSWERED BEFORE IT IS COUNTED.
  *
  * A RIDE IN NUMBERS
  *
@@ -273,12 +299,13 @@
  *
  * `rides` is in db/schema.sql and loaded by hand. Until it is, ?since=
  * answers `ready: false` and the Bike tab draws its way exactly as it did;
- * a save answers 503 `not-ready` and the phone keeps the ride to try again.
- * `ride_sections` is loaded the same way. A kept ride's save catches it:
- * the ride is kept, uncounted. A counted ride needs `ride_sections` and is
- * `not-ready` without it. Without `ride_stats` and `ride_totals` a ride is
- * kept and its numbers are not, `totals` is null, and a save that had only
- * numbers to keep is `not-ready`.
+ * a session's save answers 503 `not-ready` and the phone keeps the ride to
+ * try again. `ride_sections` is loaded the same way. A kept ride's save
+ * catches it: the ride is kept, uncounted. A counted ride needs
+ * `ride_sections` and goes uncounted without it, answered yes all the same.
+ * Without `ride_stats` and `ride_totals` a ride is kept and its numbers are
+ * not, `totals` is null, and a save that had only numbers to keep is
+ * `not-ready`.
  */
 
 import { json, sessionUser, wrongDatabase, nearCity, km, randomHex } from './_lib.js';
@@ -450,9 +477,17 @@ export async function onRequestPost(context) {
   const ride = riddenOf(body, user);
   if (ride.error) return json({ error: ride.error }, 400);
 
+  /* ANSWERED BEFORE IT IS COUNTED: a ride with no account has passed every
+     check there is, so it is answered now and counted after the answer, and
+     a count that fails is that ride uncounted and nothing more. It is
+     counted as a use where it was answered, not where the squares took it. */
+  if (!user) {
+    context.waitUntil(count(env, ride).catch(() => {}));
+    return countUse(context, 'map', 'ride_save', json({ counted: true }, 200), user);
+  }
+
   try {
-    const saved = user ? keep(env, user, body, ride) : count(env, ride);
-    return await countUse(context, 'map', 'ride_save', saved, user);
+    return await countUse(context, 'map', 'ride_save', keep(env, user, body, ride), user);
   } catch (e) {
     return json({ error: 'not-ready' }, 503);
   }
@@ -501,9 +536,11 @@ function riddenOf(body, user) {
   return { runs, seconds, meters, summary };
 }
 
-/* A ride with no account behind it: counted, and not kept. Its runs go in
-   one batch, so the ride is counted whole or not at all. Which rides a
-   full square takes is drawn here, a ride having no row to read it off.
+/* A ride with no account behind it: counted, and not kept, after its answer
+   has gone — ANSWERED BEFORE IT IS COUNTED. Its runs go in one batch, so the
+   ride is counted whole or not at all, and it throws where the batch does,
+   which its caller lets go. Which rides a full square takes is drawn here,
+   a ride having no row to read it off.
    Under `wrangler dev` on 2026-11-20 a ride of four kilometres read 161
    rows and wrote 323 down a street nobody had ridden, read 320 and wrote
    162 down one ridden a few times, and down one whose squares were full
@@ -511,7 +548,6 @@ function riddenOf(body, user) {
 async function count(env, ride) {
   const counts = ride.runs.map((run) => tally(env, sectionsOf(run.line, run.track), randomHex(6))).filter(Boolean);
   if (counts.length) await env.DB.batch(counts);
-  return json({ counted: true }, 200);
 }
 
 /* A ride with an account behind it: kept and counted, and its
