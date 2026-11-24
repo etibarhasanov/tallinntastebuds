@@ -13710,16 +13710,19 @@
    * and what is never shown. **Last seen, on a bike** in docs/handbook.md is
    * the long version.
    *
-   * A BIKE IN A RED RING, AND NEVER GREY
+   * A RED DOT, SMALLER THAN A PLACE, AND NEVER GREY
    *
-   * The pin is a 🚲 in a ring of --seen, a red no place's pin wears, and a
-   * little larger than a place's, so it reads as something else on the map
-   * at a glance: the owner's word was a bike emoji, and a little different
-   * from the others. Until then it was the mouth in a green collar, which
-   * read as one more restaurant. It is the same red however old the spot
-   * is — it went grey after ten minutes for a day, and since the spot moves
-   * only on a new way or a save it was grey nearly always — and the time on
-   * the label, or the day once it is not today's, is what says how old. It
+   * The pin is a dot of --seen, a red no place's pin wears, smaller than a
+   * place's pin, with the 🚲 at the front of the label under it: the owner's
+   * words were a bike emoji, red, a little different from the others, and
+   * then smaller than the others, like a dot. The label is what says what
+   * the dot is, and the press takes the label as well as the dot, so the
+   * target is the label's width. For its first day it was the mouth in a
+   * green collar, which read as one more restaurant, and then a bike in a
+   * red ring bigger than a place's pin. It is the same red however old the
+   * spot is — it went grey after ten minutes at first, and since the spot
+   * moves only on a new way or a save it was grey nearly always — and the
+   * time on the label, or the day once it is not today's, says how old. It
    * never goes: the owner's word was that last seen can stay for ever,
    * since what protects the rider is the 200 m, not the pin running out.
    *
@@ -13758,11 +13761,11 @@
 
     /* The card is a popup of its own rather than one bound to the pin, so
        that toggleSeen() is the one thing that opens it and can fit it to the
-       screen first. Its foot stands just clear of the pin's collar. */
+       screen first. Its foot stands just clear of the dot. */
     seenPopup = L.popup({
       className: 'seen-pop',
       closeButton: false,
-      offset: [0, -PIN_BOX / 2],
+      offset: [0, -8],
       autoPanPaddingBottomRight: [12, 24]
     });
     seenPopup.on('remove', function () {
@@ -13831,8 +13834,9 @@
     seenMarker = L.marker([spot.lat, spot.lng], {
       icon: L.divIcon({
         className: 'seen-pin',
-        html: '<span class="seen-face" aria-hidden="true">\uD83D\uDEB2</span>' +
-          '<span class="seen-label"><span class="seen-words"></span> · <span class="seen-when"></span></span>',
+        html: '<span class="seen-face"></span>' +
+          '<span class="seen-label"><span class="seen-bike" aria-hidden="true">\uD83D\uDEB2</span> ' +
+          '<span class="seen-words"></span> \u00B7 <span class="seen-when"></span></span>',
         iconSize: [PIN_BOX, PIN_BOX],
         iconAnchor: [PIN_BOX / 2, PIN_BOX / 2]
       }),

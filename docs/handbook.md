@@ -3770,10 +3770,10 @@ week later protects nobody further, and *last seen here* stays true until
 the next ride says otherwise.
 
 **What a visitor sees.** `seatSeen()` and `dressSeen()` in `assets/app.js`.
-A 🚲 in a ring of `--seen`, with *Last seen here on a bike · 14:32* under it
-in a label edged the same red, on Tallinn's clock whoever is reading; from
-an earlier day it says the day in place of the time. It is the same however
-old the spot is. Pressing it — or Enter on it — opens a card: *On a
+A red dot of `--seen`, smaller than a place's pin, with *🚲 Last seen here on
+a bike · 14:32* under it in a label edged the same red, on Tallinn's clock
+whoever is reading; from an earlier day it says the day in place of the
+time. It is the same however old the spot is. Pressing it — or Enter on it — opens a card: *On a
 bike · 14:32 · 2 min ago*, then *Tallinn Tastebuds was last seen here*. The
 card says who and when and nothing of the 200 m; the owner's word was that
 it does not have to. A press anywhere else puts it away. No spot, no
@@ -3785,16 +3785,20 @@ is to the second, and a saved ride's is the save, a minute or two after the
 rider was there, since the save card comes up at Finish. A ride saved hours
 later, for want of a signal, says the hour it arrived.
 
-**A bike in a red ring, and never grey.** For its first day the pin was the
-mouth in a green collar with a bike on its shoulder, and grey once the spot
-was ten minutes old. On the owner's phone that was one more restaurant, and
-grey nearly always, since the spot moves only on a new way or a save. The
-owner asked for a bike emoji, red, and a little different from the others.
-So it is a 🚲 on paper in a ring of `--seen`, a red brighter than any
-style's accent — so in Red, whose places are red too, it is still not one of
-them — and brighter again on the two dark grounds; 36 px where a place's
-pin is 22; and the same red however old. The owner was shown the bike from
-Rattatee's icon in its place too, and chose the emoji.
+**A red dot, and never grey.** For its first day the pin was the mouth in a
+green collar with a bike on its shoulder, and grey once the spot was ten
+minutes old. On the owner's phone that was one more restaurant, and grey
+nearly always, since the spot moves only on a new way or a save. The owner
+asked for a bike emoji, red, and a little different from the others, and it
+became a 🚲 in a red ring — 36 px where a place's pin is 22, which on the
+phone was bigger than everything round it. Their next word was smaller than
+the others, like a dot. So it is a dot of `--seen`, 12 px, a red brighter
+than any style's accent — in Red, whose places are red too, it is still not
+one of them — and brighter again on the two dark grounds; the 🚲 is at the
+front of its label; and it is the same red however old. A press takes the
+label as well as the dot, so the target is the label's width (design rule
+8). The owner was shown the bike from Rattatee's icon too, and a 16 px bike
+in a thin ring, and these went in.
 
 **The card opens clear of the rail.** On a phone the rail stands over the
 left of the map and is as wide as its longest word in the language on
@@ -20174,9 +20178,10 @@ somebody put on a list — wears a glyph instead, and that boundary is the
 point rather than a detail of it. The mouth is this site saying it has eaten
 somewhere; nothing a stranger types can hand it out. See **The pins**.
 
-The circle is not gone, it is *reserved*: the only plain dot left on the map is
-the one that says where you are. Nothing else can be mistaken for it now, which
-is more than the old `--here` hue was doing on its own.
+The circle is not gone, it is *reserved*: the only plain dots left on the map
+are the one that says where you are, in `--here`, and the red one that says
+where Tallinn Tastebuds was last seen on a bike, which never stands without its
+label — **Last seen, on a bike**. Nothing else can be mistaken for either.
 
 What the circle used to carry, the collar round the mark carries instead — the
 picture is the same on every pin, so the three readings have to live somewhere
