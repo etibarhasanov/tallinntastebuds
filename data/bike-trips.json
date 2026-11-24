@@ -113,6 +113,7 @@
     "from": [59.43758,24.72371],
     "to": [59.45115,24.73011],
     "why": "An ordinary ride across Kalamaja that no rule here has a reason to bend.",
+    "confirmed": "2026-11-24",
     "ways": [
       {"meters":2167,"seconds":496,"steps":[[630,"keep-left","",59.44161,24.73156],[1062,"left","",59.44495,24.73533],[1743,"right","",59.4489,24.72617],[2140,"keep-right","",59.4514,24.7299],[2167,"arrive","",59.45123,24.73015]],"line":"}{wiJgz{uCGSMYEKO_@Ws@]cAEKQe@M]M_@Oa@e@oASi@MYO]O_@e@cAg@uAEMGMGOqA}CkAmCM[KSWm@IOEI}AkDa@{@O[Ug@CGQc@GKM[QBGAc@a@YWc@_@CCk@g@WWIGKQ[a@e@o@EIa@k@aAsAY_@IMCEGI[g@CAc@o@EGCE[e@[c@MQu@iAKGOKCXARKl@]~@Sj@Qd@Wr@Wr@KX]`ACJKTQf@CH[x@GRSh@_@`AO`@]bAUj@IT_@lAADCDYt@EHEN[bAWdAK`@eArDQ`@oBxF}@fCGPKS{@eBWiAO[oDqEQO[?a@Hi@KOEIKGQGKcA_BGQAO@Q@UXkATSJ]"},
       {"meters":2195,"seconds":732,"steps":[[18,"keep-left","",59.4377,24.72395],[620,"left","",59.44163,24.73104],[769,"right","",59.44221,24.72866],[1244,"left","",59.4458,24.73311],[1782,"right","",59.44896,24.72627],[2169,"keep-right","",59.4514,24.7299],[2195,"arrive","",59.45123,24.73015]],"line":"}{wiJgz{uCGSMYEHCKeAkCGQQe@[_Am@eBGOa@cA_@{@]{@EKc@iAIMEOGOGMu@kBcByDWk@sA_Ds@sAs@uAOEKGIEECIEGE?DUtAG`@Ib@Gb@G^G`@Mx@EVUzAId@E?u@q@IG_BwAYWAAECGCEEKSo@aAQYY_@OWAAU_@[e@QWIM_@k@KQk@}@Q[AAEECEA?]k@]g@m@aAs@eAYg@A@CFEJ?@EFQf@CJ[v@[z@m@fB_@dASj@ADENCJ??YdACLSt@GLGNOn@A@CLCHADOb@Ur@CEGKIMAA[~@}@jCM^}B|Gg@zA{@eBWiAO[oDqEQO[?a@Hi@KOEIKGQGKcA_BGQAO@Q@UXkATSJ]"},
@@ -188,20 +189,6 @@
     "ways": [
       {"meters":626,"seconds":225,"steps":[[428,"keep-left","",59.43888,24.68608],[518,"right","",59.43908,24.68454],[626,"arrive","",59.44,24.68502]],"line":"aswiJkpuuCWr@GJa@dAADIFIR_AxB[t@O^q@|AO^[l@IP{AjD}AdESp@Up@M^?JG^?HEp@OzBInA{@_@{B_A"},
       {"meters":713,"seconds":257,"steps":[[204,"keep-right","",59.43748,24.68891],[480,"keep-left","",59.43991,24.68855],[675,"left","",59.44033,24.68521],[713,"arrive","",59.44,24.68502]],"line":"aswiJkpuuCWr@GJa@dAADIFIR_AxB[t@O^q@|AO^YBy@CWA_A@k@Sg@Mo@?uAd@u@^i@b@YjGm@|HKpAv@^HD"}
-    ]
-  },
-  {
-    "id": "kalamaja-park",
-    "name": "Across Kalamaja kalmistupark",
-    "from": [59.449,24.7322],
-    "to": [59.4515,24.7268],
-    "why": "Across the park, which a bike rides: more than one way through it, and none round by Tööstuse.",
-    "wrong": "Across Kalamaja kalmistupark there is one more option.",
-    "said": "2026-11-23",
-    "fixed": "2026-11-23",
-    "ways": [
-      {"meters":629,"seconds":224,"steps":[[24,"left","",59.44911,24.73269],[98,"keep-right","",59.44969,24.73285],[153,"keep-left","",59.45012,24.73331],[183,"keep-left","",59.45034,24.73308],[282,"keep-right","",59.45027,24.73134],[466,"right","",59.45056,24.72819],[541,"left","",59.4512,24.72808],[629,"arrive","",59.45148,24.72678]],"line":"gdziJuo}uCHsAGA?FEAGCGFi@OQC?SY?Yc@W[OISQK?IBKNIXAZ@vAB|@BbCDd@E|CS~DGz@Ot@CRE^AR@n@@l@IPKNIJM?OCGCu@MCAATQx@a@dBETDHDPGZ"},
-      {"meters":639,"seconds":228,"steps":[[61,"around","",59.44892,24.73317],[178,"keep-right","",59.44932,24.73161],[371,"right","",59.45002,24.72852],[433,"left","",59.45054,24.72892],[475,"right","",59.45056,24.72819],[551,"left","",59.4512,24.72808],[639,"arrive","",59.45148,24.72678]],"line":"gdziJuo}uCHsAFu@P_@@AHGKKEOCDABMRCLCZEv@O|BKhA?JEFCLQl@Mz@KxBUlBK`AQ~@a@~Bq@k@u@c@E^AR@n@@l@IPKNIJM?OCGCu@MCAATQx@a@dBETDHDPGZ"}
     ]
   }
 ]
