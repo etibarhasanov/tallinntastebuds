@@ -184,10 +184,10 @@ ENVIRONMENT = "preview"
 ADMINS = ""
 # The one account whose rides are shown on the map as "last seen here, on a
 # bike" — a `users.id`, never a username, as ADMINS is and for its reason.
-# Empty is nobody: /api/v1/seen refuses every spot and /api/v1/account tells
-# no app to send one. A name of its own rather than ADMINS read twice,
-# because being let into the statistics must never be what puts somebody on
-# the map. See functions/api/seen.js.
+# Empty is nobody: no ride saved and no way asked moves the pin. A name of
+# its own rather than ADMINS read twice, because being let into the
+# statistics must never be what puts somebody on the map. See
+# functions/api/_seen.js.
 RIDER = ""
 
 # ----------------------------------------------------------------- preview

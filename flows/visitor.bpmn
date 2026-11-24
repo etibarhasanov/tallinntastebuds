@@ -215,11 +215,12 @@ ref: assets/shell.js</bpmn:documentation>
       <bpmn:incoming>visitor-e20</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="seen" name="Presses the pin that says where Tallinn Tastebuds was last seen on a bike">
-      <bpmn:documentation>One pin that is not a place: the mouth in a green collar with a bike on it, moving while the site's own account is out on a ride with Rattatee and staying where the last ride left it. It trails the rider, and the first and last 200 m of a ride are never on the map. Pressing it says who and when.
+      <bpmn:documentation>One pin that is not a place: the mouth in a green collar with a bike on it, put where the site's own account's last ride ended, 200 m short of where it stopped, and moved during a ride when its app asks for a new way. It stays where the last ride left it. Pressing it says who and when.
 when: seen_open
 ref: assets/app.js toggleSeen()
 ref: assets/app.js askSeen()
-ref: functions/api/seen.js</bpmn:documentation>
+ref: functions/api/seen.js
+ref: functions/api/_seen.js</bpmn:documentation>
       <bpmn:incoming>visitor-e21</bpmn:incoming>
       <bpmn:outgoing>visitor-e22</bpmn:outgoing>
     </bpmn:userTask>

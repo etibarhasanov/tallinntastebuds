@@ -258,6 +258,7 @@ import { json, inEstonia, cityOf, km, dataFile, wrongDatabase } from './_lib.js'
 import { riddenShare } from './_sections.js';
 import { brouterWays } from './_brouter.js';
 import { VERSION } from '../_public.js';
+import { watchWay } from './_seen.js';
 
 const OSRM = {
   foot: 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/',
@@ -2165,6 +2166,10 @@ function unversioned(context, q) {
   const heading = Number.isFinite(degrees)
     ? (Math.round(degrees / HEADING_STEP) * HEADING_STEP % 360 + 360) % 360
     : null;
+  /* The site's own account, asking for a new way mid-ride, is where Tallinn
+     Tastebuds was last seen — watchWay() in ./_seen.js, after the answer
+     has gone and for that one account alone. Nothing about the way changes. */
+  watchWay(context, mode, from, to, heading);
   return street(context, mode, from, to, heading);
 }
 
