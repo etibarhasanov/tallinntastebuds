@@ -371,8 +371,6 @@ a:hover { color: var(--accent-lit); }
   box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 4.5px var(--accent-lit);
 }
 
-.seen-pin[aria-expanded="true"] .seen-label { display: none; }
-
 .leaflet-popup.seen-pop { margin-bottom: 8px; }
 .leaflet-popup.seen-pop .leaflet-popup-content-wrapper {
   padding: 0;
