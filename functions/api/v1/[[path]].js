@@ -112,6 +112,7 @@ import * as ask from '../ask.js';
 import * as flashcard from '../flashcard.js';
 import * as say from '../say.js';
 import * as route from '../route.js';
+import * as seen from '../seen.js';
 
 /* The day v1 stops answering, once a v2 has been published — an ISO date at
    least six months after v2 went live. null while v1 is the current version,
@@ -454,7 +455,8 @@ const APPS = new Map([
   ['account', account], ['apple', apple], ['google', google], ['saves', saves],
   ['find', find], ['profile', profile], ['pass', pass], ['discover', discover],
   ['walk', walk], ['rides', rides], ['route', route], ['geocode', geocode],
-  ['lookup', lookup], ['ask', ask], ['flashcard', flashcard], ['say', say]
+  ['lookup', lookup], ['ask', ask], ['flashcard', flashcard], ['say', say],
+  ['seen', seen]
 ]);
 
 function appRoute(parts) {

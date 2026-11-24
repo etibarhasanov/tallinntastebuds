@@ -60,7 +60,7 @@ ever gains fields; a break is `/api/v2`, beside it. **The public API** and
 
 ## How it is built
 
-Static files, fifty-six Cloudflare Functions, a Cloudflare D1 database and a
+Static files, fifty-seven Cloudflare Functions, a Cloudflare D1 database and a
 Workers AI binding for the chat. **No build step and no `npm install`**: the
 files in the repo are the files that get served, and every tool in `tools/` is
 zero-dependency Node.

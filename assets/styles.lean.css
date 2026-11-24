@@ -316,6 +316,118 @@ a:hover { color: var(--accent-lit); }
   50%      { fill-opacity: .22; }
 }
 
+.seen-pin { background: none; border: 0; }
+.seen-pin.leaflet-interactive { pointer-events: none; }
+.seen-pin:focus { outline: none; }
+
+.seen-face {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
+  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--way-bike), var(--lift);
+  pointer-events: auto;
+  cursor: pointer;
+}
+.seen-bike {
+  position: absolute;
+  right: -9px;
+  bottom: -7px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--way-bike);
+  box-shadow: 0 0 0 2px var(--paper);
+  font-family: var(--emoji);
+  font-size: 11px;
+  line-height: 1;
+}
+.seen-label {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 26px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -.005em;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--way-bike);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 3px 9px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.seen-when {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.seen-pin:focus-visible .seen-face {
+  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--accent-lit);
+}
+
+.seen-pin[aria-expanded="true"] .seen-label { display: none; }
+
+.seen-pin.is-old .seen-face {
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--muted), var(--lift);
+  filter: grayscale(.7);
+  opacity: .9;
+}
+.seen-pin.is-old .seen-bike {
+  right: -8px;
+  bottom: -6px;
+  width: 17px;
+  height: 17px;
+  background: var(--muted);
+  font-size: 9px;
+}
+.seen-pin.is-old .seen-label {
+  top: calc(50% + 21px);
+  color: var(--muted);
+  font-weight: 500;
+  border-color: var(--hairline);
+}
+
+.leaflet-popup.seen-pop { margin-bottom: 8px; }
+.leaflet-popup.seen-pop .leaflet-popup-content-wrapper {
+  padding: 0;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-soft);
+  box-shadow: var(--shadow);
+}
+.leaflet-popup.seen-pop .leaflet-popup-content { margin: 12px 14px 13px; }
+.leaflet-popup.seen-pop .leaflet-popup-tip-container { display: none; }
+.seen-card p { margin: 0; }
+.seen-card .seen-eyebrow {
+  margin-bottom: 3px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.seen-card .seen-title {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
 .leaflet-control-attribution {
   font-family: var(--mono) !important;
   font-size: 10px !important;

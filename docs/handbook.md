@@ -19,7 +19,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, fifty-six small Functions, no build step and no npm install. Adding a
+Static files, fifty-seven small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -3700,6 +3700,103 @@ is one line to every page and app that draws it. The page's recorder still
 draws the step while the ride is being recorded, and counts it in the
 distance on the card: what is stored is right and what is shown before
 saving is not yet.
+
+## Last seen, on a bike
+
+One pin on the map that is not a place: where Tallinn Tastebuds was last seen
+on a bike. The owner asked for it on 2026-11-24 — *can we show that
+Tallinn Tastebuds was last seen here?* — and what was settled, in the order
+it was settled, is this.
+
+**One account, and it starts by itself.** The site's own account,
+`tallinntastebuds`, records its rides with Rattatee like anybody else. The
+moment it presses Start the phone begins sending where it is, with nothing
+to switch on, and no other account ever sends anything. Which account that is
+is `RIDER` in `wrangler.toml`, a `users.id` and not a username for the reason
+`ADMINS` is, and a variable of its own rather than `ADMINS` read twice: the
+owner has two accounts there, and being let into the statistics must never
+be what puts somebody on a map. `GET /api/v1/account` answers `shares: true`
+to that account alone — `isRider()` in `functions/api/seen.js` — and an app
+that was never told sends nothing, so every other rider costs the route
+nothing.
+
+**One location, and nothing more.** `POST /api/v1/seen` takes `{ lat, lng,
+at }` and writes it over the one before, as the `seen` row of `meta`. There
+is no table of its own, no line, no history: where the rider was a minute
+before the last spot is kept nowhere. `GET /api/v1/seen` answers that one
+spot to anybody, signed in or not.
+
+**Never the first or the last 200 m.** A ride begins and ends at somebody's
+door, and the map must not say whose. The phone holds the ride and decides
+what leaves it — `Live` in Rattatee's `Core/Live.swift`: a spot is sent only
+once the rider is 200 m of riding past it, never out of the first 200 m
+after Start or after a Resume, and never within 200 m in a straight line of
+where the ride began or was paused. So the pin trails the rider by about
+forty seconds, and the last 200 m before Finish or Pause are never sent at
+all, because they were still waiting when it was pressed. It is the same
+200 m the server takes off each end of a saved ride — `ENDS` in
+`functions/api/rides.js` — and it has to be the phone's rule here, since no
+server knows where a ride is going to end. What the route can check, it
+does: who is asking, that the spot is in Tallinn's box, and that its time is
+about now.
+
+**It stays for ever.** The first design had the pin go three hours after
+the ride. The owner's answer was that last seen can stay: the last spot is
+already 200 m short of where the ride ended, so taking it away an hour or a
+week later protects nobody further, and *last seen here* stays true until
+the next ride says otherwise.
+
+**What a visitor sees.** `seatSeen()` and `dressSeen()` in `assets/app.js`.
+A spot passed in the last ten minutes is the mouth in a collar of
+`--way-bike`, the green of a way by bike, with a bike on its shoulder and
+*Last seen here on a bike · 14:32* under it, on Tallinn's clock whoever is
+reading. An older one is the same pin smaller and grey, and from an earlier
+day it says the day in place of the time. Pressing it — or Enter on it —
+opens a card: *On a bike · 14:32 · 2 min ago*, then *Tallinn Tastebuds was
+last seen here*. The card says who and when and nothing of the 200 m; the
+owner's word was that it does not have to. A press anywhere else puts it
+away. No spot, no database, an answer that did not come: no pin, which is
+the map as it was.
+
+**It wears the mouth, and it is not a place.** **The mark** says the mouth
+goes on a place I have eaten at and on nothing a stranger can hand out, and
+that holds: no list, no picker and no request can put this pin anywhere.
+It is the one other thing on the map that is the site itself. What keeps it
+from reading as a restaurant is everything round the picture — a green
+collar no place has, the bike, a label that is a sentence rather than a
+name, and a card where a place has a write-up. The owner chose it over a
+plain bike in a ring, from a picture of both.
+
+**The card opens clear of the rail.** On a phone the rail stands over the
+left of the map and is as wide as its longest word in the language on
+screen, and a popup opened under it is half a card. So the card is a popup
+of its own rather than one bound to the pin, and `toggleSeen()` fits it
+first: no wider than what is left beside the rail, and Leaflet moves the map
+until it is clear of the rail and of the find bar above.
+
+**How close to now.** The pin is the rider about 200 m ago, which is forty
+seconds at a bike's pace; the phone sends at most every twenty seconds; the
+colo keeps an answer thirty, and drops its copy on a write, so a visitor
+served from the colo the phone posts to — both in Tallinn, usually — is not
+kept waiting for it; and the map asks every thirty seconds while the spot
+is fresh. A minute or two behind, all told. A map left open asks every five
+minutes while nothing is fresh, so it finds out a ride began, and never
+while its tab is hidden.
+
+**What it costs.** A read is one row of `meta` by its key, at most once per
+thirty seconds a colo: 2,880 rows a day in a colo with a visitor in it, about
+thirty thousand across ten busy ones, against five million. A write is one
+row, at most 180 an hour of riding, from one phone, and reads the session
+first: two rows. Each ask is also a request to a Function, which is what a
+map left open in a tab adds: twelve an hour, or 120 while a ride is on.
+
+**What it does not do.** No line of where the ride went, no speed, no
+direction, no ring on the brand's mark while a ride is on, nothing on
+Discover, and no way to find the pin when it is off the screen. No switch
+in the app: a ride the account does not want shown is a ride recorded
+signed out. And the privacy page does not mention it, because that page is
+about what the site keeps of the person reading it, and this keeps one
+thing, about the site.
 
 ## What the rides say about a street
 
@@ -20051,6 +20148,11 @@ somebody put on a list — wears a glyph instead, and that boundary is the
 point rather than a detail of it. The mouth is this site saying it has eaten
 somewhere; nothing a stranger types can hand it out. See **The pins**.
 
+One thing on the map wears the mouth and is not a place: the pin that says
+where Tallinn Tastebuds was last seen on a bike. It is the site itself
+rather than a verdict on anywhere, nobody can ask for it, and its green
+collar and the bike on it are what say so — **Last seen, on a bike**.
+
 The circle is not gone, it is *reserved*: the only plain dot left on the map is
 the one that says where you are. Nothing else can be mistaken for it now, which
 is more than the old `--here` hue was doing on its own.
@@ -22209,6 +22311,7 @@ The map, `assets/app.js`:
 | `route_way` | `n`, `mode` — another of the ways on offer for a walk, a ride or a drive pressed, 0 the router's first |
 | `route_train` | `n`, `mode` — a train by bike pressed, `n` counted among the ways before it — **By bike, a train too** |
 | `ride_save` | — a ride the server kept, counted by `functions/api/rides.js` itself. The website's recorder reported `ride_open`, `ride_record`, `ride_start`, `ride_pause`, `ride_resume`, `ride_finish`, `ride_throw` and `ride_signin` beside it until it was taken out on 2026-11-18 |
+| `seen_open` | — the pin that says where Tallinn Tastebuds was last seen on a bike, pressed open — **Last seen, on a bike** |
 | `call_place` | `place` — the button and the number in the facts alike |
 | `deal_open` | `place` |
 | `deal_signin` | `place` — the button a discount shows instead, signed out; it opens the sign-in sheet |

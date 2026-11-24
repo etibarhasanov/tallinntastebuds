@@ -27,6 +27,8 @@
         {"id": "saved-here", "type": "end", "lane": "visitor", "name": "Saved on this device"},
         {"id": "read", "type": "user", "lane": "visitor", "name": "Watches a story, reads the blog, plays the radio", "when": ["story_open", "page:blog", "radio_play"], "note": "The blog, like every page, opens in a frame over the map; the radio plays on underneath.", "ref": ["data/stories.json", "blog.html", "assets/radio.js", "assets/shell.js"]},
         {"id": "read-done", "type": "end", "lane": "visitor", "name": "Read and listened"},
+        {"id": "seen", "type": "user", "lane": "visitor", "name": "Presses the pin that says where Tallinn Tastebuds was last seen on a bike", "when": ["seen_open"], "note": "One pin that is not a place: the mouth in a green collar with a bike on it, moving while the site's own account is out on a ride with Rattatee and staying where the last ride left it. It trails the rider, and the first and last 200 m of a ride are never on the map. Pressing it says who and when.", "ref": ["assets/app.js toggleSeen()", "assets/app.js askSeen()", "functions/api/seen.js"]},
+        {"id": "seen-done", "type": "end", "lane": "visitor", "name": "Knows where, and when"},
         {"id": "lists", "type": "user", "lane": "visitor", "name": "Opens a list, a profile or /lists", "when": ["page:lists", "page:list", "page:profile"], "note": "From the map, in a frame over it — the map and its radio stay. A shared link loads the page whole.", "ref": ["functions/list/[id].js", "functions/u/[name].js", "functions/lists/index.js", "assets/shell.js"]},
         {"id": "public-only", "type": "service", "lane": "visitor", "name": "Answers public lists only", "note": "A private list is its owner's alone; anybody else gets a 404.", "ref": ["functions/api/lists.js GET", "functions/api/profile.js GET"]},
         {"id": "keep-it", "type": "gateway", "lane": "visitor", "name": "Wants to keep the list?"},
@@ -74,6 +76,8 @@
         ["offer", "sign-in", "yes"],
         ["what-now", "read", "read"],
         ["read", "read-done"],
+        ["what-now", "seen", "last seen"],
+        ["seen", "seen-done"],
         ["what-now", "lists", "lists"],
         ["lists", "public-only"],
         ["public-only", "keep-it"],
@@ -397,7 +401,7 @@
     {
       "id": "owner",
       "name": "The owner",
-      "who": "The person whose site this is, and any account ADMINS names. /admin.html, signed in as one of them, posts stories and discounts straight to the live branch and puts a place on a branch of its own that lands by itself when every check passes; /admin/stats, /admin/visitors, /admin/found, /admin/flows, /admin/google, /admin/doors and /admin/ways answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers.",
+      "who": "The person whose site this is, and any account ADMINS names. /admin.html, signed in as one of them, posts stories and discounts straight to the live branch and puts a place on a branch of its own that lands by itself when every check passes; /admin/stats, /admin/visitors, /admin/found, /admin/flows, /admin/google, /admin/doors and /admin/ways answer only a signed-in account named in ADMINS. Nothing under /admin/ is counted, so this diagram carries no numbers. One thing the owner does is not on it, because it happens on a bike and not on a page: the account RIDER names in wrangler.toml records a ride in Rattatee, and the pin on the map that says where Tallinn Tastebuds was last seen follows it — Last seen, on a bike in docs/handbook.md.",
       "lanes": [
         { "id": "owner", "name": "Owner" },
         { "id": "github", "name": "GitHub" },

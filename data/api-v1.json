@@ -104,5 +104,5 @@
     "Access-Control-Allow-Origin": "*",
     "API-Version": "1"
   },
-  "apps": ["account", "apple", "google", "saves", "find", "me/lists", "profile", "pass", "discover", "walk", "rides", "route", "geocode", "lookup", "ask", "flashcard", "say"]
+  "apps": ["account", "apple", "google", "saves", "find", "me/lists", "profile", "pass", "discover", "walk", "rides", "route", "geocode", "lookup", "ask", "flashcard", "say", "seen"]
 }

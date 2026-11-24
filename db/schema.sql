@@ -1665,6 +1665,9 @@ CREATE TABLE IF NOT EXISTS feedback_hearts (
 --                              made — listsMark() there
 --   discover_week              that week's quiet places and finished walks,
 --                              as JSON — theWeek() in functions/api/discover.js
+--   seen                       where Tallinn Tastebuds was last seen on a
+--                              bike: one spot as JSON, written over by the
+--                              next and never kept — functions/api/seen.js
 --
 -- There are two of these databases — `tallinntastebuds` behind the live site
 -- and `tallinntastebuds-preview` behind every preview deployment — and the

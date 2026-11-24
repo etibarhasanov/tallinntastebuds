@@ -440,6 +440,7 @@
     renderPanel();
     discover.draw();
     drawCounter();
+    dressSeen();
     window.TTBRadio.language(code);
     paintAccountRow();
     renderStoryRing();
@@ -8060,6 +8061,169 @@
     });
   }
 
+  var SEEN_PANE = 'ttbSeen';
+  var SEEN_FRESH = 10 * 60000;
+  var SEEN_EVERY = 30000;
+  var SEEN_IDLE = 5 * 60000;
+
+  var seenSpot = null;      /* { lat, lng, at } with `at` in milliseconds */
+  var seenMarker = null;
+  var seenPopup = null;
+  var seenTimer = null;
+  var seenAsked = 0;
+
+  function seenFresh() {
+    return !!seenSpot && Date.now() - seenSpot.at <= SEEN_FRESH;
+  }
+
+  function seenOpen() {
+    return map.hasLayer(seenPopup);
+  }
+
+  function mountSeen() {
+    map.createPane(SEEN_PANE).style.zIndex = 660;
+
+    seenPopup = L.popup({
+      className: 'seen-pop',
+      closeButton: false,
+      offset: [0, -PIN_BOX / 2],
+      autoPanPaddingBottomRight: [12, 24]
+    });
+    seenPopup.on('remove', function () {
+      var node = seenMarker && seenMarker.getElement();
+      if (node) node.setAttribute('aria-expanded', 'false');
+    });
+
+    document.addEventListener('pointerdown', function (ev) {
+      if (!seenOpen()) return;
+      var pin = seenMarker && seenMarker.getElement();
+      if (seenPopup.getElement().contains(ev.target) || (pin && pin.contains(ev.target))) return;
+      map.closePopup(seenPopup);
+    });
+
+    document.addEventListener('visibilitychange', askSeen);
+    askSeen();
+  }
+
+  function askSeen() {
+    window.clearTimeout(seenTimer);
+    seenTimer = null;
+    if (document.visibilityState === 'hidden') return;
+
+    var wait = seenFresh() ? SEEN_EVERY : SEEN_IDLE;
+    var since = Date.now() - seenAsked;
+    if (seenAsked && since < wait) {
+      seenTimer = window.setTimeout(askSeen, wait - since);
+      return;
+    }
+
+    seenAsked = Date.now();
+    getJSON('/api/v1/seen').then(function (got) {
+      if (got && got.ready === true) seatSeen(got.seen);
+    }).catch(function () { /* the pin stays where it was, and nothing else changes */ })
+      .then(function () {
+        dressSeen();
+        askSeen();
+      });
+  }
+
+  function seatSeen(spot) {
+    if (!spot || typeof spot.lat !== 'number' || typeof spot.lng !== 'number' || typeof spot.at !== 'number') {
+      map.closePopup(seenPopup);
+      if (seenMarker) map.removeLayer(seenMarker);
+      seenMarker = null;
+      seenSpot = null;
+      return;
+    }
+    seenSpot = { lat: spot.lat, lng: spot.lng, at: spot.at * 1000 };
+    if (seenMarker) {
+      seenMarker.setLatLng([spot.lat, spot.lng]);
+      if (seenOpen()) seenPopup.setLatLng([spot.lat, spot.lng]);
+      return;
+    }
+
+    seenMarker = L.marker([spot.lat, spot.lng], {
+      icon: L.divIcon({
+        className: 'seen-pin',
+        html: '<span class="seen-face"><span class="seen-bike" aria-hidden="true">🚲</span></span>' +
+          '<span class="seen-label"><span class="seen-words"></span> · <span class="seen-when"></span></span>',
+        iconSize: [PIN_BOX, PIN_BOX],
+        iconAnchor: [PIN_BOX / 2, PIN_BOX / 2]
+      }),
+      pane: SEEN_PANE,
+      keyboard: false,        /* the button semantics are added by hand below */
+      bubblingMouseEvents: false
+    });
+    seenMarker.on('click', toggleSeen);
+    seenMarker.addTo(map);
+
+    var node = seenMarker.getElement();
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('role', 'button');
+    node.setAttribute('aria-expanded', 'false');
+    node.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
+        ev.preventDefault();
+        toggleSeen();
+      }
+    });
+  }
+
+  function toggleSeen() {
+    if (seenOpen()) { map.closePopup(seenPopup); return; }
+
+    var left = dom.rail.getBoundingClientRect().right + 12;
+    var room = window.innerWidth - left - 12 - 30;
+    seenPopup.options.minWidth = Math.min(220, room);
+    seenPopup.options.maxWidth = Math.min(260, room);
+    seenPopup.options.autoPanPaddingTopLeft = L.point(left, isNarrow() ? 160 : 200);
+    seenPopup.setLatLng(seenMarker.getLatLng()).setContent(seenCard()).openOn(map);
+
+    seenMarker.getElement().setAttribute('aria-expanded', 'true');
+    TTBTrack.event('seen_open');
+  }
+
+  function dressSeen() {
+    var node = seenMarker && seenMarker.getElement();
+    if (!node) return;
+    var when = seenWhen(seenSpot.at, false);
+    node.classList.toggle('is-old', !seenFresh());
+    node.setAttribute('aria-label', t('seenLabel') + ', ' + when);
+    node.querySelector('.seen-words').textContent = t('seenLabel');
+    node.querySelector('.seen-when').textContent = when;
+    if (seenOpen()) seenPopup.setContent(seenCard());
+  }
+
+  function seenCard() {
+    var mins = Math.max(1, Math.round((Date.now() - seenSpot.at) / 60000));
+    var ago = mins < 60 ? t('seenMinAgo', { n: mins })
+      : mins < 1440 ? t('seenHoursAgo', { n: Math.floor(mins / 60) })
+      : '';
+    return el('div', { className: 'seen-card' }, [
+      el('p', { className: 'seen-eyebrow', textContent: [t('seenEyebrow'), seenWhen(seenSpot.at, true)].concat(ago || []).join(' · ') }),
+      el('p', { className: 'seen-title', textContent: t('seenTitle') })
+    ]);
+  }
+
+  function seenWhen(at, whole) {
+    var wall = new Date(at + tallinnOffset(at));
+    var now = new Date(Date.now() + tallinnOffset(Date.now()));
+    var clock = ('0' + wall.getUTCHours()).slice(-2) + ':' + ('0' + wall.getUTCMinutes()).slice(-2);
+    var sameYear = wall.getUTCFullYear() === now.getUTCFullYear();
+    if (sameYear && wall.getUTCMonth() === now.getUTCMonth() && wall.getUTCDate() === now.getUTCDate()) return clock;
+
+    var day = '';
+    try {
+      day = new Intl.DateTimeFormat(state.lang, {
+        day: 'numeric', month: 'short', year: sameYear ? undefined : 'numeric', timeZone: 'Europe/Tallinn'
+      }).format(new Date(at));
+    } catch (e) { /* the numbers below */ }
+    if (!day || /M\d\d/.test(day)) {
+      day = wall.getUTCDate() + '.' + ('0' + (wall.getUTCMonth() + 1)).slice(-2) + '.' + (sameYear ? '' : wall.getUTCFullYear());
+    }
+    return whole ? day + ', ' + clock : day;
+  }
+
   function getJSON(path) {
     return fetch(path, { credentials: 'same-origin' }).then(function (res) {
       if (!res.ok) throw new Error(path + ': HTTP ' + res.status);
@@ -8232,6 +8396,7 @@
       loadSaves();
       loadAccount();
       loadCounter();
+      mountSeen();
 
       wireHistory();
 
