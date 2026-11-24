@@ -754,13 +754,13 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `user`, refused with `taken`, `username`, `password`, `no-match` and
   `slow-down`), `ticket`, `logout` and `delete` (`current`, `username`).
 - Where the site's own account was last seen, from 2026-11-24, which asks
-  nothing new of the app and reads two things it already sends: its new
-  way mid-ride — `from` and `heading` on `GET /api/v1/route`, with its
-  cookie — and its save. For the one account `RIDER` names those move the
-  pin on the map; for every other, nothing is read of them. So the app
-  leaving `heading` off a way asked before a ride, and sending it on one
-  asked during, is what tells the two apart — `functions/api/_seen.js`,
-  **Last seen, on a bike** in `docs/handbook.md`.
+  nothing new of the app and reads two things it already sends: a way asked
+  by bike — `from` on `GET /api/v1/route`, with its cookie — and its save.
+  For the one account `RIDER` names those move the pin on the map; for
+  every other, nothing is read of them. Nothing in the app's requests is a
+  promise for it: the first way asked after an hour of none is taken for
+  where the ride set off, by the clock — `functions/api/_seen.js`, **Last
+  seen, on a bike** in `docs/handbook.md`.
 - Signing in, as above: `/api/v1/apple` has to accept its bundle id — `APP_IDS`
   in `functions/api/_apple.js` — and the Google trip ends at
   `tallinntastebuds://signin`, which it listens for under that name.

@@ -3735,25 +3735,33 @@ it sends anyway:
   rider was 200 m of riding before they stopped. That is always safe, it is
   where the pin rests between rides, and it is the only thing a ride with
   nowhere to go ever says.
-- **A new way asked mid-ride.** Rattatee asks `GET /api/v1/route` again when
-  its rider has plainly left the way to where they are going, with `from`,
-  where they are, and `heading` — **A new way sets off the way the rider is
-  going**, below. `watchWay()` reads that `from` as a spot, after the answer
-  has gone, and changes nothing about the way.
+- **A way asked by bike.** `GET /api/v1/route` carries `from`, where the
+  rider is, and the account's cookie: Rattatee asks it again when its rider
+  leaves the way to where they are going, and the map's own directions ask
+  it each time they are drawn again from where the rider has got to.
+  `watchWay()` reads that `from` as a spot, after the answer has gone, and
+  changes nothing about the way.
 
 **Never the first or the last 200 m, as far as a server can tell.** A ride
 begins and ends at somebody's door. A saved ride's end is 200 m short by
-construction. A new way asked mid-ride is where the rider is now, so it is
-shown only when it is 200 m from both ends the server knows of: where the
-way to this place was first asked standing still — no `heading`, which the
-app leaves off before a ride, and usually the door the ride set off from —
-and the place the way leads to, usually where the ride stops. The first is
-kept as the `seen_ask` row of `meta`, for six hours' use, and is never
-answered by any route. A way first asked mid-ride has no start to measure
-from and shows nothing. What this cannot cover, and the owner was told so
-before it was built: a ride that stops somewhere other than where its way
-led can have shown a spot closer than 200 m to where it stopped, until Save
-moves the pin to the kept line's end.
+construction. A way asked is where the rider is now, so one rule stands in
+for the two ends a server cannot see: the first way asked after an hour of
+none is where the outing set off from, usually the door. It is kept as the
+`seen_ask` row of `meta`, never answered by any route, and every later way
+is shown only when it is 200 m from it and from the place it leads to,
+usually where the ride stops. What this cannot cover, and the owner was told
+so before it was built: a ride that stops somewhere other than where its
+way led can have shown a spot closer than 200 m to where it stopped, until
+Save moves the pin; and a way asked an hour before setting off is not the
+door, so the first way asked on the ride is taken for it and not shown.
+
+**The first rule was by heading, and it never fired.** For an afternoon the
+start was the first way asked with no `heading`, which Rattatee leaves off
+before a ride. The owner rode, was rerouted several times, and the pin did
+not move: the map's own directions never send a `heading`, so every redraw
+of them counted as a fresh start, and a destination Rattatee was given
+mid-ride had no start at all. The rule by time is the same for both, and
+needs nothing of either.
 
 **It stays for ever.** The first design had the pin go three hours after
 the ride. The owner's answer was that last seen can stay: the last spot is
@@ -3803,11 +3811,11 @@ every five minutes otherwise, and never with its tab hidden. A way asked by
 bike with a session cookie on it reads the session after its answer has
 gone, two rows by key, to learn whether it is the rider's: a thousand such
 ways a day is two thousand rows. Only the rider's goes further — one row
-read on a new way mid-ride, one row written — and a save by the rider
-writes one row and reads none. Nothing walks a table or grows with one.
+read and one or two written — and a save by the rider writes one row and
+reads none. Nothing walks a table or grows with one.
 
-**What it does not do.** It does not follow a ride: a ride that keeps to
-its way, or has nowhere to go, moves the pin once, at Save. No line of
+**What it does not do.** It does not follow a ride: a ride with nowhere to
+go, or one Rattatee never has to reroute, moves the pin once, at Save. No line of
 where the ride went, no speed, no direction, no ring on the brand's mark,
 nothing on Discover, and no way to find the pin when it is off the screen.
 No switch in the app: a ride the account does not want shown is a ride
