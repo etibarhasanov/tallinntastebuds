@@ -3708,37 +3708,52 @@ on a bike. The owner asked for it on 2026-11-24 — *can we show that
 Tallinn Tastebuds was last seen here?* — and what was settled, in the order
 it was settled, is this.
 
-**One account, and it starts by itself.** The site's own account,
-`tallinntastebuds`, records its rides with Rattatee like anybody else. The
-moment it presses Start the phone begins sending where it is, with nothing
-to switch on, and no other account ever sends anything. Which account that is
-is `RIDER` in `wrangler.toml`, a `users.id` and not a username for the reason
-`ADMINS` is, and a variable of its own rather than `ADMINS` read twice: the
-owner has two accounts there, and being let into the statistics must never
-be what puts somebody on a map. `GET /api/v1/account` answers `shares: true`
-to that account alone — `isRider()` in `functions/api/seen.js` — and an app
-that was never told sends nothing, so every other rider costs the route
-nothing.
+**One account.** The site's own account, `tallinntastebuds`, records its
+rides with Rattatee like anybody else. Which account that is is `RIDER` in
+`wrangler.toml`, a `users.id` and not a username for the reason `ADMINS` is,
+and a variable of its own rather than `ADMINS` read twice: the owner has two
+accounts there, and being let into the statistics must never be what puts
+somebody on a map. Nobody else's ride moves the pin.
 
-**One location, and nothing more.** `POST /api/v1/seen` takes `{ lat, lng,
-at }` and writes it over the one before, as the `seen` row of `meta`. There
-is no table of its own, no line, no history: where the rider was a minute
-before the last spot is kept nowhere. `GET /api/v1/seen` answers that one
-spot to anybody, signed in or not.
+**One location, and nothing more.** The spot is the `seen` row of `meta`,
+written over by the next. There is no table of its own, no line and no
+history. `GET /api/v1/seen` answers that one spot to anybody, signed in or
+not.
 
-**Never the first or the last 200 m.** A ride begins and ends at somebody's
-door, and the map must not say whose. The phone holds the ride and decides
-what leaves it — `Live` in Rattatee's `Core/Live.swift`: a spot is sent only
-once the rider is 200 m of riding past it, never out of the first 200 m
-after Start or after a Resume, and never within 200 m in a straight line of
-where the ride began or was paused. So the pin trails the rider by about
-forty seconds, and the last 200 m before Finish or Pause are never sent at
-all, because they were still waiting when it was pressed. It is the same
-200 m the server takes off each end of a saved ride — `ENDS` in
-`functions/api/rides.js` — and it has to be the phone's rule here, since no
-server knows where a ride is going to end. What the route can check, it
-does: who is asking, that the spot is in Tallinn's box, and that its time is
-about now.
+**No app was changed for it.** The first version, live for an afternoon, had
+the phone send its position while a ride was recording: a new request, a
+flag on the account's answer to switch it on, and a new version of Rattatee
+to make either happen. The owner's answer was that an app is not updated
+for this and a build is not started without asking, and the app's half was
+taken out before it shipped. What the app in everybody's pocket already
+does is enough, and `functions/api/_seen.js` reads the spot off two things
+it sends anyway:
+
+- **A saved ride.** A ride saved from an account is kept with 200 m off
+  each end — `ENDS` in `functions/api/rides.js`, **Recorded rides** above —
+  and `rideSeen()` puts the pin on the last point that is left: where the
+  rider was 200 m of riding before they stopped. That is always safe, it is
+  where the pin rests between rides, and it is the only thing a ride with
+  nowhere to go ever says.
+- **A new way asked mid-ride.** Rattatee asks `GET /api/v1/route` again when
+  its rider has plainly left the way to where they are going, with `from`,
+  where they are, and `heading` — **A new way sets off the way the rider is
+  going**, below. `watchWay()` reads that `from` as a spot, after the answer
+  has gone, and changes nothing about the way.
+
+**Never the first or the last 200 m, as far as a server can tell.** A ride
+begins and ends at somebody's door. A saved ride's end is 200 m short by
+construction. A new way asked mid-ride is where the rider is now, so it is
+shown only when it is 200 m from both ends the server knows of: where the
+way to this place was first asked standing still — no `heading`, which the
+app leaves off before a ride, and usually the door the ride set off from —
+and the place the way leads to, usually where the ride stops. The first is
+kept as the `seen_ask` row of `meta`, for six hours' use, and is never
+answered by any route. A way first asked mid-ride has no start to measure
+from and shows nothing. What this cannot cover, and the owner was told so
+before it was built: a ride that stops somewhere other than where its way
+led can have shown a spot closer than 200 m to where it stopped, until Save
+moves the pin to the kept line's end.
 
 **It stays for ever.** The first design had the pin go three hours after
 the ride. The owner's answer was that last seen can stay: the last spot is
@@ -3747,16 +3762,21 @@ week later protects nobody further, and *last seen here* stays true until
 the next ride says otherwise.
 
 **What a visitor sees.** `seatSeen()` and `dressSeen()` in `assets/app.js`.
-A spot passed in the last ten minutes is the mouth in a collar of
-`--way-bike`, the green of a way by bike, with a bike on its shoulder and
-*Last seen here on a bike · 14:32* under it, on Tallinn's clock whoever is
-reading. An older one is the same pin smaller and grey, and from an earlier
-day it says the day in place of the time. Pressing it — or Enter on it —
-opens a card: *On a bike · 14:32 · 2 min ago*, then *Tallinn Tastebuds was
-last seen here*. The card says who and when and nothing of the 200 m; the
-owner's word was that it does not have to. A press anywhere else puts it
-away. No spot, no database, an answer that did not come: no pin, which is
-the map as it was.
+A spot from the last ten minutes is the mouth in a collar of `--way-bike`,
+the green of a way by bike, with a bike on its shoulder and *Last seen here
+on a bike · 14:32* under it, on Tallinn's clock whoever is reading. An older
+one is the same pin smaller and grey, and from an earlier day it says the
+day in place of the time. Pressing it — or Enter on it — opens a card: *On a
+bike · 14:32 · 2 min ago*, then *Tallinn Tastebuds was last seen here*. The
+card says who and when and nothing of the 200 m; the owner's word was that
+it does not have to. A press anywhere else puts it away. No spot, no
+database, an answer that did not come: no pin, which is the map as it was.
+
+**The time is when the site heard.** The phone sends no clock with a ride
+or with a way, so a spot's time is the moment it was written: a new way's
+is to the second, and a saved ride's is the save, a minute or two after the
+rider was there, since the save card comes up at Finish. A ride saved hours
+later, for want of a signal, says the hour it arrived.
 
 **It wears the mouth, and it is not a place.** **The mark** says the mouth
 goes on a place I have eaten at and on nothing a stranger can hand out, and
@@ -3774,29 +3794,26 @@ of its own rather than one bound to the pin, and `toggleSeen()` fits it
 first: no wider than what is left beside the rail, and Leaflet moves the map
 until it is clear of the rail and of the find bar above.
 
-**How close to now.** The pin is the rider about 200 m ago, which is forty
-seconds at a bike's pace; the phone sends at most every twenty seconds; the
-colo keeps an answer thirty, and drops its copy on a write, so a visitor
-served from the colo the phone posts to — both in Tallinn, usually — is not
-kept waiting for it; and the map asks every thirty seconds while the spot
-is fresh. A minute or two behind, all told. A map left open asks every five
-minutes while nothing is fresh, so it finds out a ride began, and never
-while its tab is hidden.
+**What it costs.** The owner's word while it was built was to keep it
+simple and read nothing that is not needed. The map's ask is one row of
+`meta` by its key, at most once per thirty seconds a colo: 2,880 rows a day
+in a colo with a visitor in it, about thirty thousand across ten busy ones,
+against five million. It asks every thirty seconds while the spot is fresh,
+every five minutes otherwise, and never with its tab hidden. A way asked by
+bike with a session cookie on it reads the session after its answer has
+gone, two rows by key, to learn whether it is the rider's: a thousand such
+ways a day is two thousand rows. Only the rider's goes further — one row
+read on a new way mid-ride, one row written — and a save by the rider
+writes one row and reads none. Nothing walks a table or grows with one.
 
-**What it costs.** A read is one row of `meta` by its key, at most once per
-thirty seconds a colo: 2,880 rows a day in a colo with a visitor in it, about
-thirty thousand across ten busy ones, against five million. A write is one
-row, at most 180 an hour of riding, from one phone, and reads the session
-first: two rows. Each ask is also a request to a Function, which is what a
-map left open in a tab adds: twelve an hour, or 120 while a ride is on.
-
-**What it does not do.** No line of where the ride went, no speed, no
-direction, no ring on the brand's mark while a ride is on, nothing on
-Discover, and no way to find the pin when it is off the screen. No switch
-in the app: a ride the account does not want shown is a ride recorded
-signed out. And the privacy page does not mention it, because that page is
-about what the site keeps of the person reading it, and this keeps one
-thing, about the site.
+**What it does not do.** It does not follow a ride: a ride that keeps to
+its way, or has nowhere to go, moves the pin once, at Save. No line of
+where the ride went, no speed, no direction, no ring on the brand's mark,
+nothing on Discover, and no way to find the pin when it is off the screen.
+No switch in the app: a ride the account does not want shown is a ride
+recorded signed out. And the privacy page does not mention it, because that
+page is about what the site keeps of the person reading it, and this keeps
+two rows about the site's own account.
 
 ## What the rides say about a street
 

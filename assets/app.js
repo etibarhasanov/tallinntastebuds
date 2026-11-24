@@ -13702,12 +13702,13 @@
 
   /* ---------------------------------------------------- last seen, on a bike
    * One pin that is not a place: where Tallinn Tastebuds was last seen on a
-   * bike. The site's own account rides with Rattatee, the phone sends where
-   * it was a little while ago, and /api/v1/seen keeps that one spot and
-   * nothing more — functions/api/seen.js says who may send it and what is
-   * never sent: the pin trails the rider by 200 m of riding, and the first
-   * and last 200 m of a ride are not on this map at all. **Last seen, on a
-   * bike** in docs/handbook.md is the long version.
+   * bike. The site's own account rides with Rattatee, and /api/v1/seen
+   * answers the one spot the site keeps of it and nothing more. No app sends
+   * that spot: functions/api/_seen.js takes it from what the app already
+   * does — a new way asked for in the middle of a ride, and the ride saved
+   * at the end, 200 m short of where it stopped — and says which account
+   * and what is never shown. **Last seen, on a bike** in docs/handbook.md is
+   * the long version.
    *
    * IT WEARS THE MOUTH, AND IT IS NOT A PLACE
    *
@@ -13731,10 +13732,11 @@
    * HOW OFTEN IT ASKS
    *
    * Once on arrival, last and unwaited like the counts. Then every
-   * SEEN_EVERY while the spot is fresh, which is a ride going on, and every
-   * SEEN_IDLE while it is not, so a map left open finds out that one began —
-   * and never while the tab is hidden. The answer is one row, kept thirty
-   * seconds in the colo; the route's header has the day's worst in rows.
+   * SEEN_EVERY while the spot is fresh, which is a ride going on or just
+   * saved, and every SEEN_IDLE while it is not, so a map left open finds out
+   * that one began — and never while the tab is hidden. The answer is one
+   * row, kept thirty seconds in the colo; the route's header has the day's
+   * worst in rows.
    */
   var SEEN_PANE = 'ttbSeen';
   var SEEN_FRESH = 10 * 60000;

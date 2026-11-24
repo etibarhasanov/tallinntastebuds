@@ -56,6 +56,8 @@
  *   With a session the ride is filed under the account, its rider's to
  *   open, rename and drop, and `summary`, where the save carried one, is kept
  *   as its numbers and added to the account's totals — A RIDE IN NUMBERS.
+ *   And where that account is the site's own, the end of the kept line is
+ *   where Tallinn Tastebuds was last seen on the map — ./_seen.js.
  *   With `anon: true` and no session nothing of it is kept: its squares are
  *   counted and the answer has no `ride` — A RIDE WITHOUT AN ACCOUNT IS
  *   COUNTED, NOT KEPT — and `summary` is not read. That answer goes as soon
@@ -313,6 +315,7 @@ import { json, sessionUser, wrongDatabase, nearCity, km, randomHex } from './_li
 import { countUse } from './_visitors.js';
 import { pieces, sectionsOf, tally } from './_sections.js';
 import { arrayOf } from './_rides.js';
+import { rideSeen } from './_seen.js';
 import {
   summaryOf, summaryFromRuns, sameRide, statsStatements, totalsOf, dropStatements, statsReady
 } from './_ridestats.js';
@@ -490,7 +493,7 @@ export async function onRequestPost(context) {
   }
 
   try {
-    return await countUse(context, 'map', 'ride_save', keep(env, user, body, ride), user);
+    return await countUse(context, 'map', 'ride_save', keep(context, user, body, ride), user);
   } catch (e) {
     return json({ error: 'not-ready' }, 503);
   }
@@ -556,7 +559,8 @@ async function count(env, ride) {
 /* A ride with an account behind it: kept and counted, and its
    numbers added to the account's — or, with no line long enough to keep,
    its numbers alone. */
-async function keep(env, user, body, ride) {
+async function keep(context, user, body, ride) {
+  const { env } = context;
   const { runs, meters, seconds, summary } = ride;
   const numbers = summary || summaryFromRuns(runs, seconds, FASTEST);
   /* THE SAME RIDE AGAIN in ./_ridestats.js: a ride this account has saved
@@ -617,6 +621,12 @@ async function keep(env, user, body, ride) {
   try {
     await env.DB.batch(statsStatements(env, user.id, rows[0][0], now, numbers));
   } catch (e) { /* No ride_stats or ride_totals yet. */ }
+  /* The site's own account's ride is where Tallinn Tastebuds was last seen:
+     the end of the line just kept, 200 m short of where it stopped —
+     rideSeen() in ./_seen.js. A pin that did not move costs nothing else. */
+  try {
+    await rideSeen(context, user, runs);
+  } catch (e) { /* the pin stays where it was */ }
   return json({ ride: { id: rows[0][0], meters, seconds } }, 200);
 }
 

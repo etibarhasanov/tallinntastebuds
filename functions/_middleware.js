@@ -97,10 +97,10 @@
  * where they were, in functions/api/<name>.js, and the v1 catch-all calls
  * them — functions/api/v1/[[path]].js. /api/google is not on the list: it
  * is where Google's sign-in comes back to, registered in Google's console.
- * A route the apps began reading after that — /api/v1/seen — never answered
- * at /api/<name>, and is on the list all the same: its handler is a file
- * under functions/api/ like the rest, and without the 410 that file would be
- * a second address for it.
+ * A route added after that — /api/v1/seen, which the map reads — never
+ * answered at /api/<name>, and is on the list all the same: its handler is a
+ * file under functions/api/ like the rest, and without the 410 that file
+ * would be a second address for it.
  *
  * ---------------------------------------------------------------------------
  * AND THE REPOSITORY'S OWN FILES, WHICH ARE NOT THE SITE
