@@ -13887,8 +13887,8 @@
     if (!node) return;
     var when = seenWhen(seenSpot.at, false);
     /* Who, where and when, in the owner's own words for it — the 🚲 in
-       front already says on a bike. The card's title says the same, and
-       the label hides while the card is open. */
+       front already says on a bike. It stays on screen with the card open
+       too: the owner's word was that the text is visible all the time. */
     node.setAttribute('aria-label', t('seenTitle') + ', ' + when);
     node.querySelector('.seen-words').textContent = t('seenTitle');
     node.querySelector('.seen-when').textContent = when;

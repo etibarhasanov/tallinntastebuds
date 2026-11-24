@@ -623,8 +623,6 @@ a:hover { color: var(--accent-lit); }
 .seen-pin:focus-visible .seen-face {
   box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 4.5px var(--accent-lit);
 }
-/* With its card open the label would be the card's first line said twice. */
-.seen-pin[aria-expanded="true"] .seen-label { display: none; }
 
 /* Its card, which is Leaflet's popup wearing the site's tokens in place of
    Leaflet's white box and grey text: paper inside a hairline at the corner
