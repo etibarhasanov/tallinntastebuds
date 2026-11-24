@@ -3770,11 +3770,10 @@ week later protects nobody further, and *last seen here* stays true until
 the next ride says otherwise.
 
 **What a visitor sees.** `seatSeen()` and `dressSeen()` in `assets/app.js`.
-A spot from the last ten minutes is the mouth in a collar of `--way-bike`,
-the green of a way by bike, with a bike on its shoulder and *Last seen here
-on a bike · 14:32* under it, on Tallinn's clock whoever is reading. An older
-one is the same pin smaller and grey, and from an earlier day it says the
-day in place of the time. Pressing it — or Enter on it — opens a card: *On a
+A 🚲 in a ring of `--seen`, with *Last seen here on a bike · 14:32* under it
+in a label edged the same red, on Tallinn's clock whoever is reading; from
+an earlier day it says the day in place of the time. It is the same however
+old the spot is. Pressing it — or Enter on it — opens a card: *On a
 bike · 14:32 · 2 min ago*, then *Tallinn Tastebuds was last seen here*. The
 card says who and when and nothing of the 200 m; the owner's word was that
 it does not have to. A press anywhere else puts it away. No spot, no
@@ -3786,14 +3785,16 @@ is to the second, and a saved ride's is the save, a minute or two after the
 rider was there, since the save card comes up at Finish. A ride saved hours
 later, for want of a signal, says the hour it arrived.
 
-**It wears the mouth, and it is not a place.** **The mark** says the mouth
-goes on a place I have eaten at and on nothing a stranger can hand out, and
-that holds: no list, no picker and no request can put this pin anywhere.
-It is the one other thing on the map that is the site itself. What keeps it
-from reading as a restaurant is everything round the picture — a green
-collar no place has, the bike, a label that is a sentence rather than a
-name, and a card where a place has a write-up. The owner chose it over a
-plain bike in a ring, from a picture of both.
+**A bike in a red ring, and never grey.** For its first day the pin was the
+mouth in a green collar with a bike on its shoulder, and grey once the spot
+was ten minutes old. On the owner's phone that was one more restaurant, and
+grey nearly always, since the spot moves only on a new way or a save. The
+owner asked for a bike emoji, red, and a little different from the others.
+So it is a 🚲 on paper in a ring of `--seen`, a red brighter than any
+style's accent — so in Red, whose places are red too, it is still not one of
+them — and brighter again on the two dark grounds; 36 px where a place's
+pin is 22; and the same red however old. The owner was shown the bike from
+Rattatee's icon in its place too, and chose the emoji.
 
 **The card opens clear of the rail.** On a phone the rail stands over the
 left of the map and is as wide as its longest word in the language on
@@ -20172,11 +20173,6 @@ Everything else the map can draw — a place off Google's export, a place
 somebody put on a list — wears a glyph instead, and that boundary is the
 point rather than a detail of it. The mouth is this site saying it has eaten
 somewhere; nothing a stranger types can hand it out. See **The pins**.
-
-One thing on the map wears the mouth and is not a place: the pin that says
-where Tallinn Tastebuds was last seen on a bike. It is the site itself
-rather than a verdict on anywhere, nobody can ask for it, and its green
-collar and the bike on it are what say so — **Last seen, on a bike**.
 
 The circle is not gone, it is *reserved*: the only plain dot left on the map is
 the one that says where you are. Nothing else can be mistaken for it now, which

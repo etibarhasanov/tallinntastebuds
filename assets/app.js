@@ -13710,31 +13710,25 @@
    * and what is never shown. **Last seen, on a bike** in docs/handbook.md is
    * the long version.
    *
-   * IT WEARS THE MOUTH, AND IT IS NOT A PLACE
+   * A BIKE IN A RED RING, AND NEVER GREY
    *
-   * The mark goes on a place I have eaten at, and on nothing a stranger can
-   * hand out — "The pins". This is the one other thing on the map that wears
-   * it, because it is the one other thing that is the site itself: its own
-   * account, on its own bike. What keeps it from reading as a place is
-   * everything round the picture. The collar is --way-bike, the green of a
-   * way by bike and of no pin; there is a bike on its shoulder; the label
-   * under it is a sentence and never a name; and pressing it opens a card
-   * that says who was seen and when, not a write-up.
-   *
-   * FRESH, AND THEN QUIET
-   *
-   * A spot the rider passed within SEEN_FRESH is drawn full and green, with
-   * the clock on it. An older one is the same pin smaller and grey, and from
-   * an earlier day it says the day in place of the clock. It never goes: the
-   * owner's word was that last seen can stay for ever, since what protects
-   * the rider is the 200 m, not the pin running out.
+   * The pin is a 🚲 in a ring of --seen, a red no place's pin wears, and a
+   * little larger than a place's, so it reads as something else on the map
+   * at a glance: the owner's word was a bike emoji, and a little different
+   * from the others. Until then it was the mouth in a green collar, which
+   * read as one more restaurant. It is the same red however old the spot
+   * is — it went grey after ten minutes for a day, and since the spot moves
+   * only on a new way or a save it was grey nearly always — and the time on
+   * the label, or the day once it is not today's, is what says how old. It
+   * never goes: the owner's word was that last seen can stay for ever,
+   * since what protects the rider is the 200 m, not the pin running out.
    *
    * HOW OFTEN IT ASKS
    *
    * Once on arrival, last and unwaited like the counts. Then every
-   * SEEN_EVERY while the spot is fresh, which is a ride going on or just
-   * saved, and every SEEN_IDLE while it is not, so a map left open finds out
-   * that one began — and never while the tab is hidden. The answer is one
+   * SEEN_EVERY while the spot is less than SEEN_FRESH old, which is a ride
+   * going on or just saved, and every SEEN_IDLE while it is not, so a map
+   * left open finds out that one began — and never while the tab is hidden. The answer is one
    * row, kept thirty seconds in the colo; the route's header has the day's
    * worst in rows.
    */
@@ -13837,7 +13831,7 @@
     seenMarker = L.marker([spot.lat, spot.lng], {
       icon: L.divIcon({
         className: 'seen-pin',
-        html: '<span class="seen-face"><span class="seen-bike" aria-hidden="true">🚲</span></span>' +
+        html: '<span class="seen-face" aria-hidden="true">\uD83D\uDEB2</span>' +
           '<span class="seen-label"><span class="seen-words"></span> · <span class="seen-when"></span></span>',
         iconSize: [PIN_BOX, PIN_BOX],
         iconAnchor: [PIN_BOX / 2, PIN_BOX / 2]
@@ -13888,7 +13882,6 @@
     var node = seenMarker && seenMarker.getElement();
     if (!node) return;
     var when = seenWhen(seenSpot.at, false);
-    node.classList.toggle('is-old', !seenFresh());
     node.setAttribute('aria-label', t('seenLabel') + ', ' + when);
     node.querySelector('.seen-words').textContent = t('seenLabel');
     node.querySelector('.seen-when').textContent = when;
