@@ -75,10 +75,10 @@
   --yes: #2e7a4c;
   --no:  #b3262f;
 
-  /* The ring round the pin that says where Tallinn Tastebuds was last seen on
-     a bike, and the edge of its label: a red brighter than any style's
-     accent, so in Red, whose places are red too, it is still not one of
-     them. Brighter again on the two dark grounds. .seen-face below. */
+  /* The dot that says where Tallinn Tastebuds was last seen on a bike, and
+     the edge of its label: a red brighter than any style's accent, so in
+     Red, whose places are red too, it is still not one of them. Brighter
+     again on the two dark grounds. .seen-face below. */
   --seen: #e2372b;
 
   /* Three tokens for chrome that stands on the map with no card under it.
@@ -561,11 +561,12 @@ a:hover { color: var(--accent-lit); }
 }
 
 /* Where Tallinn Tastebuds was last seen on a bike: the one pin that is not a
-   place — seatSeen() and dressSeen() in assets/app.js. A 🚲 in a ring of
-   --seen, a red no place's pin wears, a little larger than a place's pin,
-   and the same however old the spot is: the time on the label says that.
-   As with a place's pin the box takes no pointer and what is drawn in it
-   takes all of them. */
+   place — seatSeen() and dressSeen() in assets/app.js. A dot of --seen, a
+   red no place's pin wears, smaller than a place's pin, with the 🚲 at the
+   front of its label; the same however old the spot is, since the time on
+   the label says that. As with a place's pin the box takes no pointer and
+   what is drawn in it takes all of them — the label as well as the dot, so
+   a press need not find twelve pixels. */
 .seen-pin { background: none; border: 0; }
 .seen-pin.leaflet-interactive { pointer-events: none; }
 .seen-pin:focus { outline: none; }
@@ -574,24 +575,19 @@ a:hover { color: var(--accent-lit); }
   position: absolute;
   left: 50%;
   top: 50%;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  margin: -18px 0 0 -18px;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
   border-radius: 50%;
-  background: var(--paper);
-  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--seen), var(--lift);
-  font-family: var(--emoji);
-  font-size: 22px;
-  line-height: 1;
+  background: var(--seen);
+  box-shadow: 0 0 0 2.5px var(--paper), var(--lift);
   pointer-events: auto;
   cursor: pointer;
 }
 .seen-label {
   position: absolute;
   left: 50%;
-  top: calc(50% + 28px);
+  top: calc(50% + 12px);
   transform: translateX(-50%);
   white-space: nowrap;
   font-family: var(--display);
@@ -607,6 +603,10 @@ a:hover { color: var(--accent-lit); }
   pointer-events: auto;
   cursor: pointer;
 }
+.seen-bike {
+  font-family: var(--emoji);
+  font-weight: 400;
+}
 .seen-when {
   font-family: var(--mono);
   font-size: 12px;
@@ -614,7 +614,7 @@ a:hover { color: var(--accent-lit); }
   color: var(--muted);
 }
 .seen-pin:focus-visible .seen-face {
-  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--accent-lit);
+  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 4.5px var(--accent-lit);
 }
 /* With its card open the label would be the card's first line said twice. */
 .seen-pin[aria-expanded="true"] .seen-label { display: none; }

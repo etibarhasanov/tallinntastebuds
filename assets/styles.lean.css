@@ -326,24 +326,19 @@ a:hover { color: var(--accent-lit); }
   position: absolute;
   left: 50%;
   top: 50%;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  margin: -18px 0 0 -18px;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
   border-radius: 50%;
-  background: var(--paper);
-  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--seen), var(--lift);
-  font-family: var(--emoji);
-  font-size: 22px;
-  line-height: 1;
+  background: var(--seen);
+  box-shadow: 0 0 0 2.5px var(--paper), var(--lift);
   pointer-events: auto;
   cursor: pointer;
 }
 .seen-label {
   position: absolute;
   left: 50%;
-  top: calc(50% + 28px);
+  top: calc(50% + 12px);
   transform: translateX(-50%);
   white-space: nowrap;
   font-family: var(--display);
@@ -359,6 +354,10 @@ a:hover { color: var(--accent-lit); }
   pointer-events: auto;
   cursor: pointer;
 }
+.seen-bike {
+  font-family: var(--emoji);
+  font-weight: 400;
+}
 .seen-when {
   font-family: var(--mono);
   font-size: 12px;
@@ -366,7 +365,7 @@ a:hover { color: var(--accent-lit); }
   color: var(--muted);
 }
 .seen-pin:focus-visible .seen-face {
-  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--accent-lit);
+  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 4.5px var(--accent-lit);
 }
 
 .seen-pin[aria-expanded="true"] .seen-label { display: none; }

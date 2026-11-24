@@ -8086,7 +8086,7 @@
     seenPopup = L.popup({
       className: 'seen-pop',
       closeButton: false,
-      offset: [0, -PIN_BOX / 2],
+      offset: [0, -8],
       autoPanPaddingBottomRight: [12, 24]
     });
     seenPopup.on('remove', function () {
@@ -8145,8 +8145,9 @@
     seenMarker = L.marker([spot.lat, spot.lng], {
       icon: L.divIcon({
         className: 'seen-pin',
-        html: '<span class="seen-face" aria-hidden="true">\uD83D\uDEB2</span>' +
-          '<span class="seen-label"><span class="seen-words"></span> · <span class="seen-when"></span></span>',
+        html: '<span class="seen-face"></span>' +
+          '<span class="seen-label"><span class="seen-bike" aria-hidden="true">\uD83D\uDEB2</span> ' +
+          '<span class="seen-words"></span> \u00B7 <span class="seen-when"></span></span>',
         iconSize: [PIN_BOX, PIN_BOX],
         iconAnchor: [PIN_BOX / 2, PIN_BOX / 2]
       }),
