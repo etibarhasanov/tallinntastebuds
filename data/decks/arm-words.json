@@ -1,0 +1,150 @@
+{
+ "id": "arm-words",
+ "added": "2026-11-24",
+ "name": {
+  "en": "The words of Mu isamaa on minu arm",
+  "az": "Mu isamaa on minu arm mahnısının sözləri",
+  "ru": "Слова из песни Mu isamaa on minu arm"
+ },
+ "why": {
+  "en": "The words from the song the other decks do not have yet, each with its line",
+  "az": "Mahnıdan digər dəstlərdə hələ olmayan sözlər, hər biri öz misrası ilə",
+  "ru": "Слова из песни, которых ещё нет в других колодах, каждое со своей строкой"
+ },
+ "level": "song",
+ "cards": [
+  {
+   "id": "ulem",
+   "front": "Ülem",
+   "back": {
+    "en": "Highest; a boss",
+    "az": "Ən uca; rəis",
+    "ru": "Высший; начальник"
+   },
+   "forms": [
+    "ülema",
+    "ülemat"
+   ],
+   "sentence": {
+    "et": "Sull' laulan ma, mu ülem õnn,",
+    "en": "To you I sing, my greatest happiness,",
+    "az": "Sənə oxuyuram, ən böyük səadətim,",
+    "ru": "Тебе пою я, моё высшее счастье,"
+   }
+  },
+  {
+   "id": "oitsema",
+   "front": "Õitsema",
+   "back": {
+    "en": "To bloom, to blossom",
+    "az": "Çiçəkləmək",
+    "ru": "Цвести"
+   },
+   "forms": [
+    "õitseda",
+    "õitsen"
+   ],
+   "sentence": {
+    "et": "mu õitsev Eestimaa!",
+    "en": "my blossoming Estonia!",
+    "az": "çiçəklənən Estoniyam!",
+    "ru": "моя цветущая Эстония!"
+   }
+  },
+  {
+   "id": "laimama",
+   "front": "Laimama",
+   "back": {
+    "en": "To slander",
+    "az": "Böhtan atmaq",
+    "ru": "Клеветать"
+   },
+   "forms": [
+    "laimata",
+    "laiman"
+   ],
+   "sentence": {
+    "et": "Kas laimab võõra kadedus,",
+    "en": "Though a stranger's envy slanders you,",
+    "az": "Qoy yadın paxıllığı sənə böhtan atsın,",
+    "ru": "Пусть клевещет чужая зависть,"
+   }
+  },
+  {
+   "id": "vooras",
+   "front": "Võõras",
+   "back": {
+    "en": "Stranger; foreign, strange",
+    "az": "Yad, yabançı",
+    "ru": "Чужой, незнакомец"
+   },
+   "forms": [
+    "võõra",
+    "võõrast"
+   ],
+   "sentence": {
+    "et": "Kas laimab võõra kadedus,",
+    "en": "Though a stranger's envy slanders you,",
+    "az": "Qoy yadın paxıllığı sənə böhtan atsın,",
+    "ru": "Пусть клевещет чужая зависть,"
+   }
+  },
+  {
+   "id": "kadedus",
+   "front": "Kadedus",
+   "back": {
+    "en": "Envy",
+    "az": "Paxıllıq",
+    "ru": "Зависть"
+   },
+   "forms": [
+    "kadeduse",
+    "kadedust"
+   ],
+   "sentence": {
+    "et": "Kas laimab võõra kadedus,",
+    "en": "Though a stranger's envy slanders you,",
+    "az": "Qoy yadın paxıllığı sənə böhtan atsın,",
+    "ru": "Пусть клевещет чужая зависть,"
+   }
+  },
+  {
+   "id": "heitma",
+   "front": "Heitma",
+   "back": {
+    "en": "To throw, to cast; to lie down",
+    "az": "Atmaq; uzanmaq",
+    "ru": "Бросать; ложиться"
+   },
+   "forms": [
+    "heita",
+    "heidan"
+   ],
+   "sentence": {
+    "et": "su rüppe heidan unele,",
+    "en": "in your lap I lie down to sleep,",
+    "az": "qucağında yuxuya uzanıram,",
+    "ru": "в твоё лоно ложусь я спать,"
+   }
+  },
+  {
+   "id": "uni",
+   "front": "Uni",
+   "back": {
+    "en": "Sleep",
+    "az": "Yuxu",
+    "ru": "Сон"
+   },
+   "forms": [
+    "une",
+    "und"
+   ],
+   "sentence": {
+    "et": "su rüppe heidan unele,",
+    "en": "in your lap I lie down to sleep,",
+    "az": "qucağında yuxuya uzanıram,",
+    "ru": "в твоё лоно ложусь я спать,"
+   }
+  }
+ ]
+}

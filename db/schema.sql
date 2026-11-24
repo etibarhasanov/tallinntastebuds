@@ -1699,8 +1699,8 @@ CREATE TABLE IF NOT EXISTS meta (
 -- Estonian, one word at a time, on flashcard.tallinntastebuds.ee.
 --
 -- Four tables, and only one of them holds anything anybody typed. The words
--- the site ships with are not here at all: data/decks.json is fifty-four decks
--- and two thousand five hundred and forty-three cards of Estonian, deployed as a
+-- the site ships with are not here at all: data/decks.json is fifty-five decks
+-- and two thousand five hundred and fifty cards of Estonian, deployed as a
 -- file and read as the files tools/decks.mjs writes from it, one per deck,
 -- because content
 -- that changes when somebody edits the
