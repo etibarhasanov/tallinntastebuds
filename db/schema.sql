@@ -1668,11 +1668,12 @@ CREATE TABLE IF NOT EXISTS feedback_hearts (
 --   seen                       where Tallinn Tastebuds was last seen on a
 --                              bike: one spot as JSON, written over by the
 --                              next — functions/api/_seen.js
---   seen_ask                   where the site's own account last asked the
---                              way by bike standing still, and where to: the
---                              start a reroute is measured from before it is
---                              shown. That one account's alone, never
---                              answered by any route — wayAsked() there
+--   seen_ask                   where the site's own account's outing set off
+--                              from — the first way it asked by bike after an
+--                              hour of none — and when it last asked one: what
+--                              a spot is measured from before it is shown.
+--                              That one account's alone, never answered by
+--                              any route — wayAsked() there
 --
 -- There are two of these databases — `tallinntastebuds` behind the live site
 -- and `tallinntastebuds-preview` behind every preview deployment — and the

@@ -2166,10 +2166,10 @@ function unversioned(context, q) {
   const heading = Number.isFinite(degrees)
     ? (Math.round(degrees / HEADING_STEP) * HEADING_STEP % 360 + 360) % 360
     : null;
-  /* The site's own account, asking for a new way mid-ride, is where Tallinn
+  /* The site's own account, asking the way by bike, is where Tallinn
      Tastebuds was last seen — watchWay() in ./_seen.js, after the answer
      has gone and for that one account alone. Nothing about the way changes. */
-  watchWay(context, mode, from, to, heading);
+  watchWay(context, mode, from, to);
   return street(context, mode, from, to, heading);
 }
 

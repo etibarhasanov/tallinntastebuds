@@ -13,10 +13,12 @@
  *    the last point that is left: where the rider was 200 m of riding before
  *    they stopped. That spot is always safe, and the pin stays there until
  *    the next ride.
- *  - It asks for a new way in the middle of a ride: GET /api/v1/route with
- *    `from`, where the rider is, and `heading`, with its cookie. wayAsked()
- *    reads that `from` as a spot. Only a ride with somewhere to go that
- *    leaves its way asks; any other says nothing until Save.
+ *  - It asks for the way somewhere by bike: GET /api/v1/route with `from`,
+ *    where the rider is, and its cookie — Rattatee when its rider leaves the
+ *    way, and the map's own directions each time they are drawn again from
+ *    where the rider has got to. wayAsked() reads that `from` as a spot.
+ *    Only a ride with somewhere to go asks; any other says nothing until
+ *    Save.
  *
  * ONE ACCOUNT
  *
@@ -28,45 +30,48 @@
  *
  * NOT THE FIRST OR THE LAST 200 M, AS FAR AS A SERVER CAN TELL
  *
- * A saved ride's end is 200 m short by construction. A new way asked
- * mid-ride is where the rider is now, so it is shown only when it is ENDS_KM
- * from both ends the server knows of: where the way to this place was first
- * asked standing still — no `heading`, which Rattatee leaves off before a
- * ride, and usually the door the ride set off from; that spot is kept as
- * `seen_ask` and never shown — and the place the way leads to, usually where
- * the ride stops. A way first asked mid-ride has no start to measure from
- * and shows nothing.
+ * A saved ride's end is 200 m short by construction. A way asked is where
+ * the rider is now, so one rule stands in for the two ends a server cannot
+ * see: the first way asked after an hour of none — GAP_SECONDS — is where
+ * the outing set off from, usually the door. It is kept as `seen_ask`, never
+ * shown, and every later way is shown only when it is ENDS_KM from it and
+ * from the place it leads to, usually where the ride stops.
+ *
+ * Until 2026-11-24's evening the start was the first way asked with no
+ * `heading`, which Rattatee leaves off before a ride. The map's own
+ * directions never send one, so every redraw of them counted as a start and
+ * nothing the owner rode moved the pin; a destination Rattatee was given
+ * mid-ride had no start at all. One rule for both, by time, replaced it.
  *
  * What that cannot cover, and the owner was told so before it was built: a
  * ride that stops somewhere other than where its way led can have shown a
- * spot closer than 200 m to where it stopped, until Save moves the pin.
+ * spot closer than 200 m to where it stopped, until Save moves the pin; and
+ * a way asked an hour before setting off is not the door, so the first way
+ * asked on the ride is taken for it and not shown.
  *
  * WHAT IT READS
  *
  * A way asked by bike with a session cookie on it reads the session after
  * the answer has gone: two rows, by key. That is every signed-in member's
  * bike way, so a thousand of them a day is two thousand rows of the five
- * million. Only the rider's goes further: one row of `meta` read by its key
- * on a new way mid-ride, and one row written. A save by the rider writes one
- * row and reads none. Nothing here walks a table or grows with one.
+ * million. Only the rider's goes further: one row of `meta` read by its key,
+ * and one or two written. A save by the rider writes one row and reads none.
+ * Nothing here walks a table or grows with one.
  */
 
 import { sessionUser, sessionTokens, wrongDatabase, nearTallinn, km } from './_lib.js';
 
-/* The spot the map draws, and where the rider last asked a way standing
-   still. */
+/* The spot the map draws, and where the rider's outing set off from. */
 export const SEEN = 'seen';
 const ASKED = 'seen_ask';
 
 /* How far from each end a new way's spot has to be to be shown: the 200 m
    the site takes off each end of a kept ride, ENDS in ./rides.js. */
 const ENDS_KM = 0.2;
-/* Two asks lead to the same place when they end this close: the app sends
-   the place to the metre, and a pin can be a few out. */
-const SAME_KM = 0.05;
-/* A way asked standing still is the start of a ride for this long. Past it
-   the ride very likely set off from somewhere else, and nothing is shown. */
-const ASKED_SECONDS = 6 * 3600;
+/* Ways asked less than this far apart are one outing, and the first of them
+   is where it set off from. An hour: longer than any wait between two
+   redraws of a way on a ride, shorter than the gap between two rides. */
+const GAP_SECONDS = 3600;
 
 const PUT = 'INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value';
 
@@ -107,27 +112,31 @@ async function show(context, lat, lng) {
 /* A way asked by bike: looked at after the answer has gone, and only where
    the request carries a session cookie. Called by unversioned() in
    ./route.js with the points as it read them; nothing about the way changes. */
-export function watchWay(context, mode, from, to, heading) {
+export function watchWay(context, mode, from, to) {
   const { env, request } = context;
   if (mode !== 'bike' || !env.DB || !env.RIDER || !context.waitUntil || !sessionTokens(request).length) return;
-  context.waitUntil(wayAsked(context, from, to, heading).catch(() => {}));
+  context.waitUntil(wayAsked(context, from, to).catch(() => {}));
 }
 
-async function wayAsked(context, from, to, heading) {
+async function wayAsked(context, from, to) {
   const { env, request } = context;
   if (await wrongDatabase(env) || !isRider(env, await sessionUser(request, env))) return;
 
-  /* Asked standing still: the start of a ride, kept and never shown. */
-  if (heading === null) {
-    await put(env, ASKED, { lat: from.lat, lng: from.lng, to: { lat: to.lat, lng: to.lng } });
+  /* Where this outing set off from. One row, by meta's primary key; its `at`
+     is when a way was last asked. */
+  const row = await env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind(ASKED).first();
+  const start = row && readSpot(row.value);
+
+  /* The first way after an hour of none: the start, kept and never shown. */
+  if (!start || Date.now() / 1000 - start.at > GAP_SECONDS) {
+    await put(env, ASKED, { lat: from.lat, lng: from.lng });
     return;
   }
 
-  /* Asked mid-ride. One row, by meta's primary key. */
-  const row = await env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind(ASKED).first();
-  const asked = row && readSpot(row.value);
-  if (!asked || !asked.to || Date.now() / 1000 - asked.at > ASKED_SECONDS || km(asked.to, to) > SAME_KM) return;
-  if (km(asked, from) < ENDS_KM || km(to, from) < ENDS_KM) return;
+  /* The outing goes on from the same start, and the spot is shown unless it
+     is near either end. */
+  await put(env, ASKED, { lat: start.lat, lng: start.lng });
+  if (km(start, from) < ENDS_KM || km(to, from) < ENDS_KM) return;
   await show(context, from.lat, from.lng);
 }
 
