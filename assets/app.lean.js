@@ -8188,8 +8188,8 @@
     var node = seenMarker && seenMarker.getElement();
     if (!node) return;
     var when = seenWhen(seenSpot.at, false);
-    node.setAttribute('aria-label', t('seenLabel') + ', ' + when);
-    node.querySelector('.seen-words').textContent = t('seenLabel');
+    node.setAttribute('aria-label', t('seenTitle') + ', ' + when);
+    node.querySelector('.seen-words').textContent = t('seenTitle');
     node.querySelector('.seen-when').textContent = when;
     if (seenOpen()) seenPopup.setContent(seenCard());
   }

@@ -3770,8 +3770,10 @@ week later protects nobody further, and *last seen here* stays true until
 the next ride says otherwise.
 
 **What a visitor sees.** `seatSeen()` and `dressSeen()` in `assets/app.js`.
-A red dot of `--seen`, smaller than a place's pin, with *🚲 Last seen here on
-a bike · 14:32* under it in a label edged the same red, on Tallinn's clock
+A red dot of `--seen`, smaller than a place's pin, with *🚲 Tallinn Tastebuds
+was last seen here · 14:32* under it in a label edged the same red — the
+owner's own words, and for a day *Last seen here on a bike*, which said the
+bike twice and the name not at all — on Tallinn's clock
 whoever is reading; from an earlier day it says the day in place of the
 time. It is the same however old the spot is. Pressing it — or Enter on it — opens a card: *On a
 bike · 14:32 · 2 min ago*, then *Tallinn Tastebuds was last seen here*. The

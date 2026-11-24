@@ -13886,8 +13886,11 @@
     var node = seenMarker && seenMarker.getElement();
     if (!node) return;
     var when = seenWhen(seenSpot.at, false);
-    node.setAttribute('aria-label', t('seenLabel') + ', ' + when);
-    node.querySelector('.seen-words').textContent = t('seenLabel');
+    /* Who, where and when, in the owner's own words for it — the 🚲 in
+       front already says on a bike. The card's title says the same, and
+       the label hides while the card is open. */
+    node.setAttribute('aria-label', t('seenTitle') + ', ' + when);
+    node.querySelector('.seen-words').textContent = t('seenTitle');
     node.querySelector('.seen-when').textContent = when;
     if (seenOpen()) seenPopup.setContent(seenCard());
   }
