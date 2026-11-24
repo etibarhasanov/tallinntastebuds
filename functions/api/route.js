@@ -73,6 +73,11 @@
  * the streets every bike way keeps off, through a door where one is still
  * a shortcut, in the same fields and the same words as ever.
  *
+ * And a stretch riders take that the map prices wrong — a street it has
+ * as one-way where bikes ride both ways — is ridden by a way of its own,
+ * offered beside the others to a ride that runs along it.
+ * data/bike-taken.json, and TAKEN below.
+ *
  * The doors, the ridden way first, keeping off, the spurs, the settling
  * and the ways either side, as the sections after this one have them, are
  * the bike way the router makes. It is the answer where BRouter has none,
@@ -1272,7 +1277,15 @@ function afloat(route) {
  *
  *   Two ways that are one are offered once, and a way more than
  *   NICE_LONGER times the shortest is not offered at all — no big round
- *   trips, in the owner's words.
+ *   trips, in the owner's words. One is one whichever way round it is
+ *   measured: a way most of which lies along one before it, and a way one
+ *   before it lies along most of, which is that way with a detour in it.
+ *   Until 2026-11-24 only the first was looked for, and from Herne to Vana
+ *   Villem the second way offered was the first with 150 m more round a
+ *   corner of Tiigiveski park: an extra trip, the owner called it.
+ *
+ *   A way along a stretch riders take goes in where the ride runs along
+ *   one — TAKEN below — and is one of the three.
  *
  *   A way through a door — DOORS above — goes in where it is DOOR_GAIN
  *   metres and a tenth shorter than the shortest of them, its two legs
@@ -1288,7 +1301,8 @@ function afloat(route) {
  *   on seeing ten trips drawn. The ways are put by how much of each is
  *   beside traffic, to the QUIET_STEP — less than that apart they are as
  *   quiet as each other — and then the shorter first. Three at the most,
- *   and a way through a door is one of the three.
+ *   and a way through a door is one of the three, and so is a way along
+ *   a stretch riders take.
  *
  *   KEEPING OFF's other rule, that where any way keeps off only those are
  *   offered, is the router's and not held here. The areas keep BRouter's
@@ -1366,6 +1380,140 @@ function keptOffAreas(a, b) {
   return stretches.filter((stretch) => stretch.line.some(near)).map((stretch) => stretch.area).join('|');
 }
 
+/* ------------------------------------------------------------------ taken
+ * A stretch riders take that the map prices wrong. Every router here rides
+ * a map, and the map is wrong in places only a rider knows. On 2026-11-24
+ * the owner asked why the way riders take from Herne to Vana Villem —
+ * along Herne, on to Võistluse, up Püssirohu — was not offered at all, and
+ * said where to look: the rides. `ride_sections` had five rides, at their
+ * own pace, on every square of Herne heading east, and that way ridden for
+ * 84% of its length against 45% of the way offered first. The map has 318 m
+ * of Herne as a one-way street, running west; BRouter charges riding it
+ * east at three and a half times a street's price, the router will not
+ * ride it at all, and of five sets of rules tried none offered it. Bikes
+ * are allowed both ways there, the owner said; it is the only way. Asked
+ * for along it, BRouter answers a way as long as the one it likes best and
+ * nearly a minute quicker.
+ *
+ * So such a stretch is kept — data/bike-taken.json, { id, name, said, why,
+ * line } each, `line` the stretch as [lat, lng] points in the direction it
+ * is ridden — and a ride that runs along one is asked of BRouter along it,
+ * and offered that way beside the others. It is kept as far as riders take
+ * it, and not only the metres the map has wrong: given Herne alone, BRouter
+ * rode it and then turned back into the park, a way that was the first
+ * with a corner changed.
+ *
+ * It is the rides that say a stretch is taken and the owner who says it
+ * may be offered. tools/doors.mjs throws a one-way ridden against its
+ * arrows out of the doors, since a door nobody approved must not send a
+ * stranger into the traffic, and that stays so: a stretch is written here
+ * by hand, on the owner's word that a bike may ride it.
+ *
+ * RUNS ALONG is settled before anything is asked. The start and the end of
+ * the ride are each put on the stretch at its nearest point, and what lies
+ * between is what the ride would take of it: at least TAKEN_MIN, in the
+ * stretch's own direction — the other way is the map's to answer, and for
+ * a one-way is the way it already has — and with both its ends within
+ * TAKEN_NEAR of a way already found, so a ride across town is not bent to
+ * a street somebody rides. Then the way through it, as the crow flies, is
+ * to be no more than TAKEN_LONGER times the shortest way found.
+ *
+ * It is asked through the middle of each street of it the ride takes, a
+ * piece of TAKEN_PIECE or more between two corners, and not through the
+ * corners themselves: a point on a corner snaps to whichever street is
+ * nearest, and from Herne to Vana Villem one did and turned the way round
+ * on itself, 1,288 m where the middles give 1,178. And a stretch it then
+ * rides out and back on is cut, as the router's are — SPURS below.
+ *
+ * OFFERED where BRouter's way along it is itself no more than TAKEN_LONGER
+ * times the shortest, and is not a way already there. A door wins a tenth
+ * shorter; a stretch that is taken is offered up to a tenth longer, being
+ * a way of the same length the map made dear. It is one of the three, in
+ * the place its quiet and its length give it: taken, not first.
+ *
+ * It costs one request to BRouter more, for a ride that runs along such a
+ * stretch, and no row. Nothing waits on it: no file, a line that will not
+ * parse, a stretch BRouter cannot ride — each is the answer without it.
+ * Like everything of BRouter's it is not asked with a heading, nor between
+ * cities.
+ */
+const TAKEN_MIN = 100;
+const TAKEN_NEAR = 300;
+const TAKEN_LONGER = 1.1;
+const TAKEN_PIECE = 40;
+
+/* The stretches riders take, as their lines, or none. */
+async function taken(context) {
+  let file;
+  try { file = await dataFile(context, '/data/bike-taken.json'); } catch (e) { return []; }
+  return (Array.isArray(file) ? file : [])
+    .map((one) => (one && Array.isArray(one.line) ? one.line : []))
+    .filter((line) => line.length >= 2 &&
+      line.every((p) => Array.isArray(p) && Number.isFinite(p[0]) && Number.isFinite(p[1])));
+}
+
+/* Where on a line a point is nearest: how far along it, in metres, and
+   the point there. */
+function onto(line, p) {
+  const [x, y] = flat(p);
+  let best = { off: Infinity, along: 0, at: line[0] };
+  let gone = 0;
+  for (let i = 1; i < line.length; i++) {
+    const [ax, ay] = flat(line[i - 1]);
+    const [bx, by] = flat(line[i]);
+    const dx = bx - ax;
+    const dy = by - ay;
+    const length = Math.hypot(dx, dy);
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (length * length || 1)));
+    const off = Math.hypot(x - ax - t * dx, y - ay - t * dy);
+    if (off < best.off) {
+      best = {
+        off: off,
+        along: gone + t * length,
+        at: [line[i - 1][0] + (line[i][0] - line[i - 1][0]) * t, line[i - 1][1] + (line[i][1] - line[i - 1][1]) * t]
+      };
+    }
+    gone += length;
+  }
+  return best;
+}
+
+/* BRouter's way from `start` to `end` along a stretch riders take, where
+   the ride runs along one, or null — TAKEN above. `ways` are the ways found
+   already and `shortest` the metres of the shortest of them. */
+async function viaTaken(context, start, end, ways, shortest) {
+  const found = (p) => ways.some((way) => apart(p, way.line) <= TAKEN_NEAR);
+  let best = null;
+  for (const line of await taken(context)) {
+    const on = onto(line, start);
+    const off = onto(line, end);
+    if (off.along - on.along < TAKEN_MIN || !found(on.at) || !found(off.at)) continue;
+    const least = metres(start, on.at) + (off.along - on.along) + metres(off.at, end);
+    if (least > shortest * TAKEN_LONGER || (best && least >= best.least)) continue;
+    /* The middle of each piece the ride takes — TAKEN_PIECE or longer, cut
+       to where the ride gets on and off — none of them at either end. */
+    const through = [];
+    let gone = 0;
+    for (let i = 1; i < line.length; i++) {
+      const length = metres(line[i - 1], line[i]);
+      const a = Math.max(gone, on.along);
+      const b = Math.min(gone + length, off.along);
+      gone += length;
+      if (b - a < TAKEN_PIECE) continue;
+      const f = ((a + b) / 2 - (gone - length)) / (length || 1);
+      const middle = [line[i - 1][0] + (line[i][0] - line[i - 1][0]) * f, line[i - 1][1] + (line[i][1] - line[i - 1][1]) * f]
+        .map((n) => Number(n.toFixed(5)));
+      if (metres(middle, start) >= AT_DOOR && metres(middle, end) >= AT_DOOR) through.push(middle);
+    }
+    if (through.length) best = { through: through, least: least };
+  }
+  if (!best) return null;
+  const answered = await brouterWays(context, [start].concat(best.through, [end]), 1, keptOffAreas(start, end));
+  if (!answered || !answered[0]) return null;
+  const way = unspur(Object.assign({}, answered[0], { line: thin(answered[0].line, MAX_POINTS), steps: untie(answered[0].steps, answered[0].line) }));
+  return way.meters <= shortest * TAKEN_LONGER ? way : null;
+}
+
 /* BRouter's one way between two points, as it answers it, or a way of no
    length where they are the same place, or null where it has none. */
 async function niceLeg(context, a, b) {
@@ -1382,7 +1530,7 @@ async function niceWays(context, from, to) {
   const found = await brouterWays(context, [start, end], 1 + OTHERS, keptOffAreas(start, end));
   if (!found || !found.length) return null;
 
-  const once = (way, i, all) => !all.slice(0, i).some((before) => alike(way, before));
+  const once = (way, i, all) => !all.slice(0, i).some((before) => alike(way, before) || alike(before, way));
   let ways = found
     .map((way) => Object.assign({}, way, { line: thin(way.line, MAX_POINTS), steps: untie(way.steps, way.line) }))
     .filter(once);
@@ -1398,9 +1546,21 @@ async function niceWays(context, from, to) {
     { leg: (a, b) => niceLeg(context, a, b), cost: (way) => way.meters });
   if (through) ways = [through].concat(ways).filter(once);
 
+  /* And a way along a stretch riders take, where the ride runs along
+     one: after the others, so it goes where one of them is that way
+     already. */
+  const along = await viaTaken(context, start, end, ways, shortest);
+  if (along) ways = ways.concat([along]).filter(once);
+
   ways.sort((a, b) => Math.round(a.loud / QUIET_STEP) - Math.round(b.loud / QUIET_STEP) || a.meters - b.meters);
   const offered = ways.slice(0, 1 + OTHERS);
-  if (through && !offered.includes(through)) offered[OTHERS] = through;
+  /* A way through a door and a way along a stretch riders take are each
+     one of the three, whatever their quiet: the last place that is not the
+     other's. */
+  for (const way of [through, along]) {
+    if (!way || !ways.includes(way) || offered.includes(way)) continue;
+    offered[offered[OTHERS] === through ? OTHERS - 1 : OTHERS] = way;
+  }
 
   const best = await riddenBest(context, offered, Math.min(...offered.map((way) => way.meters)));
   if (best >= 0) offered[best] = Object.assign({}, offered[best], { ridden: true });

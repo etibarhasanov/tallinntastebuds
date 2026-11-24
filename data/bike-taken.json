@@ -1,0 +1,9 @@
+[
+  {
+    "id": "herne-voistluse-pussirohu",
+    "name": "Along Herne, on to Võistluse, up Püssirohu",
+    "said": "2026-11-24",
+    "why": "The way riders take from Herne towards Juhkentali and Tartu maantee. The map has 318 m of Herne as a one-way street running west, so no router offers it: ride_sections had five rides on every square of Herne heading east on 2026-11-24, and this way ridden for 84% of its length against 45% of the way offered first. The owner says bikes are allowed both ways on Herne: it is the only way.",
+    "line": [[59.42616,24.75685],[59.42678,24.7583],[59.42682,24.762],[59.42699,24.76203],[59.42691,24.7635],[59.42695,24.76551],[59.42783,24.76603],[59.42791,24.76593]]
+  }
+]

@@ -3897,7 +3897,11 @@ noise class four and up — to the hundred metres, and the shorter first
 where two are as quiet as each other. From Mustamäe to Vabaduse väljak that
 puts a way of 7.0 km with 0.1 km beside traffic ahead of one of 6.5 km with
 1.7. A way more than a quarter longer than the shortest is not offered at
-all, and neither is one that is another over again.
+all, and neither is one that is another over again — measured both ways
+round since 2026-11-24, so that a way with a detour in it goes too: from
+Herne to Vana Villem the second way offered had been the first with 150 m
+more round a corner of Tiigiveski park, and the owner called it an extra
+trip.
 
 **The streets kept off are kept off still.** Tartu maantee, Liivalaia,
 Pärnu maantee by Vabaduse väljak and Laagna tee go to BRouter as areas to
@@ -3973,6 +3977,56 @@ in a burst and about one a minute after; past that it answers a 403,
 BRouter rests for a minute in that isolate, and the rider gets the
 router's way. Answers kept at the edge do not count. If the site outgrows
 that, BRouter is open source and one small server runs it.
+
+## A stretch riders take
+
+Every router here rides a map, and the map is wrong in places only a rider
+knows. On 2026-11-24 the owner drew the way riders take from Herne towards
+Juhkentali — along Herne, on to Võistluse, up Püssirohu — and asked why it
+was not offered at all. The map has 318 m of Herne as a one-way street
+running west, and that way rides it east: BRouter charges those metres at
+three and a half times a street's price, the older router will not ride
+them, and of five sets of rules tried none offered it.
+
+**The rides already said so.** The owner's words: you can see in the
+route how much those streets are used. `ride_sections` had five rides, at
+their own pace, on every square of Herne heading east, and weighed the way
+riders take as `riddenBest()` weighs any way: ridden for 84% of its
+length, where the way offered first was ridden for 45% and the extra trip
+for 37%. What the rides cannot say is whether a bike may ride there —
+people ride the wrong way down a one-way too, which is why
+`tools/doors.mjs` throws such a stretch out of the doors (**Doors**). The
+owner said it: bikes are allowed both ways on Herne, and it is the only
+way.
+
+**So the stretch is kept, by hand.** `data/bike-taken.json` holds a
+stretch an object — its `id`, a `name`, the day it was `said`, `why`, and
+`line`, its corners as `[lat, lng]` in the direction it is ridden — as far
+as riders take it, not only the metres the map has wrong: given Herne
+alone, BRouter rode it and turned back into the park. `viaTaken()` in
+`functions/api/route.js` puts a ride's start and end on the stretch at
+their nearest points; where the ride would take 100 m of it or more in its
+own direction, both those points are within 300 m of a way already found,
+and the way along it is no more than a tenth longer than the shortest, it
+asks BRouter for the way through the middle of each street of it and
+offers that beside the others. The middles and not the corners, because a
+corner snaps to whichever street is nearest and turned the way round on
+itself; and a stretch the answer rides out and back on is cut, as the
+router's are. It is one of the three, in the place its quiet and its
+length give it — taken, not first — and goes where one of the others is
+that way already.
+
+On the first day it moved three pinned trips, each drawn for the owner
+before anything landed: from Herne to Vana Villem the extra trip went and
+the way along Herne came, 1.2 km and 5 minutes; from Kristiine to
+Juhkentali a way along it came first, 3.3 km and 14 minutes where the
+first had been 3.5 and 16; and from Herne to Tondiraba it is the third.
+
+**What it costs.** One request to BRouter more, for a ride that runs
+along a stretch, and no row. **What it does not do.** Find a stretch by
+itself: the rides point at one and the owner says a bike may ride it,
+and a new one is a few lines in the file. Nor is it asked with a heading,
+or between cities.
 
 ## Doors
 
