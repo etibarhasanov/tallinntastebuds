@@ -718,6 +718,17 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   given: each the router's question, no row read for the way, and the
   session's two rows by key where the rider is signed in — 240 rows a
   ridden hour.
+- Its new way after a train, written on 2026-11-25 and in no release yet:
+  the same question with no `heading`, from where its rider got off. On a
+  train or in a car — the phone measuring itself past 40 km/h — it asks
+  nothing and says no turn, and riding again it asks once. The builds
+  before took a train under 60 km/h for riding and asked a new way every
+  150 m it went. And riding, a new way is never asked sooner than thirty
+  seconds after the last, answered or not, which holds the same 120 an
+  hour whichever rule asks. With no `heading` it is the dearer question,
+  BRouter's ways and the rows of the ridden one, `SCORE_ROWS` at the most —
+  once a train. Its `trains` are answered and left out, as a new way's
+  always were.
 - Its ways by bike, from 2026-11-23: with no `heading`, and but for a ride
   between cities, the ways are BRouter's, in the same fields and the same
   words of `turn`
@@ -764,10 +775,12 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   nothing new of the app and reads two things it already sends: a way asked
   by bike — `from` on `GET /api/v1/route`, with its cookie — and its save.
   For the one account `RIDER` names those move the pin on the map; for
-  every other, nothing is read of them. Nothing in the app's requests is a
-  promise for it: the first way asked after an hour of none is taken for
-  where the ride set off, by the clock — `functions/api/_seen.js`, **Last
-  seen, on a bike** in `docs/handbook.md`.
+  every other, nothing is read of them. A way an installed build asks from
+  a slow train moves it as any other does, so the pin can stand on a
+  railway; the next build asks none there.
+  Nothing in the app's requests is a promise for it: the first way asked
+  after an hour of none is taken for where the ride set off, by the clock —
+  `functions/api/_seen.js`, **Last seen, on a bike** in `docs/handbook.md`.
 - Signing in, as above: `/api/v1/apple` has to accept its bundle id — `APP_IDS`
   in `functions/api/_apple.js` — and the Google trip ends at
   `tallinntastebuds://signin`, which it listens for under that name.
