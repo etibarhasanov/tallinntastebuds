@@ -340,7 +340,10 @@ a:hover { color: var(--accent-lit); }
   left: 50%;
   top: calc(50% + 12px);
   transform: translateX(-50%);
-  white-space: nowrap;
+  width: max-content;
+  max-width: 200px;
+  text-align: center;
+  line-height: 1.3;
   font-family: var(--display);
   font-size: 13px;
   font-weight: 600;
