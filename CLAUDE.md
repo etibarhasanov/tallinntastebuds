@@ -7,7 +7,7 @@ who comes to the site and what they do, a page of how they found it, a page of l
 through which an AI assistant reads the places and the public lists, a public API at `/api/v1` with the map to put
 on another site at `/embed`, and — on a subdomain of its own — a deck of Estonian
 flashcards, with a door of its own at its `/mcp` for the words and the grammar.
-Static files, fifty-six Cloudflare Functions, two D1 databases (preview and
+Static files, fifty-seven Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -753,6 +753,17 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   /api/v1/account` with `create` and `login` (`username`, `password`, answered
   `user`, refused with `taken`, `username`, `password`, `no-match` and
   `slow-down`), `ticket`, `logout` and `delete` (`current`, `username`).
+- Where the site's own account is, from 2026-11-24: `shares` on `GET
+  /api/v1/account`, true for the one account `RIDER` names and left out for
+  every other, and `POST /api/v1/seen` with `lat`, `lng` and `at` — whole
+  seconds since 1970 — which that account's app sends while it records a
+  ride, for the pin on the map. It reads nothing of the answer and never
+  sends a spot again, so the route's refusals are its own to change; what
+  is a promise is the three fields' names and that `shares` goes to nobody
+  else, since an app told `shares` sends where its rider is. Which spot may
+  go is the app's rule and the site cannot check it: never the first or
+  last 200 m of a ride — `Core/Live.swift` there, **Last seen, on a bike**
+  in `docs/handbook.md`.
 - Signing in, as above: `/api/v1/apple` has to accept its bundle id — `APP_IDS`
   in `functions/api/_apple.js` — and the Google trip ends at
   `tallinntastebuds://signin`, which it listens for under that name.
@@ -769,7 +780,8 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   there by hand.
 
 Written with Rattatee on 2026-11-17, its search, its username sign-in
-and its lists added the same day, and its counted saves on 2026-11-20.
+and its lists added the same day, its counted saves on 2026-11-20, and
+where its own account is on 2026-11-24.
 
 ## Branches and deploys
 

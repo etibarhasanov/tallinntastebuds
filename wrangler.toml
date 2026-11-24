@@ -182,6 +182,13 @@ ENVIRONMENT = "preview"
 # carries its own because the two databases hold different accounts. See
 # functions/api/_admin.js.
 ADMINS = ""
+# The one account whose rides are shown on the map as "last seen here, on a
+# bike" — a `users.id`, never a username, as ADMINS is and for its reason.
+# Empty is nobody: /api/v1/seen refuses every spot and /api/v1/account tells
+# no app to send one. A name of its own rather than ADMINS read twice,
+# because being let into the statistics must never be what puts somebody on
+# the map. See functions/api/seen.js.
+RIDER = ""
 
 # ----------------------------------------------------------------- preview
 # Every deployment that is not from the production branch.
@@ -196,6 +203,7 @@ binding = "AI"
 [env.preview.vars]
 ENVIRONMENT = "preview"
 ADMINS = ""
+RIDER = ""
 
 # -------------------------------------------------------------- production
 # tallinntastebuds.ee, and the only database anybody would miss.
@@ -211,3 +219,5 @@ binding = "AI"
 ENVIRONMENT = "production"
 # etibar, tallinntastebuds
 ADMINS = "e572e9c3-40e8-4be4-bc23-15fa339dd655,6eaabc7b-3b77-412b-b61b-dd6588b07632"
+# tallinntastebuds
+RIDER = "6eaabc7b-3b77-412b-b61b-dd6588b07632"

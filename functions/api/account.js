@@ -116,6 +116,7 @@ import { forgetMember } from './_community.js';
    account takes its lists with it: both move the mark every copy of a list
    is kept under — WHEN A LIST LAST CHANGED in ./_lists.js. */
 import { listsChanged } from './_lists.js';
+import { isRider } from './seen.js';
 
 /* The line somebody writes about themselves is capped by MAX_ABOUT in
    ./_profile.js now, beside cleanLine(), because the same line in the site's
@@ -325,6 +326,10 @@ export async function onRequestGet(context) {
     views: (await recentViews(env, user.id)) ?? undefined,
     /* The student dates, for the card that asks for one — readStudent(). */
     student: await readStudent(env, user.id),
+    /* True for the one account whose rides are shown on the map, and left
+       out for every other: what tells Rattatee to send where the rider is
+       to /api/v1/seen, which refuses anybody else — ./seen.js. */
+    shares: isRider(env, user) || undefined,
     saved: await savedBy(env, user.id)
   }, 200);
 

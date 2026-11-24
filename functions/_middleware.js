@@ -97,6 +97,10 @@
  * where they were, in functions/api/<name>.js, and the v1 catch-all calls
  * them — functions/api/v1/[[path]].js. /api/google is not on the list: it
  * is where Google's sign-in comes back to, registered in Google's console.
+ * A route the apps began reading after that — /api/v1/seen — never answered
+ * at /api/<name>, and is on the list all the same: its handler is a file
+ * under functions/api/ like the rest, and without the 410 that file would be
+ * a second address for it.
  *
  * ---------------------------------------------------------------------------
  * AND THE REPOSITORY'S OWN FILES, WHICH ARE NOT THE SITE
@@ -231,7 +235,8 @@ const GONE_HOSTS = ['splitwise.' + CANONICAL_HOST];
    names, and `node tools/apicheck.mjs --check` holds the two together. */
 const MOVED = new Set([
   'account', 'apple', 'saves', 'places', 'lists', 'profile', 'pass', 'discover',
-  'walk', 'rides', 'route', 'geocode', 'lookup', 'ask', 'flashcard', 'say'
+  'walk', 'rides', 'route', 'geocode', 'lookup', 'ask', 'flashcard', 'say',
+  'seen'
 ]);
 const RENAMED = { places: 'find', lists: 'me/lists' };
 

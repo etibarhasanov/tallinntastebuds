@@ -763,6 +763,7 @@
     renderPanel();
     discover.draw();
     drawCounter();
+    dressSeen();
     window.TTBRadio.language(code);
     /* The More sheet, if it is open, in the new language — its account row
        wears the name of whoever is signed in, or Account in these words. */
@@ -13699,6 +13700,239 @@
     });
   }
 
+  /* ---------------------------------------------------- last seen, on a bike
+   * One pin that is not a place: where Tallinn Tastebuds was last seen on a
+   * bike. The site's own account rides with Rattatee, the phone sends where
+   * it was a little while ago, and /api/v1/seen keeps that one spot and
+   * nothing more — functions/api/seen.js says who may send it and what is
+   * never sent: the pin trails the rider by 200 m of riding, and the first
+   * and last 200 m of a ride are not on this map at all. **Last seen, on a
+   * bike** in docs/handbook.md is the long version.
+   *
+   * IT WEARS THE MOUTH, AND IT IS NOT A PLACE
+   *
+   * The mark goes on a place I have eaten at, and on nothing a stranger can
+   * hand out — "The pins". This is the one other thing on the map that wears
+   * it, because it is the one other thing that is the site itself: its own
+   * account, on its own bike. What keeps it from reading as a place is
+   * everything round the picture. The collar is --way-bike, the green of a
+   * way by bike and of no pin; there is a bike on its shoulder; the label
+   * under it is a sentence and never a name; and pressing it opens a card
+   * that says who was seen and when, not a write-up.
+   *
+   * FRESH, AND THEN QUIET
+   *
+   * A spot the rider passed within SEEN_FRESH is drawn full and green, with
+   * the clock on it. An older one is the same pin smaller and grey, and from
+   * an earlier day it says the day in place of the clock. It never goes: the
+   * owner's word was that last seen can stay for ever, since what protects
+   * the rider is the 200 m, not the pin running out.
+   *
+   * HOW OFTEN IT ASKS
+   *
+   * Once on arrival, last and unwaited like the counts. Then every
+   * SEEN_EVERY while the spot is fresh, which is a ride going on, and every
+   * SEEN_IDLE while it is not, so a map left open finds out that one began —
+   * and never while the tab is hidden. The answer is one row, kept thirty
+   * seconds in the colo; the route's header has the day's worst in rows.
+   */
+  var SEEN_PANE = 'ttbSeen';
+  var SEEN_FRESH = 10 * 60000;
+  var SEEN_EVERY = 30000;
+  var SEEN_IDLE = 5 * 60000;
+
+  var seenSpot = null;      /* { lat, lng, at } with `at` in milliseconds */
+  var seenMarker = null;
+  var seenPopup = null;
+  var seenTimer = null;
+  var seenAsked = 0;
+
+  function seenFresh() {
+    return !!seenSpot && Date.now() - seenSpot.at <= SEEN_FRESH;
+  }
+
+  function seenOpen() {
+    return map.hasLayer(seenPopup);
+  }
+
+  function mountSeen() {
+    /* Over the marks and their names — Leaflet's own are 600 and 650 — and
+       under a popup's 700, which is where its card opens. */
+    map.createPane(SEEN_PANE).style.zIndex = 660;
+
+    /* The card is a popup of its own rather than one bound to the pin, so
+       that toggleSeen() is the one thing that opens it and can fit it to the
+       screen first. Its foot stands just clear of the pin's collar. */
+    seenPopup = L.popup({
+      className: 'seen-pop',
+      closeButton: false,
+      offset: [0, -PIN_BOX / 2],
+      autoPanPaddingBottomRight: [12, 24]
+    });
+    seenPopup.on('remove', function () {
+      var node = seenMarker && seenMarker.getElement();
+      if (node) node.setAttribute('aria-expanded', 'false');
+    });
+
+    /* A press anywhere else puts the card away, a place's pin included:
+       Leaflet closes a popup on a press of the map alone, and a mark keeps
+       its press to itself. */
+    document.addEventListener('pointerdown', function (ev) {
+      if (!seenOpen()) return;
+      var pin = seenMarker && seenMarker.getElement();
+      if (seenPopup.getElement().contains(ev.target) || (pin && pin.contains(ev.target))) return;
+      map.closePopup(seenPopup);
+    });
+
+    document.addEventListener('visibilitychange', askSeen);
+    askSeen();
+  }
+
+  /* Ask, or wait until it is time to. Everything that might want the spot
+     calls this and nothing else — arrival, the answer before, the tab coming
+     back — so there is one timer and never two asks in flight for long. */
+  function askSeen() {
+    window.clearTimeout(seenTimer);
+    seenTimer = null;
+    if (document.visibilityState === 'hidden') return;
+
+    var wait = seenFresh() ? SEEN_EVERY : SEEN_IDLE;
+    var since = Date.now() - seenAsked;
+    if (seenAsked && since < wait) {
+      seenTimer = window.setTimeout(askSeen, wait - since);
+      return;
+    }
+
+    seenAsked = Date.now();
+    getJSON('/api/v1/seen').then(function (got) {
+      if (got && got.ready === true) seatSeen(got.seen);
+    }).catch(function () { /* the pin stays where it was, and nothing else changes */ })
+      .then(function () {
+        /* Whatever came back, the pin is half a minute or five minutes
+           older than when it was last dressed. */
+        dressSeen();
+        askSeen();
+      });
+  }
+
+  /* The pin put where the spot is, made on the first one and taken off when
+     there is none. */
+  function seatSeen(spot) {
+    if (!spot || typeof spot.lat !== 'number' || typeof spot.lng !== 'number' || typeof spot.at !== 'number') {
+      map.closePopup(seenPopup);
+      if (seenMarker) map.removeLayer(seenMarker);
+      seenMarker = null;
+      seenSpot = null;
+      return;
+    }
+    seenSpot = { lat: spot.lat, lng: spot.lng, at: spot.at * 1000 };
+    if (seenMarker) {
+      seenMarker.setLatLng([spot.lat, spot.lng]);
+      if (seenOpen()) seenPopup.setLatLng([spot.lat, spot.lng]);
+      return;
+    }
+
+    seenMarker = L.marker([spot.lat, spot.lng], {
+      icon: L.divIcon({
+        className: 'seen-pin',
+        html: '<span class="seen-face"><span class="seen-bike" aria-hidden="true">🚲</span></span>' +
+          '<span class="seen-label"><span class="seen-words"></span> · <span class="seen-when"></span></span>',
+        iconSize: [PIN_BOX, PIN_BOX],
+        iconAnchor: [PIN_BOX / 2, PIN_BOX / 2]
+      }),
+      pane: SEEN_PANE,
+      keyboard: false,        /* the button semantics are added by hand below */
+      bubblingMouseEvents: false
+    });
+    seenMarker.on('click', toggleSeen);
+    seenMarker.addTo(map);
+
+    var node = seenMarker.getElement();
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('role', 'button');
+    node.setAttribute('aria-expanded', 'false');
+    node.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
+        ev.preventDefault();
+        toggleSeen();
+      }
+    });
+  }
+
+  /* The card, opened or put away. Fitted before it opens, because the rail
+     stands over the left of the map and is as wide as its longest word in
+     the language on screen: the card is made no wider than what is left
+     beside it, and Leaflet moves the map until the card is clear of the
+     rail and of what stands at the top: the chips end at 146 px on a phone,
+     and the brand's card at 190 on a desktop. */
+  function toggleSeen() {
+    if (seenOpen()) { map.closePopup(seenPopup); return; }
+
+    var left = dom.rail.getBoundingClientRect().right + 12;
+    /* 30 is the card's own margin and hairline, in .seen-pop. */
+    var room = window.innerWidth - left - 12 - 30;
+    seenPopup.options.minWidth = Math.min(220, room);
+    seenPopup.options.maxWidth = Math.min(260, room);
+    seenPopup.options.autoPanPaddingTopLeft = L.point(left, isNarrow() ? 160 : 200);
+    seenPopup.setLatLng(seenMarker.getLatLng()).setContent(seenCard()).openOn(map);
+
+    seenMarker.getElement().setAttribute('aria-expanded', 'true');
+    TTBTrack.event('seen_open');
+  }
+
+  /* What the pin says, in the language on screen and as old as it now is.
+     Called on every answer and on a language switch. */
+  function dressSeen() {
+    var node = seenMarker && seenMarker.getElement();
+    if (!node) return;
+    var when = seenWhen(seenSpot.at, false);
+    node.classList.toggle('is-old', !seenFresh());
+    node.setAttribute('aria-label', t('seenLabel') + ', ' + when);
+    node.querySelector('.seen-words').textContent = t('seenLabel');
+    node.querySelector('.seen-when').textContent = when;
+    if (seenOpen()) seenPopup.setContent(seenCard());
+  }
+
+  /* The card a press opens: who, and when. It says nothing of the 200 m
+     held back at each end of a ride — the owner's word was that the card
+     only has to say Tallinn Tastebuds was seen here at this time, and what
+     is not shown is not something a visitor needs explaining. */
+  function seenCard() {
+    var mins = Math.max(1, Math.round((Date.now() - seenSpot.at) / 60000));
+    var ago = mins < 60 ? t('seenMinAgo', { n: mins })
+      : mins < 1440 ? t('seenHoursAgo', { n: Math.floor(mins / 60) })
+      : '';
+    return el('div', { className: 'seen-card' }, [
+      el('p', { className: 'seen-eyebrow', textContent: [t('seenEyebrow'), seenWhen(seenSpot.at, true)].concat(ago || []).join(' · ') }),
+      el('p', { className: 'seen-title', textContent: t('seenTitle') })
+    ]);
+  }
+
+  /* When the rider passed the spot, on Tallinn's clock whoever is reading:
+     the time for one from today, and for an older one the day — with the
+     time after it where `whole` asks, which the card does and the label, a
+     line on a phone's map, does not. The day's month is Intl's short one,
+     and numbers where this browser has no month names for the language —
+     formatMonth() above says which browsers those are. */
+  function seenWhen(at, whole) {
+    var wall = new Date(at + tallinnOffset(at));
+    var now = new Date(Date.now() + tallinnOffset(Date.now()));
+    var clock = ('0' + wall.getUTCHours()).slice(-2) + ':' + ('0' + wall.getUTCMinutes()).slice(-2);
+    var sameYear = wall.getUTCFullYear() === now.getUTCFullYear();
+    if (sameYear && wall.getUTCMonth() === now.getUTCMonth() && wall.getUTCDate() === now.getUTCDate()) return clock;
+
+    var day = '';
+    try {
+      day = new Intl.DateTimeFormat(state.lang, {
+        day: 'numeric', month: 'short', year: sameYear ? undefined : 'numeric', timeZone: 'Europe/Tallinn'
+      }).format(new Date(at));
+    } catch (e) { /* the numbers below */ }
+    if (!day || /M\d\d/.test(day)) {
+      day = wall.getUTCDate() + '.' + ('0' + (wall.getUTCMonth() + 1)).slice(-2) + '.' + (sameYear ? '' : wall.getUTCFullYear());
+    }
+    return whole ? day + ', ' + clock : day;
+  }
+
   /* ------------------------------------------------------------------ boot */
 
   function getJSON(path) {
@@ -13932,6 +14166,8 @@
       loadAccount();
       /* And the flag counter on Discover, on a desktop: last and unwaited, the same. */
       loadCounter();
+      /* And where Tallinn Tastebuds was last seen on a bike, the same again. */
+      mountSeen();
 
       wireHistory();
 
