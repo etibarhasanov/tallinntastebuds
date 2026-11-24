@@ -3276,6 +3276,30 @@
    ]
   },
   {
+   "id": "arm-words",
+   "added": "2026-11-24",
+   "name": {
+    "en": "The words of Mu isamaa on minu arm",
+    "az": "Mu isamaa on minu arm mahnısının sözləri",
+    "ru": "Слова из песни Mu isamaa on minu arm"
+   },
+   "why": {
+    "en": "The words from the song the other decks do not have yet, each with its line",
+    "az": "Mahnıdan digər dəstlərdə hələ olmayan sözlər, hər biri öz misrası ilə",
+    "ru": "Слова из песни, которых ещё нет в других колодах, каждое со своей строкой"
+   },
+   "level": "song",
+   "cards": [
+    "ulem",
+    "oitsema",
+    "laimama",
+    "vooras",
+    "kadedus",
+    "heitma",
+    "uni"
+   ]
+  },
+  {
    "id": "cases-three-cards",
    "added": "2026-10-06",
    "name": {
@@ -3735,6 +3759,27 @@
     "music": "Fredrik Pacius, 1848"
    },
    "deck": "isamaa-words"
+  },
+  {
+   "id": "mu-isamaa-on-minu-arm",
+   "added": "2026-11-24",
+   "name": {
+    "en": "Mu isamaa on minu arm — my fatherland is my love",
+    "az": "Mu isamaa on minu arm — vətənim mənim sevgimdir",
+    "ru": "Mu isamaa on minu arm — отчизна моя, любовь моя"
+   },
+   "why": {
+    "en": "Koidula's poem, the song every song festival ends on, line by line",
+    "az": "Koidulanın şeiri — hər mahnı bayramının sonuncu mahnısı, misra-misra",
+    "ru": "Стихи Койдулы — песня, которой заканчивается каждый праздник песни, строка за строкой"
+   },
+   "taste": "Mu isamaa on minu arm",
+   "video": "XTdOiCa0-4o",
+   "credit": {
+    "words": "Lydia Koidula, 1867",
+    "music": "Gustav Ernesaks, 1944"
+   },
+   "deck": "arm-words"
   }
  ],
  "talks": [

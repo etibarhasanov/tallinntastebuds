@@ -54,7 +54,7 @@
  * itself.
  *
  * A link to a deck is sent to somebody, and carries the picture of a card and
- * the language it was sent in rather than the map's — and the fifty-four
+ * the language it was sent in rather than the map's — and the fifty-five
  * decks the site ships are also indexed, so a deck's head and its words are
  * what a search finds. That head is written by a route, so the root is called
  * rather than rewritten to — see the block inside onRequest() for what a

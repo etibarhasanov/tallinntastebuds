@@ -1,0 +1,773 @@
+{
+ "id": "mu-isamaa-on-minu-arm",
+ "added": "2026-11-24",
+ "name": {
+  "en": "Mu isamaa on minu arm — my fatherland is my love",
+  "az": "Mu isamaa on minu arm — vətənim mənim sevgimdir",
+  "ru": "Mu isamaa on minu arm — отчизна моя, любовь моя"
+ },
+ "why": {
+  "en": "Koidula's poem, the song every song festival ends on, line by line",
+  "az": "Koidulanın şeiri — hər mahnı bayramının sonuncu mahnısı, misra-misra",
+  "ru": "Стихи Койдулы — песня, которой заканчивается каждый праздник песни, строка за строкой"
+ },
+ "taste": "Mu isamaa on minu arm",
+ "video": "XTdOiCa0-4o",
+ "credit": {
+  "words": "Lydia Koidula, 1867",
+  "music": "Gustav Ernesaks, 1944"
+ },
+ "deck": "arm-words",
+ "verses": [
+  [
+   {
+    "et": "Mu isamaa on minu arm,",
+    "en": "My fatherland is my love,",
+    "az": "Vətənim mənim sevgimdir,",
+    "ru": "Моя отчизна — моя любовь,"
+   },
+   {
+    "et": "kel südant annud ma.",
+    "en": "to whom I have given my heart.",
+    "az": "ona ürəyimi vermişəm.",
+    "ru": "ей отдано моё сердце."
+   },
+   {
+    "et": "Sull' laulan ma, mu ülem õnn,",
+    "en": "To you I sing, my greatest happiness,",
+    "az": "Sənə oxuyuram, ən böyük səadətim,",
+    "ru": "Тебе пою я, моё высшее счастье,"
+   },
+   {
+    "et": "mu õitsev Eestimaa!",
+    "en": "my blossoming Estonia!",
+    "az": "çiçəklənən Estoniyam!",
+    "ru": "моя цветущая Эстония!"
+   },
+   {
+    "et": "Su valu südames mul keeb,",
+    "en": "Your pain boils in my heart,",
+    "az": "Sənin ağrın ürəyimdə qaynayır,",
+    "ru": "Твоя боль кипит в моём сердце,"
+   },
+   {
+    "et": "su õnn ja rõõm mind rõõmsaks teeb,",
+    "en": "your happiness and joy make me glad,",
+    "az": "sənin səadətin və sevincin məni sevindirir,",
+    "ru": "твоё счастье и радость радуют меня,"
+   },
+   {
+    "et": "mu isamaa, mu isamaa!",
+    "en": "my fatherland, my fatherland!",
+    "az": "vətənim, vətənim!",
+    "ru": "моя отчизна, моя отчизна!"
+   }
+  ],
+  [
+   {
+    "et": "Mu isamaa on minu arm,",
+    "en": "My fatherland is my love,",
+    "az": "Vətənim mənim sevgimdir,",
+    "ru": "Моя отчизна — моя любовь,"
+   },
+   {
+    "et": "ei teda jäta ma,",
+    "en": "I will not leave her,",
+    "az": "onu tərk etmərəm,",
+    "ru": "я её не покину,"
+   },
+   {
+    "et": "ja peaksin sada surma ma",
+    "en": "even if I had to die a hundred deaths",
+    "az": "yüz dəfə ölməli olsam belə",
+    "ru": "и если бы мне пришлось сто раз умереть"
+   },
+   {
+    "et": "see pärast surema!",
+    "en": "for her sake!",
+    "az": "onun uğrunda!",
+    "ru": "за неё!"
+   },
+   {
+    "et": "Kas laimab võõra kadedus,",
+    "en": "Though a stranger's envy slanders you,",
+    "az": "Qoy yadın paxıllığı sənə böhtan atsın,",
+    "ru": "Пусть клевещет чужая зависть,"
+   },
+   {
+    "et": "sa siiski elad südames,",
+    "en": "you live on in my heart all the same,",
+    "az": "sən yenə də ürəyimdə yaşayırsan,",
+    "ru": "ты всё равно живёшь в сердце,"
+   },
+   {
+    "et": "mu isamaa, mu isamaa!",
+    "en": "my fatherland, my fatherland!",
+    "az": "vətənim, vətənim!",
+    "ru": "моя отчизна, моя отчизна!"
+   }
+  ],
+  [
+   {
+    "et": "Mu isamaa on minu arm,",
+    "en": "My fatherland is my love,",
+    "az": "Vətənim mənim sevgimdir,",
+    "ru": "Моя отчизна — моя любовь,"
+   },
+   {
+    "et": "ja tahan puhata,",
+    "en": "and I want to rest,",
+    "az": "və dincəlmək istəyirəm,",
+    "ru": "и я хочу отдохнуть,"
+   },
+   {
+    "et": "su rüppe heidan unele,",
+    "en": "in your lap I lie down to sleep,",
+    "az": "qucağında yuxuya uzanıram,",
+    "ru": "в твоё лоно ложусь я спать,"
+   },
+   {
+    "et": "mu püha Eestimaa!",
+    "en": "my holy Estonia!",
+    "az": "müqəddəs Estoniyam!",
+    "ru": "моя святая Эстония!"
+   },
+   {
+    "et": "Su linnud und mull' laulavad,",
+    "en": "Your birds sing me to sleep,",
+    "az": "Quşların mənə layla çalır,",
+    "ru": "Твои птицы поют мне колыбельную,"
+   },
+   {
+    "et": "mu põrmust lilled õitsetad,",
+    "en": "from my dust you make flowers bloom,",
+    "az": "külümdən çiçəklər bitirirsən,",
+    "ru": "из моего праха ты растишь цветы,"
+   },
+   {
+    "et": "mu isamaa, mu isamaa!",
+    "en": "my fatherland, my fatherland!",
+    "az": "vətənim, vətənim!",
+    "ru": "моя отчизна, моя отчизна!"
+   }
+  ]
+ ],
+ "words": {
+  "mu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "мой"
+   },
+   "note": {
+    "en": "Mu is the short minu, the way ma is the short mina.",
+    "az": "Mu — minu sözünün qısası, ma da mina sözünün qısası kimi.",
+    "ru": "Mu — краткое minu, как ma — краткое mina."
+   }
+  },
+  "isamaa": {
+   "base": "isamaa",
+   "means": {
+    "en": "fatherland, homeland",
+    "az": "vətən, ata yurdu",
+    "ru": "отчизна, родина"
+   },
+   "deck": "isamaa-words",
+   "note": {
+    "en": "Isa is father and maa is land: the land of the fathers.",
+    "az": "Isa — ata, maa — torpaq, yurd: ataların yurdu.",
+    "ru": "Isa — отец, maa — земля: земля отцов."
+   }
+  },
+  "on": {
+   "base": "olema",
+   "means": {
+    "en": "is",
+    "az": "dır",
+    "ru": "есть"
+   },
+   "deck": "verbs"
+  },
+  "minu": {
+   "base": "mina",
+   "means": {
+    "en": "my",
+    "az": "mənim",
+    "ru": "моя"
+   }
+  },
+  "arm": {
+   "base": "arm",
+   "means": {
+    "en": "love",
+    "az": "sevgi, məhəbbət",
+    "ru": "любовь"
+   },
+   "deck": "looks",
+   "note": {
+    "en": "Arm is a scar on a card. It is also an old word for love — the love in armas, dear, and armastus.",
+    "az": "Kartda arm çapıq deməkdir. Həm də sevgi üçün köhnə sözdür — armas, əziz, və armastus sözlərindəki sevgi.",
+    "ru": "На карточке arm — шрам. Но это и старое слово для любви — той, что в armas, милый, и armastus."
+   }
+  },
+  "kel": {
+   "base": "kes",
+   "means": {
+    "en": "to whom",
+    "az": "kimə ki",
+    "ru": "которой, кому"
+   },
+   "deck": "naera-words",
+   "note": {
+    "en": "Kel is the short kellel, from kes, who — and here it is to whom.",
+    "az": "Kel — kes, «kim» sözündən olan kellel-in qısasıdır; burada «kimə ki» deməkdir.",
+    "ru": "Kel — краткое kellel, от kes, «кто»; здесь — «которой, кому»."
+   }
+  },
+  "südant": {
+   "base": "süda",
+   "means": {
+    "en": "the heart",
+    "az": "ürəyi",
+    "ru": "сердце"
+   },
+   "deck": "body"
+  },
+  "annud": {
+   "base": "andma",
+   "means": {
+    "en": "given — annud ma, I have given",
+    "az": "vermiş — annud ma, vermişəm",
+    "ru": "отдано — annud ma, я отдал"
+   },
+   "deck": "verbs",
+   "note": {
+    "en": "Annud is andnud, given, the way it was said then: olen andnud, I have given.",
+    "az": "Annud — andnud, «vermiş» sözünün o vaxtkı deyilişidir: olen andnud, vermişəm.",
+    "ru": "Annud — andnud, «отдал», как говорили тогда: olen andnud — я отдал."
+   }
+  },
+  "ma": {
+   "base": "mina",
+   "means": {
+    "en": "I",
+    "az": "mən",
+    "ru": "я"
+   },
+   "note": {
+    "en": "Ma is the short mina.",
+    "az": "Ma — mina sözünün qısasıdır.",
+    "ru": "Ma — краткое mina."
+   }
+  },
+  "sull": {
+   "base": "sina",
+   "means": {
+    "en": "to you",
+    "az": "sənə",
+    "ru": "тебе"
+   },
+   "note": {
+    "en": "Sull' is sulle, to you, clipped for the tune.",
+    "az": "Sull' — melodiya üçün qısaldılmış sulle, «sənə» deməkdir.",
+    "ru": "Sull' — sulle, «тебе», сокращённое ради мелодии."
+   }
+  },
+  "laulan": {
+   "base": "laulma",
+   "means": {
+    "en": "I sing",
+    "az": "oxuyuram",
+    "ru": "пою"
+   },
+   "deck": "moreverbs"
+  },
+  "ülem": {
+   "base": "ülem",
+   "means": {
+    "en": "highest, greatest",
+    "az": "ən uca, ən böyük",
+    "ru": "высшее"
+   },
+   "deck": "arm-words",
+   "note": {
+    "en": "Ülem is the boss at work today. In the song it is the older highest: mu ülem õnn, my greatest happiness.",
+    "az": "Bu gün ülem işdə rəis deməkdir. Mahnıda isə köhnə mənasındadır, «ən uca»: mu ülem õnn, ən böyük səadətim.",
+    "ru": "Сегодня ülem — начальник на работе. В песне это старое «высший»: mu ülem õnn — моё высшее счастье."
+   }
+  },
+  "õnn": {
+   "base": "õnn",
+   "means": {
+    "en": "happiness",
+    "az": "səadət, xoşbəxtlik",
+    "ru": "счастье"
+   },
+   "deck": "feelings"
+  },
+  "õitsev": {
+   "base": "õitsema",
+   "means": {
+    "en": "blossoming",
+    "az": "çiçəklənən",
+    "ru": "цветущая"
+   },
+   "deck": "arm-words",
+   "note": {
+    "en": "The -v makes õitsema a word that describes: õitsev, blossoming.",
+    "az": "-v õitsema feilini sifətə çevirir: õitsev — çiçəklənən.",
+    "ru": "-v делает из õitsema определение: õitsev — цветущий."
+   }
+  },
+  "eestimaa": {
+   "base": "Eestimaa",
+   "means": {
+    "en": "Estonia",
+    "az": "Estoniya",
+    "ru": "Эстония"
+   },
+   "note": {
+    "en": "Eesti with maa, land: the land of Estonia, the name a song gives it.",
+    "az": "Eesti və maa, torpaq: Estoniya torpağı — mahnının ona verdiyi ad.",
+    "ru": "Eesti и maa, земля: земля эстонская — так её называет песня."
+   }
+  },
+  "su": {
+   "base": "sina",
+   "means": {
+    "en": "your",
+    "az": "sənin",
+    "ru": "твой"
+   },
+   "note": {
+    "en": "Su is the short sinu.",
+    "az": "Su — sinu sözünün qısasıdır.",
+    "ru": "Su — краткое sinu."
+   }
+  },
+  "valu": {
+   "base": "valu",
+   "means": {
+    "en": "pain",
+    "az": "ağrı",
+    "ru": "боль"
+   },
+   "deck": "health"
+  },
+  "südames": {
+   "base": "süda",
+   "means": {
+    "en": "in the heart",
+    "az": "ürəkdə",
+    "ru": "в сердце"
+   },
+   "deck": "body",
+   "note": {
+    "en": "-s is in: südames, in the heart.",
+    "az": "-s «-da» deməkdir: südames — ürəkdə.",
+    "ru": "-s значит «в»: südames — в сердце."
+   }
+  },
+  "mul": {
+   "base": "mina",
+   "means": {
+    "en": "at me — südames mul, in my heart",
+    "az": "məndə — südames mul, ürəyimdə",
+    "ru": "у меня — südames mul, в моём сердце"
+   },
+   "note": {
+    "en": "Mul is at me — mul on, I have. Südames mul is the heart at me: my heart.",
+    "az": "Mul — məndə: mul on, məndə var. Südames mul — məndəki ürəkdə, yəni ürəyimdə.",
+    "ru": "Mul — у меня: mul on, у меня есть. Südames mul — в сердце у меня, в моём сердце."
+   }
+  },
+  "keeb": {
+   "base": "keema",
+   "means": {
+    "en": "boils",
+    "az": "qaynayır",
+    "ru": "кипит"
+   },
+   "deck": "cooking",
+   "note": {
+    "en": "Keema is what a pot does on a card in the kitchen. Here it is pain, boiling in a heart.",
+    "az": "Mətbəx kartında keema qazanın qaynamasıdır. Burada isə ürəkdə qaynayan ağrıdır.",
+    "ru": "На кухонной карточке keema — это кипит кастрюля. Здесь кипит боль в сердце."
+   }
+  },
+  "ja": {
+   "base": "ja",
+   "means": {
+    "en": "and",
+    "az": "və",
+    "ru": "и"
+   },
+   "deck": "everyday"
+  },
+  "rõõm": {
+   "base": "rõõm",
+   "means": {
+    "en": "joy",
+    "az": "sevinc",
+    "ru": "радость"
+   },
+   "deck": "isamaa-words"
+  },
+  "mind": {
+   "base": "mina",
+   "means": {
+    "en": "me",
+    "az": "məni",
+    "ru": "меня"
+   }
+  },
+  "rõõmsaks": {
+   "base": "rõõmus",
+   "means": {
+    "en": "glad — rõõmsaks teeb, makes glad",
+    "az": "sevincli — rõõmsaks teeb, sevindirir",
+    "ru": "радостным — rõõmsaks teeb, радует"
+   },
+   "deck": "character",
+   "note": {
+    "en": "-ks is what something becomes: rõõmsaks tegema, to make glad.",
+    "az": "-ks nəyə çevrildiyini deyir: rõõmsaks tegema — sevindirmək.",
+    "ru": "-ks — кем или чем становится: rõõmsaks tegema — радовать."
+   }
+  },
+  "teeb": {
+   "base": "tegema",
+   "means": {
+    "en": "makes",
+    "az": "edir",
+    "ru": "делает"
+   },
+   "deck": "verbs"
+  },
+  "ei": {
+   "base": "ei",
+   "means": {
+    "en": "not",
+    "az": "yox, deyil",
+    "ru": "не"
+   },
+   "deck": "basics"
+  },
+  "teda": {
+   "base": "tema",
+   "means": {
+    "en": "her, him, it",
+    "az": "onu",
+    "ru": "её, его"
+   },
+   "note": {
+    "en": "Teda is tema as an object. Estonian has one word for he and she, so the fatherland here is her and him at once.",
+    "az": "Teda — tamamlıq kimi tema-dır. Eston dilində «o» üçün bir söz var — kişi də, qadın da.",
+    "ru": "Teda — tema в роли дополнения. В эстонском одно слово и для «он», и для «она», так что отчизна здесь — и он, и она."
+   }
+  },
+  "jäta": {
+   "base": "jätma",
+   "means": {
+    "en": "leave — ei jäta, will not leave",
+    "az": "tərk etmək — ei jäta, tərk etmərəm",
+    "ru": "оставить — ei jäta, не оставлю"
+   },
+   "deck": "moreverbs"
+  },
+  "peaksin": {
+   "base": "pidama",
+   "means": {
+    "en": "I would have to",
+    "az": "məcbur olsam",
+    "ru": "мне пришлось бы"
+   },
+   "deck": "moreverbs",
+   "note": {
+    "en": "Peaksin is pidama, must, in the would-form: ja peaksin, and even if I had to.",
+    "az": "Peaksin — pidama, «məcbur olmaq», şərt formasında: ja peaksin — məcbur olsam belə.",
+    "ru": "Peaksin — pidama, «быть должным», в условной форме: ja peaksin — и если бы пришлось."
+   }
+  },
+  "sada": {
+   "base": "sada",
+   "means": {
+    "en": "a hundred",
+    "az": "yüz",
+    "ru": "сто"
+   },
+   "deck": "numbers"
+  },
+  "surma": {
+   "base": "surm",
+   "means": {
+    "en": "deaths — sada surma, a hundred deaths",
+    "az": "ölüm — sada surma, yüz ölüm",
+    "ru": "смертей — sada surma, сто смертей"
+   },
+   "deck": "isamaa-words"
+  },
+  "see": {
+   "base": "see",
+   "means": {
+    "en": "it",
+    "az": "bu",
+    "ru": "это"
+   },
+   "deck": "pronouns",
+   "note": {
+    "en": "See pärast is seepärast, because of it, written as two words — here, for her sake.",
+    "az": "See pärast — iki sözlə yazılmış seepärast, «buna görə»dir; burada «onun uğrunda».",
+    "ru": "See pärast — seepärast, «поэтому», написанное в два слова; здесь — «за неё»."
+   }
+  },
+  "pärast": {
+   "base": "pärast",
+   "means": {
+    "en": "because of, for the sake of",
+    "az": "görə, uğrunda",
+    "ru": "из-за, ради"
+   },
+   "deck": "everyday",
+   "note": {
+    "en": "Pärast is after on a card, and because of when it comes after the word: selle pärast, for its sake.",
+    "az": "Kartda pärast «sonra» deməkdir, sözdən sonra gələndə isə «görə»: selle pärast — onun üçün.",
+    "ru": "На карточке pärast — «после», а после слова — «из-за, ради»: selle pärast — ради этого."
+   }
+  },
+  "surema": {
+   "base": "surema",
+   "means": {
+    "en": "to die",
+    "az": "ölmək",
+    "ru": "умереть"
+   },
+   "deck": "family"
+  },
+  "kas": {
+   "base": "kas",
+   "means": {
+    "en": "though",
+    "az": "qoy",
+    "ru": "пусть, хоть"
+   },
+   "note": {
+    "en": "Kas starts a question on a card. Here it is though: kas laimab, though it slanders.",
+    "az": "Kartda kas sual başladır. Burada isə «qoy»: kas laimab — qoy böhtan atsın.",
+    "ru": "На карточке kas начинает вопрос. Здесь это «пусть»: kas laimab — пусть клевещет."
+   }
+  },
+  "laimab": {
+   "base": "laimama",
+   "means": {
+    "en": "slanders",
+    "az": "böhtan atır",
+    "ru": "клевещет"
+   },
+   "deck": "arm-words"
+  },
+  "võõra": {
+   "base": "võõras",
+   "means": {
+    "en": "a stranger's",
+    "az": "yadın",
+    "ru": "чужая"
+   },
+   "deck": "arm-words"
+  },
+  "kadedus": {
+   "base": "kadedus",
+   "means": {
+    "en": "envy",
+    "az": "paxıllıq",
+    "ru": "зависть"
+   },
+   "deck": "arm-words"
+  },
+  "sa": {
+   "base": "sina",
+   "means": {
+    "en": "you — one person",
+    "az": "sən",
+    "ru": "ты"
+   },
+   "note": {
+    "en": "Sa is the short sina, the way song and speech both say it.",
+    "az": "Sa — sina sözünün qısasıdır, həm mahnıda, həm danışıqda.",
+    "ru": "Sa — краткое sina, так и поют, и говорят."
+   }
+  },
+  "siiski": {
+   "base": "siiski",
+   "means": {
+    "en": "all the same, still",
+    "az": "yenə də",
+    "ru": "всё равно, всё же"
+   },
+   "deck": "randaja-words"
+  },
+  "elad": {
+   "base": "elama",
+   "means": {
+    "en": "you live",
+    "az": "yaşayırsan",
+    "ru": "живёшь"
+   },
+   "deck": "verbs"
+  },
+  "tahan": {
+   "base": "tahtma",
+   "means": {
+    "en": "I want",
+    "az": "istəyirəm",
+    "ru": "хочу"
+   },
+   "deck": "verbs"
+  },
+  "puhata": {
+   "base": "puhkama",
+   "means": {
+    "en": "to rest",
+    "az": "dincəlmək",
+    "ru": "отдохнуть"
+   },
+   "deck": "moreverbs",
+   "note": {
+    "en": "Puhata is the second form of puhkama, the one tahtma takes: tahan puhata, I want to rest.",
+    "az": "Puhata — puhkama feilinin ikinci formasıdır, tahtma ilə gələn: tahan puhata — dincəlmək istəyirəm.",
+    "ru": "Puhata — вторая форма puhkama, та, что идёт после tahtma: tahan puhata — хочу отдохнуть."
+   }
+  },
+  "rüppe": {
+   "base": "rüpp",
+   "means": {
+    "en": "into the lap",
+    "az": "qucağına",
+    "ru": "в лоно"
+   },
+   "note": {
+    "en": "Rüpp is a lap or a bosom, a word for poems. The lap a child sits on is süli.",
+    "az": "Rüpp — qucaq, sinə; şeir sözüdür. Uşağın oturduğu qucaq isə süli-dir.",
+    "ru": "Rüpp — лоно, колени; слово для стихов. Колени, на которых сидит ребёнок, — süli."
+   }
+  },
+  "heidan": {
+   "base": "heitma",
+   "means": {
+    "en": "I lie down — heidan unele, I lie down to sleep",
+    "az": "uzanıram — heidan unele, yuxuya uzanıram",
+    "ru": "ложусь — heidan unele, ложусь спать"
+   },
+   "deck": "arm-words",
+   "note": {
+    "en": "Heitma is to throw; to throw yourself down to sleep is to lie down.",
+    "az": "Heitma — atmaq; özünü yuxuya atmaq — uzanmaq deməkdir.",
+    "ru": "Heitma — бросать; броситься в сон — значит лечь."
+   }
+  },
+  "unele": {
+   "base": "uni",
+   "means": {
+    "en": "to sleep",
+    "az": "yuxuya",
+    "ru": "ко сну, спать"
+   },
+   "deck": "arm-words",
+   "note": {
+    "en": "-le is onto: unele heitma, to lie down to sleep.",
+    "az": "-le «-a, üstünə» deməkdir: unele heitma — yuxuya uzanmaq.",
+    "ru": "-le значит «на, к»: unele heitma — лечь спать."
+   }
+  },
+  "püha": {
+   "base": "püha",
+   "means": {
+    "en": "holy",
+    "az": "müqəddəs",
+    "ru": "святая"
+   },
+   "deck": "plans",
+   "note": {
+    "en": "Püha is a public holiday on a card, because a holiday is a holy day. Here it is holy.",
+    "az": "Kartda püha bayram günüdür, çünki bayram müqəddəs gündür. Burada isə müqəddəs deməkdir.",
+    "ru": "На карточке püha — праздник, потому что праздник — святой день. Здесь — святая."
+   }
+  },
+  "linnud": {
+   "base": "lind",
+   "means": {
+    "en": "birds",
+    "az": "quşlar",
+    "ru": "птицы"
+   },
+   "deck": "country"
+  },
+  "und": {
+   "base": "uni",
+   "means": {
+    "en": "sleep — und laulma, to sing to sleep",
+    "az": "yuxu — und laulma, layla çalmaq",
+    "ru": "сон — und laulma, убаюкивать песней"
+   },
+   "deck": "arm-words"
+  },
+  "mull": {
+   "base": "mina",
+   "means": {
+    "en": "to me",
+    "az": "mənə",
+    "ru": "мне"
+   },
+   "note": {
+    "en": "Mull' is mulle, to me, clipped for the tune — as sull' is sulle.",
+    "az": "Mull' — melodiya üçün qısaldılmış mulle, «mənə»dir, sull' də sulle olduğu kimi.",
+    "ru": "Mull' — mulle, «мне», сокращённое ради мелодии, как sull' — sulle."
+   }
+  },
+  "laulavad": {
+   "base": "laulma",
+   "means": {
+    "en": "they sing",
+    "az": "oxuyurlar",
+    "ru": "поют"
+   },
+   "deck": "moreverbs"
+  },
+  "põrmust": {
+   "base": "põrm",
+   "means": {
+    "en": "from the dust",
+    "az": "küldən, torpaqdan",
+    "ru": "из праха"
+   },
+   "note": {
+    "en": "Põrm is the dust a body goes back to — a word for graves and songs.",
+    "az": "Põrm bədənin qayıtdığı torpaqdır — məzar və mahnı sözüdür.",
+    "ru": "Põrm — прах, в который возвращается тело; слово для могил и песен."
+   }
+  },
+  "lilled": {
+   "base": "lill",
+   "means": {
+    "en": "flowers",
+    "az": "çiçəklər",
+    "ru": "цветы"
+   },
+   "deck": "home"
+  },
+  "õitsetad": {
+   "base": "õitsetama",
+   "means": {
+    "en": "you make bloom",
+    "az": "çiçəkləndirirsən",
+    "ru": "ты заставляешь цвести"
+   },
+   "note": {
+    "en": "Õitsema is to bloom and õitsetama to make bloom, so õitsetad is you make them bloom. The English it came with reads it as õitsevad, they bloom.",
+    "az": "Õitsema — çiçəkləmək, õitsetama — çiçəkləndirmək, yəni õitsetad — sən çiçəkləndirirsən. Gəldiyi ingiliscə tərcümə onu õitsevad, «çiçəkləyir» kimi oxuyur.",
+    "ru": "Õitsema — цвести, õitsetama — заставлять цвести, так что õitsetad — ты растишь цветы. Английский перевод, с которым пришёл текст, читает это как õitsevad, «цветут»."
+   }
+  }
+ }
+}
