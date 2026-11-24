@@ -8145,7 +8145,7 @@
     seenMarker = L.marker([spot.lat, spot.lng], {
       icon: L.divIcon({
         className: 'seen-pin',
-        html: '<span class="seen-face"><span class="seen-bike" aria-hidden="true">🚲</span></span>' +
+        html: '<span class="seen-face" aria-hidden="true">\uD83D\uDEB2</span>' +
           '<span class="seen-label"><span class="seen-words"></span> · <span class="seen-when"></span></span>',
         iconSize: [PIN_BOX, PIN_BOX],
         iconAnchor: [PIN_BOX / 2, PIN_BOX / 2]
@@ -8187,7 +8187,6 @@
     var node = seenMarker && seenMarker.getElement();
     if (!node) return;
     var when = seenWhen(seenSpot.at, false);
-    node.classList.toggle('is-old', !seenFresh());
     node.setAttribute('aria-label', t('seenLabel') + ', ' + when);
     node.querySelector('.seen-words').textContent = t('seenLabel');
     node.querySelector('.seen-when').textContent = when;

@@ -75,6 +75,12 @@
   --yes: #2e7a4c;
   --no:  #b3262f;
 
+  /* The ring round the pin that says where Tallinn Tastebuds was last seen on
+     a bike, and the edge of its label: a red brighter than any style's
+     accent, so in Red, whose places are red too, it is still not one of
+     them. Brighter again on the two dark grounds. .seen-face below. */
+  --seen: #e2372b;
+
   /* Three tokens for chrome that stands on the map with no card under it.
      --lift is a short shadow for a picture at logo size: --shadow is a card's
      shadow, 28px of blur meant to lift a 288px panel, and under a 40px circle
@@ -555,12 +561,11 @@ a:hover { color: var(--accent-lit); }
 }
 
 /* Where Tallinn Tastebuds was last seen on a bike: the one pin that is not a
-   place — seatSeen() and dressSeen() in assets/app.js. It wears the mouth
-   because it is the site itself, and everything round the mouth says it is
-   not somewhere to eat: the collar is the green of a way by bike, which no
-   place's collar is, there is a bike on its shoulder, and what stands under
-   it is a sentence and a time rather than a name. As with a place's pin the
-   box takes no pointer and what is drawn in it takes all of them. */
+   place — seatSeen() and dressSeen() in assets/app.js. A 🚲 in a ring of
+   --seen, a red no place's pin wears, a little larger than a place's pin,
+   and the same however old the spot is: the time on the label says that.
+   As with a place's pin the box takes no pointer and what is drawn in it
+   takes all of them. */
 .seen-pin { background: none; border: 0; }
 .seen-pin.leaflet-interactive { pointer-events: none; }
 .seen-pin:focus { outline: none; }
@@ -569,34 +574,24 @@ a:hover { color: var(--accent-lit); }
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  border-radius: 50%;
-  background: var(--paper) url(logo/mark-round.webp) center / cover no-repeat;
-  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--way-bike), var(--lift);
-  pointer-events: auto;
-  cursor: pointer;
-}
-.seen-bike {
-  position: absolute;
-  right: -9px;
-  bottom: -7px;
   display: grid;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
   border-radius: 50%;
-  background: var(--way-bike);
-  box-shadow: 0 0 0 2px var(--paper);
+  background: var(--paper);
+  box-shadow: 0 0 0 2.5px var(--paper), 0 0 0 5px var(--seen), var(--lift);
   font-family: var(--emoji);
-  font-size: 11px;
+  font-size: 22px;
   line-height: 1;
+  pointer-events: auto;
+  cursor: pointer;
 }
 .seen-label {
   position: absolute;
   left: 50%;
-  top: calc(50% + 26px);
+  top: calc(50% + 28px);
   transform: translateX(-50%);
   white-space: nowrap;
   font-family: var(--display);
@@ -605,7 +600,7 @@ a:hover { color: var(--accent-lit); }
   letter-spacing: -.005em;
   color: var(--ink);
   background: var(--paper);
-  border: 1px solid var(--way-bike);
+  border: 1px solid var(--seen);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 3px 9px;
@@ -623,32 +618,6 @@ a:hover { color: var(--accent-lit); }
 }
 /* With its card open the label would be the card's first line said twice. */
 .seen-pin[aria-expanded="true"] .seen-label { display: none; }
-
-/* A spot the rider passed a while ago: still where Tallinn Tastebuds was
-   last seen, no longer where it is. Smaller and grey, and the label says so
-   too, in the time on it — or the day, once it is not today's. */
-.seen-pin.is-old .seen-face {
-  width: 26px;
-  height: 26px;
-  margin: -13px 0 0 -13px;
-  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--muted), var(--lift);
-  filter: grayscale(.7);
-  opacity: .9;
-}
-.seen-pin.is-old .seen-bike {
-  right: -8px;
-  bottom: -6px;
-  width: 17px;
-  height: 17px;
-  background: var(--muted);
-  font-size: 9px;
-}
-.seen-pin.is-old .seen-label {
-  top: calc(50% + 21px);
-  color: var(--muted);
-  font-weight: 500;
-  border-color: var(--hairline);
-}
 
 /* Its card, which is Leaflet's popup wearing the site's tokens in place of
    Leaflet's white box and grey text: paper inside a hairline at the corner
@@ -831,9 +800,8 @@ a:hover { color: var(--accent-lit); }
   transition: width .15s var(--ease), height .15s var(--ease),
               box-shadow .15s var(--ease), transform .15s var(--ease);
 }
-/* The mouth, which is what a place on my map wears, and nothing else that
-   is a place ever does — the one other thing on the map with it is the site
-   itself out on a bike, .seen-face below. Every other pin is the same disc with a glyph on it, so the
+/* The mouth, which is what a place on my map wears and the only thing that
+   ever wears it. Every other pin is the same disc with a glyph on it, so the
    photograph is a state of this element rather than its default: a pin that
    drew the mark because nobody had said otherwise would be the map handing
    out the verdict to whatever happened to be on screen. is-mark is set by
@@ -1468,6 +1436,7 @@ body.lang-open .controls { z-index: 1250; }
   --pin-amber:  #b4650f;
   --yes: #2e7a4c;
   --no:  #b3262f;
+  --seen: #e2372b;
 }
 
 /* Forest — the dark one. */
@@ -1508,6 +1477,7 @@ body.lang-open .controls { z-index: 1250; }
      dark ring on a dark card here. */
   --yes: #6fd39a;
   --no:  #f08a80;
+  --seen: #ff5a52;
 }
 
 /* Baltic — the second daylight one: pale sea paper and a navy accent. Its
@@ -1534,6 +1504,7 @@ body.lang-open .controls { z-index: 1250; }
   --pin-amber:  #b4650f;
   --yes: #2e7a4c;
   --no:  #b3262f;
+  --seen: #d6282f;
 }
 
 /* Plum — the second dark one. Green's pins and --here carry over: neither
@@ -1559,6 +1530,7 @@ body.lang-open .controls { z-index: 1250; }
   --pin-amber:  #edc064;
   --yes: #6fd39a;
   --no:  #f08a80;
+  --seen: #ff5a52;
 }
 
 /* Dark Matter is drawn almost black, which reads as a hole in the screen next
