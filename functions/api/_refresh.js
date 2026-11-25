@@ -607,7 +607,14 @@ export async function refreshOnOpen(env, id, source = 'open') {
      opening one of those is as good a reason to ask as opening the row
      itself. Found the way /api/venues?map= finds the row that panel draws,
      so the row refreshed is the row shown; a place of mine Google does not
-     list finds nothing and stops here. */
+     list finds nothing and stops here — and written the way that route
+     writes it, so the planner takes idx_google_venues_map and reads the one
+     row. `map_id IS NOT NULL` lets the partial index serve a bound `?`, and
+     the `+` keeps (hidden, status) from looking better. Written plainly, it
+     walked every unhidden row through that index until it met the one: 301
+     opens read 189,170 rows in the day to 2026-11-25, the account's dearest
+     statement, a week after venues.js had been put right and this copy of
+     its WHERE had not. */
   const google = /[A-Z]/.test(id);
   let before;
   try {
@@ -618,7 +625,7 @@ export async function refreshOnOpen(env, id, source = 'open') {
         'refreshed_at, hidden, rank' + kind + ' FROM google_venues ' +
         (google
           ? 'WHERE place_id = ?'
-          : 'WHERE map_id = ? AND hidden = 0 AND missing_since IS NULL LIMIT 1')
+          : 'WHERE map_id = ? AND map_id IS NOT NULL AND +hidden = 0 AND missing_since IS NULL LIMIT 1')
       )
       .bind(id)
       .first();
