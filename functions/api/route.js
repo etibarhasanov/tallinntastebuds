@@ -1022,8 +1022,13 @@ async function settle(found, heading = null) {
  */
 const KEEP_OFF = [
   {
+    /* The widest band, so the longest crossing: at AREA_WEIGHT BRouter
+       would not cross it straight from Juhkentali to Juhan Kunderi, where
+       the owner did on 2026-11-25, and went 220 m round on its pavement.
+       Its own `weight` is lighter — ASKED FOR in NICE WAYS. */
     name: 'Tartu maantee',
     width: 60,
+    weight: 30,
     line: [[59.43575, 24.7552], [59.4349, 24.758], [59.43339, 24.76096], [59.43279, 24.76266],
       [59.43255, 24.76354], [59.43166, 24.76757], [59.43115, 24.76933], [59.42996, 24.77235],
       [59.42935, 24.77385], [59.42845, 24.77592], [59.42765, 24.77767], [59.427, 24.77903],
@@ -1386,15 +1391,30 @@ function afloat(route) {
  * being closed: riding a street's length is dear and crossing it is not.
  * On 2026-11-23, at AREA_WEIGHT, a ride that took 1.7 km of Tartu maantee
  * took 72 m of it, and crossing Liivalaia in its middle cost what some
- * 250 m of quiet street do. BRouter ignores an area that one end of the
- * way stands in, so a street is cut at its corners into stretches of
- * AREA_PIECE metres or more and a place on Liivalaia puts out only the
- * stretch it is on; and only the stretches within AREA_NEAR of the trip
- * are sent, since the address has to carry them. The bars of the WALLS
+ * 250 m of quiet street do. But a crossing is not free, and where a band is
+ * wide a crossing can cost more than riding the band's edge: on 2026-11-25
+ * the owner crossed Tartu maantee straight from Juhkentali to Juhan
+ * Kunderi, and at fifty BRouter would not, and went 220 m round, half of it
+ * on Tartu maantee's own pavement, which is what the band is there to
+ * stop. Tartu maantee's band is the widest, and its `weight` is thirty,
+ * where it crosses as the owner did. Thirty for every street was tried
+ * the same day and was wrong: from Herne to Toompea the first way then rode
+ * 280 m of Pärnu maantee by Vabaduse väljak where it had ridden 74, and
+ * that shoulder is the owner's own example of the fast way that is not the
+ * nice one. A band made narrower was no answer either: at forty metres the
+ * crossing went through the gap where two stretches of it meet at a bend,
+ * for nothing, and the pavement fell outside. BRouter ignores an area that
+ * one end of the way stands in, so a street is cut at its corners into
+ * stretches of AREA_PIECE metres or more and a place on Liivalaia puts out
+ * only the stretch it is on; and only the stretches within AREA_NEAR of the
+ * trip are sent, since the address has to carry them. The bars of the WALLS
  * within the same reach go beside them, as lines with no weight, which
  * BRouter does not cross at all.
  *
  * OFFERED, of what comes back:
+ *
+ *   A way rides no stretch round for nothing where another of the three
+ *   rides it straight — DETOURS below.
  *
  *   Two ways that are one are offered once, and a way more than
  *   NICE_LONGER times the shortest is not offered at all — no big round
@@ -1478,7 +1498,7 @@ function keptOut(a, b) {
         piece.push(street.line[i]);
         run += metres(street.line[i - 1], street.line[i]);
         if (run >= AREA_PIECE || i === street.line.length - 1) {
-          stretches.push({ line: piece, area: band(piece, street.width / 2 + AREA_EXTRA) + ',' + AREA_WEIGHT });
+          stretches.push({ line: piece, area: band(piece, street.width / 2 + AREA_EXTRA) + ',' + (street.weight || AREA_WEIGHT) });
           piece = [street.line[i]];
           run = 0;
         }
@@ -1506,8 +1526,113 @@ async function niceLeg(context, a, b) {
   return found && found[0] ? found[0] : null;
 }
 
+/* --------------------------------------------------------------- detours
+ * BRouter's second and third ways are not its second and third best. Each
+ * is found to be different from the ones before it, and is made different
+ * wherever it can be — so where the first way rides the nice street, the
+ * second leaves it anyway for a stretch and comes back. On 2026-11-25 the
+ * owner rode from Herne to Lasnamäe on the second way, the one marked
+ * Ridden, and left it where it did that: for its last kilometre it swung
+ * up to 300 m north round a park and back, where the first way went
+ * straight along the park's south side, which is the way the owner rode;
+ * and near the start it went a few dozen metres round a corner the first
+ * went straight past. Asked for those stretches alone, BRouter rides what
+ * the owner rode. The owner's words: no need for these detours.
+ *
+ * So a way gives a stretch up to another of BRouter's ways where the other
+ * leaves the same point and comes back to the same point no louder, and
+ * where the way's stretch is a detour: DETOUR_LONGER times the other's and
+ * DETOUR_MORE metres more, and DETOUR_DEARER times as dear by the rules —
+ * a stretch the rules would not have taken but for its being different.
+ * The loop by the park was 2.5 km where the first way rode 2.1, and priced
+ * a third dearer. Two ways across town that BRouter offers as a choice are
+ * priced nearer each other: on the pinned trips of that day the dearest
+ * stretch left alone was 1.21 times the other's, and the cheapest detour
+ * taken 1.26 times — a loop by Ülemiste and one in the Old Town, both
+ * round a block for nothing. Choosing between ways across town is what the
+ * three buttons are for: the owner's order puts the quiet one first and
+ * the others are still there to choose. Taking every stretch that was
+ * merely longer and dearer, as this did first on 2026-11-25, took those
+ * too and left most of the pinned trips one way; and bounding a detour by
+ * its length instead, a kilometre and a half, let the park's loop through,
+ * since the two ways there part for 2.5 km.
+ *
+ * The points are the map's own nodes, and two ways on one street share
+ * them to the digit, so a stretch starts and ends exactly on the other's
+ * line and is found by looking its points up among the other's, with no
+ * distance measured. Its turns are then the other way's; its metres,
+ * seconds and metres beside traffic the way's, less its own stretch's and
+ * with the other's, out of the running totals ./_brouter.js keeps; and two
+ * ways that have become one are offered once. A way through a door neither
+ * gives a stretch nor takes one: its legs are asked for alone.
+ *
+ * It costs no request and no row: every point of a way looked up among
+ * another's, three ways each against two.
+ */
+const DETOUR_LONGER = 1.15;
+const DETOUR_MORE = 100;
+const DETOUR_DEARER = 1.25;
+
+/* `found` with every stretch it rides round for nothing taken from one of
+   `others` — DETOURS above. */
+function undetour(found, others) {
+  let way = found;
+  for (const other of others) {
+    if (other === found) continue;
+    for (let cut = detour(way, other); cut; cut = detour(way, other)) way = borrow(way, other, cut);
+  }
+  return way;
+}
+
+/* The first stretch of `way` that leaves `other` and comes back to it, from
+   point `i` to point `j` of the way and from `oi` to `oj` of the other,
+   where the way's is a detour and the other's no louder; or null. */
+function detour(way, other) {
+  if (!way.totals || !other.totals) return null;
+  const on = new Map(other.line.map((p, k) => [p[0] + ',' + p[1], k]));
+  const stretch = (totals, a, b) => totals[b].map((sum, n) => sum - totals[a][n]);
+  let i = -1;
+  for (let j = 0; j < way.line.length; j++) {
+    const oj = on.get(way.line[j][0] + ',' + way.line[j][1]);
+    if (oj === undefined) continue;
+    const oi = i < 0 ? undefined : on.get(way.line[i][0] + ',' + way.line[i][1]);
+    if (oi !== undefined && oj > oi && (j > i + 1 || oj > oi + 1)) {
+      const [meters, , cost, loud] = stretch(way.totals, i, j);
+      const [theirs, , dear, noisy] = stretch(other.totals, oi, oj);
+      const round = meters >= theirs * DETOUR_LONGER && meters - theirs >= DETOUR_MORE && cost >= dear * DETOUR_DEARER;
+      if (round && noisy <= loud) return { i, j, oi, oj };
+    }
+    i = j;
+  }
+  return null;
+}
+
+/* `way` with its points `i` to `j` given up for `other`'s `oi` to `oj`: the
+   line, the turns and the running totals of the other's stretch, and every
+   total after it moved by the difference. */
+function borrow(way, other, { i, j, oi, oj }) {
+  const [was, then, from, to] = [way.totals[i], way.totals[j], other.totals[oi], other.totals[oj]];
+  const moved = to.map((sum, n) => sum - from[n] - (then[n] - was[n]));
+  const steps = way.steps.filter((s) => s.meters < was[0] - 1)
+    .concat(other.steps.filter((s) => s.turn !== 'arrive' && s.meters >= from[0] - 1 && s.meters <= to[0] + 1)
+      .map((s) => Object.assign({}, s, { meters: Math.round(s.meters - from[0] + was[0]) })))
+    .concat(way.steps.filter((s) => s.turn === 'arrive' || s.meters > then[0] + 1)
+      .map((s) => Object.assign({}, s, { meters: Math.max(0, Math.round(s.meters + moved[0])) })));
+  return Object.assign({}, way, {
+    meters: Math.max(0, Math.round(way.meters + moved[0])),
+    seconds: Math.max(0, Math.round(way.seconds + moved[1])),
+    loud: Math.max(0, Math.round(way.loud + moved[3])),
+    line: way.line.slice(0, i).concat(other.line.slice(oi, oj), way.line.slice(j)),
+    steps: steps,
+    totals: way.totals.slice(0, i)
+      .concat(other.totals.slice(oi, oj).map((t) => t.map((sum, n) => sum - from[n] + was[n])))
+      .concat(way.totals.slice(j).map((t) => t.map((sum, n) => sum + moved[n])))
+  });
+}
+
 /* The ways by bike from one point to another, quietest first, or null
-   where BRouter has none — OFFERED above. */
+   where BRouter has none — OFFERED above. The running totals are left
+   behind once the detours are out, since thinning the line unpicks them. */
 async function niceWays(context, from, to) {
   const start = [from.lat, from.lng];
   const end = [to.lat, to.lng];
@@ -1516,7 +1641,8 @@ async function niceWays(context, from, to) {
 
   const once = (way, i, all) => !all.slice(0, i).some((before) => alike(way, before));
   let ways = found
-    .map((way) => Object.assign({}, way, { line: thin(way.line, MAX_POINTS), steps: untie(way.steps, way.line) }))
+    .map((way) => undetour(way, found))
+    .map(({ totals, ...way }) => Object.assign(way, { line: thin(way.line, MAX_POINTS), steps: untie(way.steps, way.line) }))
     .filter(once);
   const shortest = Math.min(...ways.map((way) => way.meters));
   ways = ways.filter((way) => way.meters <= shortest * NICE_LONGER);

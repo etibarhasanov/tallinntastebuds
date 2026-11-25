@@ -4047,14 +4047,51 @@ puts a way of 7.0 km with 0.1 km beside traffic ahead of one of 6.5 km with
 1.7. A way more than a quarter longer than the shortest is not offered at
 all, and neither is one that is another over again.
 
+**No way round for nothing.** BRouter's second and third ways are not its
+second and third best: each is found to be different from the ones before
+it, and is made different wherever it can be, so where the first rides the
+nice street the second leaves it for a stretch and comes back. On
+2026-11-25 the owner rode from Herne to Lasnamäe on the second way, the one
+marked *Ridden*, and left it where it did that — for the last kilometre it
+swung up to 300 m north round a park and back, where the first way went
+straight along the park's south side, which is where the owner rode. Asked
+for that stretch alone, BRouter rides it the owner's way. The owner's words:
+no need for these detours. So a way gives a stretch up to another of the
+three where the other leaves the same point and comes back to the same
+point no louder, and where the way's stretch is a detour: 15 per cent
+longer and 100 m more, and a quarter dearer by the rules — a stretch they
+would not have taken but for its being different. The loop was 2.5 km where
+the first way rode 2.1, a third dearer. Two ways across town that BRouter
+offers as a choice are priced nearer each other: on the pinned trips that
+day the dearest stretch left alone was 1.21 times the other's and the
+cheapest detour taken 1.26, and the three buttons are there to choose
+between the ways across town. The first version of this took every stretch
+that was merely longer and dearer, and left most of the pinned trips one
+way; a version bounded by length, a kilometre and a half, let the park's
+loop through. A way takes the other's turns with the stretch, and the
+points are the map's own, shared by two ways to the digit, so nothing is
+measured to find them. Two ways that are one after a detour is gone are
+offered once, so a trip whose second way was only the first with a detour
+in it offers one fewer: Viru gate to Balti jaam, one where it was two.
+
 **The streets kept off are kept off still.** Tartu maantee, Liivalaia,
 Pärnu maantee by Vabaduse väljak and Laagna tee go to BRouter as areas to
 stay out of: a band along each stretch of the street, weighted rather than
-closed, so that riding its length is dear and crossing it is not. A ride
-that took 1.7 km of Tartu maantee took 72 m with the areas sent, and
-crossing Liivalaia in its middle cost what some 250 m of quiet street do.
-BRouter ignores an area one end of the way stands in, so a street is sent
-in stretches of three hundred metres or more and a place on Liivalaia puts
+closed, so that riding its length is dear and crossing it is not. At a
+weight of fifty a ride that took 1.7 km of Tartu maantee took 72 m with the
+areas sent, and crossing Liivalaia in its middle cost what some 250 m of
+quiet street do. But a wide band makes a long crossing, and a long one
+could cost more than riding the band's edge: on the same ride of
+2026-11-25 the owner crossed Tartu maantee straight from Juhkentali to
+Juhan Kunderi, and at fifty BRouter would not, and went 220 m round, half
+of it on Tartu maantee's own pavement. Tartu maantee has the widest band,
+sixty metres, and its weight is thirty now, where it crosses as the owner
+did. Thirty for all four was tried first and was wrong: from Herne to
+Toompea the first way then rode 280 m of Pärnu maantee by Vabaduse väljak
+where it had ridden 74, the very shoulder the owner named as fast and not
+nice. BRouter ignores an area one end of the way stands in, so a
+street is sent in stretches of three hundred metres or more and a place on
+Liivalaia puts
 out only the stretch it is on. The router's other rule, that where any way
 keeps off only those are offered, is not put to BRouter's ways. The order
 the owner gave them is quiet first and beside traffic next, and a way
@@ -4116,7 +4153,8 @@ then the one it always was, with every refinement below.
 **What it costs.** No row of the database beyond the one read of
 `ride_sections` a bike ride always made. Three requests to BRouter a ride,
 two more for each door asked about and one for each ride to or from a
-station, each kept a day at the edge. The rules are posted to brouter.de
+station, each kept a day at the edge; taking the detours out asks nothing,
+being each way's points looked up among the others'. The rules are posted to brouter.de
 once and asked for by the id it answers with; the id is kept by the isolate
 and, a week, by the colo, under a mark of the file's text, and sent again
 when brouter.de has forgotten it, which it says with a 500. brouter.de is

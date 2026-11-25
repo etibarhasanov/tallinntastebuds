@@ -39,8 +39,8 @@
  *
  * WHAT A WAY IS
  *
- * { meters, seconds, line, steps, loud }. `line` is every point BRouter
- * answered, as [lat, lng]. `steps` is where it turns, in the words
+ * { meters, seconds, line, steps, loud, totals }. `line` is every point
+ * BRouter answered, as [lat, lng]. `steps` is where it turns, in the words
  * ./route.js answers — THE TURNS in its header — out of BRouter's own turn
  * hints: a sharp turn and a turn are a turn, a slight one and a fork are
  * keeping left or right, a roundabout has its exit, and going straight on is
@@ -48,7 +48,10 @@
  * is the last. No step has a street's name: BRouter's map carries none.
  * `loud` is the metres of the way beside traffic, the stretches BRouter's
  * map marks at LOUD_FROM or louder, which is what ./route.js orders the
- * ways by and never answers.
+ * ways by and never answers. `totals` is, for each point of the line, the
+ * metres, seconds, cost under the rules and metres beside traffic up to
+ * it, which ./route.js prices one way's stretch against another's by and
+ * never answers either; null where BRouter's rows did not fit the line.
  *
  * WHEN IT HAS NO ANSWER
  *
@@ -160,28 +163,60 @@ export function brouterWay(body) {
   }
 
   /* The way stretch by stretch, under a row of headings: where each ends,
-     how long it is and its tags. A stretch is loud by its noise class, and
-     a tunnel begins where the stretch before it ended. */
+     how long it is, what it costs under the rules, its tags and the seconds
+     so far. A stretch is loud by its noise class, and a tunnel begins where
+     the stretch before it ended.
+
+     Each stretch ends on a point of the line, and `totals` carries the
+     running sums to every point — metres, seconds, cost and metres beside
+     traffic, the points inside a stretch sharing it out by their metres —
+     so that ./route.js can price any stretch of a way against another's:
+     DETOURS there. A stretch that ends on no point of the line leaves the
+     way with no totals, and it is then priced by nobody. */
   let loud = 0;
+  let cost = 0;
   let gone = 0;
   let tunnel = -Infinity;
   let before = line[0];
+  let totals = [[0, 0, 0, 0]];
   for (const row of Array.isArray(about.messages) ? about.messages.slice(1) : []) {
     const far = Number(row[3]) || 0;
     const tags = String(row[9] || '');
     const noise = /estimated_noise_class=(\d)/.exec(tags);
     if (noise && Number(noise[1]) >= LOUD_FROM) loud += far;
+    cost += (Number(row[4]) * far / 1000 + Number(row[5]) + Number(row[6]) + Number(row[7]) + Number(row[8])) || 0;
     if (/(^| )tunnel=yes( |$)/.test(tags)) {
       if (gone - tunnel > TUNNEL_GAP) steps.push({ at: at(before), meters: Math.round(gone), turn: 'tunnel', name: '' });
       tunnel = gone + far;
     }
     gone += far;
     before = [Number(row[1]) / 1e6, Number(row[0]) / 1e6];
+    if (totals) totals = totalled(totals, line, along, Number(row[0]), Number(row[1]), [Number(row[11]), cost, loud]);
   }
 
   steps.sort((a, b) => a.meters - b.meters);
   steps.push({ at: at(line[line.length - 1]), meters: Math.round(meters), turn: 'arrive', name: '' });
-  return { meters: Math.round(meters), seconds: Math.round(seconds), line: line, steps: steps, loud: Math.round(loud) };
+  return {
+    meters: Math.round(meters), seconds: Math.round(seconds), line: line, steps: steps, loud: Math.round(loud),
+    totals: totals && totals.length === line.length ? totals : null
+  };
+}
+
+/* `totals` carried on to the point of `line` at BRouter's lon and lat in
+   millionths of a degree, which is where a stretch ended, with `sums` —
+   seconds, cost and metres beside traffic — there; or null where the
+   stretch ends on no point after the last. */
+function totalled(totals, line, along, lon, lat, sums) {
+  const from = totals.length - 1;
+  let end = from + 1;
+  while (end < line.length && !(Math.round(line[end][1] * 1e6) === lon && Math.round(line[end][0] * 1e6) === lat)) end++;
+  if (end >= line.length) return null;
+  const was = totals[from];
+  for (let p = from + 1; p <= end; p++) {
+    const share = (along[p] - along[from]) / (along[end] - along[from] || 1);
+    totals.push([along[p], ...sums.map((sum, n) => was[n + 1] + (sum - was[n + 1]) * share)]);
+  }
+  return totals;
 }
 
 /* The rules posted to BRouter: the id it files them under, or null where
