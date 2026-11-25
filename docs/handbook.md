@@ -17682,7 +17682,14 @@ time count somebody on the first day they were ever here, so a person who
 comes every day is one in the all-time figure. The countries are visits:
 somebody from Finland who came on five days is five beside the Finnish flag.
 The average is per visit — every second on screen over the last 28 days,
-over the visits in them.
+over the visits in them. The seconds are the `time` rows of each day, added
+up. They were read from the `cohort` rows until 2026-11-25, which stopped
+being written on 2026-11-19 with the rest of new against returning — **Rows
+by the day, not by the visit** above — and nothing moved the counter's read
+with them: six days were kept as no seconds at all, and the card said 41
+seconds where the visits had been 64. A day keeps what it was folded as,
+so the rows of `counter_days` those days left are corrected by hand, from
+the `time` rows, which were written all along.
 
 **Why the United States is mostly not on it.** About two in three desktop
 visits since the count could tell desktops apart came from the United

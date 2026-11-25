@@ -190,7 +190,8 @@
  * returning fact by fact. At a hundred visitors a day the card said little
  * the figures did not, and it was two to six writes on every report, so it
  * went with the tests below when D1's hundred thousand writes a day came
- * into sight. Its rows stay in the table and nothing reads them.
+ * into sight. Its rows stay in the table and nothing reads them — the flag
+ * counter's seconds did for six days after, THE SECONDS above readCounter().
  *
  * THE LANGUAGE IT WAS READ IN
  *
@@ -1640,6 +1641,23 @@ export async function readFound(env, span, device, origin) {
  * those, 28 rows once per isolate a day. Every five minutes after that the
  * counter reads today's rows and nothing else.
  *
+ * THE SECONDS
+ *
+ * A day's seconds are the `time` kind added up, a row a page: every stretch
+ * on screen is filed there, whoever's it was, and no row with a dot in its
+ * kind is read, so a phone's are in it once. Until 2026-11-25 they were read
+ * from the `cohort` kind's two rows of seconds, which held the same sum and
+ * stopped being written on 2026-11-19 — NEW AGAINST RETURNING above. Nobody
+ * moved this read with it, so each day after was folded as no seconds at
+ * all, and the card's time sank a little every day: 41 seconds on the
+ * 25th, where the visits had been 64. A kind that stops being written is
+ * grepped for by its name in every file that reads the table, this one
+ * first.
+ *
+ * It is a row a page in PAGES at the most, nineteen, read beside today's
+ * `shown`: 288 runs a colo a day and 5,472 rows at the very worst, against
+ * the five million, and about six rows a run on the pages a day really has.
+ *
  * Null where the table is not there. */
 const COUNTER_TOP = 8;
 const COUNTER_SECS_DAYS = 28;
@@ -1661,7 +1679,7 @@ export async function readCounter(env) {
         ? env.DB.prepare("SELECT day, kind, id, n FROM visitor_counts WHERE day = ?1 AND kind = 'shown'").bind(now).all()
         : env.DB.prepare(estimateSql('= ?1')).bind(now, JUDGED_COUNTRY).all(),
       env.DB.prepare(
-        "SELECT SUM(n) AS n FROM visitor_counts WHERE day = ?1 AND kind = 'cohort' AND id IN ('new:secs', 'back:secs')"
+        "SELECT SUM(n) AS n FROM visitor_counts WHERE day = ?1 AND kind = 'time'"
       ).bind(now).first()
     ]);
     addCounterRows(days, countries, rows.results || []);
@@ -1781,7 +1799,7 @@ async function fold(env, total, last) {
         ? env.DB.prepare("SELECT day, kind, id, n FROM visitor_counts WHERE day = ?1 AND kind = 'shown'").bind(day).all()
         : env.DB.prepare(estimateSql('= ?1')).bind(day, JUDGED_COUNTRY).all(),
       env.DB.prepare(
-        "SELECT SUM(n) AS n FROM visitor_counts WHERE day = ?1 AND kind = 'cohort' AND id IN ('new:secs', 'back:secs')"
+        "SELECT SUM(n) AS n FROM visitor_counts WHERE day = ?1 AND kind = 'time'"
       ).bind(day).first()
     ]);
     const days = {};
