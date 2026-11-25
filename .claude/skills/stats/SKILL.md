@@ -472,6 +472,14 @@ particulars apply, and this area adds:
   not by the visit** in `docs/handbook.md`. A new kind, copy or split says
   its writes per page view in the description, against that hundred
   thousand, the way a read says its rows against the five million.
+- **A kind stopped, and something still read it.** On 2026-11-19 the
+  `cohort` kind stopped being written and its comment said nothing read its
+  rows. The flag counter did: its seconds were `cohort`'s two rows of them,
+  so every day after was folded into `counter_days` as no seconds, and the
+  card on Discover sank from 64 seconds to 41 in six days before anybody
+  looked. Before a kind stops, `grep -n "'<kind>'" functions/api/*.js`, and
+  move every read that turns up in the same commit — the readers are not all
+  on the owner's pages.
 - **A count added before it was described.** A card the owner had not
   asked for, in eleven languages, with a kind in the schema comment and a
   README section, and then not the card they wanted. The gate in
