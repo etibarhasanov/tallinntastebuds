@@ -707,6 +707,12 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   `seconds` on — so it stays a clock, `HH:MM`, as `at` and `until` are
   printed; in any other shape the row says when to set off and not when
   the rider arrives.
+  And, from 2026-11-25 and in no release yet, the train's `headsign`: where
+  the train itself is going, as the platform's board has it, which the app
+  shows and says on the way to the station — *RE33 Narva* — beside the
+  station to get off at. Empty or missing, or the same word as `to`, and
+  the app says the train as it did, so it is never a promise the train has
+  one.
 - Its new way mid-ride, from 2026-11-18: the same two questions with
   `heading` beside them, whole degrees from north, the way the rider is
   going — answered in the same fields, the way setting off that way. An
