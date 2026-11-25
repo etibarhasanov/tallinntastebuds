@@ -4061,6 +4061,10 @@ the owner gave them is quiet first and beside traffic next, and a way
 along Tartu maantee is as far beside traffic as a way gets: it comes last,
 and is still there to choose.
 
+**And it is told of the walls.** A passage the map has and the ground has
+not goes with the same request as a line no way crosses, so the three ways
+are found round it and a door's legs are too (**Walls**).
+
 **A door where one is still a shortcut.** Put to BRouter, 18 of the 201
 doors were still the long way round for it, both ways, and those are the
 doors now (**Doors**). A way through one goes in where it is fifty metres
@@ -4100,8 +4104,10 @@ the router's refinements in 2.2 seconds over fourteen requests.
 Rattatee finding a new way mid-ride: BRouter's own heading does nothing on
 brouter.de, and closing a small circle behind the rider turned one start
 of three round when it was tried, which is not enough to say aloud to
-somebody riding. A ride between cities, whose long middle is cut at the
-router's junctions (**A long ride between cities**). And any ride BRouter
+somebody riding. The one such way that is BRouter's is where every way the
+router set off by goes through a wall (**Walls**). A ride between cities,
+whose long middle is cut at the router's junctions (**A long ride between
+cities**). And any ride BRouter
 has no answer for: a request is given four seconds, and one that runs out,
 or a server that is busy, down or refusing, rests BRouter for a minute in
 that isolate, so an outage costs one rider the wait. The router's answer is
@@ -4302,6 +4308,88 @@ a router outside the repository. It is run when there are new rides, and
 `node tools/routecheck.mjs` after it: a door found near a pinned trip is a
 question that trip's recording has no answer to, and may be a new first
 way — **The bike ways, pinned**.
+
+## Walls
+
+A wall is the other thing from a door: a way the map has and the ground has
+not. A door is found by riding it. A wall is found by riding up to it, and
+is written down by whoever did.
+
+**The picture.** On 2026-11-25 the owner sent one from Rattatee, riding
+from Kadriorg to Herne Bakery: off the way on Võistluse, 110 m from a way
+drawn left off Juhkentali through a place with no passage. Asked where the
+turn came from, the answer was the map. South from Juhkentali, between
+Püssirohu and the park by Veski, OpenStreetMap has two ways through and
+the owner, who rides there, has none: Staadioni is drawn as an ordinary
+street joined to Juhkentali, and the yard of number 14 is entered by a
+service road with a boom gate that says nothing about bikes and by a
+footpath beside it, with a car park and twenty-five metres of trodden path
+on into the park, and a road on down the side of the sports hall. Both
+routers read that map, and neither has stood there. Asked from Kadriorg
+that evening, BRouter's first way went down Staadioni; asked from
+Keldrimäe with a heading, as Rattatee asks mid-ride and which is the older
+router's, the one way turned in at the gate, and that is the way in the
+picture. Of the sixteen trips pinned that day, five had a way through one
+or the other, and for two of them — Tondiraba to Herne, and Herne to Vana
+Villem — it was the first.
+
+**A wall is a bar across the passage.** `WALLS` in `functions/api/route.js`
+holds each as a name and two points: a line drawn across the passage where
+it is shut, a little wider than the passage and clear of the street it
+opens off, so a way along Juhkentali crosses neither. A way goes through a
+wall where its line crosses the bar. A bar takes every way the map has
+through the passage and not the one a picture showed: with the gate's road
+alone barred, BRouter's first way from Juhkentali to Kalamaja came up the
+side of the sports hall into the same yard and out by the footpath, so the
+yard's bar lies across both. It is written in the route itself and not in
+a data file, as a street to keep off is: it is something the owner says by
+name, not something a tool finds. And it is not drawn into OpenStreetMap,
+for the reason a door is not — somebody else can draw the street open
+again.
+
+**BRouter is told.** It takes lines no way may cross with a request, as it
+takes the areas of the streets kept off, and the bars within the same
+reach of a trip go beside them. Its three ways are then found round the
+walls — on that ride the way the owner rode, by Püssirohu and Võistluse,
+and two into the park by Veski — and so are the two legs of a way through
+a door.
+
+**The older router is read.** It cannot be told, and a point made up beside
+a wall would bend the way as every made-up point has (**Nice ways by
+bike**). So where its ways are the answer, each is held to the bars: one
+through a wall is left out; a way that settles through one keeps the line
+it had; and a way a refinement made — round a street kept off, through a
+door, round either side — is dropped where another keeps out.
+
+**With a heading, BRouter after all.** A new way mid-ride is the older
+router's, asked to set off the way the rider is going, and it answers one
+way oftener than three. Where every way it found goes through a wall,
+BRouter is asked — the one time a way with a heading is BRouter's. It
+knows the walls and not the heading, so its ways are put with the ones
+that set off within a quarter turn of the heading first, in its order,
+quiet first; where none does, the first begins by turning round, which is
+said once and is true, where the router's way ended with no way on. Where
+BRouter has no answer either, the router's ways are the answer as they
+were.
+
+**What is not held.** A wall is a bike's: a walker and a driver are
+answered as before. And the two places a bike way is the router's one
+way — the ends of a ride between cities, and the ride to or from a station
+where BRouter had none — are not read against the walls.
+
+**What it costs.** No row, and no request where no way meets a wall, which
+is nearly everywhere: a crossing worked out for each stretch of a way's
+line and each wall, forty microseconds for the longest line a way has and
+the two walls. Three requests to BRouter where a way wanted mid-ride had
+every router's way through a wall. And every bike way within a kilometre
+and a half of a wall is asked of BRouter under an address that now carries
+the bar, so each is asked once more the day a wall is added and kept a day
+at the edge after.
+
+**The next wall** is a line in `WALLS` and a sentence here, and `node
+tools/routecheck.mjs` after it: the bars change what BRouter is asked for
+every pinned trip near one, and a pinned way that went through it is one
+the owner has just said is wrong.
 
 ## Ways people have ridden
 
@@ -4630,11 +4718,15 @@ are still kept off, the ways round asked for with the same heading. A page
 or an app that sends none is answered exactly as before, which is every
 caller but a reroute in Rattatee.
 
+**But for a wall.** Where every way the router set off by goes through a
+passage that is not there, the ways are BRouter's, the ones that go on
+ahead of the rider first (**Walls**).
+
 ## The bike ways, pinned
 
 A bike route here is two routers with rules laid over them — **Nice ways
-by bike**, **Doors**, **Ways people have ridden**, **Roads a bike route
-keeps off**, **A way on either side**, **A long ride between cities** — and
+by bike**, **Doors**, **Walls**, **Ways people have ridden**, **Roads a bike
+route keeps off**, **A way on either side**, **A long ride between cities** — and
 nearly every rule was written for one ride the owner sent a picture of.
 Each then runs on every other ride too, and until 2026-11-23 nothing held
 those still: the files were checked for consistency and the answers for

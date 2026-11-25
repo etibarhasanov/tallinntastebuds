@@ -122,11 +122,13 @@ const metres = (a, b) => km({ lat: a[0], lng: a[1] }, { lat: b[0], lng: b[1] }) 
 
 /* The address of one of BRouter's ways through [lat, lng] points under a
    profile: `which` is 0 for the way it likes best and 1 to 3 for the ones
-   after it, and `areas` the polygons to stay out of, as it takes them. */
-export function brouterUrl(profile, points, which = 0, areas = '') {
+   after it, and `out` what to stay out of, as it takes them — `areas`, its
+   polygons, each with the weight that makes riding through it dear, and
+   `bars`, lines with none, which no way crosses. */
+export function brouterUrl(profile, points, which = 0, out = {}) {
   return BROUTER + '?lonlats=' + points.map((p) => p[1] + ',' + p[0]).join('|') +
     '&profile=' + profile + '&alternativeidx=' + which + '&format=geojson&timode=2' +
-    (areas ? '&polygons=' + areas : '');
+    (out.areas ? '&polygons=' + out.areas : '') + (out.bars ? '&polylines=' + out.bars : '');
 }
 
 /* One of BRouter's answers as a way — WHAT A WAY IS — or null for one with
@@ -233,9 +235,9 @@ async function rulesId(context, again) {
 
 /* One of BRouter's ways, or the status it answered instead: 0 for a
    request that ran out or never arrived. */
-async function one(id, points, which, areas) {
+async function one(id, points, which, out) {
   try {
-    const res = await fetch(brouterUrl(id, points, which, areas), {
+    const res = await fetch(brouterUrl(id, points, which, out), {
       headers: { 'user-agent': AGENT, accept: 'application/json' },
       cf: { cacheTtl: 86400, cacheEverything: true },
       signal: AbortSignal.timeout(WAIT)
@@ -247,18 +249,18 @@ async function one(id, points, which, areas) {
 }
 
 /* BRouter's ways by bike through [lat, lng] points, the one it likes best
-   first and `count` in all where it has that many, or null — WHEN IT HAS
-   NO ANSWER. */
+   first and `count` in all where it has that many, staying out of `out` as
+   brouterUrl() has it, or null — WHEN IT HAS NO ANSWER. */
 let resting = 0;
 
-export async function brouterWays(context, points, count = 1, areas = '') {
+export async function brouterWays(context, points, count = 1, out = {}) {
   if (Date.now() < resting) return null;
   let status = 0;
   try {
     for (const again of [false, true]) {
       const id = await rulesId(context, again);
       if (!id) break;
-      const got = await Promise.all(Array.from({ length: count }, (_, which) => one(id, points, which, areas)));
+      const got = await Promise.all(Array.from({ length: count }, (_, which) => one(id, points, which, out)));
       if (got[0].way) return got.map((g) => g.way).filter(Boolean);
       status = got[0].status || 0;
       if (status !== 500) break;

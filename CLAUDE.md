@@ -745,7 +745,10 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   ever on the first. And a step's `name` is empty, BRouter's map having no
   street names, as it always was through a door: the row while riding is
   the turn alone. With a `heading`, and between cities, the answer is the
-  router's as it was.
+  router's as it was — but, from 2026-11-25, where every way the router
+  set off by goes through a passage that is not there, a wall, the ways
+  with a `heading` are BRouter's too, in the same fields: **Walls** in
+  `docs/handbook.md`.
 - Its lists, signed in: `GET /api/v1/me/lists`, reading `lists` with `id`, `title`
   and `n`; and `POST /api/v1/me/lists` with `create` (`title`, answered `id` and
   `title`), `place` (`name`, `address`, `lat`, `lng`, answered `place.id`)
