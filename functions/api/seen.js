@@ -27,7 +27,7 @@
  * stay for ever: a saved ride's spot is already 200 m short of where the
  * ride ended, so it protects nobody further to take it away after an hour or
  * a week, and "last seen here" is true until the next ride says otherwise.
- * The map draws an old one quieter and with its date — dressSeen().
+ * The map's card gives an old one its date — seenWhen() in assets/app.js.
  *
  * WHAT IT COSTS
  *

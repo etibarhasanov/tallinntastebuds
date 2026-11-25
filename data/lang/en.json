@@ -1469,7 +1469,7 @@
   "counterMore": "+ {n} more countries",
   "counterSince": "since {date}",
   "seenEyebrow": "On a bike",
-  "seenTitle": "Tallinn Tastebuds was last seen here",
+  "seenTitle": "According to {app}, Tallinn Tastebuds passed through here",
   "seenMinAgo": "{n} min ago",
   "seenHoursAgo": "{n} h ago",
   "embedMapLabel": "Map of places in Tallinn",

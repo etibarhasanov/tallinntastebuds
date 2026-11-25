@@ -8065,6 +8065,7 @@
   var SEEN_FRESH = 10 * 60000;
   var SEEN_EVERY = 30000;
   var SEEN_IDLE = 5 * 60000;
+  var RATTATEE = 'https://apps.apple.com/ee/app/rattatee/id6838259864';
 
   var seenSpot = null;      /* { lat, lng, at } with `at` in milliseconds */
   var seenMarker = null;
@@ -8145,9 +8146,7 @@
     seenMarker = L.marker([spot.lat, spot.lng], {
       icon: L.divIcon({
         className: 'seen-pin',
-        html: '<span class="seen-face"></span>' +
-          '<span class="seen-label"><span class="seen-bike" aria-hidden="true">\uD83D\uDEB2</span> ' +
-          '<span class="seen-words"></span> \u00B7 <span class="seen-when"></span></span>',
+        html: '<span class="seen-face"></span>',
         iconSize: [PIN_BOX, PIN_BOX],
         iconAnchor: [PIN_BOX / 2, PIN_BOX / 2]
       }),
@@ -8187,10 +8186,7 @@
   function dressSeen() {
     var node = seenMarker && seenMarker.getElement();
     if (!node) return;
-    var when = seenWhen(seenSpot.at, false);
-    node.setAttribute('aria-label', t('seenTitle') + ', ' + when);
-    node.querySelector('.seen-words').textContent = t('seenTitle');
-    node.querySelector('.seen-when').textContent = when;
+    node.setAttribute('aria-label', t('seenTitle', { app: 'Rattatee' }) + ', ' + seenWhen(seenSpot.at, false));
     if (seenOpen()) seenPopup.setContent(seenCard());
   }
 
@@ -8199,9 +8195,16 @@
     var ago = mins < 60 ? t('seenMinAgo', { n: mins })
       : mins < 1440 ? t('seenHoursAgo', { n: Math.floor(mins / 60) })
       : '';
+    var said = t('seenTitle').split('{app}');
+    var app = TTBTrack.click(el('a', {
+      className: 'seen-app', href: RATTATEE, target: '_blank', rel: 'noopener', textContent: 'Rattatee'
+    }), 'seen_app');
     return el('div', { className: 'seen-card' }, [
-      el('p', { className: 'seen-eyebrow', textContent: [t('seenEyebrow'), seenWhen(seenSpot.at, true)].concat(ago || []).join(' · ') }),
-      el('p', { className: 'seen-title', textContent: t('seenTitle') })
+      el('p', { className: 'seen-eyebrow' }, [
+        el('span', { className: 'seen-bike', 'aria-hidden': 'true', textContent: '\uD83D\uDEB2' }),
+        ' ' + [t('seenEyebrow'), seenWhen(seenSpot.at, true)].concat(ago || []).join(' · ')
+      ]),
+      el('p', { className: 'seen-title' }, [said[0], app, said.slice(1).join('')])
     ]);
   }
 

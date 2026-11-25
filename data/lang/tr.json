@@ -1469,7 +1469,7 @@
   "counterMore": "+ {n} ülke daha",
   "counterSince": "{date} tarihinden beri",
   "seenEyebrow": "Bisikletle",
-  "seenTitle": "Tallinn Tastebuds en son burada görüldü",
+  "seenTitle": "{app}'ye göre Tallinn Tastebuds buradan geçti",
   "seenMinAgo": "{n} dk önce",
   "seenHoursAgo": "{n} sa önce",
   "embedMapLabel": "Tallinn'deki mekânların haritası",

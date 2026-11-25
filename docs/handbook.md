@@ -3769,17 +3769,27 @@ already 200 m short of where the ride ended, so taking it away an hour or a
 week later protects nobody further, and *last seen here* stays true until
 the next ride says otherwise.
 
-**What a visitor sees.** `seatSeen()` and `dressSeen()` in `assets/app.js`.
-A red dot of `--seen`, smaller than a place's pin, with *🚲 Tallinn Tastebuds
-was last seen here · 14:32* under it in a label edged the same red — the
-owner's own words, and for a day *Last seen here on a bike*, which said the
-bike twice and the name not at all — on Tallinn's clock
-whoever is reading; from an earlier day it says the day in place of the
-time. It is the same however old the spot is. Pressing it — or Enter on it — opens a card: *On a
-bike · 14:32 · 2 min ago*, then *Tallinn Tastebuds was last seen here*. The
-card says who and when and nothing of the 200 m; the owner's word was that
-it does not have to. A press anywhere else puts it away. No spot, no
-database, an answer that did not come: no pin, which is the map as it was.
+**What a visitor sees.** `seatSeen()`, `dressSeen()` and `seenCard()` in
+`assets/app.js`. A red dot of `--seen`, smaller than a place's pin, the same
+however old the spot is, and nothing else. Pressing it — or Enter on it —
+opens a card: *🚲 On a bike · 14:32 · 2 min ago*, on Tallinn's clock whoever
+is reading and with the date before the time from an earlier day, then
+*According to Rattatee, Tallinn Tastebuds passed through here*, the owner's
+own words, with Rattatee a link to the app's page in the App Store. Each
+language puts the name where its sentence wants it, as `{app}` in
+`seenTitle`. The card says who and when and nothing of the 200 m; the
+owner's word was that it does not have to. A press anywhere else puts it
+away. No spot, no database, an answer that did not come: no pin, which is
+the map as it was.
+
+For its first day the dot carried a label under it, there all the time:
+*🚲 Last seen here on a bike · 14:32*, which said the bike twice and the
+name not at all, and then *🚲 Tallinn Tastebuds was last seen here · 14:32*.
+On 2026-11-25 the owner's word was that first it is just a dot, and that
+the words, once it is pressed, are Rattatee's: according to Rattatee, it
+passed through here. They were shown the words in a card above the dot and
+under it, and chose the card, which is fitted to the screen where text
+under a dot near the edge runs off it.
 
 **The time is when the site heard.** The phone sends no clock with a ride
 or with a way, so a spot's time is the moment it was written: a new way's
@@ -3797,9 +3807,9 @@ phone was bigger than everything round it. Their next word was smaller than
 the others, like a dot. So it is a dot of `--seen`, 12 px, a red brighter
 than any style's accent — in Red, whose places are red too, it is still not
 one of them — and brighter again on the two dark grounds; the 🚲 is at the
-front of its label; and it is the same red however old. A press takes the
-label as well as the dot, so the target is the label's width (design rule
-8). The owner was shown the bike from Rattatee's icon too, and a 16 px bike
+front of its card; and it is the same red however old. A press takes a
+circle of 36 px round the dot, with nothing drawn past the dot's edge, so
+nobody has to find twelve pixels (design rule 8). The owner was shown the bike from Rattatee's icon too, and a 16 px bike
 in a thin ring, and these went in.
 
 **The card opens clear of the rail.** On a phone the rail stands over the
@@ -20182,8 +20192,9 @@ somewhere; nothing a stranger types can hand it out. See **The pins**.
 
 The circle is not gone, it is *reserved*: the only plain dots left on the map
 are the one that says where you are, in `--here`, and the red one that says
-where Tallinn Tastebuds was last seen on a bike, which never stands without its
-label — **Last seen, on a bike**. Nothing else can be mistaken for either.
+where Tallinn Tastebuds was last seen on a bike, smaller than any pin and in a
+red no pin wears — **Last seen, on a bike**. Nothing else can be mistaken for
+either.
 
 What the circle used to carry, the collar round the mark carries instead — the
 picture is the same on every pin, so the three readings have to live somewhere
@@ -22340,6 +22351,7 @@ The map, `assets/app.js`:
 | `route_train` | `n`, `mode` — a train by bike pressed, `n` counted among the ways before it — **By bike, a train too** |
 | `ride_save` | — a ride the server kept, counted by `functions/api/rides.js` itself. The website's recorder reported `ride_open`, `ride_record`, `ride_start`, `ride_pause`, `ride_resume`, `ride_finish`, `ride_throw` and `ride_signin` beside it until it was taken out on 2026-11-18 |
 | `seen_open` | — the pin that says where Tallinn Tastebuds was last seen on a bike, pressed open — **Last seen, on a bike** |
+| `seen_app` | — Rattatee, in that pin's card, pressed: the app's page in the App Store — **Last seen, on a bike** |
 | `call_place` | `place` — the button and the number in the facts alike |
 | `deal_open` | `place` |
 | `deal_signin` | `place` — the button a discount shows instead, signed out; it opens the sign-in sheet |
