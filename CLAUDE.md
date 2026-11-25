@@ -735,6 +735,17 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   BRouter's ways and the rows of the ridden one, `SCORE_ROWS` at the most —
   once a train. Its `trains` are answered and left out, as a new way's
   always were.
+- Its station, written on 2026-11-25 and in no release yet, which asks
+  nothing new and reads three things of a train already sent. The first
+  point of the train's `line` is taken for the station it leaves from:
+  within 250 m of it the way waits — no turn, no "off the way", no new
+  way — and the row says which train to take, out of `name`, `headsign`,
+  `at` and `to`. So that `line` begins at the station, and `at` stays a
+  clock, `HH:MM` on Tallinn's time, since five minutes past it a rider
+  still there is taken to have missed it. And the `line` may be as thin as
+  it likes: the app measures it whole now, where until then it left out
+  every step over 250 m and placed the turns after a train kilometres
+  early.
 - Its ways by bike, from 2026-11-23: with no `heading`, and but for a ride
   between cities, the ways are BRouter's, in the same fields and the same
   words of `turn`
