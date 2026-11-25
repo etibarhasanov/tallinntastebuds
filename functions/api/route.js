@@ -97,6 +97,11 @@
  * Laagna tee for more than a crossing is asked for again round it, and only
  * the ways that keep off are answered — KEEPING OFF below.
  *
+ * And by bike no way goes through a wall, a passage the map has and the
+ * ground has not: a street shut at one end, a yard behind a gate. Both
+ * routers believe the map, so BRouter is told and the router's ways that go
+ * through one are left out — WALLS below.
+ *
  * And by bike and on foot no way rides out and straight back the way it
  * came — SPURS below. Nor, by bike, does a way keep the bend it made to
  * reach a point it was asked through — SETTLING below.
@@ -140,8 +145,10 @@
  * stitched from the spot outward in whichever direction they run: one that
  * started backwards would be the same "turn around" under another name.
  * Nor is any way put first as ridden, which costs a read of the database
- * that a new way every few hundred metres should not. Nothing else about the answer changes, and a page or
- * an app that sends none is answered exactly as before.
+ * that a new way every few hundred metres should not. The one time the
+ * answer is BRouter's is where every way the router set off by goes
+ * through a wall — WALLS below. Nothing else about the answer changes, and
+ * a page or an app that sends none is answered exactly as before.
  *
  * MORE THAN ONE WAY
  *
@@ -412,6 +419,32 @@ async function street(context, mode, from, to, heading) {
     Number.isFinite(other.meters) && Number.isFinite(other.seconds) &&
     !(mode === 'foot' && other.meters > MAX_WALK));
 
+  let found = [first].concat(others);
+
+  /* By bike a way through a wall is no way — WALLS below. The router cannot
+     be told of one, so its ways that go through are left out. Where that is
+     all of them and BRouter has not been asked, which is a way wanted with
+     a heading, BRouter is: it knows the walls and not the heading, so the
+     ways of its that set off as the rider is going come first, and where
+     none does the first begins by turning round — said once, where the
+     router's way would have ended with no way on. */
+  if (mode === 'bike' && found.some(walled)) {
+    const open = found.filter((one) => !walled(one));
+    const nice = !open.length && heading !== null ? await niceWays(context, from, to) : null;
+    if (nice) {
+      /* The way a line would be going ridden back to its start is the way
+         it sets off, turned round: ahead is within a quarter turn of the
+         heading. */
+      const ahead = (one) => {
+        const back = arriving(one.line.slice().reverse());
+        return back !== null && Math.abs((back - heading + 360) % 360 - 180) <= 90;
+      };
+      return answered(from, to, nice.filter(ahead).concat(nice.filter((one) => !ahead(one))), asked,
+        (a, b) => niceRide(context, a, b));
+    }
+    if (open.length) found = open;
+  }
+
   /* By bike a way through a door goes first, and the router's own best
      becomes the next of the others — still offered, a button down. Not
      where it is the door's line pushed, though: that is one way twice, the
@@ -422,8 +455,7 @@ async function street(context, mode, from, to, heading) {
      doors are asked about, and that is the answer wherever no door wins,
      which is nearly everywhere; where one does, its way is kept off with
      them, as it always was. */
-  const shortest = Math.min(first.meters, ...others.map((other) => other.meters));
-  const found = [first].concat(others);
+  const shortest = Math.min(...found.map((one) => one.meters));
   const [through, kept] = await Promise.all([
     mode === 'bike' && heading === null
       ? doors(context).then((all) => viaDoor(all, [from.lat, from.lng], [to.lat, to.lng], Math.min(...found.map(reach)), DOORS_DEEP))
@@ -460,6 +492,10 @@ async function street(context, mode, from, to, heading) {
     ways = settled;
   }
   ways = ways.filter((way, i, all) => !all.slice(0, i).some((before) => alike(way, before)));
+  /* A way round a street, through a door or round either side can go
+     through a wall the router's own kept out of: not offered where another
+     way is — WALLS below. */
+  if (mode === 'bike' && !ways.every(walled)) ways = ways.filter((one) => !walled(one));
   return answered(from, to, ways, asked);
 }
 
@@ -896,8 +932,9 @@ function spur(line) {
  * settles round each, and round both at once where the stretches meet.
  *
  * A way that settles onto a street in KEEP_OFF for further than it rode one
- * keeps the line it had, and one that settles into a way already offered is
- * offered once. It is done last, to the ways that are answered and not to
+ * keeps the line it had, as does one that settles through a wall it kept
+ * out of — WALLS below — and one that settles into a way already offered
+ * is offered once. It is done last, to the ways that are answered and not to
  * every way tried: one router request for each answered way that was asked
  * through a point, three at the most, and no row. Nothing waits on it: a way
  * the router will not answer again is the way as it was.
@@ -933,6 +970,7 @@ async function settle(found, heading = null) {
   if (!again) return way;
   const settled = unspur(again);
   if (ridden(settled).meters > Math.max(KEEP_OFF_MIN, ridden(way).meters)) return way;
+  if (walled(settled) && !walled(way)) return way;
   return Object.assign(way, { meters: settled.meters, seconds: settled.seconds, line: settled.line, steps: settled.steps });
 }
 
@@ -1130,6 +1168,91 @@ async function keepOff(ways, from, to, shortest, heading = null, past = null) {
   return kept;
 }
 
+/* ------------------------------------------------------------------ walls
+ * A wall is the other thing from a door: a way the map has and the ground
+ * has not. On 2026-11-25 the owner sent a picture from Rattatee, off the way
+ * on Võistluse with the way drawn left off Juhkentali where there is no
+ * passage, and marked the map: south from Juhkentali there is a way at
+ * Püssirohu and a way into the park by Veski, and none between them.
+ * OpenStreetMap has two. Staadioni is drawn as an ordinary street joined to
+ * Juhkentali, and the yard of number 14 is entered by a service road with a
+ * boom gate that says nothing about bikes and by a footpath beside it, with
+ * a car park and a trodden path on into the park, and a road on down the
+ * side of the sports hall. Both routers read that map and neither has
+ * stood there: that evening BRouter's first way from Kadriorg to Herne
+ * went down Staadioni, and the router's new way mid-ride turned in at the
+ * gate. Of the sixteen trips pinned that day, five had a way through one
+ * or the other.
+ *
+ * So a wall is written down here, as a street to keep off is, by whoever
+ * has stood at it: a name, and a `bar` — two [lat, lng] points, a line
+ * drawn across the passage where it is shut, a little wider than the
+ * passage and clear of the street it opens off. A way goes through a wall
+ * where its line crosses the bar, and by bike no way that does is offered
+ * where another is. Not OpenStreetMap's to keep, for the reason a door is
+ * not: somebody else can draw the street open again.
+ *
+ * BRouter is told. The bars near a trip go with the request as lines no
+ * way crosses, beside the areas of the streets kept off, so its three ways
+ * are found round them and a door's legs are too — NICE WAYS below.
+ *
+ * The router cannot be told, and a point made up beside a wall would bend
+ * the way as every made-up point has. So its ways are read instead: one
+ * through a wall is left out, a way that settles through one keeps the
+ * line it had, and a way a refinement made — round a street kept off,
+ * through a door, round either side — is dropped where another keeps out.
+ * Where every way it found goes through one and the question had a
+ * heading, BRouter is asked after all, which is the one time a way wanted
+ * mid-ride is not the router's — street() says what becomes of the
+ * heading. Where BRouter has no answer either, the router's ways are the
+ * answer as they were: nothing waits on this.
+ *
+ * Bikes only. A wall is not held at the ends of a ride between cities, nor
+ * on the ride to or from a station where BRouter had no answer, each of
+ * which is the router's one way.
+ *
+ * It costs no request where no way meets a wall, which is nearly
+ * everywhere, and three to BRouter where the router's ways with a heading
+ * all do; a crossing worked out for each stretch of a way's line and each
+ * wall, forty microseconds for a way of MAX_POINTS and the two walls; and
+ * no row. The next wall is a line in WALLS and a sentence in Walls in
+ * docs/handbook.md, and `node tools/routecheck.mjs` after it, since the
+ * bars change what BRouter is asked for every trip near one.
+ */
+const WALLS = [
+  {
+    /* No passage down the street from Juhkentali, the owner's words. The
+       bar lies thirty metres in from Juhkentali, across the carriageway
+       and the pavement either side of it, so the houses on the street are
+       still reached, from Võistluse. */
+    name: 'Staadioni, south from Juhkentali',
+    bar: [[59.42774, 24.76185], [59.42774, 24.76237]]
+  },
+  {
+    /* No passage through the yard, the owner's words again. The bar lies
+       across both ways the map has into it from Juhkentali, the road
+       through the boom gate and the footpath west of it, twenty metres in
+       and south of the path to the statues, which stays open. With the
+       road alone barred, BRouter's first way from Juhkentali to Kalamaja
+       came up the side of the sports hall and out by the footpath. */
+    name: 'The yard of Juhkentali 14',
+    bar: [[59.42811, 24.76055], [59.42811, 24.76105]]
+  }
+];
+
+/* Whether the stretch from a to b crosses the one from c to d: each has
+   its two ends on either side of the other. Left as degrees, which does
+   not move a point from one side of a line to the other. */
+function crosses(a, b, c, d) {
+  const side = (p, q, r) => (q[1] - p[1]) * (r[0] - p[0]) - (q[0] - p[0]) * (r[1] - p[1]);
+  return side(a, b, c) * side(a, b, d) < 0 && side(c, d, a) * side(c, d, b) < 0;
+}
+
+/* Whether a way goes through a wall. */
+function walled(way) {
+  return WALLS.some((wall) => way.line.some((p, i) => i > 0 && crosses(way.line[i - 1], p, wall.bar[0], wall.bar[1])));
+}
+
 /* ------------------------------------------------------------ either side
  * The router offers other ways only where it finds some it thinks worth a
  * look, and those are streets beside its first; and a way that rides a
@@ -1267,7 +1390,9 @@ function afloat(route) {
  * way stands in, so a street is cut at its corners into stretches of
  * AREA_PIECE metres or more and a place on Liivalaia puts out only the
  * stretch it is on; and only the stretches within AREA_NEAR of the trip
- * are sent, since the address has to carry them.
+ * are sent, since the address has to carry them. The bars of the WALLS
+ * within the same reach go beside them, as lines with no weight, which
+ * BRouter does not cross at all.
  *
  * OFFERED, of what comes back:
  *
@@ -1304,7 +1429,9 @@ function afloat(route) {
  * does nothing on brouter.de, and a closed circle behind the rider turned
  * one start of three round when it was tried; a ride between cities is cut
  * at junctions that are the router's. Both are the router's ways as they
- * were, and so is any ride BRouter has no answer for.
+ * were, and so is any ride BRouter has no answer for. The one way with a
+ * heading that is asked for here is where the router's all go through a
+ * wall — WALLS above.
  *
  * It costs three requests to BRouter a ride, two more for each door that
  * could win and one for each ride to or from a station, where the router's
@@ -1335,12 +1462,13 @@ function band(line, half) {
   return left.concat(right.reverse()).map((q) => q[0].toFixed(5) + ',' + q[1].toFixed(5)).join(',');
 }
 
-/* The streets to keep off as the areas BRouter is sent for a trip between
-   two [lat, lng] points — ASKED FOR above. The stretches are cut once an
+/* What BRouter is told to stay out of for a trip between two [lat, lng]
+   points, as ./_brouter.js sends it — ASKED FOR above: the streets to keep
+   off as areas, and the walls as bars. The stretches are cut once an
    isolate. */
 let stretches = null;
 
-function keptOffAreas(a, b) {
+function keptOut(a, b) {
   if (!stretches) {
     stretches = [];
     for (const street of KEEP_OFF) {
@@ -1364,14 +1492,17 @@ function keptOffAreas(a, b) {
     return x > Math.min(ax, bx) - AREA_NEAR && x < Math.max(ax, bx) + AREA_NEAR &&
       y > Math.min(ay, by) - AREA_NEAR && y < Math.max(ay, by) + AREA_NEAR;
   };
-  return stretches.filter((stretch) => stretch.line.some(near)).map((stretch) => stretch.area).join('|');
+  return {
+    areas: stretches.filter((stretch) => stretch.line.some(near)).map((stretch) => stretch.area).join('|'),
+    bars: WALLS.filter((wall) => wall.bar.some(near)).map((wall) => wall.bar.map((p) => p[1] + ',' + p[0]).join(',')).join('|')
+  };
 }
 
 /* BRouter's one way between two points, as it answers it, or a way of no
    length where they are the same place, or null where it has none. */
 async function niceLeg(context, a, b) {
   if (metres(a, b) < AT_DOOR) return { meters: 0, seconds: 0, line: [], steps: [], loud: 0 };
-  const found = await brouterWays(context, [a, b], 1, keptOffAreas(a, b));
+  const found = await brouterWays(context, [a, b], 1, keptOut(a, b));
   return found && found[0] ? found[0] : null;
 }
 
@@ -1380,7 +1511,7 @@ async function niceLeg(context, a, b) {
 async function niceWays(context, from, to) {
   const start = [from.lat, from.lng];
   const end = [to.lat, to.lng];
-  const found = await brouterWays(context, [start, end], 1 + OTHERS, keptOffAreas(start, end));
+  const found = await brouterWays(context, [start, end], 1 + OTHERS, keptOut(start, end));
   if (!found || !found.length) return null;
 
   const once = (way, i, all) => !all.slice(0, i).some((before) => alike(way, before));
