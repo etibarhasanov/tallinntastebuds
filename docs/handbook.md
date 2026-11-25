@@ -3292,6 +3292,15 @@ train on the first morning it was tried. One train and no change, and no
 fare: the Tallinn card makes the train free for some and not for others, and
 the bar does not guess which.
 
+Since 2026-11-25 the train's leg also says where the train itself is going,
+`headsign` — *Narva*, for the RE33 somebody rides two stops to Ülemiste. It
+is the word on the platform's board and on the front of the train, and it is
+rarely the station the rider gets off at, so it is the sign to follow at a
+station: Rattatee's rider reached the platform with *to Ülemiste* on the
+phone and *Narva* on the board. The planner's `tripHeadsign`, or '' where it
+has none; it has no track numbers for Elron at all. The website's own bar
+does not print it yet.
+
 **Why a version.** Both apps read a bike route's ways out of `/api/route`
 and nothing else, and a train slipped into `others` would have been offered
 on an installed phone as a ride along the rail. So for its first days the

@@ -1980,10 +1980,20 @@ async function transit(from, to) {
  *                 "legs": [ { "kind": "bike", "meters": 1330, "seconds": 330,
  *                             "line": [...], "steps": [...] },
  *                           { "kind": "train", "name": "RE33",
+ *                             "headsign": "Tallinn",
  *                             "from": "Ülemiste", "to": "Kitseküla",
  *                             "at": "14:09", "until": "14:13",
  *                             "meters": 3366, "line": [...] },
  *                           { "kind": "bike", ... } ] } ]
+ *
+ * `headsign` is where the train itself is going, which is rarely where the
+ * rider gets off: it is the word on the platform's board and on the front
+ * of the train — Tallinn, Tartu, Aegviidu — and so the sign to follow at a
+ * station whose two platforms are a subway apart. The planner's own word
+ * for it, `tripHeadsign`, or '' where it has none. It knows no track
+ * number: every Elron stop's `platformCode` is null. Since 2026-11-25,
+ * asked for by Rattatee's rider, who got to the platform with a station to
+ * get off at and a board that named another.
  *
  * `seconds` is from setting off to the door: the ride to the station,
  * TRAIN_BOARD on the platform, the train and the ride on. `leave` is when
@@ -2035,14 +2045,15 @@ const TRAIN_BOARD = 120;
    that far anyway. */
 const TRAIN_WAIT = 3600;
 
-/* Each departure the planner offers with one train in it: the stations, as
-   names and points, when it leaves and arrives, and the rail between. */
+/* Each departure the planner offers with one train in it: which train and
+   where it is going, the stations, as names and points, when it leaves and
+   arrives, and the rail between. */
 async function departures(from, to) {
   const place = 'name lat lon';
   const query = '{ plan(from: {lat: ' + from.lat + ', lon: ' + from.lng + '}, ' +
     'to: {lat: ' + to.lat + ', lon: ' + to.lng + '}, numItineraries: ' + TRAIN_ASK + ', ' +
     'transportModes: [{mode: BICYCLE}, {mode: RAIL}]) { itineraries { legs { ' +
-    'mode transitLeg startTime endTime distance route { shortName } ' +
+    'mode transitLeg startTime endTime distance route { shortName } trip { tripHeadsign } ' +
     'from { ' + place + ' } to { ' + place + ' } legGeometry { points } } } } }';
   try {
     const res = await fetch(PEATUS, {
@@ -2064,6 +2075,7 @@ async function departures(from, to) {
       if (!Number.isFinite(at) || !Number.isFinite(until) || line.length < 2) return null;
       return {
         name: (train.route && train.route.shortName) || '',
+        headsign: (train.trip && train.trip.tripHeadsign) || '',
         from: { name: train.from.name || '', lat: Number(train.from.lat), lng: Number(train.from.lon) },
         to: { name: train.to.name || '', lat: Number(train.to.lat), lng: Number(train.to.lon) },
         at: at,
@@ -2109,6 +2121,7 @@ async function byTrain(from, to, found, quickest, leg) {
     legs.push({
       kind: 'train',
       name: go.name,
+      headsign: go.headsign,
       from: go.from.name,
       to: go.to.name,
       at: CLOCK.format(new Date(go.at)),
