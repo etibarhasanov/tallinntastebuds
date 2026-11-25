@@ -13710,21 +13710,23 @@
    * and what is never shown. **Last seen, on a bike** in docs/handbook.md is
    * the long version.
    *
-   * A RED DOT, SMALLER THAN A PLACE, AND NEVER GREY
+   * A RED DOT, AND THE WORDS ONLY WHEN IT IS PRESSED
    *
    * The pin is a dot of --seen, a red no place's pin wears, smaller than a
-   * place's pin, with the 🚲 at the front of the label under it: the owner's
-   * words were a bike emoji, red, a little different from the others, and
-   * then smaller than the others, like a dot. The label is what says what
-   * the dot is, and the press takes the label as well as the dot, so the
-   * target is the label's width. For its first day it was the mouth in a
-   * green collar, which read as one more restaurant, and then a bike in a
-   * red ring bigger than a place's pin. It is the same red however old the
-   * spot is — it went grey after ten minutes at first, and since the spot
-   * moves only on a new way or a save it was grey nearly always — and the
-   * time on the label, or the day once it is not today's, says how old. It
-   * never goes: the owner's word was that last seen can stay for ever,
-   * since what protects the rider is the 200 m, not the pin running out.
+   * place's pin, and nothing else until it is pressed: the owner's words
+   * were a bike emoji, red, a little different from the others, then
+   * smaller than the others, like a dot, and then first it is just a dot.
+   * A press opens the card, which says when, with the 🚲, and who, in the
+   * owner's words: according to Rattatee, Tallinn Tastebuds passed through
+   * here — the name a link to the app's page in the App Store. For its
+   * first day the pin was the mouth in a green collar, which read as one
+   * more restaurant, then a bike in a red ring bigger than a place's pin,
+   * and then the dot with a label under it that the owner took away. It is
+   * the same red however old the spot is — it went grey after ten minutes
+   * at first, and since the spot moves only on a new way or a save it was
+   * grey nearly always — and the card says how old. It never goes: the
+   * owner's word was that last seen can stay for ever, since what protects
+   * the rider is the 200 m, not the pin running out.
    *
    * HOW OFTEN IT ASKS
    *
@@ -13739,6 +13741,9 @@
   var SEEN_FRESH = 10 * 60000;
   var SEEN_EVERY = 30000;
   var SEEN_IDLE = 5 * 60000;
+  /* Where the card's Rattatee goes: the app's page in the App Store, as the
+     owner gave it, Estonia's shelf. */
+  var RATTATEE = 'https://apps.apple.com/ee/app/rattatee/id6838259864';
 
   var seenSpot = null;      /* { lat, lng, at } with `at` in milliseconds */
   var seenMarker = null;
@@ -13834,9 +13839,7 @@
     seenMarker = L.marker([spot.lat, spot.lng], {
       icon: L.divIcon({
         className: 'seen-pin',
-        html: '<span class="seen-face"></span>' +
-          '<span class="seen-label"><span class="seen-bike" aria-hidden="true">\uD83D\uDEB2</span> ' +
-          '<span class="seen-words"></span> \u00B7 <span class="seen-when"></span></span>',
+        html: '<span class="seen-face"></span>',
         iconSize: [PIN_BOX, PIN_BOX],
         iconAnchor: [PIN_BOX / 2, PIN_BOX / 2]
       }),
@@ -13880,40 +13883,44 @@
     TTBTrack.event('seen_open');
   }
 
-  /* What the pin says, in the language on screen and as old as it now is.
-     Called on every answer and on a language switch. */
+  /* What the pin says, in the language on screen and as old as it now is:
+     to a screen reader, since the dot shows no words, and in the card if it
+     is open. Called on every answer and on a language switch. */
   function dressSeen() {
     var node = seenMarker && seenMarker.getElement();
     if (!node) return;
-    var when = seenWhen(seenSpot.at, false);
-    /* Who, where and when, in the owner's own words for it — the 🚲 in
-       front already says on a bike. It stays on screen with the card open
-       too: the owner's word was that the text is visible all the time. */
-    node.setAttribute('aria-label', t('seenTitle') + ', ' + when);
-    node.querySelector('.seen-words').textContent = t('seenTitle');
-    node.querySelector('.seen-when').textContent = when;
+    node.setAttribute('aria-label', t('seenTitle', { app: 'Rattatee' }) + ', ' + seenWhen(seenSpot.at, false));
     if (seenOpen()) seenPopup.setContent(seenCard());
   }
 
-  /* The card a press opens: who, and when. It says nothing of the 200 m
-     held back at each end of a ride — the owner's word was that the card
-     only has to say Tallinn Tastebuds was seen here at this time, and what
-     is not shown is not something a visitor needs explaining. */
+  /* The card a press opens: when, then who, in the owner's words, with
+     Rattatee a link to the app wherever the language puts its {app}. It
+     says nothing of the 200 m held back at each end of a ride — the owner's
+     word was that the card only has to say Tallinn Tastebuds was seen here
+     at this time, and what is not shown is not something a visitor needs
+     explaining. */
   function seenCard() {
     var mins = Math.max(1, Math.round((Date.now() - seenSpot.at) / 60000));
     var ago = mins < 60 ? t('seenMinAgo', { n: mins })
       : mins < 1440 ? t('seenHoursAgo', { n: Math.floor(mins / 60) })
       : '';
+    var said = t('seenTitle').split('{app}');
+    var app = TTBTrack.click(el('a', {
+      className: 'seen-app', href: RATTATEE, target: '_blank', rel: 'noopener', textContent: 'Rattatee'
+    }), 'seen_app');
     return el('div', { className: 'seen-card' }, [
-      el('p', { className: 'seen-eyebrow', textContent: [t('seenEyebrow'), seenWhen(seenSpot.at, true)].concat(ago || []).join(' · ') }),
-      el('p', { className: 'seen-title', textContent: t('seenTitle') })
+      el('p', { className: 'seen-eyebrow' }, [
+        el('span', { className: 'seen-bike', 'aria-hidden': 'true', textContent: '\uD83D\uDEB2' }),
+        ' ' + [t('seenEyebrow'), seenWhen(seenSpot.at, true)].concat(ago || []).join(' · ')
+      ]),
+      el('p', { className: 'seen-title' }, [said[0], app, said.slice(1).join('')])
     ]);
   }
 
   /* When the rider passed the spot, on Tallinn's clock whoever is reading:
      the time for one from today, and for an older one the day — with the
-     time after it where `whole` asks, which the card does and the label, a
-     line on a phone's map, does not. The day's month is Intl's short one,
+     time after it where `whole` asks, which the card does and the dot's
+     name for a screen reader does not. The day's month is Intl's short one,
      and numbers where this browser has no month names for the language —
      formatMonth() above says which browsers those are. */
   function seenWhen(at, whole) {

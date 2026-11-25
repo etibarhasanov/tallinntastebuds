@@ -1469,7 +1469,7 @@
   "counterMore": "+ ещё стран: {n}",
   "counterSince": "с {date}",
   "seenEyebrow": "На велосипеде",
-  "seenTitle": "Tallinn Tastebuds в последний раз видели здесь",
+  "seenTitle": "По данным {app}, Tallinn Tastebuds проезжал здесь",
   "seenMinAgo": "{n} мин назад",
   "seenHoursAgo": "{n} ч назад",
   "embedMapLabel": "Карта мест в Таллине",

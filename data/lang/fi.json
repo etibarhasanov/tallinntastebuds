@@ -1469,7 +1469,7 @@
   "counterMore": "+ {n} muuta maata",
   "counterSince": "{date} alkaen",
   "seenEyebrow": "Pyörällä",
-  "seenTitle": "Tallinn Tastebuds nähtiin viimeksi täällä",
+  "seenTitle": "{app}n mukaan Tallinn Tastebuds kulki tästä ohi",
   "seenMinAgo": "{n} min sitten",
   "seenHoursAgo": "{n} h sitten",
   "embedMapLabel": "Tallinnan paikkojen kartta",

@@ -1469,7 +1469,7 @@
   "counterMore": "+ veel {n} riiki",
   "counterSince": "alates {date}",
   "seenEyebrow": "Rattaga",
-  "seenTitle": "Tallinn Tastebudsi nähti viimati siin",
+  "seenTitle": "{app} andmetel sõitis Tallinn Tastebuds siit läbi",
   "seenMinAgo": "{n} min tagasi",
   "seenHoursAgo": "{n} t tagasi",
   "embedMapLabel": "Tallinna kohtade kaart",
