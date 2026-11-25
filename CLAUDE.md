@@ -710,7 +710,14 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
 - Its new way mid-ride, from 2026-11-18: the same two questions with
   `heading` beside them, whole degrees from north, the way the rider is
   going — answered in the same fields, the way setting off that way. An
-  answer that ignored it would be read just the same.
+  answer that ignored it would be read just the same. Written on
+  2026-11-25 and in no release yet: it is asked once its rider has ridden
+  thirty seconds off the way, where that took 250 m ridden, and 150 m from
+  the way asks at once as it always did. By the seconds one rider is under
+  120 of these an hour at the very worst, never riding a way they are
+  given: each the router's question, no row read for the way, and the
+  session's two rows by key where the rider is signed in — 240 rows a
+  ridden hour.
 - Its ways by bike, from 2026-11-23: with no `heading`, and but for a ride
   between cities, the ways are BRouter's, in the same fields and the same
   words of `turn`
