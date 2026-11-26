@@ -165,7 +165,11 @@ const STALE_CLAIM = 2 * 60 * 1000;
  * ask — the upsert's WHERE — and one younger is somebody else's ranking in
  * progress, which this ask leaves alone and topOfWeek() reads past. A batch
  * that throws gives the claim back too, so the next ask tries again rather
- * than a week reading as ranked on the strength of nothing.
+ * than a week reading as ranked on the strength of nothing. Either failure
+ * is logged with the week and D1's message, since the claim it gives back
+ * leaves nothing behind in the tables: on 2026-11-25 query insights counted
+ * the ranking eight times in a day and google_reranks held one, and
+ * nothing could say why the other seven had not committed.
  *
  * The counts are read against the newest earlier week, whichever that is —
  * "moved" is a place whose position differs from the last time it had one,
@@ -192,6 +196,7 @@ export async function rerankIfDue(env, now) {
   }
   if (!claimed) return 'had';
 
+  let ranked = false;
   try {
     const only = await eatOnly(env);
     await env.DB.batch([
@@ -230,11 +235,19 @@ export async function rerankIfDue(env, now) {
         )
         .bind(week, TOP)
     ]);
+    ranked = true;
     /* Every row's `rank`, which the find bar orders by: the copies other
        isolates keep read the table again — googleTable() in ./_lib.js. */
     await venuesChanged(env, 'all');
     return 'made';
   } catch (e) {
+    /* Which half failed matters: a batch that threw is a week still to be
+       ranked, and the next ask tries again; a mark that threw after it is a
+       ranking that stands, and only the isolates' copies of the table were
+       not told — so the claim is kept. */
+    console.error('rerank ' + week + (ranked ? ': ranked, venuesChanged failed: ' : ': batch failed: ') +
+      ((e && e.message) || e));
+    if (ranked) return 'error';
     try {
       await env.DB.prepare('DELETE FROM google_reranks WHERE week = ? AND ranked IS NULL').bind(week).run();
     } catch (ignored) { /* the database is the thing that failed */ }
