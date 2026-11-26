@@ -4184,7 +4184,8 @@ doors are the site's own, in `data/doors.json`, and the bike route is the
 two together.
 
 **Found by distance, not by shape.** `node tools/doors.mjs` reads the saved
-rides off `GET /api/v1/rides?since=`, cuts each into stretches of two hundred
+rides off `GET /api/v1/rides?since=` — the owner's alone since 2026-11-26,
+so the run carries the owner's `ttb_s` cookie in `TTB_SESSION` — cuts each into stretches of two hundred
 metres, twice, and puts each stretch's ends to the bike router itself. A
 stretch the router needs a hundred metres and half as much again for, by
 the shortest way it offers, is a door; it is then tightened to the part that makes the saving, and kept only

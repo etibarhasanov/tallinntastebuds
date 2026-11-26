@@ -300,6 +300,22 @@ export async function onRequest(context) {
   return res;
 }
 
+/* The methods that change nothing, and whether an Origin is this site's:
+   the address asked, the live host, or a subdomain of it. An Origin that
+   will not parse — "null", out of a sandboxed frame — is nobody's. */
+const SAFE = new Set(['GET', 'HEAD', 'OPTIONS']);
+
+function ours(origin, url) {
+  if (origin === url.origin) return true;
+  try {
+    const from = new URL(origin);
+    return from.protocol === 'https:' &&
+      (from.hostname === CANONICAL_HOST || from.hostname.endsWith('.' + CANONICAL_HOST));
+  } catch (e) {
+    return false;
+  }
+}
+
 async function route(context) {
   const url = new URL(context.request.url);
 
@@ -312,6 +328,30 @@ async function route(context) {
     // The path and query ride along, so a shared ?spot= link keeps working.
     return Response.redirect(url.toString(), 301);
   }
+
+  /* ------------------------------------------------------ ANOTHER SITE'S
+     A write to /api/ that a page on somebody else's site sent is refused.
+     Every write is authorised by the ttb_s cookie, and until 2026-11-26 the
+     one thing between a member and a form on another site posting as them
+     was the cookie's SameSite=Lax; three of the owner's writes checked the
+     Origin themselves and nothing else did. A browser puts Origin on every
+     POST, so one that is there and is neither the address asked — which is
+     what makes localhost under `pages dev` its own — nor this site or a
+     subdomain of it is another site's page. The three apps are not
+     browsers and send none, and neither does the workflow that posts
+     /api/refresh, so a request without one passes as it did. The reads are
+     left alone: the public API and /embed are read from other sites on
+     purpose, and the two /mcp doors are not under /api/. */
+  if (!SAFE.has(context.request.method) && url.pathname.startsWith(API_PREFIX)) {
+    const origin = context.request.headers.get('Origin');
+    if (origin && !ours(origin, url)) {
+      return new Response(JSON.stringify({ error: 'origin' }), {
+        status: 403,
+        headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
+      });
+    }
+  }
+  /* -------------------------------------------------- end ANOTHER SITE'S */
 
   /* /about was one person's page of links for a day, before every profile
      could carry one — the owner's, and it was handed out as an address — so
