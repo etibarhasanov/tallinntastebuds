@@ -300,7 +300,9 @@ async function placeNames(context, blocks) {
    however many lists there are. Public ones only, asked now rather than
    trusted from when the post was written: a list made private since leaves
    the post's text the way it leaves the page. A database that cannot answer
-   costs the post its lists and nothing else. */
+   costs the post its lists and nothing else. The `+` on `l.public` keeps
+   the planner on the lists' key: without it idx_lists_public took
+   `public = 1` and walked every public list to find the few asked for. */
 async function listsOf(env, blocks) {
   const ids = [...new Set((blocks || []).filter((b) => b && b.k === 'list').map((b) => b.id))];
   const out = new Map();
@@ -309,7 +311,7 @@ async function listsOf(env, blocks) {
     const marks = ids.map(() => '?').join(',');
     const heads = await env.DB
       .prepare('SELECT l.id AS id, l.title AS title, u.username AS by FROM lists l ' +
-        'LEFT JOIN users u ON u.id = l.owner WHERE l.public = 1 AND l.id IN (' + marks + ')')
+        'LEFT JOIN users u ON u.id = l.owner WHERE +l.public = 1 AND l.id IN (' + marks + ')')
       .bind(...ids)
       .all();
     for (const r of heads.results || []) out.set(r.id, { title: r.title, by: r.by || '', names: [] });
