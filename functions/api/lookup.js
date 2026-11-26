@@ -189,7 +189,13 @@ function cacheKey(q) {
 
 /* The rows Google named, as the roll draws them, in Google's order. Read back
    rather than built from the answer, so a row that was already there — and
-   perhaps hidden — answers as the table has it. */
+   perhaps hidden — answers as the table has it.
+
+   The `+` on `hidden` is what makes this five rows. Without it the planner
+   took idx_google_venues_open (hidden, status) for `hidden = 0` over the
+   key for `place_id IN (…)` and walked every open venue to find the five:
+   ~1,200 rows a press, 7,220 for six presses in production's insights on
+   2026-11-26. venues.js reads a map id the same way for the same reason. */
 async function rollRows(env, ids) {
   if (!ids.length) return [];
   const { results } = await env.DB
@@ -197,7 +203,7 @@ async function rollRows(env, ids) {
       'SELECT place_id, name, category, cuisine, tags, price, rating, reviews, ' +
       'address, postal_code, city, latitude, longitude, map_id, kind FROM google_venues ' +
       'WHERE place_id IN (' + ids.map(() => '?').join(', ') + ') ' +
-      "AND hidden = 0 AND missing_since IS NULL AND status <> 'Temporarily closed'"
+      "AND +hidden = 0 AND missing_since IS NULL AND status <> 'Temporarily closed'"
     )
     .bind(...ids)
     .all();

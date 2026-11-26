@@ -356,7 +356,14 @@ const STAND_INS = ['?', '= ?', '1', '', 'AND 1'];
    `WHERE hidden = 0` + only + ` AND ` + DUE_SQL — is read too. Up to six
    placeholders, five to the sixth tries at most, and only for a statement
    none of the five alike could read. */
-function* standIns(sql) {
+function* standIns(spliced) {
+  /* An IN list the code builds — ids.map(() => '?') — is read as five, the
+     size it is asked at. Stood in by one `?`, `place_id IN (?)` is
+     `place_id = ?` to the planner and takes the key; with five it may take
+     an index on a column beside it instead, which is how rollRows() in
+     lookup.js walked every open venue (~1,200 rows) on every press of
+     Look for it on Google Maps through November 2026, and passed here. */
+  const sql = spliced.replace(/\bIN\s*\(\s*__X__\s*\)/gi, 'IN (?, ?, ?, ?, ?)');
   const n = (sql.match(/__X__/g) || []).length;
   for (const stand of STAND_INS) yield sql.replace(/__X__/g, stand);
   if (n < 2 || n > 6) return;
