@@ -7705,9 +7705,12 @@ cleared.
 every call bills as Place Details Enterprise, of which Google gives a thousand a
 month free per billing account. The limit is enforced here rather than in the
 Google Cloud console, which will not lower a quota on every kind of account:
-`google_calls` counts calls per UTC day, and `spend()` claims one in a single
-statement before any request leaves, only while the day is under thirty-two and
-the month under nine hundred and fifty. A thirty-one-day month at thirty-two a
+`google_calls` counts calls per UTC day, and the month's total in a row of
+its own beside them; `spend()` claims one of each before any request leaves,
+a statement a row, only while the day is under thirty-two and
+the month under nine hundred and fifty. The month's row is kept by the write
+since 2026-11-26: until then every claim added the month up out of its days,
+twice, and 34 calls on the 25th read 3,739 rows to be booked. A thirty-one-day month at thirty-two a
 day is 992; the monthly cap sits lower still because Google's month turns over
 on Pacific time. The thirty-two is what the site spends of its own accord — the
 top hundred and the fill. A place somebody opens is held to sixty-four on the

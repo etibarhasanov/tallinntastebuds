@@ -1444,15 +1444,21 @@ CREATE INDEX IF NOT EXISTS idx_city_venues_area ON city_venues (area, rank);
 -- One row per UTC day and kind of call to Google's Places API, counting up.
 -- The spending limit for the whole site lives here rather than in the Google
 -- Cloud console, which will not lower a quota on every kind of account:
--- spend() in functions/api/_refresh.js claims one call in a single statement
--- before any request leaves, and only while the day's count and the month's
--- total are both under BUDGET in that file. `kind` is 'details' today — Place
+-- spend() in functions/api/_refresh.js claims one call before any request
+-- leaves, a statement for the day and one for the month, and only while the
+-- day's count and the month's total are both under BUDGET in that file. `kind` is 'details' today — Place
 -- Details, one place per call, a thousand free a month.
+--
+-- And one row per month and kind, its `day` the month alone — '2026-11' —
+-- holding that month's total, counted up by the same claim. It is what the
+-- month's limit is checked against, one row by the key, where until
+-- 2026-11-26 every claim added the month's days up. A month sorts before
+-- its own first day, so a read of days from 'YYYY-MM-01' never meets one.
 --
 -- Only the database the key is set against ever fills this. The key goes in
 -- Production alone, so preview's table stays empty; see docs/handbook.md.
 CREATE TABLE IF NOT EXISTS google_calls (
-  day  TEXT    NOT NULL,              -- '2026-09-26', UTC
+  day  TEXT    NOT NULL,              -- '2026-09-26', UTC; or '2026-09', the month's total
   kind TEXT    NOT NULL,
   n    INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (day, kind)

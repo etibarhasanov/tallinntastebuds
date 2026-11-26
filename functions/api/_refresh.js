@@ -74,7 +74,8 @@
  *                     missing_since instead — never deleted, because a list may
  *                     point at it — and a missing place that answers as open
  *                     again is cleared.
- *   google_calls      one row per UTC day and kind of call, counting up.
+ *   google_calls      one row per UTC day and kind of call, counting up, and
+ *                     one per month and kind, the total spend() checks.
  *   google_refreshes  one row per call, saying what came back and what moved.
  *                     It is what the Google tab on /admin.html reads, through
  *                     /api/admin/refreshes, and it keeps ninety days.
@@ -348,12 +349,25 @@ function dayOf(now) {
 
 /* Claims one call of `kind` against BUDGET, and says whether it got one.
  *
- * One statement, so two opens in the same instant cannot both take the last
- * call of the day: the insert makes today's row where there is none, the
- * update adds one where there is, and each only happens while today's count
- * and the month's total are both under their limits. RETURNING hands back a
- * row only when one of them did. The SELECT carries a WHERE of its own because
- * SQLite needs one to tell an upsert's ON CONFLICT from a join's ON.
+ * Two claims, each one statement on one row by its key: today's row, held
+ * under the day's limit, and then the month's — a row of the same table
+ * whose `day` is the month, '2026-11', which the write keeps so no read has
+ * to add the days up. Each is its own upsert, so two opens in the same
+ * instant cannot both take the last call of the day or of the month, and a
+ * call leaves only when both were had.
+ *
+ * Until 2026-11-26 it was one statement that added the month up out of its
+ * days, twice, before every call: 88 rows read on the 25th to book one, and
+ * 43 more each time the fill asked what was left — 3,739 rows that day for
+ * 34 calls. It is three rows now, on the 1st and on the 31st.
+ *
+ * The day is claimed first because it is the one that usually refuses. A
+ * month that then refuses leaves the day's count one up with no call made,
+ * which only spends less; nothing can spend more.
+ *
+ * A month with no row yet — the first call of each, and of the month this
+ * shipped in — gets one from seedMonth(), the only read here that adds days
+ * up, once a month.
  *
  * A claim is spent whether or not the call then succeeds. Google does not bill
  * a refused call, so this can undercount what is free by the odd failure; it
@@ -366,37 +380,73 @@ export async function spend(env, kind, now, cap) {
   const limit = BUDGET[kind];
   if (!limit) return false;
   const day = dayOf(now);
-  const month = day.slice(0, 8) + '01';
+  const month = day.slice(0, 7);
 
+  const today = await env.DB
+    .prepare(
+      'INSERT INTO google_calls (day, kind, n) VALUES (?1, ?2, 1) ' +
+      'ON CONFLICT(day, kind) DO UPDATE SET n = n + 1 WHERE n < ?3 ' +
+      'RETURNING n'
+    )
+    .bind(day, kind, cap || limit.day)
+    .first();
+  if (!today) return false;
+
+  const total = await env.DB
+    .prepare('UPDATE google_calls SET n = n + 1 WHERE day = ?1 AND kind = ?2 AND n < ?3 RETURNING n')
+    .bind(month, kind, limit.month)
+    .first();
+  return total ? true : seedMonth(env, kind, month, limit.month);
+}
+
+/* The month's row, made out of its days the first time a month is claimed
+ * from, with the claim that found it missing already among them — today's
+ * row was counted up first. Made only while that sum is within the limit,
+ * and by one claim alone: a second arriving in the same instant finds the
+ * row there, makes nothing and is refused, a call unspent once a month.
+ *
+ * It is also where a claim lands when the month is full, since a refused
+ * update cannot say which it was: the days are added up, the row is found
+ * there, and the answer is no — a month's rows, sixty-two at the most, for
+ * each claim the day's limits still let through in a month already spent. */
+async function seedMonth(env, kind, month, most) {
   const row = await env.DB
     .prepare(
       'INSERT INTO google_calls (day, kind, n) ' +
-      'SELECT ?1, ?2, 1 ' +
-      'WHERE (SELECT COALESCE(SUM(n), 0) FROM google_calls WHERE kind = ?2 AND day >= ?3) < ?5 ' +
-      'ON CONFLICT(day, kind) DO UPDATE SET n = n + 1 ' +
-      'WHERE n < ?4 ' +
-      'AND (SELECT COALESCE(SUM(n), 0) FROM google_calls WHERE kind = ?2 AND day >= ?3) < ?5 ' +
-      'RETURNING n'
+      'SELECT ?1, ?2, t.n FROM (' +
+      'SELECT COALESCE(SUM(n), 0) AS n FROM google_calls WHERE kind = ?2 AND day >= ?3 AND day <= ?4' +
+      ') t WHERE t.n <= ?5 ' +
+      'ON CONFLICT(day, kind) DO NOTHING RETURNING n'
     )
-    .bind(day, kind, month, cap || limit.day, limit.month)
+    .bind(month, kind, month + '-01', month + '-31', most)
     .first();
   return !!row;
 }
 
-/* What has been spent, for the report: today's calls and the month's. */
+/* What has been spent, for the report: today's calls and the month's, a row
+   each by its key. A month nothing has been claimed in since the month's row
+   began to be kept has none, and is added up from its days as it used to
+   be. */
 export async function spent(env, kind, now) {
   const day = dayOf(now);
-  const month = day.slice(0, 8) + '01';
+  const month = day.slice(0, 7);
   const row = await env.DB
     .prepare(
       'SELECT ' +
-      'COALESCE(SUM(CASE WHEN day = ?2 THEN n END), 0) AS today, ' +
-      'COALESCE(SUM(n), 0) AS month ' +
-      'FROM google_calls WHERE kind = ?1 AND day >= ?3'
+      '(SELECT n FROM google_calls WHERE day = ?2 AND kind = ?1) AS today, ' +
+      '(SELECT n FROM google_calls WHERE day = ?3 AND kind = ?1) AS month'
     )
     .bind(kind, day, month)
     .first();
-  return { today: Number(row && row.today) || 0, month: Number(row && row.month) || 0 };
+  let total = row && row.month;
+  if (total == null) {
+    const days = await env.DB
+      .prepare('SELECT COALESCE(SUM(n), 0) AS n FROM google_calls WHERE kind = ?1 AND day >= ?2 AND day <= ?3')
+      .bind(kind, month + '-01', month + '-31')
+      .first();
+    total = days && days.n;
+  }
+  return { today: Number(row && row.today) || 0, month: Number(total) || 0 };
 }
 
 /* ------------------------------------------------------ Google into columns */
