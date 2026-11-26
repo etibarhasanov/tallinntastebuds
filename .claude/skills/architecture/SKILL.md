@@ -40,7 +40,6 @@ tallinntastebuds.ee                 one Cloudflare Pages project, one Worker
 ├── /write                          write.html, where a member writes a post for it
 ├── /flashcard  ?d=                 flashcard.html, in-document between decks and a deck
 ├── /azeri                          azeri.html, open to anybody, its home written in by functions/azeri.js
-├── /chess                          chess.html
 ├── /feedback                       feedback.html
 ├── /deal /verify /staff            the three pass pages, no-store
 ├── /privacy                        privacy.html, its text written in by functions/privacy.js per language

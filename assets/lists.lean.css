@@ -1565,7 +1565,6 @@ body.has-scrim { overflow: hidden; }
 
 @media (min-width: 861px) {
   .lists-brand,
-  .chess-body .lists-brand,
   .lists-body.is-editor .lists-brand,
   [data-look="b"] .lists-body.is-all .lists-brand {
     max-width: none;

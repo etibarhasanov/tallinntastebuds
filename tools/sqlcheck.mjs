@@ -88,10 +88,6 @@ const KNOWN = [
   { file: 'api/_account.js', has: 'DELETE FROM login_fails', why: 'old failed sign-ins only; the table holds a day of them' },
   { file: 'api/account.js', has: 'DELETE FROM username_holds', why: 'released names past their hold; one row per renamed account' },
   { file: 'api/account.js', has: 'NOT IN (SELECT place_id FROM list_items)', why: 'deleting an account, once per account' },
-  { file: 'api/chess.js', has: 'FROM chess_games g', why: 'a fragment: the WHERE that names the game is added where it is used' },
-  { file: 'api/chess.js', has: 'DELETE FROM chess_games WHERE', why: 'a fragment: PAIR names the two players' },
-  { file: 'api/chess.js', has: 'MAX(n)', why: "a game's number, when a game is started: the games of one kind" },
-  { file: 'api/chess.js', has: 'FROM users WHERE username LIKE', why: 'finding an opponent by name, signed in: the accounts, 81 in November 2026' },
   { file: 'api/_posts.js', has: 'ORDER BY COALESCE(p.published_at, p.updated_at) DESC', why: "readPage()'s WHERE is its caller's — p.status = 'published' or p.owner = ? in posts.js — and each searches an index of posts" },
   { file: 'api/_flows.js', has: 'WITH RECURSIVE f(flow)', why: 'FIRST_DAY: MIN(flow) and MIN(day) per flow are each one row by the key, 54 rows in all on 18 Nov 2026 — the planner cannot tell its parts apart' },
   { file: 'api/_visitors.js', has: 'SELECT MIN(day) AS day FROM visitor_counts WHERE kind', why: 'stops at the first day the kind has a row, so it reads the days before that kind began and no more: 1,757 rows on 18 Nov 2026 for the latest, and that number does not grow. The owner\'s pages only' },
@@ -141,11 +137,6 @@ const ROWS = [
   { file: 'api/_visits.js', has: 'SELECT id, title FROM lists WHERE owner = ? AND public = 1', why: 'one account\'s public lists: MAX_LISTS, twenty-four' },
   { file: 'api/_visitors.js', has: 'SELECT minute, n FROM visitor_live WHERE minute > ?', why: 'the last LIVE_SPAN minutes, thirty rows' },
   { file: 'api/_visitors.js', has: 'SELECT day, fresh, visits, secs FROM counter_days WHERE day >= ?', why: 'the last COUNTER_SECS_DAYS days, a row a day, twenty-eight' },
-  { file: 'api/chess.js', has: 'SELECT g.*, u.username AS challenger_name FROM chess_games g LEFT JOIN users u ON u.id = g.challenger', why: 'GAME_SQL, a fragment: every use adds the WHERE that names its game and LIMIT 1' },
-  { file: 'api/chess.js', has: 'o.username AS opponent_name FROM chess_games g', why: "DUEL_SQL, a fragment: its uses name one game, or one account's duels of the last days" },
-  { file: 'api/chess.js', has: 'FROM chess_asks a', why: "one game's asks: keyed (game, kind, by_kind, by_id), three kinds by two sides, six" },
-  { file: 'api/chess.js', has: "WHERE g.kind = 'private' AND g.state = 'waiting' ORDER BY g.created_at", why: 'the queue: a challenge is refused past MAX_QUEUE, fifty' },
-  { file: 'api/chess.js', has: 'SELECT * FROM (SELECT n.id', why: 'LIMIT NOTES_SHOWN, fifty, inside the subquery the outer one only reorders' },
   { file: 'api/venues.js', has: 'FROM google_venues', why: "roll(): a map id is LIMIT 1 and ?ids= is held to fifty by wantedIds(); the whole roll is /api/admin/venues, the owner's" },
   { file: 'api/_sections.js', has: 'CROSS JOIN ride_sections s ON s.cell = v.column1', why: 'LOOKUP: ASKED squares a statement, fifty, each a seek on ride_sections\' primary key, so a row a square at most' },
   { file: 'api/feedback.js', has: 'MAX(CASE WHEN h.owner = ? THEN 1 ELSE 0 END) AS hearted', why: 'LIMIT PAGE + 1, twenty-one — PAGE is fifty in _lib.js and twenty here, so the tool cannot read the name' },
@@ -157,12 +148,10 @@ const ROWS = [
      twenty in other files, so the tool cannot read the name. */
   { file: 'api/_lib.js', has: 'SELECT rowid AS at, place_id FROM saves WHERE owner = ? AND rowid < ?', why: "savedBy(): one account's saves, fifty a page" },
   { file: 'api/saves.js', has: 'SELECT place_id, n FROM save_counts WHERE place_id > ? AND n > 0', why: 'the saved places, fifty a page, on the primary key' },
-  { file: 'api/chess.js', has: 'SELECT ply, uci FROM chess_moves WHERE game = ? AND ply > ?', why: "replay(): one game's moves, fifty a page, by ply" },
 
   /* To fix, and being fixed by other sessions, as the owner set out. */
   { file: 'api/flashcard.js', has: 'SELECT deck_id, card_id, box FROM flashcard_known WHERE user_id = ?', why: 'every card one learner has turned', fix: 'another session: flashcard_known by user, a deck at a time' },
   { file: 'api/lists.js', has: 'FROM added_places WHERE owner = ?', why: 'every place one account added, MAX_ADDED a hundred', fix: 'another session: added_places by owner, paginated' },
-  { file: 'api/chess.js', has: 'FROM chess_moves m', why: "one game's moves, every ply", fix: 'another session: chess_moves for a game, paged by ply' },
 
   /* To fix, and nobody has them: over a hundred, and not on the owner's list. */
   { file: '_public.js', has: 'WHERE l.public = 1 ORDER BY l.id, i.pos LIMIT ?', why: "publicLists(): LIMIT READ_CAP, two thousand, every public list's places for /mcp and /api/v1, once per isolate per edit to a list", fix: SESSION },
@@ -184,7 +173,7 @@ const ROWS = [
    a column list spliced in that no placeholder can stand for. A new one
    fails the build until it is read or listed here. */
 const UNREAD = [
-  { file: 'api/_lib.js', has: 'SET ip_hash = ', why: "forgetFingerprints(): UPDATE ${table} for the four tables in FORGET. Each WHERE is length(ip_hash) = 64 AND <at> < ?, and none of the four has an index on <at>, so each walks its table — feedback, chess_notes, saves, flashcard_reports — after every write to them. To fix: a partial index on <at> WHERE length(ip_hash) = 64 would make it the rows still holding one" },
+  { file: 'api/_lib.js', has: 'SET ip_hash = ', why: "forgetFingerprints(): UPDATE ${table} for the three tables in FORGET. Each WHERE is length(ip_hash) = 64 AND <at> < ?, and none of the three has an index on <at>, so each walks its table — feedback, saves, flashcard_reports — after every write to them. To fix: a partial index on <at> WHERE length(ip_hash) = 64 would make it the rows still holding one" },
   { file: 'api/lists.js', has: 'UPDATE lists SET ', why: 'the edit: the columns being set spliced in, WHERE id = ?, one row by the key' },
   { file: 'api/rides.js', has: 'INSERT INTO rides (', why: 'a save: the column list spliced in, one row a run, no read' }
 ];

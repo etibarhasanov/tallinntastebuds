@@ -388,7 +388,7 @@
   }
 
   /* The language switch in the header — assets/language.js, the same one the
-     flashcards and the chess page draw. A profile is where it matters most:
+     flashcards and the Azerbaijani corner draw. A profile is where it matters most:
      it is handed out as a link to people in other countries, and what its
      owner wrote is in as many languages as they wrote it in. Picking one is
      stored where the map's switch stores it, so every page follows, and the

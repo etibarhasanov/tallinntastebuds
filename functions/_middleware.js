@@ -139,10 +139,11 @@ const OWNER_PAGES = '/admin/';
 const OWNER_API = '/api/admin/';
 
 /* Where the statistics and the directory were before they moved under
-   /admin/. Nothing is served there now, and a bookmark to /stats should say
-   so rather than be handed whatever a static file of that name might one day
-   be. */
-const RETIRED = new Set(['/stats', '/stats.html', '/google', '/google.html']);
+   /admin/, and where the chess page was until the owner took it out
+   altogether on 2026-11-26. Nothing is served there now, and a bookmark to
+   /stats or /chess should say so rather than be handed whatever a static
+   file of that name might one day be. */
+const RETIRED = new Set(['/stats', '/stats.html', '/google', '/google.html', '/chess', '/chess.html']);
 
 /* ---------------------------------------------------------- NOT THE SITE */
 /* The build output directory is the repository root, because there is no

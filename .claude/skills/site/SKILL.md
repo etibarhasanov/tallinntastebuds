@@ -125,8 +125,8 @@ and `<meta name="theme-color">` like `lists.html`'s.
 
 **Three things pages used to copy are globals now.** `assets/device.js`
 is `TTBDevice.id()` — the v4 UUID under `ttb.cid`, minted on the first ask —
-and `TTBDevice.known()`, the same id read without minting one; the map, the
-feedback page and the chess page load it before their own script, and a page
+and `TTBDevice.known()`, the same id read without minting one; the map and the
+feedback page load it before their own script, and a page
 that files something under a device does the same rather than growing a third
 `clientId()`. It is also `TTBDevice.inApp()` and `TTBDevice.outside()` —
 whether this is Instagram's, Facebook's or TikTok's own browser, where Google
@@ -134,8 +134,8 @@ will not sign anybody in, and the `intent:` address that leaves it on Android �
 which is why the flashcards load it too; its user agents are `SOURCES` in
 `functions/api/_visits.js` written twice, and the validator holds the two
 together. `assets/language.js` is `TTBLanguage.mount(node, langs, current,
-onPick, label)`, the switch the flashcards and the chess page draw on a
-`.lists-brand` header, its surface `.lang-surface` in `assets/lists.css`;
+onPick, label)`, the switch the flashcards, the lists and the Azerbaijani
+corner draw on a `.lists-brand` header, its surface `.lang-surface` in `assets/lists.css`;
 picking stays the page's own. The map's switch in `assets/app.js` is not on
 it and is not to be moved without a change of its own. `assets/country.js` is
 `TTBCountry.name(code, lang, unknown)`, a country's name in the reading
@@ -303,7 +303,7 @@ browser cannot import from `tools/`; change one, change the other.
 ## What the validator holds a page change to
 
 `tools/validate.mjs`, and CI runs exactly it plus `functions-check.mjs`,
-`sqlcheck.mjs`, `qrperf --check`, `chessperf --check`, `mcpcheck --check`,
+`sqlcheck.mjs`, `qrperf --check`, `mcpcheck --check`,
 `apicheck --check`, `routecheck --check` and the write gate's `--check`:
 
 - **Parity in `ui.json`**: a key that is a non-empty string in some
@@ -348,11 +348,11 @@ browser cannot import from `tools/`; change one, change the other.
 - **The lean copies**: every copy `LEAN` in `tools/lean.mjs` names —
   `app`, `styles`, `lists` and `lists.css` today — must be what the tool
   writes from its source, and no stamped page may load a source directly.
-- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty-six pages
+- **Stamps**: every `src`/`href` to `assets/*.js|css` in the twenty-five pages
   named in `PAGES` at the top of `tools/stamp.mjs` — `index.html`,
   `lists.html`, `account.html`, `blog.html`, `feedback.html`, `azeri.html`,
   `deal.html`, `verify.html`, `staff.html`,
-  `flashcard.html`, `edit.html`, `write.html`, `insights.html`, `chess.html`, `404.html`, `privacy.html`,
+  `flashcard.html`, `edit.html`, `write.html`, `insights.html`, `404.html`, `privacy.html`,
   `developers.html`, `embed.html`, and the owner's seven under
   `admin/` — `admin/google.html`, `admin/stats.html`, `admin/visitors.html`, `admin/found.html`, `admin/flows.html`, `admin/doors.html`, `admin/ways.html`, and `admin.html`, the door to them — must carry `?v=` equal to the first
   eight hex of the file's SHA-256. A new page that loads anything out of

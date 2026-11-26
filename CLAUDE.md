@@ -7,7 +7,7 @@ who comes to the site and what they do, a page of how they found it, a page of l
 through which an AI assistant reads the places and the public lists, a public API at `/api/v1` with the map to put
 on another site at `/embed`, and — on a subdomain of its own — a deck of Estonian
 flashcards, with a door of its own at its `/mcp` for the words and the grammar.
-Static files, fifty-six Cloudflare Functions, two D1 databases (preview and
+Static files, fifty-five Cloudflare Functions, two D1 databases (preview and
 production, never one), and a Workers AI binding for the chat.
 
 **No build step and no `npm install`, ever.** There is no `package.json` and
@@ -39,8 +39,7 @@ does not have to:
   a discount, a deck), a fix that puts something back the way it was meant
   to look, and anything with no visible effect go straight to code.
 - **There is no test suite.** `node tools/validate.mjs`, `node
-  tools/functions-check.mjs`, `node tools/sqlcheck.mjs`, `node tools/qrperf.mjs --check`, `node
-  tools/chessperf.mjs --check`, `node tools/mcpcheck.mjs --check`, `node
+  tools/functions-check.mjs`, `node tools/sqlcheck.mjs`, `node tools/qrperf.mjs --check`, `node tools/mcpcheck.mjs --check`, `node
   tools/apicheck.mjs --check`, `node tools/routecheck.mjs --check` and `node
   .claude/hooks/d1-write-gate.mjs --check` are the whole of CI. Anything with
   a visible effect is driven in a browser; the `/site` and `/api` skills say
@@ -108,7 +107,7 @@ does not have to:
   `--binding ADMINS=<id>`; **Driving it** in the `/stats` skill is the
   recipe. And the `[ai]` binding runs remotely whatever else does, so in a
   cloud session with no Cloudflare token the server does not start at all;
-  **The house, and driving without a token** in the `/chess` skill is the
+  **Driving without a token** in the `/api` skill is the
   way round it, a copy of the tree with the two `[ai]` blocks taken out.
 - **Production is the only database that is kept.** Every write goes to
   production `tallinntastebuds` and nowhere else; preview
@@ -152,7 +151,6 @@ command does the same by hand, and is the way to be sure.
 | Change the flashcards — a deck, a lesson or a song in `data/decks.json`, the page, what a deck can do, or the subdomain itself | `/flashcards`, with `/site` **and** `/api` |
 | Add a conversation to the flashcards from a sheet of a language course, or change one | `/conversation` |
 | Refresh the Google Places export | `/google-venues` |
-| Build the chess page — the next unticked task in `.claude/skills/chess/TASKS.md`, one per session | `/chess` |
 | Change what the site counts about its visitors, or one of the owner's five pages under `/admin/` that read it — `assets/track.js`, `functions/api/stats.js`, `_visitors.js`, `_visits.js`, `_flows.js`, `functions/api/admin/` — or read the numbers to decide what to build next | `/stats`, with `/site` **and** `/api` |
 | Change how the pages fit together — the shell the map opens every page on (`assets/shell.js`), the radio one page lends another, the security headers, a subdomain, a shared global — or propose a new page, route or host | `/architecture`, with `/site` or `/api` for the files it touches |
 
@@ -288,7 +286,7 @@ Small means small — not a prototype, and not the change written early:
 Where there are two honest ways to draw it, draw both and ask which, rather
 than picking one and defending it. A mockup stays out of the repository
 unless the owner asks for it to be kept as the reference a long feature
-builds against, the way `.claude/skills/chess/mockup.html` was.
+builds against.
 
 **Then stop.** Post the shape and the mockup, say in the first line that the
 session is waiting on an answer — **Say where it stands** below is how — and write no
@@ -943,7 +941,7 @@ repo, a UI string present in one language and missing in another, a deal whose
 place does not exist, `wrangler.toml` pointing preview and production at the
 same database. CI runs exactly this on every push and every PR, with no
 install step in front of it. Warnings never fail the build; errors do. CI runs
-eight more checks alongside it: `node tools/functions-check.mjs`, which imports
+seven more checks alongside it: `node tools/functions-check.mjs`, which imports
 every module under `functions/` so that a name imported from a module that no
 longer exports it, or a syntax error, fails the build here — Pages bundles
 them into one Worker, and on a deploy that takes every route down rather than
@@ -952,9 +950,7 @@ statement under `functions/` would read and fails on one that walks a whole
 table, or can answer more than a hundred rows, without being listed with what
 bounds it; `node tools/qrperf.mjs --check`, which holds `assets/qr.js` to the
 exact matrix it drew when it was last scanned with a real camera; `node
-tools/chessperf.mjs --check`, which holds the rules of chess in
-`functions/api/_chess.js` to published move counts and to positions worked out
-by hand; `node tools/mcpcheck.mjs --check`, which calls `/mcp` and the flashcards'
+tools/mcpcheck.mjs --check`, which calls `/mcp` and the flashcards'
 `/flashcard/mcp` over the real
 data files the way an assistant would and holds the answers to what it was
 promised; `node tools/apicheck.mjs --check`, which calls every address of the
@@ -1010,7 +1006,7 @@ ones are the ones that ship broken.
    hand after it lands — a schema to apply, a database to load, a staff link
    to send. There is no template.
 5. **CI** runs `node tools/validate.mjs`, `node tools/functions-check.mjs`,
-   `node tools/sqlcheck.mjs`, `node tools/qrperf.mjs --check`, `node tools/chessperf.mjs --check`,
+   `node tools/sqlcheck.mjs`, `node tools/qrperf.mjs --check`,
    `node tools/mcpcheck.mjs --check`, `node tools/apicheck.mjs --check`,
    `node tools/routecheck.mjs --check` and
    `node .claude/hooks/d1-write-gate.mjs --check` on the push and on the PR.

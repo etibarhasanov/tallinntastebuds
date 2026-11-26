@@ -177,7 +177,6 @@ jobs:
             node tools/functions-check.mjs
             node tools/sqlcheck.mjs
             node tools/qrperf.mjs --check
-            node tools/chessperf.mjs --check
             node tools/mcpcheck.mjs --check
             node tools/apicheck.mjs --check
             node tools/routecheck.mjs --check

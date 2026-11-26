@@ -19,7 +19,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, fifty-six small Functions, no build step and no npm install. Adding a
+Static files, fifty-five small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -87,7 +87,7 @@ tools, and what is deliberately left out.
   - [Public lists](#public-lists)
 - [Profiles](#profiles)
 - [Flashcards](#flashcards)
-- [Chess](#chess)
+- [Chess, taken out](#chess-taken-out)
 - [Stories](#stories)
 - [Privacy](#privacy)
 - [The blog](#the-blog)
@@ -5147,7 +5147,7 @@ in** under **Flashcards**. `data/ui.json` is still served, because a browser
 holding yesterday's script still asks for it.
 
 **And the Functions read it the same way, since October 2026.** The routes
-that answer with a page's words — `/api/v1/flashcard`, `/api/chess` and the
+that answer with a page's words — `/api/v1/flashcard` and the
 three under `/api/admin/` — pick the language out of the index and read that
 one file, through `languageIndex()` and `wordsIn()` in
 `functions/api/_lib.js`; so do the route that writes the flashcards' head
@@ -6075,8 +6075,8 @@ this exists to stop.
 
 The fingerprint stays on a save for **thirty days** and is then overwritten
 with an empty string — `forgetFingerprints()` in `functions/api/_lib.js`,
-which runs after every save, feedback, chess note and flashcard report and
-clears all four tables at once. So the cap is five a month rather than five
+which runs after every save, feedback and flashcard report and
+clears all three tables at once. So the cap is five a month rather than five
 for ever: past a month the same network can save the place again, which is a
 count nudged by one, once a month, against keeping a stranger's fingerprint
 for as long as the save exists. The privacy page promised it was cleared once
@@ -6569,9 +6569,10 @@ anybody, and a site that unwound its history whenever somebody left would be
 counting nothing. `profile_counts` was in that list until 2026-11-26 and did
 not belong in it — its rows are filed under the account's own id — so it
 goes with the account now, and so does `flashcard_days`, which the delete had
-missed. Feedback, hearts and chess games stay
+missed. Feedback and hearts stay
 too; every reader of them is a `LEFT JOIN` against `users`, so with the row
-gone they draw with no name.
+gone they draw with no name. Chess games stayed the same way until chess
+was taken out on 2026-11-26.
 
 **The name is held for thirty days**, exactly as a rename holds the old one,
 so `/u/<name>` answers nothing rather than a stranger who signed up a minute
@@ -8941,13 +8942,13 @@ column, which on a 1400px window put the mark 380px in against the map's 16
 and the radio 918px in against the map's 1288, so every walk from the map to
 a list and back had the whole top of the window jump — and the radio button,
 the one thing meant to look untouched across that walk, jumped furthest. The
-column keeps its 640, the chess page its 960 and the editor its 1180: the
+column keeps its 640 and the editor its 1180: the
 column is the page's and the header is the window's, which is how the map is
 drawn too. Below 861px the map folds its brand into a 40px mark and a
 one-line name, which is what this row already was, so the phone keeps it.
 The rules are under **the same header as the map's** in `assets/lists.css`,
 and every page on a `.lists-brand` — the account, the blog, feedback, the
-flashcards, the chess page — takes them.
+flashcards — takes them.
 
 ### Making one
 
@@ -15168,453 +15169,49 @@ decks is a separate piece of work that has not been started.
 
 ---
 
-## Chess
+## Chess, taken out
 
-A page at `/chess` where the whole city plays one game of chess against the
-house — the owner's account, the one `ADMINS` names — where a member can
-queue to play the house one on one, and where any member can challenge any
-other. It is being built a task at a time, from
-`.claude/skills/chess/SKILL.md` and `TASKS.md` beside it, and what is live so
-far is **the public game**, **one on one**, **notes for the next player**,
-**member against member** and **giving up, and agreeing a draw**:
-`chess.html`, `assets/chess.js`
-and `assets/chess.css` draw them, `functions/api/chess.js` answers them and
-`functions/api/_chess.js` holds the rules. It is listed in `sitemap.xml` and
-not disallowed in `robots.txt`.
+Until 2026-11-26 there was a page at `/chess` where the whole
+city played one game of chess against the house — the owner's account — where
+a member could queue to play the house one on one, and where any member could
+challenge any other. Under the public game anybody could leave a note for
+whoever moved next. The owner took it out altogether on 2026-11-26, the page
+and the conversation under it with it.
 
-### No door, on purpose
+**What went.** The page, `chess.html`, with `assets/chess.js` and
+`assets/chess.css`; the route, `functions/api/chess.js`, and the rules beside
+it in `functions/api/_chess.js`; `tools/chessperf.mjs`, which held those
+rules to published move counts, and its step in CI; a hundred and forty
+`chess*` strings in all eleven languages; the presses it reported; its
+diagram on `/admin/flows`; its page and its product in what the site counts;
+its entries in `sqlcheck` and the write gate; its skill and its task list
+under `.claude/`; its address in `sitemap.xml`, `robots.txt` and `_headers`;
+and its four tables in `db/schema.sql`. The way in went too: *Surprise me*
+held for five seconds took the map to `/chess`, with a ring filling round the
+die and the pill swelling under the finger, and the die is a button that is
+pressed again and nothing more.
 
-Nothing on the map links to `/chess`, on the owner's instruction: the page is
-there for whoever has the address, the blog's arrangement — unlinked, and
-listed in `sitemap.xml`. It had a door for a day, first as a knight pill on the
-rail for anybody signed in and a *Play chess* row behind More on the short
-rail, then as the row alone, and the owner took both away. Putting one back is
-task 6b in `.claude/skills/chess/TASKS.md`.
+**An old address answers not found.** `/chess` and `/chess.html` are in
+`RETIRED` in `functions/_middleware.js`, beside the old `/stats`, so a
+bookmark gets the not-found page; `/api/chess` is no route and answers the
+same.
 
-**There is a way in for whoever knows it**: hold *Surprise me* on the map for
-five seconds and the map goes to `/chess` instead of rolling the die —
-`holdForChess()` in `assets/app.js`, asked for by the owner. Five seconds is
-past any press that meant the die and past the half-second a phone takes to
-call a press long, so nobody arrives by accident. While it is held a ring
-fills round the die, shown after a quarter of a second so an ordinary tap
-never flashes it, and the page goes when the ring closes. Let go before, or
-slide off the pill, and the ring goes and nothing happens but the die.
+**The four tables are dropped by hand.** `chess_games`, `chess_moves`,
+`chess_notes` and `chess_asks` had been applied to production, and nothing a
+session holds drops a table — the gate refuses `DROP` outright. So the rows
+stay, read by nothing, until the owner runs this from a terminal:
 
-**The pill swells from the first touch**, before the ring. The ring's
-quarter-second of waiting is right for the ring, but it left a tap with
-nothing at all — the owner pressed the die on a phone and could not feel that
-the page had noticed — so the pill grows the moment a finger lands on it,
-quickly at first and then slowly for as long as it is held, and eases back to
-size when the finger comes up. A tap is answered before the die has rolled,
-and a hold is felt before the ring says what it is for. `.is-holding` in
-`assets/styles.css`, timed by the same `--hold-ms` as the ring; under
-`prefers-reduced-motion` it is one small step up and no swell.
+```
+wrangler d1 execute tallinntastebuds --remote --command "DROP TABLE IF EXISTS chess_asks; DROP TABLE IF EXISTS chess_notes; DROP TABLE IF EXISTS chess_moves; DROP TABLE IF EXISTS chess_games;"
+```
 
-The first version had no ring and ended the hold on `pointercancel` and
-`pointerleave`, and a phone sends one of those partway through a long press;
-the owner held it on a phone, nothing happened, and nothing said whether it
-was counting. Now only the finger coming up ends it — `pointerup`,
-`touchend` or `mouseup`, whichever the browser sends — or the finger drifting
-more than 14px, measured. The click the finger's lifting still makes after a
-hold that fired is swallowed before it reaches the die or the rail's count,
-and the pill neither selects its label nor pops a phone's callout while it is
-held. Counted as `chess_open_hold`.
-
-### The public game
-
-One board, always on the page: Everybody against Tallinn Tastebuds. Whoever is
-there when it is Everybody's turn may play the next move, signed in or not — a
-stranger's move is filed under the device id the map files a save under
-(`assets/device.js`) and reads *a visitor* in the list, a member's carries
-their username. The house answers when it gets to the board, from this same
-page, which shows it a different face: the board turned round so its side is
-at the bottom, live on its own turn and inert on the city's. The same person
-may play two of Everybody's moves in a row and the list shows who played what,
-so a hog is visible and a rule against one would only stall a quiet evening.
-No clock. Everybody opens the first game as white and the colours swap every
-game; when one ends, the result stays on the board until the house presses the
-page's one filled button, *Start the next game*.
-
-**The states it draws**: Everybody to move (a live board for a reader, *Waiting
-for the city* and an inert one for the house); the house to move (the other way
-round); check, carried on the turn line; checkmate, stalemate or a draw with its
-reason and who won in how many moves; no game yet, where only the house is
-offered a button; and the route not answering, where a card in the board's place
-says so from the markup, so it reads even with no words at all. A pawn
-reaching the last rank swaps the sentence for four choices — queen, rook,
-bishop, knight — in the segmented control the language switch is. A move that
-lost a race draws the board as the route says it now is and says so: *Somebody
-got there first*.
-
-**The moves stand beside the board** on a desktop and under it on a phone:
-numbered pairs under a header naming the two sides, the mover's name under
-each of Everybody's, the score line at the foot. The list scrolls inside its
-card and opens at its foot, where the newest move is, the way the notes do:
-on a desktop the card is exactly the board's height, whatever the game's
-length, and the list takes what the header and the score line leave; on a
-phone it shows about six pairs. The first version listed every move at full
-height, and a sixty-move game made the column beside the board two screens
-tall with the page's next card under all of it. A redraw, which every poll
-and every press on a square is, puts the list back where it was scrolled to;
-at the foot it stays at the foot, so a move that arrives while nothing has
-been scrolled is in view.
-
-**The browser runs none of the rules.** The answer carries `legal`, every move
-the reader may make now, and only when it is their turn; a press on a piece that
-starts one picks it up, rings its square in the accent and dots where it may go
-(a ring round a piece it would take), and a second press on a dot plays it. The
-last move's two squares wear a quieter ring and a king in check wears the
-accent. Nothing is dragged and the board has no `touch-action`, so a thumb that
-starts on it still scrolls the page. Every square is a `<button>` with an
-`aria-label` naming its piece and square, so the board is a board for a
-keyboard and a screen reader too. The pieces are the platform's own glyphs,
-U+2654 to U+265F with U+FE0E after each so the black pawn stays a piece, drawn
-out of `--pieces` and coloured out of `--ink`; on the dark style the filled
-glyph reads as the light side, which is why the words always say who is who.
-**An iPhone and an Android should be looked at**, and the black pawn is the
-glyph to check: it is the one with an emoji form.
-
-**Every write is sent with the ply the page read**, and the answer is drawn
-whatever it was: the page keeps no board of its own beyond the square somebody
-has picked up, which is dropped the moment its game has moved on. The page
-polls every twenty seconds while it is on screen — never while hidden, and at
-once when it comes back — for the board alone; the words are asked for once,
-with `lang=`, and again only when somebody picks a language, which redraws in
-place rather than reloading. The switch is `assets/language.js`, the radio the
-map's, and the station follows the language. This is the map's origin, so a
-radio playing there walks over playing.
-
-**Two things the route answers that the first draft of it did not:** each move
-carries its `uci`, because the last move's two squares cannot be got from its
-SAN without running the rules, and the answer carries `score` — the public
-games' own tally, `everybody`, `house` and `drawn` — because `record` counts
-private games too and the line under the moves is about the city's game.
-
-**The city can give a game up, or ask for a draw**, when a position is lost
-and the evening wants a fresh board: two of Everybody have to agree, the
-house answers a draw, and a public game that ends this way starts the next
-one by itself — **Giving up, and agreeing a draw** below.
-
-**What it deliberately does not do yet**: captured pieces beside the board, a
-clock, a drawn set of pieces, a download of a finished game.
-
-### One on one
-
-A member presses *Join the waiting list* and takes a place in a public line —
-one place an account, oldest first, fifty at most, and they may leave it any
-time before their game starts. The names in the line are usernames, and each
-row goes to that member's page under `/u/`. The house starts a game with the
-first in line, one private game at a time; the next starts when that one ends.
-The member opens as white. Either side may resign, after a *Resign this game?*
-the browser asks, or offer a draw — **Giving up, and agreeing a draw** below;
-the house may also end a game with no result once the member has left their
-move for seven days, and a game ended that way counts for nobody.
-
-**The page is in a different order for each reader**, the faces table in
-`SKILL.md`. A visitor sees the public game and, under it, *Play Tallinn
-Tastebuds yourself*: sign in on the map and join, and who is waiting now. A
-member not in line sees that card first, with the one filled button; in line,
-*You're in line*, how many are ahead of them and who, their own row marked
-*you*, and *Leave the list*. Once the house has started their game, their
-board comes first and the card under it is the line alone, *Waiting now*, with
-nothing about the house in it, since there is nothing there for them to do;
-once it is over, the board stays first with how it ended and *Join the
-waiting list* again, until they do. With nobody waiting, a member whose game
-is on gets no card at all. The house sees its own record in a mono
-line under the lead — games, won, lost and drawn, both kinds of game, a game
-ended without a result left out — then the line, *Waiting to play you*, with
-*Start a game with …* while no private game is on and the member it is playing
-at the top of the rows while one is; then that game; then the public game.
-
-**A member hears that their game has started on the page's next poll**, within
-twenty seconds and with no reload, and nowhere else: the site has no address
-for anybody. A private game is the same board component as the public one,
-with the member's name where Everybody's was and nothing under its moves,
-since each side is one player. The house's board is turned round, as it is on
-the public game. On the member's move after the seven quiet days, the house's
-turn line says how long it has been and *End without a result* sits beside
-*Resign* under the moves. The route decides when that is, not the page: the
-private game carries `abandon: true` for the house only while the route would
-take it, which is what keeps the seven days in one place. The line hands the
-house each waiting game's id for the same reason — its *Start* button sends
-one, and nobody else has anything to send one for.
-
-**The line is where members find each other, too.** Everybody sees who is
-waiting, on every face, and a member reading it — waiting, playing the house,
-or neither — has *Challenge* at the end of every other member's row, under
-*Challenge anybody in the line to a game of your own — play each other while
-you wait.* It is the same challenge the search under **Member against member**
-sends, so it plays out the same way, and a row whose member already has a
-challenge or a game going with the reader carries the word for that instead.
-The name is then the way to their page, since the row's end is the press.
-Asked for by the owner: a line that only the house could act on left everybody
-in it waiting on one person. The house's own rows carry no *Challenge* — its
-press there is *Start*.
-
-A join the line has no room for says *The line is full right now*; a second
-press on a page that was behind says *You're already in line* and draws the
-card as it now is.
-
-### Taking a move back
-
-For ten seconds after a move, whoever made it may take it back: an *Undo* link
-under the last move, with the seconds left beside it, counting down. On
-Everybody's board that is the one visitor or member who played the move and
-nobody else in the city — the route checks what the move was filed under, the
-device id or the account, and the page shows the link only in the tab that
-moved. The house may take back its own moves the same way, on either board.
-
-It is refused once the other side has answered, since the move is no longer
-the last one, and once the ten seconds are up; the route allows three more for
-the request on its way, and the page counts ten. **A move that ended the game
-is final**: checkmate, stalemate and a draw are not taken back, and the page
-never offers it. Taking a move back deletes its row and steps the game back to
-the position before it in one batch, both only while the game is still at that
-ply, so an undo and the other side's reply arriving together cannot both land:
-whichever the table takes first stands, and the other gets *Too late to undo —
-here is the board now*, or *Somebody got there first*, and the board as it now
-is. Nobody else is told that a move was taken back; their board simply redraws
-on its next poll.
-
-Not done: taking back more than one move, a takeback asked of the other side,
-taking back a resignation or a game ended without a result.
-
-### A move is seen to happen
-
-Every move glides. When a board arrives one ply on from the one the page last
-drew, the piece that moved starts on the square it came from and slides,
-for 700 milliseconds, to the one it went to — your own move once the route has
-taken it, the house's reply, somebody else's move on Everybody's board when the
-poll brings it. A castling king brings its rook along. A move taken back
-slides home the other way, so an undo reads as the piece being put back rather
-than the board changing its mind. It is slow on purpose: the owner asked for a
-move to be something you watch, and the ten seconds of *Undo* under it are the
-time to think again.
-
-There is no glide when there is no one move to show: the first draw of the
-page, a language switch, a poll that comes back several moves on, a new game.
-With reduced motion asked for, the pieces simply stand where they now are.
-Nothing here knows a rule; the squares are the `uci` the answer already
-carries. `glideOn()` and `slide()` in `assets/chess.js`.
-
-### Notes for the next player
-
-Under the public game's moves on a phone, and on a desktop under its board,
-no wider than it, with the moves standing beside — a card where anybody on
-the page may leave a line for whoever plays Everybody's next move:
-*don't take the knight*, *castle, please*. Asked for by the owner after the
-five tasks and the takeback had landed, described before it was built, and
-agreed as written.
-
-**Anybody may write one, and a name on it is a choice.** A visitor's note is
-filed under the device id their moves are and reads *a visitor*; the line
-under the field says so, and that signing in on the map would put their name
-on it. A member gets *Post as* — their username or *Anonymously*, the feedback
-composer's two-sided control — and an anonymous note is still filed under
-their account, so it is still theirs to delete and still counts against their
-cap, while the answer never says whose it is. The house may write too, and a
-note of its with a name on it reads as the wordmark, as its moves do.
-
-**Each note says which position it was about**: who, how long ago, and *after
-14. Nf3* — or *before the first move* — so a note about the opening read in
-the endgame reads as old. The list is oldest first, the way a chat reads, and
-opens at its foot — a redraw puts it back where it was scrolled to, the way
-the moves' list is — and past about six notes it scrolls inside the card, so
-the page stays a page. The author sees *Delete* under their own; **the house sees
-*Hide* under everybody else's**, which takes a note off the page and keeps the
-row, so a hidden note still counts against the cap of whoever wrote it. There
-is no filter on the words: the house hiding what should not be there is the
-moderation, the way it is on `/feedback`.
-
-**The notes belong to one game.** They are written only while it is playing;
-once it is over they stay under its result with *This game is over. Its notes
-stay here until the next one starts.* in the composer's place, and the next
-game starts with none. There are no notes on a private game, where the two
-players are each other's only reader.
-
-**The caps**: 280 characters a note — `MAX_NOTE` in `functions/api/chess.js`,
-restated as the field's `maxlength` in `assets/chess.js` — and five notes an
-hour from one network, counted by the same hashed fingerprint under
-`SAVE_SALT` that feedback is capped by, so without the salt a note fails
-closed. The sixth says *That's a lot of notes — try again in a little while.*
-The answer carries the newest fifty.
-
-**Nothing asks for the notes separately.** They ride in the public game's
-answer as `notes` — `{ id, ply, name, text, at, mine }`, `name` null for an
-anonymous note and `'house'` for the house's — and arrive with the same
-twenty-second poll as the board. `mine` needs to know who is asking, so the
-page adds the device id to its reads as `client=` when the browser already
-has one, and never mints one to read. Because a poll that brings somebody
-else's note redraws the card, the page keeps the draft and the choice of name
-itself and puts the focus and the caret back where they were, so a note being
-typed is never lost to a redraw. Three writes, each answered with the whole
-page: `note`, `unnote` for the author, and `hide` for the house.
-
-Not done: replies, hearts, notes on private games, a notification when
-somebody leaves one, links or formatting in a note.
-
-### Member against member
-
-Under everything else on the page, for all three faces, a card where one
-member challenges another to a game of their own. Asked for by the owner
-after the notes had landed — first with a rule that both players had to be
-in Tallinn with location on, which the owner dropped when the shape came back
-saying a website cannot prove where anybody is.
-
-**Finding somebody is by username and nothing else.** A field, *Find a
-player*: two letters and it asks the route, which answers the first ten
-usernames that start with what was typed, the reader left out. A username is
-already the public address of everybody's page under `/u/`, so the search
-tells nobody anything a link would not; it says nothing about who is online,
-nearby or playing. A visitor gets no field, only *Sign in on the map*. Each
-name found has *Challenge* at its end, or a word for what the reader already
-has going with them — *challenged*, *challenged you*, *playing*.
-
-**A challenge is a game waiting to be accepted.** Whoever challenges plays
-white. The one challenged sees it under *Challenges for you* with *Accept*
-and *Decline*; the one who sent it sees it under *Waiting on them* with
-*Cancel*. Declined or cancelled, it is deleted; left unanswered for seven
-days, it lapses and is read as gone. There is no notice anywhere else — the
-site has no address for anybody — so a challenge is heard about on the
-page's next poll, the way a member hears their game with the house started.
-One challenge or game between two people at a time, either way round, so two
-people challenging each other at once make one challenge and *There is
-already a challenge or a game between you two.* And five going for one
-member — games being played and challenges they sent — counted in the route
-as `MAX_DUELS` and in words as *You have five games going*; a challenge
-somebody else sent does not count against you, so nobody can fill another
-member's five.
-
-**The game is the same board.** *Your games* lists every duel being played
-and every one that ended in the last seven days, each a row that opens it:
-the card gives way to the board, with *Back to your games* above it, and the
-answer carries that one game whole because the page sends its id with every
-read and write (`duel=`, and `duel` in a write's body). The reader's side is
-at the bottom — black is turned round for whoever plays it — and the turn
-line says *Your move* or *Waiting for anna*. Undo, the 409 redraw, check and
-the ends of a game are the public game's own; *Resign* and *Offer a draw* are
-either player's — **Giving up, and agreeing a draw** below.
-Where the house abandons a private game, a duel has **Claim the game**: once
-the other player has left their move for seven days, the one still there may
-take the win, which reads *anna stopped playing · boris won.* A duel that is
-over has *Rematch*, which is a new challenge to the same person with whoever
-pressed it on white.
-
-A duel counts for nobody's record: the house's mono line is the house's
-games, and a duel it plays as a member is not one of them. The house is a
-member here like any other — it can be found and challenged, and its moves in
-a duel are filed under its name rather than as the house.
-
-**The column, and the afternoon without it.** A duel is a row in
-`chess_games` with `kind = 'duel'`, `challenger` on white and a new column,
-`opponent`, on black; `house_colour` is `''`. The column reaches a deployed
-table by hand — `ALTER TABLE chess_games ADD COLUMN opponent TEXT`, then the
-`idx_chess_games_opponent` index under it in `db/schema.sql` — and the route
-asks whether it is there before reading it: without it the answer carries
-`duels: null`, the page draws no card, `?find=` and `challenge` answer `503
-no-database`, and the house's games go on exactly as before.
-
-Not done: a notice anywhere but this page, choosing colours, a clock, more
-than five, watching somebody else's duel, notes on a duel, search by
-anything but the start of a username.
-
-### Giving up, and agreeing a draw
-
-Two ways out of a game short of mate, under every game's moves, asked for by
-the owner after the duels: a side that cannot win should be able to say so,
-and a position both sides are tired of should be able to end level. Both are
-behind the browser's own confirm box — *Resign this game?*, *Offer a draw?*,
-*Agree to a draw?* — which is what every are-you-sure on this site is.
-
-**One person resigns, and offers.** On a private game or a duel, *Resign*
-is what it was and *Offer a draw* sits beside it. The offer stands under the
-other player's moves as *anna offers a draw.* with *Accept* and *Decline*,
-and it goes the way it does over the board: an acceptance ends the game
-level, with *Draw · Both sides agreed.* on the turn line and `agreed` as the
-reason; *Decline* takes it down and leaves *anna declined the draw.* on the
-offerer's side until the one who declined has moved, which is how long
-before they may be asked again; and a move by the other player is a decline
-too, quietly. Whoever offered may take it back while it stands.
-
-**The city gives up by agreeing with itself.** Everybody is a side, so on
-the public game *Give up this game* and *Offer a draw* raise an ask rather
-than settle one: *a visitor asks Everybody to give up. 1 of 2 agree.*, and
-anybody else who could move for Everybody — signed in or not, counted once
-by account or by device, the way a move is filed — has *Agree* under it,
-behind the same question. The second name is the city's answer. Giving up
-ends the game there and then, Everybody resigned, nothing from the house
-needed; a draw becomes *Everybody offers a draw.* with *Accept* and *Decline*
-on the house's face. The house offers the city a draw the other way round,
-and the city accepts it the same way, two of it agreeing. Everybody never
-declines: two agreeing is the yes and playing on is the no. An ask short of
-its two lapses once the game has moved two plies on; the house's offer to
-the city lapses the same way rather than with one person's move, so that no
-one of Everybody can decline for the rest; a complete offer to one person
-dies with that person's move. Whoever raised an ask, or agreed to one, has
-*Take it back* while it stands, tagged *you*.
-
-**A public game that ends this way starts the next one at once**, colours
-swapped, on the owner's decision: the asking was for a fresh start, and
-if the house is not there to press *Start the next game*, giving up would
-have changed nothing. The answer to the press carries the new board and the
-page says *That game is over — the next one has started.*; the score line
-under the moves counts the one that ended. A game ended by mate still
-waits for the house. Two devices in one pair of hands are two people here,
-as they are for a note: the move list already shows who played what, and the
-house sees who agreed.
-
-**Worked out, not kept.** The asks are rows in `chess_asks`, one a person,
-and which of them stand is `standing()` in the route, read off the rows and
-the moves on every answer rather than updated by anything: the page draws
-`asks`, `declined` and `mayAsk` — what this reader may press now, each kind
-with what the press would be, since *Offer a draw*, *Agree* and *Accept*
-are one action with three labels — and decides nothing. The writes delete
-what has lapsed before they add. The table arrives by hand after the other
-three; without it the answer carries no asks, the page draws no offer, and a
-one-person resignation still works, since it needs no row.
-
-Not done: a draw claimed by hand for repetition or the fifty moves, which
-the rules already call; a vote to undo or to start over; a notice anywhere
-but this page; a sheet of the site's own in place of the confirm box.
-
-### The tables
-
-Four, in `db/schema.sql`, applied by hand like every table here:
-
-- **`chess_games`** — one row a game: public, private or a duel. A private
-  game is a row from the moment its member joins the waiting list, in state
-  `waiting`, so the queue is those rows oldest first and there is no third
-  table; a duel is a row from the moment it is challenged, `waiting` until it
-  is accepted, with the one challenged in `opponent`.
-  `house_colour` says which side the house plays; who may move and who won are
-  worked out from it and the FEN — on a duel, from `challenger` and
-  `opponent` instead. `result` is `abandoned` for a private game the house
-  ended after seven quiet days, and that counts for nobody; `reason` is
-  `claimed` for a duel one player took from the other the same way.
-- **`chess_moves`** — one row a half-move, keyed on `(game, ply)`. The key is
-  the lock: of two people pressing a move on the same board at the same moment,
-  one insert lands and the other is refused, and that refusal is the `409
-  moved` the slower of them sees, carrying the board as it now is. A move is
-  filed only after the route has replayed the whole game from the start through
-  `play()`, so the FEN in `chess_games` is a cache of the moves and never the
-  authority.
-- **`chess_notes`** — one row a note beside the public game: the game, the ply
-  it was written at, who it is filed under and whether their name shows, the
-  text, the hashed fingerprint the cap counts, and `hidden` once the house has
-  taken it off the page. Applied after the other two, and read on its own: a
-  database without it draws the page with no notes card and nothing else
-  missing.
-- **`chess_asks`** — one row a person on a side's ask to give a game up or
-  to draw it, keyed on the game, the kind and who, so one person counts
-  once; and the `declined` marker a player leaves on a draw they turned
-  down. Nothing in it is state: which rows stand is worked out from the
-  moves on every read — **Giving up, and agreeing a draw** above. Applied
-  after the other three and read on its own the same way.
-
-Without the tables the route answers `ready: false` with no games and every
-POST `503 no-database`, and the page draws the board as not answering.
-
----
+When the write gate's sizes were last measured they held four games,
+forty-two moves, six notes and one ask. Until they are dropped, a note
+younger than a day keeps the hashed fingerprint it was filed with:
+`chess_notes` left `FORGET` in `functions/api/_lib.js` with the route. The
+days of `use` rows named `chess:` in `visitor_counts`, the `chess` rows of
+`usage_people` and the page's own counts stay, as every count does, and
+`/admin/visitors` names the page by its id now that it has no string.
 
 ## Stories
 
@@ -15908,7 +15505,7 @@ rights, with the Estonian regulator. Every sentence is about what the code
 does today, checked against it rather than against what a policy usually
 says: the **Delete account** button, for one, takes the account, saves,
 lists, profile, decks and sign-in, holds the username for
-thirty days, and does *not* take posted feedback or chess games, and the page
+thirty days, and does *not* take posted feedback, and the page
 says exactly that and that Instagram is where to ask for the rest.
 
 **It speaks for the iPhone app as well, in a section of its own.** The app
@@ -15958,14 +15555,15 @@ changing it.
 
 **"Cleared once it is no longer needed"** is the page's sentence about the
 hashed network fingerprint, and the code that makes it true is
-`forgetFingerprints()` in `functions/api/_lib.js`. Four tables keep one: the
-feedback and the chess notes for a day, since their caps look back an hour,
+`forgetFingerprints()` in `functions/api/_lib.js`. Three tables keep one: the
+feedback for a day, since its cap looks back an hour,
 and the saves and the flashcard reports for thirty, since those also count
 one network once. `login_fails` deletes its own rows past the fifteen
 minutes, and `view_seen` its own past the day. An audit in November 2026
-found the four kept theirs for as long as the row lived; that is what the
+found they kept theirs for as long as the row lived; that is what the
 function is for, and a new table that files a fingerprint joins `FORGET`
-there.
+there. The notes under a game of chess were a fourth, for a day, until
+chess was taken out on 2026-11-26.
 
 ## The blog
 
@@ -17005,7 +16603,6 @@ rather than taking the others with it. `held` in the answer
 `/api/admin/stats` gives, `HELD` in `functions/api/admin/stats.js` the nine
 statements, and the figures are the ones `/admin/visitors` draws. They draw
 whenever the ranking is in at all, `opened` or not: none of them is a press.
-Chess's games are not among them.
 
 It used to be one number, how many accounts, in a footnote under the total
 of opens. That footnote is the first figure now.
@@ -17582,14 +17179,15 @@ flashcard reviewed twice is one row with the second date on it. So *how
 much were lists used last week* had no answer, and *how many different
 people used the flashcards* had none anywhere. Two counts answer them, both
 written by `countUse()` in `functions/api/_visitors.js` from the write
-routes of the four products those tables cannot speak for — saves (`map`),
-`lists`, `flashcards` and `chess` — once a write has gone through, and never
+routes of the three products those tables cannot speak for — saves (`map`),
+`lists` and `flashcards` — once a write has gone through, and never
 for the owner. Weeks before 2026-11-09 also hold `splitwise`, the
-bill-splitting page since taken out:
+bill-splitting page since taken out, and weeks up to 2026-11-26 `chess`,
+taken out that day:
 
 - **What was done**: `visitor_counts` under the kind `use`, one row a day
-  per `<product>:<action>` — `map:save`, `lists:add`, `flashcards:knew`,
-  `chess:move` — the action named as the route names it.
+  per `<product>:<action>` — `map:save`, `lists:add`, `flashcards:knew`
+  — the action named as the route names it.
 - **How many people did it**: `usage_people`, one row per person per
   product per week. A person is the account where there is a session and
   the device id where there is not; the row is only an HMAC under
@@ -18499,18 +18097,13 @@ Six diagrams, and the line between them is a person rather than a feature:
 | `member` | anybody with one | one |
 | `discount` | the guest, the waiter and the counter, around one code | four: guest, site, waiter, counter |
 | `flashcards` | a learner, signed in or not | one |
-| `chess` | anybody at the city's board, a member with a game of their own, and the house | three: anybody, member, the house |
 | `owner` | the person whose site this is | three: owner, GitHub, site |
+| `developer` | somebody building on the public API or framing the map | two: developer, site |
 
 Flashcards is a fifth rather than a part of the visitor and the member because
 it lives on its own subdomain and a learner is somebody who may never open the
-map at all. Chess is a sixth for the same reason the discount is one: it is
-three people around one thing — the city's game, a member's own, and the
-owner at both as the house — and its steps are theirs, not the map's. It
-was drawn without waiting for the door the chess task list still holds:
-`/admin/flows` is the owner's, so the diagram shows nobody where the page is,
-and its first step is the way in that exists today, the address or
-*Surprise me* held for five seconds.
+map at all. Chess was a diagram of its own until 2026-11-26, three people
+around one board, and went with the page.
 
 ### The source, and what is generated from it
 
@@ -18545,13 +18138,6 @@ and the learner it did not: each is one person fanning out into eight
 journeys, and a second lane underneath drew every branch down through every
 other one to reach it. So those three are one lane, and the site's steps are
 told apart by the cog in their corner and the washed fill.
-
-Chess was drawn with a site lane first and went the same way, three times
-over: each of the three people fans out from a gateway of their own, and
-every branch crossed the other two lanes to reach the shared steps below. So
-it has a lane per person and none for the site — the site's steps sit in the
-lane of whoever set them off — and each branch ends where it happens rather
-than travelling back to one shared end.
 
 ### Why not bpmn-js
 
@@ -19651,21 +19237,17 @@ to read and write first.
 `npm install`. It runs on every push and pull request via
 `.github/workflows/validate.yml`.
 
-The same workflow runs eight checks beside it. Three hold one piece of code
+The same workflow runs seven checks beside it. Two hold one piece of code
 each to answers recorded somewhere other than the code; `tools/mcpcheck.mjs`
 and `tools/apicheck.mjs` hold the two doors an outside program reads through
 to what each promised, and their own sections say how. `node tools/qrperf.mjs
 --check` holds the QR encoder to the matrices it drew when they were last
 scanned with a real camera — see **Third-party pieces and their licences**.
-`node tools/chessperf.mjs --check` holds the rules of chess in
-`functions/api/_chess.js` to the published perft counts of six positions, to
-positions worked out by hand and checked against python-chess before they were
-written in, and to every move a visitor could send from those six, which
-`play()` must refuse unless it is legal. And `node
+And `node
 .claude/hooks/d1-write-gate.mjs --check` holds the gate in front of the two
 databases to its own cases.
 
-The sixth holds every statement under `functions/` to what it costs.
+The fifth holds every statement under `functions/` to what it costs.
 `node tools/sqlcheck.mjs` builds an empty database from `db/schema.sql`, asks
 SQLite's planner how each statement would run, and fails the build on one that
 walks a whole table — a `SCAN`, a key searched with nothing to seek by, or a
@@ -19683,7 +19265,7 @@ any of this are **Every read has a price, set before it is written** in
 `CLAUDE.md`; the check is what catches the one that was missed. It needs
 Node 22, for `node:sqlite`.
 
-The seventh has no recorded answers, because the thing it holds the code to is
+The sixth has no recorded answers, because the thing it holds the code to is
 the deploy itself: `node tools/functions-check.mjs` imports every module under
 `functions/`. Pages bundles them into one Worker, so a route importing a name
 its module no longer exports, or a file with a syntax error in it, fails the
@@ -19693,7 +19275,7 @@ record. An ES module resolves its imports before any of it runs, so importing
 each file under Node fails on exactly what the bundle would, on the push
 instead of a minute after the merge.
 
-The eighth holds answers rather than code: `node tools/routecheck.mjs
+The seventh holds answers rather than code: `node tools/routecheck.mjs
 --check` runs `/api/v1/route` by bike for every trip pinned in
 `data/bike-trips.json`, over what the routers were recorded answering,
 and fails where a way is not the one pinned there — **The bike ways,
@@ -19857,9 +19439,8 @@ CLAUDE.md                  what a session reads before it starts, and which
                            about. `--check` runs its own cases, and CI runs
                            that
 .claude/skills/            one checklist per kind of change — a place, a story,
-                           a discount, a page, a Function, the export — and the
-                           chess page's build, a task at a time; loaded when
-                           the task matches, or by /name
+                           a discount, a page, a Function, the export; loaded
+                           when the task matches, or by /name
 .claude/rules/             the cleanup rule, loaded whenever code is opened,
                            and one pointer per checklist, loaded by the
                            files that process touches
@@ -19981,15 +19562,10 @@ assets/lists.lean.css      the same without the comments — generated, what the
 account.html               your name, your saved places, your lists, the
                            ones you kept, and everybody else's
 assets/account.js          all three of its states; no stylesheet of its own
-chess.html                 the chess page, at /chess as well; unlinked and
-                           indexed, like the blog
-assets/chess.js            the board, the turn line, the moves and the poll,
-                           drawn out of the one /api/chess answer
-assets/chess.css           the board and the cards around it
-assets/language.js         the language switch the flashcards and the chess
-                           page draw on a .lists-brand header
-assets/device.js           the id this browser files a save, a heart or a chess
-                           move under when nobody is signed in, and which
+assets/language.js         the language switch the flashcards, the lists and
+                           the corner draw on a .lists-brand header
+assets/device.js           the id this browser files a save or a heart
+                           under when nobody is signed in, and which
                            app's in-app browser this is, if any
 flashcard.html             flashcards, at /flashcard and at the root of
                            flashcard.tallinntastebuds.ee; served by the route
@@ -20093,11 +19669,6 @@ assets/ask.js              a typed sentence read as a wish, for when the model
                            cannot: no DOM, no state, one global
 functions/api/ask.js       the chat box answered — a model on the free
                            allowance, and Google's opening hours
-functions/api/_chess.js    the rules of chess for the chess page: the legal
-                           moves, a move played and written down, the end of a
-                           game (not a route: leading _)
-functions/api/chess.js     the chess page's one route: both games, the queue,
-                           every move checked against _chess.js before it is filed
 db/schema.sql              the tables those Functions talk to
 wrangler.toml              the D1 bindings, one per environment (secrets are NOT in here)
 deal.html                  the guest's discount pass          } all three are
@@ -20178,9 +19749,6 @@ tools/clock.mjs            Tallinn wall clock, and the 36 hours a story stands
 tools/stories.mjs          the story queue: what is up, schedule one, tick
 tools/storymedia.mjs       makes every story video an H.264 MP4 a browser will play
 tools/qrperf.mjs           checks the QR encoder still draws the same code, and times it
-tools/chessperf.mjs        holds functions/api/_chess.js to published move
-                           counts and to positions worked out by hand, and
-                           times it
 tools/functions-check.mjs  imports every module under functions/, the way the
                            deploy bundles them, and fails on what it would
 tools/routecheck.mjs       holds the bike ways /api/v1/route offers between
@@ -20197,7 +19765,7 @@ tools/mcpcheck.mjs         asks /mcp and /flashcard/mcp what an assistant
 tools/apicheck.mjs         calls every address of /api/v1 over the real data
                            files and holds each answer to the shapes frozen
                            in data/api-v1.json; --check is what CI runs
-.github/workflows/validate.yml     the validator, the Functions check, the QR check, the chess check, the check of the two MCP doors, the check of the public API and the write gate, on every push
+.github/workflows/validate.yml     the validator, the Functions check, the QR check, the check of the two MCP doors, the check of the public API and the write gate, on every push
 .github/workflows/generated.yml    tools/generate.mjs on every branch, committed; an admin/ branch landed if green
 .github/workflows/google-refresh.yml   three POSTs an afternoon to /api/refresh, the backstop behind fillOnVisit(), so the day's Google budget is spent
 .github/workflows/indexnow.yml     the IndexNow ping, on every push to the production branch
@@ -21279,7 +20847,7 @@ in `index.html`.
 ## The map is the shell
 
 Every page on this site is a document of its own: the lists, a list, a
-profile, the account, the blog, the flashcards, the chess page, the feedback
+profile, the account, the blog, the flashcards, the feedback
 page. A walk from the map to any of them used to be a navigation, and a
 navigation tears the map's document down — the pins, the panel, and the
 radio's `<audio>`, which is the part anybody could hear. **It keeps playing
@@ -21298,10 +20866,10 @@ on a link from the map to a page of this site opens that page in an
 browser's own container for a whole page inside another: the page keeps its
 window, its ids, its stylesheets, its listeners, its scroll, and does not
 know it is anywhere but a tab. Nothing in `assets/lists.js`, `account.js`,
-`blog.js`, `flashcard.js`, `chess.js` or `feedback.js` changed for this, and
+`blog.js`, `flashcard.js` or `feedback.js` changed for this, and
 that was the argument for a frame over the other way of doing it, which is
-teaching six page scripts and the map's own twelve thousand lines to mount
-and unmount into one document. That would have been six chances to break a
+teaching five page scripts and the map's own twelve thousand lines to mount
+and unmount into one document. That would have been five chances to break a
 page that was not the one being changed.
 
 **Two things a framed page cannot do for itself.** The radio, because the
@@ -21400,9 +20968,6 @@ It picks from **whatever the chips currently allow**, so selecting "Korean" and
 "Cheap eats" and then pressing it answers the question you were actually
 asking. Closed places are never suggested, and the same place is never returned
 twice in a row.
-
-**Held for five seconds it is the way to `/chess`** instead, which has no door
-on the map — **No door, on purpose** under **Chess** says why and how.
 
 It lives on the left rail rather than in the bottom filter row because the
 filter row scrolls sideways once the vocabulary is wide, and a button that
@@ -21815,9 +21380,6 @@ it is everybody's since 2026-11-05, because the test said so — **What the
 test found** below. There is one rail, so there is no `data-layout` on
 `<html>`, no deal and no choice of rail on `/account.html`; the pills it
 leaves out are not in the markup at all.
-
-Chess is not behind More, and never was: it has no door on the map on
-purpose — **No door, on purpose** under **Chess**.
 
 ### Why
 
@@ -22411,7 +21973,6 @@ The map, `assets/app.js`:
 | `place_edit` | `place` — **Edit this place** at the foot of a place, which only an admin's browser draws; it opens `/admin.html?edit=<id>`. Never counted by the site, since the owner's browser sends nothing to `/api/stats` |
 | `cluster_open` | `cluster_size` |
 | `random_pick` | `place`, `pool` |
-| `chess_open_hold` | — *Surprise me* held for five seconds, the way in to `/chess`; sent as the map leaves for it |
 | `locate` | — the button; what it did next is the sheet or the device |
 | `where_open` | `why` — the Where sheet opened: `locateFail` after the device refused, had no fix or does not exist, `locateAway` after a reading from out of town, `dot` when the button was pressed with a dot already drawn |
 | `where_pick` | — a typed place taken as the dot |
@@ -22717,29 +22278,6 @@ Flashcards, `assets/flashcard.js`:
 | `flash_keep_ask` | `deck_id` — the gate going up, one word into a deck signed out. Against `account_create` with `via: flashcard` it is how many of the people who meet it make an account, which is the only number that says whether the gate was right |
 | `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, reported under the names the map's switch reports under, because it is the same press |
 | `flash_back`, `home` | `deck_id` on the first |
-| `radio_play`, `radio_stop` | as on the map |
-
-The chess page, `assets/chess.js` — a move, the house starting the next game,
-the waiting list, what can end a game short of mate, and the switch the
-flashcards' header has:
-
-| Event | Parameters |
-|---|---|
-| `chess_move` | `kind` (`public`, `private` or `duel`), `ply` — the half-move it would be, one past the one the page read; sent when the move goes out, so a move that lost the race to a 409 is still one |
-| `chess_new_game` | — the house's *Start the next game* or *Start the first game* |
-| `chess_join`, `chess_leave` | — a member's *Join the waiting list*, from the card or under a game of theirs that is over, and *Leave the list*. Sent on the press, so a join the full line refused is still one |
-| `chess_start` | — the house's *Start a game with …* |
-| `chess_ask` | `kind` (`draw`/`resign`), `as` (`resign`, `giveup`, `offer`, `agree` or `accept`) — *Resign*, *Give up this game*, *Offer a draw*, *Agree* and *Accept*, each pressed and confirmed; what the press was is `as`, which the route said and the page only labelled — see **Giving up, and agreeing a draw** |
-| `chess_unask`, `chess_refuse` | — *Take it back* on an ask of the reader's own, and a single player's *Decline* of the draw the other side offered |
-| `chess_abandon` | — the house's *End without a result* |
-| `chess_undo` | — *Undo*, in the ten seconds after the reader's own move; sent on the press, so one that came too late is still one |
-| `chess_note` | `named` — whether a member's name was left on it; *Post* under the notes, sent on the press, so a note the cap refused is still one |
-| `chess_note_delete`, `chess_note_hide` | — *Delete* under the reader's own note, and the house's *Hide* under anybody else's |
-| `chess_challenge`, `chess_rematch` | — *Challenge* beside a name the search found or a member in the waiting list, and *Rematch* under a duel that is over; sent on the press, so a challenge the route refused is still one |
-| `chess_accept`, `chess_decline`, `chess_cancel` | — a challenge's *Accept* and *Decline*, for the one it was sent to, and *Cancel*, for the one who sent it |
-| `chess_claim` | — *Claim the game*, in a duel the other player has left for seven days |
-| `language_open`, `language_select` | — and `language` on the second: the switch in this page's header, under the names the map's switch reports under, because it is the same press |
-| `home` | the mark in the header, as on the other pages |
 | `radio_play`, `radio_stop` | as on the map |
 
 The pass pages, `assets/deal.js` and `assets/verify.js` — nothing on them is

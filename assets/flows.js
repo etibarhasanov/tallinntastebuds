@@ -2,9 +2,8 @@
  *
  * One BPMN diagram for each kind of person this site answers — a visitor, a
  * member, the waiter and the counter a discount is shown to, a learner on
- * the flashcards, the three around a game of chess, the
- * owner — with a chip for each, read out of data/flows.json, and
- * under the diagram whatever step was last pressed: its note and the files
+ * the flashcards, the owner — with a chip for each, read out of
+ * data/flows.json, and under the diagram whatever step was last pressed: its note and the files
  * and routes that do it. See **Who uses the site, drawn** in docs/handbook.md.
  *
  * AND THE NUMBERS ON IT
