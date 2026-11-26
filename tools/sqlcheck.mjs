@@ -151,10 +151,6 @@ const ROWS = [
   { file: 'api/feedback.js', has: 'MAX(CASE WHEN h.owner = ? THEN 1 ELSE 0 END) AS hearted', why: 'LIMIT PAGE + 1, twenty-one — PAGE is fifty in _lib.js and twenty here, so the tool cannot read the name' },
   { file: 'api/_mostkept.js', has: 'SELECT place_id, name FROM list_items WHERE list_id = ? ORDER BY pos LIMIT', why: 'LIMIT TASTE or DOTS, three or ten, picked by a condition the tool cannot read' },
   { file: 'api/flashcard.js', has: 'SELECT deck_id, known, missed FROM flashcard_progress WHERE user_id = ?', why: 'a row a deck the learner has turned a card of: 53 shipped decks on 21 Nov 2026 and MAX_DECKS twenty of their own, 73; each deck shipped is one more' },
-  { file: 'api/azeri/community.js', has: 'WHERE (p.created_at, p.id)', why: 'a page of the newest posts, either way: LIMIT PAGE + 1, twenty-one — PAGE is twenty there and fifty in _lib.js, so the tool cannot read the name' },
-  { file: 'api/azeri/community.js', has: 'WHERE p.week = ? AND (p.score, p.created_at, p.id)', why: "a page of the week's most upvoted, either way: LIMIT PAGE + 1, twenty-one, as above" },
-  { file: 'api/azeri/community.js', has: 'CROSS JOIN azeri_votes v ON v.owner = ?', why: "COMMUNITY_VOTED: a page's twenty posts as VALUES, each a seek on the votes' primary key, so twenty rows at most" },
-  { file: 'api/azeri/community.js', has: 'SELECT n FROM azeri_votes WHERE owner = ? AND post = ? AND n >= ? AND n <= ?', why: "a member's upvotes on one post and one page of its comments: n from after + 1 to after + COMMENTS, fifty-one at most" },
 
   /* A page of PAGE in _lib.js, fifty, read through inPages() after the last
      page's key: the rule's own way to read more than a hundred. PAGE is

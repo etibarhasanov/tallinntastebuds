@@ -111,7 +111,6 @@ import { recentViews } from './_visits.js';
 import { adminIds, ownerCookie } from './_admin.js';
 import { postsReady } from './_posts.js';
 import { statsReady, forgetStatements, forgetRides } from './_ridestats.js';
-import { forgetMember } from './_community.js';
 /* A new name is a new byline on every list the account wrote, and a deleted
    account takes its lists with it: both move the mark every copy of a list
    is kept under — WHEN A LIST LAST CHANGED in ./_lists.js. */
@@ -913,19 +912,24 @@ export async function onRequestPost(context) {
    *   profile_rows                  the page of links under its name
    *   added_places                  the places it added by hand, unless a
    *                                 list somebody else wrote still has one
-   *   flashcard_decks, _cards,      the decks it wrote and what it knew
-   *   flashcard_known, _progress
+   *   flashcard_decks, _cards,      the decks it wrote, what it knew and
+   *   flashcard_known, _progress,   the days it studied on
+   *   flashcard_days
    *   walks, walk_checks            the lists it walked, where it checked in
    *                                 and what it said there
    *   ride_stats, ride_totals       its rides in numbers, and their totals
    *   rides                         every ride it saved
+   *   profile_counts                how often its profile was looked at, and
+   *                                 from where
    *
    * WHAT STAYS, AND WHY IT IS NOT THE PERSON
    *
-   * The numbers: press_counts, profile_counts, list_counts, visitor_counts,
-   * usage_people and the rest. They are filed under a list, a day or a hashed
-   * key rather than under anybody, and a site that unwound its own history
-   * every time somebody left would be counting nothing. Feedback, hearts and
+   * The numbers: press_counts, list_counts, visitor_counts, usage_people and
+   * the rest. They are filed under a list, a day or a hashed key rather than
+   * under anybody, and a site that unwound its own history every time
+   * somebody left would be counting nothing. profile_counts was in this list
+   * until 2026-11-26 and did not belong in it: its rows are filed under the
+   * account's own id, so they go now. Feedback, hearts and
    * the chess games stay too — they are things said and played in public, and
    * every reader of them is a LEFT JOIN against users, so with the row gone
    * they draw with no name on them, which is what a deleted account is.
@@ -1025,26 +1029,22 @@ export async function onRequestPost(context) {
     }
     if (saved.length) await caches.default.delete(countsKey(request));
 
-    /* The walks it started and the places it checked in at, its comments
-       with them — functions/api/walk.js. After the batch and on their own,
-       because those two tables reach a database by hand as the posts' do,
-       and here the cost of one being absent is nothing: the account is
-       already gone, and rows under an id nobody holds draw nowhere. */
-    try {
-      await env.DB.batch([
-        env.DB.prepare('DELETE FROM walk_checks WHERE user_id = ?').bind(id),
-        env.DB.prepare('DELETE FROM walks WHERE user_id = ?').bind(id)
-      ]);
-    } catch (e) { /* not applied here yet */ }
-    /* And the tallies of what it knew, flashcard_progress, for the same
-       reason: the rows they count went in the batch above. */
-    try {
-      await env.DB.prepare('DELETE FROM flashcard_progress WHERE user_id = ?').bind(id).run();
-    } catch (e) { /* not applied here yet */ }
-    /* And its words in the Azerbaijani Corner's Community, emptied where
-       others answered them and gone where nobody did — forgetMember() in
-       ./_community.js says how — on its own for the same reason. */
-    await forgetMember(env, id);
+    /* What else was filed under it, in tables that reach a database by hand
+       as the posts' do: the walks it started and the places it checked in
+       at, its comments with them — functions/api/walk.js; the tallies of
+       what it knew and the days it studied on, whose cards went in the batch
+       above; and how often its profile was looked at. After the batch and
+       each on its own, because here the cost of one being absent is
+       nothing: the account is already gone, and rows under an id nobody
+       holds draw nowhere. Each is a delete on the front of its table's key,
+       so it touches that account's rows and no others. */
+    await Promise.allSettled([
+      'DELETE FROM walk_checks WHERE user_id = ?',
+      'DELETE FROM walks WHERE user_id = ?',
+      'DELETE FROM flashcard_progress WHERE user_id = ?',
+      'DELETE FROM flashcard_days WHERE user_id = ?',
+      'DELETE FROM profile_counts WHERE owner = ?'
+    ].map((sql) => env.DB.prepare(sql).bind(id).run()));
 
     return signedOut(request, { deleted: true, user: null });
   }

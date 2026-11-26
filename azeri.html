@@ -33,7 +33,7 @@
      — the tabs, the chips, the rows — from its own. -->
 <link rel="stylesheet" href="/assets/styles.lean.css?v=76813284">
 <link rel="stylesheet" href="/assets/lists.lean.css?v=d64afa48">
-<link rel="stylesheet" href="/assets/azeri.css?v=07d5f467">
+<link rel="stylesheet" href="/assets/azeri.css?v=f8c60384">
 </head>
 <body class="lists-body azeri-body">
 
@@ -63,28 +63,27 @@
        the tabs come straight under it; this says it once more for a screen
        reader, which looks for the page's heading. -->
   <h1 class="azeri-said" data-i18n="azeriCorner">Azerbaijani Corner</h1>
-  <!-- The tabs: the home, the country's films, the posts people write, a
-       guide to living in Estonia for somebody arriving from there, and the
-       Azerbaijani places here on a map. Each is an address, so they are
-       links — one opens in a new tab, and is what gets copied — but a press
-       is caught by assets/azeri.js, which draws the tab under them without
-       loading the page again, and says which one is on. -->
+  <!-- The tabs: the home, the country's films, a guide to living in
+       Estonia for somebody arriving from there, and the Azerbaijani places
+       here on a map. Each is an address, so they are links — one opens in a
+       new tab, and is what gets copied — but a press is caught by
+       assets/azeri.js, which draws the tab under them without loading the
+       page again, and says which one is on. -->
   <nav class="azeri-tabs" data-i18n-aria-label="azeriTitle" aria-label="An Azerbaijani corner in Estonia">
     <a class="azeri-tab" href="/azeri" data-tab="home" data-track="azeri_home" data-i18n="azeriHome">Home</a>
     <a class="azeri-tab" href="/azeri?tab=films" data-tab="films" data-track="azeri_films" data-i18n="azeriFilms">Azerbaijani films</a>
-    <a class="azeri-tab" href="/azeri?tab=community" data-tab="community" data-track="azeri_community" data-i18n="azeriCommunity">Posts</a>
     <a class="azeri-tab" href="/azeri?tab=estonia" data-tab="estonia" data-track="azeri_estonia" data-i18n="azeriEstonia">Estonia</a>
     <a class="azeri-tab" href="/azeri?tab=study" data-tab="study" data-track="azeri_study" data-i18n="azeriStudy">Studying</a>
     <a class="azeri-tab" href="/azeri?tab=estonian" data-tab="estonian" data-track="azeri_estonian" data-i18n="azeriEstonian">Estonian</a>
     <a class="azeri-tab" href="/azeri?tab=food" data-tab="food" data-track="azeri_food" data-i18n="azeriPlaces">Azerbaijani places</a>
   </nav>
   <!-- Everything under the tabs — the home, the search, the chips and the
-       films, the posts and a post's comments, the topics of the guide, or
-       the places' map — is built by assets/azeri.js once the page's words
-       are in, and the route has answered where the tab asks one, so nothing
-       from the state before is left standing. At the home,
-       functions/azeri.js writes the home into it as text first, for the
-       reader that runs no script; the script empties it before it draws. -->
+       films, the topics of the guide, or the places' map — is built by
+       assets/azeri.js once the page's words are in, and the route has
+       answered where the tab asks one, so nothing from the state before is
+       left standing. At the home, functions/azeri.js writes the home into it
+       as text first, for the reader that runs no script; the script empties
+       it before it draws. -->
   <div id="shelf"></div>
 </main>
 
@@ -108,6 +107,6 @@
 <script src="/assets/back.js?v=9d9a7dd8" defer></script>
 <!-- The language switch, a global for the page's own script to use. -->
 <script src="/assets/language.js?v=fcaf98e0" defer></script>
-<script src="/assets/azeri.js?v=edb1b38e" defer></script>
+<script src="/assets/azeri.js?v=60114864" defer></script>
 </body>
 </html>

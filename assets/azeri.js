@@ -1,18 +1,17 @@
 /* Tallinn Tastebuds — /azeri, a corner about Azerbaijan, open to anybody.
  *
- * WHAT IT IS. A page for anybody, account or not, and seven tabs on it,
+ * WHAT IT IS. A page for anybody, account or not, and six tabs on it,
  * straight under the corner's name. Home says who the corner is for, what
- * is in each of the other six, and answers the questions people ask.
+ * is in each of the other five, and answers the questions people ask.
  * Azerbaijani films is the country's cinema: the 2,615 of the Azerbaijani
  * Wikipedia's list, which tools/azfilms.mjs collects and /api/azeri hands
- * out twenty at a time. Community, whose tab says Posts — Paylaşımlar — is
- * the corner's people writing to each other: posts, comments and upvotes,
- * out of /api/azeri/community. Estonia, Studying and Estonian are a guide
+ * out twenty at a time. Estonia, Studying and Estonian are a guide
  * for somebody arriving here from there — what to sort out and in what
  * order, how to get into a university, and where to learn the language.
  * Azerbaijani places is where to eat it here, on a map. Nothing on it asks
- * anybody to sign in, Watch included, but to write a post: an account on
- * this site is for writing something.
+ * anybody to sign in, Watch included, and nothing on it is written by a
+ * visitor: it had a seventh tab for five days, Posts, where members wrote
+ * to each other, and the owner took it out on 2026-11-26.
  * **The Azerbaijani corner** in docs/handbook.md.
  *
  * FOUR LANGUAGES, NOT ELEVEN. The page's words are in data/ui.json in all
@@ -106,24 +105,6 @@
  * nothing: the list is edited on its own page and the map follows. Under
  * the frame, whose list it is and the way to the whole of it.
  *
- * COMMUNITY. Read by anybody and written by an account: signed out, the
- * posts and the comments are all there, and where a member would post,
- * comment or upvote there is the way to sign in instead. Posts newest
- * first, or this week's most upvoted first, twenty to a page with Previous
- * and Next under them, each page continued from the last one's cursor,
- * which the address carries; a post opens with its comments under it,
- * oldest first, fifty at a time with Show more, and the box to add one at
- * the foot. A comment may answer another, and says which; the author of
- * either may change it or delete it, and the site's owner may take down
- * anybody's. Everything anybody typed is drawn as text, its addresses made
- * links that are nofollow ugc. For a member, what came since the visit
- * before is marked — a dot on a post, the number of new comments on its
- * row, a wash on a comment — and while another tab is read, a dot on
- * Community's and the number before the browser's title say there is
- * something: askNews() asks the route once each time a tab is shown.
- * Nothing asks again while the page sits open; that would be reads all day
- * for a dot. **Community** under **The Azerbaijani corner**.
- *
  * WIDE, IT IS A WALL OF FILMS. Every film carries the picture YouTube
  * keeps for its video, or its year where there is no video. On a phone the
  * shelf is a list, a line or two a film with the picture a strip at its
@@ -139,17 +120,10 @@
   'use strict';
 
   var API = '/api/azeri';
-  var COMMUNITY = '/api/azeri/community';
-  /* Community's caps, restated from functions/api/_community.js for the
-     fields' maxlength and the counters under them. Change one, change the
-     other. */
-  var MAX_TITLE = 120;
-  var MAX_BODY = 5000;
-  var MAX_COMMENT = 2000;
   var LANGS_URL = '/data/lang/index.json';
   var LANG_URL = '/data/lang/';
   var LANGS = ['az', 'en', 'ru', 'et'];
-  var TABS = ['home', 'films', 'community', 'estonia', 'study', 'estonian', 'food'];
+  var TABS = ['home', 'films', 'estonia', 'study', 'estonian', 'food'];
   var SAY_KEYS = { estonia: 'azeriEstoniaSay', study: 'azeriStudySay' };
   /* The flashcards, at the address the map's own door to them has: this
      host's /flashcard, which answers wherever the site does. The button
@@ -203,25 +177,7 @@
     asking: 0,       // which ask is the latest, so an older answer is dropped
     loading: false,  // the first page of a new ask is on its way
     failed: false,   // the last ask did not come back
-    news: 0,         // posts and comments new in Community, for the dot on its tab
     ready: false     // the words are in, or are not coming: nothing is drawn before
-  };
-  /* Community, under its tab: which view the address names, what the route
-     answered for it, and what is being typed, which draw() puts back. */
-  var cm = {
-    view: 'feed',    // feed, post or write
-    data: null,      // the route's answer: a page of posts, or a post and its comments
-    user: null,      // who is signed in, as the route last said: nobody may read, a member may write
-    sort: 'new',
-    page: 1,         // which page of posts, for the pager to say
-    draft: { id: null, title: '', body: '' },
-    text: '',        // the comment being written
-    reply: null,     // { n, author } of the comment it answers
-    editing: null,   // the n of the comment of one's own being changed
-    editText: '',
-    error: null,     // the word the route last refused with
-    busy: false,
-    fromFeed: false  // the view was opened from the posts, which Back returns to
   };
   var searchTimer = null;
 
@@ -330,10 +286,7 @@
      window — and so is a link to anywhere else, the skip link's #main
      included. A tab pressed while it is on, with no topic in its address,
      is nothing to draw again; from further down the page the reader is
-     taken back up to the tabs, where the new one starts. Community's own
-     links — a post, a page, the form — are its own to draw, through
-     cmGo(), and have been by the time the press reaches the document; its
-     tab, pressed from a post or the form, is its posts. */
+     taken back up to the tabs, where the new one starts. */
   function wireLinks() {
     document.addEventListener('click', function (e) {
       if (e.defaultPrevented) return;
@@ -343,10 +296,7 @@
       if (a.origin !== window.location.origin || a.pathname.replace(/\.html$/, '') !== '/azeri') return;
       e.preventDefault();
       var tab = pickTab(a.search);
-      if (tab === state.tab && !new URLSearchParams(a.search).get('topic')) {
-        if (tab === 'community' && cm.view !== 'feed') cmGo(cmHref());
-        return;
-      }
+      if (tab === state.tab && !new URLSearchParams(a.search).get('topic')) return;
       window.history.pushState(null, '', a.getAttribute('href'));
       showTab(tab);
       if (!a.classList.contains('azeri-tab')) window.scrollTo(0, 0);
@@ -356,7 +306,6 @@
     window.addEventListener('popstate', function () {
       var tab = pickTab();
       if (tab !== state.tab) showTab(tab);
-      else if (tab === 'community') askCommunity();
     });
   }
 
@@ -366,7 +315,6 @@
   function showTab(tab) {
     state.tab = tab;
     state.topic = null;
-    cm.fromFeed = false;
     markTab();
     if (Object.keys(state.ui).length) applyStaticStrings();
     askShown();
@@ -389,19 +337,11 @@
     each('data-i18n', function (n, k) { n.textContent = t(k); });
     each('data-i18n-aria-label', function (n, k) { n.setAttribute('aria-label', t(k)); });
     /* The skip link is written for the topics, of the home and the guide;
-       under the films it leads to the films, under the places to the map
-       and under Community to the posts. */
-    var skip = state.tab === 'films' ? 'azeriSkip' : state.tab === 'food' ? 'azeriSkipMap'
-      : state.tab === 'community' ? 'azeriSkipPosts' : 'azeriSkipTopics';
+       under the films it leads to the films and under the places to the
+       map. */
+    var skip = state.tab === 'films' ? 'azeriSkip' : state.tab === 'food' ? 'azeriSkipMap' : 'azeriSkipTopics';
     document.querySelector('.skip-link').textContent = t(skip);
-    sayNews();
-  }
-
-  /* What is new in Community, on its tab and in the browser's: the dot, and
-     the number before the title. */
-  function sayNews() {
-    markNews();
-    if (Object.keys(state.ui).length) document.title = newsTitle() + t('azeriTitle') + ' | Tallinn Tastebuds';
+    document.title = t('azeriTitle') + ' | Tallinn Tastebuds';
   }
 
   function drawSwitch() {
@@ -419,11 +359,10 @@
     loadWords(code).then(function () {
       applyStaticStrings();
       drawSwitch();
-      /* The films carry both of their languages, the places' map is asked
-         for in the new one when it is drawn again, and Community is what
-         people wrote, in whatever they wrote it in; the home and a tab of
-         the guide were answered in one, so they are asked for again. */
-      if (state.tab === 'films' || state.tab === 'food' || state.tab === 'community') draw();
+      /* The films carry both of their languages and the places' map is
+         asked for in the new one when it is drawn again; the home and a tab
+         of the guide were answered in one, so they are asked for again. */
+      if (state.tab === 'films' || state.tab === 'food') draw();
       else askGuide();
     }).catch(function () { /* the page stays in the language it has */ });
   }
@@ -441,25 +380,19 @@
   }
 
   /* Ask the route, and hand what it answers to `took`, or set the failed
-     state for anything that is not an answer — but a 404 where `missing`
-     says the answer to one is a page of its own, a post that is not there.
-     An answer to an older ask that arrives after a newer one is dropped,
-     so typing fast never leaves the shelf showing what the last-but-one
-     word found. */
-  function send(url, took, missing) {
+     state for anything that is not an answer. An answer to an older ask
+     that arrives after a newer one is dropped, so typing fast never leaves
+     the shelf showing what the last-but-one word found. */
+  function send(url, took) {
     var mine = ++state.asking;
     state.loading = true;
     draw();
-    fetch(url, { headers: { accept: 'application/json' }, credentials: 'same-origin' })
-      .then(function (res) {
-        return res.json().then(function (out) { return { status: res.status, out: out }; });
-      })
-      .then(function (answer) {
+    getJSON(url)
+      .then(function (out) {
         if (mine !== state.asking) return;
         state.loading = false;
-        if (answer.status !== 200 && !(missing && answer.status === 404)) throw new Error(String(answer.status));
         state.failed = false;
-        took(answer.out);
+        took(out);
         draw();
       })
       .catch(function () {
@@ -494,15 +427,13 @@
     });
   }
 
-  /* What is under the tabs, asked for: a page of the films, Community, or
-     the home or a tab of the guide, and on every tab but Community what is
-     new there. The places ask the route for nothing and are drawn at once,
-     and an answer to the tab before that is still on its way is let go, as
-     a newer ask would let it go — or it would draw the map a second time. */
+  /* What is under the tabs, asked for: a page of the films, or the home or
+     a tab of the guide. The places ask the route for nothing and are drawn
+     at once, and an answer to the tab before that is still on its way is
+     let go, as a newer ask would let it go — or it would draw the map a
+     second time. */
   function askShown() {
-    if (state.tab !== 'community') askNews();
     if (state.tab === 'films') ask(1);
-    else if (state.tab === 'community') askCommunity();
     else if (state.tab !== 'food') askGuide();
     else {
       state.asking++;
@@ -559,7 +490,6 @@
     var host = document.getElementById('shelf');
     var kept = state.tab === 'films' ? host.querySelector('.azeri-tools') : null;
     while (host.lastChild && host.lastChild !== kept) host.removeChild(host.lastChild);
-    if (state.tab === 'community') { drawCommunity(host); return; }
     if (state.tab === 'food') { drawFood(host); return; }
     if (state.tab !== 'films') { drawGuide(host); return; }
     if (kept) tools(kept);
@@ -1152,671 +1082,6 @@
       ]));
     }
     return box;
-  }
-
-  /* ----------------------------------------------------------- community */
-
-  /* Community is a tab like the others and three views under it, each an
-     address: the posts, ?tab=community with &sort=top and a page's cursor;
-     one post, &post=<id>; and the form, &write=1, or &post=<id>&edit=1 for
-     one's own. A press on anything that leads between them moves the address
-     with pushState, as the tabs do, and Back walks them — popstate in
-     wireLinks() asks for the view the address names. What is being typed is
-     kept in `cm` rather than in the field, since draw() builds the field
-     again whenever anything else on the page changes. */
-
-  /* An address under Community. */
-  function cmHref(params) {
-    var p = new URLSearchParams();
-    p.set('tab', 'community');
-    Object.keys(params || {}).forEach(function (k) {
-      if (params[k] != null && params[k] !== '') p.set(k, String(params[k]));
-    });
-    return '/azeri?' + p.toString();
-  }
-
-  /* Go to an address under Community without loading the page. `replace`
-     is for where the view left should not be come back to — the form a post
-     was just sent from, a post just deleted. */
-  function cmGo(href, replace) {
-    cm.fromFeed = !replace && cm.view === 'feed';
-    window.history[replace ? 'replaceState' : 'pushState'](null, '', href);
-    askCommunity();
-    window.scrollTo(0, 0);
-  }
-
-  /* A link that goes in the page, and opens a new tab when a key is held,
-     as a tab does. */
-  function inPage(a, before) {
-    a.addEventListener('click', function (e) {
-      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      e.preventDefault();
-      if (before) before();
-      cmGo(a.getAttribute('href'));
-    });
-    return a;
-  }
-
-  /* Back to the posts: the very page they were on where they came from it,
-     which the browser has, and the newest where they arrived from a link. */
-  function cmBack() {
-    var a = el('a', { className: 'azeri-cm-back', href: cmHref(), text: '‹ ' + t('azeriCommunity') });
-    a.addEventListener('click', function (e) {
-      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      e.preventDefault();
-      if (cm.fromFeed) window.history.back();
-      else cmGo(cmHref());
-    });
-    return a;
-  }
-
-  /* What the address under Community names, asked for: the posts, a post,
-     or the form — which asks only who is in for a new post, since somebody
-     signed out is shown the way in rather than a form, and its own post for
-     an edit. */
-  function askCommunity() {
-    var p = new URLSearchParams(window.location.search);
-    cm.error = null;
-    cm.reply = null;
-    cm.editing = null;
-    cm.busy = false;
-    state.news = 0;
-    if (p.get('write') === '1') {
-      cm.view = 'write';
-      cm.draft = { id: null, title: '', body: '' };
-      cm.data = null;
-      send(COMMUNITY + '?news=1', function (out) { cm.user = out.user; });
-      return;
-    }
-    var id = p.get('post');
-    cm.view = id && p.get('edit') !== '1' ? 'post' : id ? 'write' : 'feed';
-    cm.data = null;
-    if (id) {
-      send(COMMUNITY + '?post=' + encodeURIComponent(id), function (out) {
-        cm.data = out;
-        cm.user = out.user;
-        if (cm.view === 'write') {
-          var post = out.post;
-          if (!post || !post.mine || post.gone) { cm.view = 'post'; return; }
-          cm.draft = { id: post.id, title: post.title, body: post.body };
-        }
-      }, true);
-      return;
-    }
-    cm.sort = p.get('sort') === 'top' ? 'top' : 'new';
-    cm.page = Math.max(1, parseInt(p.get('page'), 10) || 1);
-    var q = new URLSearchParams();
-    if (cm.sort === 'top') q.set('sort', 'top');
-    if (p.get('after')) q.set('after', p.get('after'));
-    if (p.get('before')) q.set('before', p.get('before'));
-    send(COMMUNITY + (q.toString() ? '?' + q.toString() : ''), function (out) {
-      cm.data = out;
-      cm.user = out.user;
-      if (!out.prev) cm.page = 1;
-    });
-  }
-
-  /* A POST to the route, its answer to `took` and a refusal's word to
-     `refused`. A session that has gone since the page was drawn is the page
-     drawn again signed out, with the way to sign in where the press was. */
-  function cmSend(body, took, refused) {
-    fetch(COMMUNITY, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify(body)
-    }).then(function (res) {
-      return res.json().then(function (out) { return { status: res.status, out: out }; });
-    }).then(function (answer) {
-      if (answer.status === 401) { cm.user = null; cm.busy = false; draw(); return; }
-      if (answer.status !== 200) { refused(answer.out.error || 'failed'); return; }
-      took(answer.out);
-    }).catch(function () { refused('failed'); });
-  }
-
-  /* What a refusal says, above the field it was about. */
-  var CM_ERRORS = {
-    title: 'azeriComErrTitle', empty: 'azeriComErrEmpty', 'too-long': 'azeriComErrLong',
-    often: 'azeriComErrOften', gone: 'azeriComErrGone'
-  };
-
-  function cmError(word) {
-    return el('p', { className: 'azeri-cm-error', role: 'alert', text: t(CM_ERRORS[word] || 'azeriComErrFailed') });
-  }
-
-  /* Reading is anybody's and writing a member's. The way in is the map's own
-     sign-in sheet, which brings somebody back to this very address — the
-     post, or the form — once they are in. */
-  function signInHref() {
-    return '/?account=in&then=' + encodeURIComponent(window.location.pathname + window.location.search);
-  }
-
-  function signInButton(key) {
-    return el('a', { className: 'go', href: signInHref(), 'data-track': 'account_open', text: t(key) });
-  }
-
-  /* Where a member would comment, or the form would be: a line saying who
-     may write, and the way in. */
-  function signInCard() {
-    return el('div', { className: 'card azeri-cm-box' }, [
-      el('p', { className: 'lists-say', text: t('azeriComSignInSay') }),
-      signInButton('azeriComSignInGo')
-    ]);
-  }
-
-  /* How long ago, in the reader's language: now, minutes, hours, days, and
-     past a week the date. The words are the page's own rather than
-     Intl.RelativeTimeFormat's, which in Chromium has no Azerbaijani and
-     wrote "-1 min" under every post read in it. */
-  function ago(ms) {
-    var s = Math.max(0, (Date.now() - ms) / 1000);
-    if (s < 60) return t('azeriComNow');
-    if (s < 3600) return t('azeriComMinutes', { n: Math.floor(s / 60) });
-    if (s < 86400) return t('azeriComHours', { n: Math.floor(s / 3600) });
-    if (s < 7 * 86400) return t('azeriComDays', { n: Math.floor(s / 86400) });
-    var when = new Date(ms);
-    var opts = { day: 'numeric', month: 'short' };
-    if (when.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
-    return when.toLocaleDateString(state.lang, opts);
-  }
-
-  /* Who wrote it: their profile where it is a link, and a deleted account
-     where nobody holds the name any more. */
-  function byline(name, linked) {
-    if (!name) return el('span', { text: t('azeriComNobody') });
-    if (!linked) return el('span', { text: name });
-    return el('a', { href: '/u/' + encodeURIComponent(name), text: name });
-  }
-
-  function meta(kids) {
-    var out = [];
-    kids.filter(Boolean).forEach(function (kid, i) {
-      if (i) out.push(' · ');
-      out.push(kid);
-    });
-    return el('span', { className: 'azeri-cm-meta' }, out);
-  }
-
-  function newDot() {
-    return el('span', { className: 'azeri-cm-dot', role: 'img', 'aria-label': t('azeriComNewMark') });
-  }
-
-  /* A text as it was typed: a paragraph to each run between empty lines,
-     its line breaks kept, and an address in it a link off the site that the
-     writer chose and the site did not — nofollow ugc. Built as text, so
-     nothing anybody typed is ever markup. */
-  var URL_IN = /(https?:\/\/[^\s<>"]+)/;
-  function paragraphs(text) {
-    return String(text).split(/\n{2,}/).map(function (para) {
-      var p = el('p');
-      para.split('\n').forEach(function (line, i) {
-        if (i) p.appendChild(el('br'));
-        line.split(URL_IN).forEach(function (bit, j) {
-          if (!bit) return;
-          if (j % 2 === 0) { p.appendChild(document.createTextNode(bit)); return; }
-          var tail = /[.,;:!?)]+$/.exec(bit);
-          var href = tail ? bit.slice(0, -tail[0].length) : bit;
-          p.appendChild(el('a', { href: href, rel: 'nofollow ugc noopener', target: '_blank', text: href }));
-          if (tail) p.appendChild(document.createTextNode(tail[0]));
-        });
-      });
-      return p;
-    });
-  }
-
-  var ARROW = '<svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 5l7 8h-4.5v6h-5v-6H5z"/></svg>';
-
-  /* The upvote: the feedback page's heart with an arrow in its place, a
-     number inside it once there is one. One's own, and every one to somebody
-     signed out, is the number alone, not a press, and is not drawn at
-     nought; a deleted thing has none. `n` is 0
-     for the post. Pressed, it changes at once and is put back if the route
-     refuses. */
-  function upvote(item, postId, n) {
-    if (item.gone) return null;
-    var count = item.score ? el('span', { text: String(item.score) }) : null;
-    if (item.mine || !cm.user) {
-      if (!item.score) return null;
-      var own = el('span', { className: 'azeri-up is-mine', title: t('azeriComUpvotes', { n: item.score }) }, [count]);
-      own.insertAdjacentHTML('afterbegin', ARROW);
-      return own;
-    }
-    var b = el('button', {
-      type: 'button',
-      className: 'azeri-up' + (item.voted ? ' is-on' : '') + (item.score ? ' has-n' : ''),
-      'aria-pressed': String(!!item.voted),
-      'aria-label': t('azeriComUpvote')
-    }, [count]);
-    b.insertAdjacentHTML('afterbegin', ARROW);
-    b.addEventListener('click', function () {
-      var was = { voted: item.voted, score: item.score };
-      var swap = function () {
-        var again = upvote(item, postId, n);
-        if (b.parentNode) b.parentNode.replaceChild(again, b);
-        b = again;
-      };
-      item.voted = !item.voted;
-      item.score += item.voted ? 1 : -1;
-      track('azeri_upvote', { on: item.voted ? 1 : 0 });
-      swap();
-      cmSend({ action: 'vote', post: postId, n: n, on: item.voted }, function (out) {
-        item.score = out.score;
-        swap();
-      }, function () {
-        item.voted = was.voted;
-        item.score = was.score;
-        swap();
-      });
-    });
-    return b;
-  }
-
-  function commentsLine(post) {
-    var said = post.comments === 0 ? t('azeriComNoComments')
-      : post.comments === 1 ? t('azeriComOneComment') : t('azeriComComments', { n: post.comments });
-    if (!post.freshComments) return el('span', { text: said });
-    var n = post.freshComments >= 10 ? '9+' : String(post.freshComments);
-    return el('span', {}, [said + ' · ', el('b', { className: 'azeri-cm-new', text: t('azeriComFresh', { n: n }) })]);
-  }
-
-  function drawCommunity(host) {
-    var box = el('div', { className: 'azeri-cm' });
-    host.appendChild(box);
-    if (cm.view === 'write') drawWrite(box);
-    else if (cm.view === 'post') drawPost(box);
-    else drawFeed(box);
-  }
-
-  /* The posts: the order and the one filled action over them, a page of
-     rows, and Previous and Next under them. */
-  function drawFeed(box) {
-    var data = cm.data;
-    var order = el('nav', { className: 'azeri-cm-order', 'aria-label': t('azeriCommunity') });
-    [['new', 'azeriComNew'], ['top', 'azeriComTop']].forEach(function (o) {
-      var a = el('a', {
-        className: o[0] === cm.sort ? 'is-on' : '',
-        href: cmHref({ sort: o[0] === 'top' ? 'top' : null }),
-        text: t(o[1])
-      });
-      if (o[0] === cm.sort) a.setAttribute('aria-current', 'page');
-      order.appendChild(inPage(a, function () { track('azeri_sort', { sort: o[0] }); }));
-    });
-    var write = cm.user
-      ? inPage(el('a', { className: 'go', href: cmHref({ write: 1 }), text: t('azeriComWrite') }),
-        function () { track('azeri_write'); })
-      : signInButton('azeriComSignIn');
-    box.appendChild(el('div', { className: 'azeri-cm-bar' }, [order, write]));
-
-    var list = el('div', { className: 'card azeri-cm-list' });
-    if (state.loading) list.appendChild(skeleton());
-    else if (state.failed || !data || !data.ready) list.appendChild(el('p', { className: 'azeri-note', role: 'status', text: t('azeriComError') }));
-    else if (!data.posts.length) list.appendChild(el('p', { className: 'azeri-note', role: 'status', text: t(cm.sort === 'top' ? 'azeriComEmptyTop' : 'azeriComEmpty') }));
-    else data.posts.forEach(function (post) { list.appendChild(postRow(post)); });
-    box.appendChild(list);
-    if (!state.loading && data && data.ready && (data.prev || data.next)) box.appendChild(cmPager(data));
-  }
-
-  /* A post's row: the whole of it but the upvote is the press that opens it. */
-  function postRow(post) {
-    var title = post.gone ? t('azeriComDeleted') : post.title;
-    var a = inPage(el('a', { className: 'azeri-cm-row', href: cmHref({ post: post.id }) }, [
-      meta([byline(post.author, false), ago(post.at)]),
-      el('span', { className: 'azeri-cm-title' + (post.gone ? ' is-gone' : '') }, [post.fresh ? newDot() : null, title]),
-      post.lead ? el('span', { className: 'azeri-cm-lead', text: post.lead }) : null
-    ]), function () { track('azeri_post', { post: post.id }); });
-    return el('div', { className: 'azeri-cm-post' }, [
-      a,
-      el('div', { className: 'azeri-cm-foot' }, [commentsLine(post), upvote(post, post.id, 0)])
-    ]);
-  }
-
-  function cmPager(data) {
-    var bar = el('nav', { className: 'azeri-pager', 'aria-label': t('azeriComPage', { n: cm.page }) });
-    var turn = function (params, to) {
-      return function () {
-        track('azeri_page', { page: to });
-        cmGo(cmHref(params));
-      };
-    };
-    var sort = cm.sort === 'top' ? 'top' : null;
-    var prev = el('button', { type: 'button', className: 'link-btn', text: '‹ ' + t('azeriPrev') });
-    prev.disabled = !data.prev;
-    prev.addEventListener('click', turn({ sort: sort, before: data.first, page: cm.page - 1 }, cm.page - 1));
-    var next = el('button', { type: 'button', className: 'link-btn', text: t('azeriNext') + ' ›' });
-    next.disabled = !data.next;
-    next.addEventListener('click', turn({ sort: sort, after: data.next, page: cm.page + 1 }, cm.page + 1));
-    bar.appendChild(prev);
-    bar.appendChild(el('span', { className: 'azeri-where', text: t('azeriComPage', { n: cm.page }) }));
-    bar.appendChild(next);
-    return bar;
-  }
-
-  /* One post whole, its comments under it, and the box to add one. */
-  function drawPost(box) {
-    box.appendChild(cmBack());
-    var data = cm.data;
-    if (state.loading) { box.appendChild(el('div', { className: 'card azeri-cm-list' }, [skeleton()])); return; }
-    if (data && data.error === 'not-found') {
-      box.appendChild(el('div', { className: 'card azeri-cm-list' }, [el('p', { className: 'azeri-note', role: 'status', text: t('azeriComNotFound') })]));
-      return;
-    }
-    if (state.failed || !data || !data.ready || !data.post) {
-      box.appendChild(el('div', { className: 'card azeri-cm-list' }, [el('p', { className: 'azeri-note', role: 'status', text: t('azeriComError') })]));
-      return;
-    }
-    var post = data.post;
-    var article = el('article', { className: 'card azeri-cm-open' }, [
-      meta([byline(post.author, true), ago(post.at), post.edited ? t('azeriComEdited') : null]),
-      el('h2', { className: post.gone ? 'is-gone' : '', text: post.gone ? t('azeriComDeleted') : post.title })
-    ]);
-    if (post.body) paragraphs(post.body).forEach(function (p) { article.appendChild(p); });
-    article.appendChild(el('div', { className: 'azeri-cm-foot' }, [postActions(post), upvote(post, post.id, 0)]));
-    box.appendChild(article);
-
-    if (post.comments) {
-      box.appendChild(el('h3', { className: 'azeri-cm-count', text: post.comments === 1 ? t('azeriComOneComment') : t('azeriComComments', { n: post.comments }) }));
-      var list = el('div', { className: 'card azeri-cm-list' });
-      data.comments.forEach(function (c) { list.appendChild(commentRow(c, post)); });
-      if (data.more) list.appendChild(moreButton(post));
-      box.appendChild(list);
-    }
-    if (!post.gone) box.appendChild(cm.user ? composer(post) : signInCard());
-  }
-
-  /* Under the post: Edit and Delete for its author, Take down for the site's
-     owner on anybody else's. */
-  function postActions(post) {
-    var row = el('span', { className: 'azeri-cm-acts' });
-    if (post.gone) return row;
-    if (post.mine) {
-      row.appendChild(inPage(el('a', { className: 'alt', href: cmHref({ post: post.id, edit: 1 }), text: t('azeriComEdit') })));
-    }
-    if (post.mine || cm.data.mod) {
-      var del = el('button', { type: 'button', className: 'alt is-danger', text: t(post.mine ? 'azeriComDelete' : 'azeriComTakeDown') });
-      del.addEventListener('click', function () {
-        if (!window.confirm(t(post.mine ? 'azeriComDeleteAsk' : 'azeriComTakeDownAsk'))) return;
-        track(post.mine ? 'azeri_delete' : 'azeri_take_down', { what: 'post' });
-        cmSend({ action: 'delete', id: post.id }, function () {
-          cmGo(cmHref(), true);
-        }, function (word) {
-          window.alert(t(CM_ERRORS[word] || 'azeriComErrFailed'));
-        });
-      });
-      row.appendChild(del);
-    }
-    return row;
-  }
-
-  /* A comment: who and when, what it answers, what it says — or the line
-     where it was — and Reply, its author's Edit and Delete, the owner's Take
-     down and the upvote under it. The ones written since the visit before
-     are washed. */
-  function commentRow(c, post) {
-    var wrap = el('div', { className: 'azeri-cm-comment' + (c.fresh ? ' is-new' : ''), id: 'c' + c.n });
-    if (c.gone) {
-      wrap.className += ' is-gone';
-      wrap.appendChild(el('p', { text: t(c.gone === 2 ? 'azeriComCommentDown' : 'azeriComCommentGone') }));
-      return wrap;
-    }
-    wrap.appendChild(meta([byline(c.author, true), ago(c.at), c.edited ? t('azeriComEdited') : null,
-      c.fresh ? el('b', { className: 'azeri-cm-new', text: t('azeriComNewMark') }) : null]));
-    if (c.replyTo) wrap.appendChild(replyLine(c));
-    if (cm.editing === c.n) {
-      wrap.appendChild(editBox(c, post));
-      return wrap;
-    }
-    paragraphs(c.body).forEach(function (p) { wrap.appendChild(p); });
-
-    var acts = el('span', { className: 'azeri-cm-acts' });
-    if (!post.gone && cm.user) {
-      var reply = el('button', { type: 'button', className: 'alt', text: t('azeriComReply') });
-      reply.addEventListener('click', function () {
-        cm.reply = { n: c.n, author: c.author };
-        track('azeri_reply');
-        draw();
-        var field = document.querySelector('.azeri-cm-box textarea');
-        if (field) { field.focus(); field.scrollIntoView({ block: 'center' }); }
-      });
-      acts.appendChild(reply);
-    }
-    if (c.mine) {
-      var edit = el('button', { type: 'button', className: 'alt', text: t('azeriComEdit') });
-      edit.addEventListener('click', function () {
-        cm.editing = c.n;
-        cm.editText = c.body;
-        cm.error = null;
-        draw();
-      });
-      acts.appendChild(edit);
-    }
-    if (c.mine || cm.data.mod) {
-      var del = el('button', { type: 'button', className: 'alt is-danger', text: t(c.mine ? 'azeriComDelete' : 'azeriComTakeDown') });
-      del.addEventListener('click', function () {
-        if (!window.confirm(t(c.mine ? 'azeriComDeleteCommentAsk' : 'azeriComTakeDownAsk'))) return;
-        track(c.mine ? 'azeri_delete' : 'azeri_take_down', { what: 'comment' });
-        cmSend({ action: 'uncomment', post: post.id, n: c.n }, function () {
-          c.gone = c.mine ? 1 : 2;
-          c.body = '';
-          draw();
-        }, function (word) {
-          window.alert(t(CM_ERRORS[word] || 'azeriComErrFailed'));
-        });
-      });
-      acts.appendChild(del);
-    }
-    wrap.appendChild(el('div', { className: 'azeri-cm-foot' }, [acts, upvote(c, post.id, c.n)]));
-    return wrap;
-  }
-
-  /* "replying to aysel", the name a press that brings that comment into
-     view; or a line saying it answered one that is gone. */
-  function replyLine(c) {
-    if (!c.replyAuthor) return el('p', { className: 'azeri-cm-to', text: '↳ ' + t('azeriComReplyingGone') });
-    var parts = t('azeriComReplyingTo').split('{name}');
-    var name = el('a', { href: '#c' + c.replyTo, text: c.replyAuthor });
-    name.addEventListener('click', function (e) {
-      e.preventDefault();
-      var to = document.getElementById('c' + c.replyTo);
-      if (to) to.scrollIntoView({ block: 'center' });
-    });
-    return el('p', { className: 'azeri-cm-to' }, ['↳ ' + parts[0], name, parts[1] || '']);
-  }
-
-  /* A comment of one's own, being changed where it stands. */
-  function editBox(c, post) {
-    var box = el('div', { className: 'azeri-cm-edit' });
-    if (cm.error) box.appendChild(cmError(cm.error));
-    var field = el('textarea', { className: 'lists-input', maxlength: String(MAX_COMMENT), rows: '4', 'aria-label': t('azeriComEdit') });
-    field.value = cm.editText;
-    field.addEventListener('input', function () { cm.editText = field.value; });
-    var save = el('button', { type: 'button', className: 'go', text: t('azeriComSave') });
-    var cancel = el('button', { type: 'button', className: 'alt', text: t('azeriComCancel') });
-    save.addEventListener('click', function () {
-      if (cm.busy) return;
-      cm.busy = true;
-      save.disabled = true;
-      cmSend({ action: 'editcomment', post: post.id, n: c.n, body: cm.editText }, function () {
-        track('azeri_edit', { what: 'comment' });
-        c.body = cm.editText.trim();
-        c.edited = true;
-        cm.editing = null;
-        cm.busy = false;
-        cm.error = null;
-        draw();
-      }, function (word) {
-        cm.busy = false;
-        cm.error = word;
-        draw();
-      });
-    });
-    cancel.addEventListener('click', function () {
-      cm.editing = null;
-      cm.error = null;
-      draw();
-    });
-    box.appendChild(field);
-    box.appendChild(el('div', { className: 'azeri-cm-actions' }, [save, cancel]));
-    return box;
-  }
-
-  /* The comments after the last one drawn, put under it. */
-  function moreButton(post) {
-    var b = el('button', { type: 'button', className: 'azeri-cm-more', text: t('azeriComMore', { n: cm.data.more }) });
-    b.addEventListener('click', function () {
-      var shown = cm.data.comments;
-      var last = shown.length ? shown[shown.length - 1].n : 0;
-      b.disabled = true;
-      track('azeri_more');
-      getJSON(COMMUNITY + '?post=' + encodeURIComponent(post.id) + '&after=' + last).then(function (out) {
-        cm.data.comments = shown.concat(out.comments);
-        cm.data.more = out.more;
-        draw();
-      }).catch(function () { b.disabled = false; });
-    });
-    return b;
-  }
-
-  /* The box to add a comment, with the comment it answers over it while
-     Reply has been pressed, and what went wrong above the field. */
-  function composer(post) {
-    var box = el('div', { className: 'card azeri-cm-box' });
-    if (cm.error && cm.editing === null) box.appendChild(cmError(cm.error));
-    if (cm.reply) {
-      var not = el('button', { type: 'button', className: 'alt', text: t('azeriComNotReply') });
-      not.addEventListener('click', function () { cm.reply = null; draw(); });
-      box.appendChild(el('div', { className: 'azeri-cm-replying' }, [
-        el('span', { text: '↳ ' + (cm.reply.author ? t('azeriComReplyingTo', { name: cm.reply.author }) : t('azeriComReplyingGone')) }),
-        not
-      ]));
-    }
-    var field = el('textarea', {
-      className: 'lists-input',
-      maxlength: String(MAX_COMMENT),
-      rows: '3',
-      placeholder: t('azeriComSaySomething'),
-      'aria-label': t('azeriComSaySomething')
-    });
-    field.value = cm.text;
-    var counter = el('span', { className: 'azeri-cm-counter', text: t('feedbackCount', { n: cm.text.length, max: MAX_COMMENT }) });
-    field.addEventListener('input', function () {
-      cm.text = field.value;
-      counter.textContent = t('feedbackCount', { n: cm.text.length, max: MAX_COMMENT });
-    });
-    var send = el('button', { type: 'button', className: 'go', text: t('azeriComComment') });
-    send.addEventListener('click', function () {
-      if (cm.busy) return;
-      if (!cm.text.trim()) { cm.error = 'empty'; draw(); return; }
-      cm.busy = true;
-      send.disabled = true;
-      cmSend({ action: 'comment', post: post.id, body: cm.text, replyTo: cm.reply ? cm.reply.n : null }, function (out) {
-        var c = out.comment;
-        if (c.replyTo && cm.reply) c.replyAuthor = cm.reply.author;
-        track('azeri_comment', { reply: c.replyTo ? 1 : 0 });
-        post.comments = c.n;
-        if (cm.data.more) cm.data.more += 1;
-        else cm.data.comments.push(c);
-        cm.text = '';
-        cm.reply = null;
-        cm.error = null;
-        cm.busy = false;
-        draw();
-        var made = document.getElementById('c' + c.n);
-        if (made) made.scrollIntoView({ block: 'center' });
-      }, function (word) {
-        cm.busy = false;
-        cm.error = word;
-        draw();
-      });
-    });
-    box.appendChild(field);
-    box.appendChild(el('div', { className: 'azeri-cm-actions' }, [counter, send]));
-    return box;
-  }
-
-  /* The form: a new post, or one's own being changed — the sheet's order,
-     eyebrow, title, the line that says why, what went wrong, the fields and
-     the one action, and the way out beside it. */
-  function drawWrite(box) {
-    box.appendChild(cmBack());
-    if (state.loading) { box.appendChild(el('div', { className: 'card azeri-cm-list' }, [skeleton()])); return; }
-    if (state.failed) {
-      box.appendChild(el('div', { className: 'card azeri-cm-list' }, [el('p', { className: 'azeri-note', role: 'status', text: t('azeriComError') })]));
-      return;
-    }
-    if (!cm.user) { box.appendChild(signInCard()); return; }
-    var editing = !!cm.draft.id;
-    var card = el('div', { className: 'card azeri-cm-write' }, [
-      el('p', { className: 'eyebrow', text: t(editing ? 'azeriComEditEyebrow' : 'azeriComWriteEyebrow') }),
-      el('h2', { text: t(editing ? 'azeriComEditTitle' : 'azeriComWriteTitle') }),
-      el('p', { className: 'lists-say', text: t('azeriComWriteSay') })
-    ]);
-    if (cm.error) card.appendChild(cmError(cm.error));
-
-    var title = el('input', { type: 'text', id: 'cm-title', className: 'lists-input', maxlength: String(MAX_TITLE), autocomplete: 'off' });
-    title.value = cm.draft.title;
-    title.addEventListener('input', function () { cm.draft.title = title.value; });
-    var text = el('textarea', { id: 'cm-text', className: 'lists-input', maxlength: String(MAX_BODY), rows: '8' });
-    text.value = cm.draft.body;
-    var counter = el('span', { className: 'azeri-cm-counter', text: t('feedbackCount', { n: cm.draft.body.length, max: MAX_BODY }) });
-    text.addEventListener('input', function () {
-      cm.draft.body = text.value;
-      counter.textContent = t('feedbackCount', { n: cm.draft.body.length, max: MAX_BODY });
-    });
-    card.appendChild(el('div', { className: 'azeri-cm-field' }, [el('label', { 'for': 'cm-title', text: t('azeriComTitleLabel') }), title]));
-    card.appendChild(el('div', { className: 'azeri-cm-field' }, [el('label', { 'for': 'cm-text', text: t('azeriComTextLabel') }), text]));
-
-    var go = el('button', { type: 'button', className: 'go', text: t(editing ? 'azeriComSave' : 'azeriComPost') });
-    var cancel = el('button', { type: 'button', className: 'alt', text: t('azeriComCancel') });
-    go.addEventListener('click', function () {
-      if (cm.busy) return;
-      if (!cm.draft.title.trim()) { cm.error = 'title'; draw(); return; }
-      cm.busy = true;
-      go.disabled = true;
-      var body = editing
-        ? { action: 'edit', id: cm.draft.id, title: cm.draft.title, body: cm.draft.body }
-        : { action: 'post', title: cm.draft.title, body: cm.draft.body };
-      cmSend(body, function (out) {
-        track(editing ? 'azeri_edit' : 'azeri_posted', { what: 'post' });
-        cmGo(cmHref({ post: out.id }), true);
-      }, function (word) {
-        cm.busy = false;
-        cm.error = word;
-        draw();
-      });
-    });
-    cancel.addEventListener('click', function () {
-      if (cm.fromFeed || editing) window.history.back();
-      else cmGo(cmHref());
-    });
-    card.appendChild(el('div', { className: 'azeri-cm-actions' }, [go, cancel, counter]));
-    box.appendChild(card);
-  }
-
-  /* What is new in Community for a member, asked once each time another tab
-     is shown: the route's ?news=1, about a dozen rows for a member and none
-     for anybody else, who gets no dot. */
-  function askNews() {
-    getJSON(COMMUNITY + '?news=1').then(function (out) {
-      state.news = out.news ? out.news.posts + out.news.mine : 0;
-      sayNews();
-    }).catch(function () { /* no dot */ });
-  }
-
-  /* The dot on the Community tab while another is read, with the number in
-     the browser's tab — said after the words, since applyStaticStrings()
-     writes the tab's text over anything inside it. */
-  function markNews() {
-    var tab = document.querySelector('.azeri-tab[data-tab="community"]');
-    if (!tab) return;
-    var dot = tab.querySelector('.azeri-cm-dot');
-    var lit = state.news > 0 && state.tab !== 'community';
-    if (lit && !dot) tab.appendChild(newDot());
-    if (!lit && dot) tab.removeChild(dot);
-  }
-
-  function newsTitle() {
-    if (!state.news || state.tab === 'community') return '';
-    return '(' + (state.news > 9 ? '9+' : state.news) + ') ';
   }
 
   /* ---------------------------------------------------------------- boot */
