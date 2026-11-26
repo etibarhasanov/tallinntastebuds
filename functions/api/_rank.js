@@ -66,6 +66,10 @@
  *                    prunes it, and at that rate it is a few years before it
  *                    is worth thinking about.
  *   google_venues    `rank`, on every row, in one statement.
+ *   meta             `rerank_fail`, only while a week's ranking is failing:
+ *                    the week, how many tries have failed, how long the
+ *                    next has to wait and what D1 said. Gone again in the
+ *                    batch of the ranking that works. See THE WAIT below.
  *
  * Both tables arrive by hand — db/schema.sql has them, nothing in CI applies
  * it — and until they do the route answers `ready: false`, the tab says the
@@ -144,7 +148,7 @@ const rerankSql = (only) =>
   'UPDATE google_venues SET rank = (SELECT pos FROM scored WHERE scored.place_id = google_venues.place_id)';
 
 /* How long a claim may sit unfinished before another ask takes it over. A
- * ranking is three statements in one batch and takes well under a second;
+ * ranking is five statements in one batch and takes well under a second;
  * D1 gives up on a statement at thirty. Two minutes is past both, so a claim
  * this old with no counts on it is one whose request died between the claim
  * and the batch — and on 2026-11-16 one did, leaving the week claimed, never
@@ -152,6 +156,33 @@ const rerankSql = (only) =>
  * after. Nothing in a Worker survives the isolate going away mid-request, so
  * the catch below cannot be what cleans this up; the next ask has to be. */
 const STALE_CLAIM = 2 * 60 * 1000;
+
+/* THE WAIT. A ranking whose batch threw is not tried again by the next ask.
+ * Until 2026-11-26 it was: the catch gave the claim straight back, so every
+ * open of the tab while something was wrong ran the whole ranking again —
+ * about nine thousand rows read a try — and on 2026-11-25 query insights
+ * counted eight in a day for the one that committed. Whatever stopped the
+ * first is likelier than not to stop one a second later.
+ *
+ * So the claim is kept, its `at` the moment of the try, and the failure goes
+ * into `meta` under FAIL_KEY with how long the next try has to wait:
+ * RETRY_FIRST after the first, twice that after each one more, RETRY_MOST at
+ * the most — five minutes, ten, twenty, forty, eighty, a hundred and sixty,
+ * then every six hours, which is the wait a ride has in Rattatee. The claim's
+ * own WHERE reads that wait, so an ask inside it is answered 'had' for one
+ * row read by its key and the tab shows the last ranking that finished. At
+ * the worst a week that never ranks is tried thirty-three times, some
+ * 300,000 rows of the week's thirty-five million.
+ *
+ * The row is also the record. Pages keeps no log — console output is seen
+ * only by somebody tailing it at that second — so the message D1 gave is in
+ * `error`, to be read afterwards. A new week starts its own count; the row
+ * of a week that never ranked is written over by the next failure and
+ * deleted by the next ranking. Where the row cannot be written either, the
+ * database being what failed, the claim waits STALE_CLAIM and no longer. */
+const FAIL_KEY = 'rerank_fail';
+const RETRY_FIRST = 5 * 60 * 1000;
+const RETRY_MOST = 6 * 60 * 60 * 1000;
 
 /* Makes this week's ranking if there is not one yet, and says whether it did:
  * 'made', 'had' when the week already has one, 'not-ready' when the tables
@@ -164,12 +195,10 @@ const STALE_CLAIM = 2 * 60 * 1000;
  * committed. Such a claim older than STALE_CLAIM is taken over by the next
  * ask — the upsert's WHERE — and one younger is somebody else's ranking in
  * progress, which this ask leaves alone and topOfWeek() reads past. A batch
- * that throws gives the claim back too, so the next ask tries again rather
- * than a week reading as ranked on the strength of nothing. Either failure
- * is logged with the week and D1's message, since the claim it gives back
- * leaves nothing behind in the tables: on 2026-11-25 query insights counted
- * the ranking eight times in a day and google_reranks held one, and
- * nothing could say why the other seven had not committed.
+ * that throws keeps its claim and writes down why and how long the next try
+ * waits — THE WAIT above — and a claim that failed is taken over once that
+ * wait has gone by rather than STALE_CLAIM. Either failure is logged too,
+ * for whoever is tailing.
  *
  * The counts are read against the newest earlier week, whichever that is —
  * "moved" is a place whose position differs from the last time it had one,
@@ -182,14 +211,19 @@ export async function rerankIfDue(env, now) {
 
   let claimed;
   try {
+    /* The subquery is one row of meta by its key, asked only of a week whose
+       claim is unfinished: the wait its last failure set, or STALE_CLAIM. */
     claimed = await env.DB
       .prepare(
         'INSERT INTO google_reranks (week, at) VALUES (?1, ?2) ' +
         'ON CONFLICT (week) DO UPDATE SET at = excluded.at ' +
-        'WHERE google_reranks.ranked IS NULL AND google_reranks.at < ?3 ' +
+        'WHERE google_reranks.ranked IS NULL AND google_reranks.at < ?2 - COALESCE((' +
+        "  SELECT json_extract(value, '$.wait') FROM meta " +
+        "  WHERE key = ?4 AND json_extract(value, '$.week') = ?1" +
+        '), ?3) ' +
         'RETURNING week'
       )
-      .bind(week, now, now - STALE_CLAIM)
+      .bind(week, now, STALE_CLAIM, FAIL_KEY)
       .first();
   } catch (e) {
     return 'not-ready';
@@ -233,7 +267,8 @@ export async function rerankIfDue(env, now) {
           '  ) ' +
           'WHERE week = ?1'
         )
-        .bind(week, TOP)
+        .bind(week, TOP),
+      env.DB.prepare('DELETE FROM meta WHERE key = ?').bind(FAIL_KEY)
     ]);
     ranked = true;
     /* Every row's `rank`, which the find bar orders by: the copies other
@@ -242,14 +277,29 @@ export async function rerankIfDue(env, now) {
     return 'made';
   } catch (e) {
     /* Which half failed matters: a batch that threw is a week still to be
-       ranked, and the next ask tries again; a mark that threw after it is a
-       ranking that stands, and only the isolates' copies of the table were
-       not told — so the claim is kept. */
-    console.error('rerank ' + week + (ranked ? ': ranked, venuesChanged failed: ' : ': batch failed: ') +
-      ((e && e.message) || e));
+       ranked, after a wait; a mark that threw after it is a ranking that
+       stands, and only the isolates' copies of the table were not told. */
+    const why = String((e && e.message) || e).slice(0, 500);
+    console.error('rerank ' + week + (ranked ? ': ranked, venuesChanged failed: ' : ': batch failed: ') + why);
     if (ranked) return 'error';
     try {
-      await env.DB.prepare('DELETE FROM google_reranks WHERE week = ? AND ranked IS NULL').bind(week).run();
+      /* The week's first failure, or one more: the count up by one and the
+         wait doubled, in the one statement so two tries cannot both be the
+         first. An upsert on meta's key. */
+      await env.DB
+        .prepare(
+          'INSERT INTO meta (key, value) ' +
+          "VALUES (?1, json_object('week', ?2, 'tries', 1, 'wait', ?3, 'at', ?5, 'error', ?6)) " +
+          'ON CONFLICT (key) DO UPDATE SET value = json_object(' +
+          "  'week', ?2, " +
+          "  'tries', CASE WHEN json_extract(meta.value, '$.week') = ?2 " +
+          "    THEN json_extract(meta.value, '$.tries') + 1 ELSE 1 END, " +
+          "  'wait', CASE WHEN json_extract(meta.value, '$.week') = ?2 " +
+          "    THEN MIN(json_extract(meta.value, '$.wait') * 2, ?4) ELSE ?3 END, " +
+          "  'at', ?5, 'error', ?6)"
+        )
+        .bind(FAIL_KEY, week, RETRY_FIRST, RETRY_MOST, now, why)
+        .run();
     } catch (ignored) { /* the database is the thing that failed */ }
     return 'error';
   }

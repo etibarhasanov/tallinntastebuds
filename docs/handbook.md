@@ -7915,6 +7915,22 @@ died between the two and the tab read "the hundred highest of 0" — and the
 next ask takes over a claim left that way for two minutes, while the tab reads
 the newest ranking that did finish rather than an empty week.
 
+**A ranking that fails waits before it is tried again.** Until 2026-11-26 a
+batch that threw gave its claim straight back, so every open of the tab while
+something was wrong ran the whole ranking again, some nine thousand rows read
+a try: on 2026-11-25 Cloudflare's query insights counted eight in a day for
+the one that committed. Now the claim is kept and the failure is written into
+`meta` under `rerank_fail` — the week, how many tries have failed, how long
+the next has to wait, and what D1 said. The wait is five minutes after the
+first failure and doubles with each one more, six hours at the most; an ask
+inside it runs nothing and the tab shows the last ranking that finished. The
+ranking that works deletes the row. It is also the only record of why one
+failed, since Pages keeps no log of its Functions:
+
+```
+SELECT value FROM meta WHERE key = 'rerank_fail'
+```
+
 **The same arithmetic, written a third time.** The `ORDER BY` is `overallOrder()`
 in `tools/googlevenues.mjs` and `weigh()` in `assets/venues.js` in SQL — the
 Bayesian average with a prior of a hundred reviews around the roll's own
