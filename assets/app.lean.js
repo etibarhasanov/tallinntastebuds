@@ -2011,6 +2011,7 @@
     try { url = new URL(candidate, window.location.origin); }
     catch (e) { return ''; }
     if (url.origin !== window.location.origin) return '';
+    if (url.pathname.charAt(1) === '/') return '';
 
     return url.pathname + url.search + url.hash;
   }
