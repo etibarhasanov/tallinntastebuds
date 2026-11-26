@@ -129,6 +129,11 @@ function safePath(raw, origin) {
     return '/';
   }
   if (url.origin !== origin) return '/';
+  /* "/.//evil.example" resolves here and its path comes out as
+     "//evil.example", which a browser follows to another site — AND THE
+     RESULT IS ASKED TOO, above samePlace(). It was saved only by arrive()
+     putting the path through this twice; now once is enough. */
+  if (url.pathname.charAt(1) === '/') return '/';
   return url.pathname + url.search + url.hash;
 }
 

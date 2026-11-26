@@ -3348,7 +3348,17 @@
      drop the characters it drops, then resolve against this origin — and what
      is checked is the result. A rule about what a path may not contain has to
      keep pace with every parser quirk; asking the parser where the URL
-     actually points does not. */
+     actually points does not.
+
+     AND THE RESULT IS ASKED TOO
+
+     The origin being ours was not the whole of it. "/.//evil.example"
+     resolves on this origin — its path is "/.//evil.example", and the
+     parser takes the dot segment out and leaves "//evil.example" — so it
+     passed, and the path handed back was protocol-relative: assigned to
+     location.href after a real sign-in, it landed on somebody else's site.
+     So a path that comes out beginning with two slashes is refused as well;
+     no page here has an address that does. Found on 2026-11-26. */
   function samePlace(raw) {
     var candidate = String(raw)
       .replace(/^[\u0000-\u0020]+|[\u0000-\u0020]+$/g, '')  /* the browser trims these */
@@ -3359,6 +3369,7 @@
     try { url = new URL(candidate, window.location.origin); }
     catch (e) { return ''; }
     if (url.origin !== window.location.origin) return '';
+    if (url.pathname.charAt(1) === '/') return '';
 
     return url.pathname + url.search + url.hash;
   }
