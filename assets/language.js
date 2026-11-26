@@ -9,10 +9,11 @@
  * WHY IT EXISTS. Every other page reads its language off the map's switch and
  * has none. The flashcards could not — on flashcard.tallinntastebuds.ee the
  * ttb.lang the map writes belongs to another origin — so they drew their own,
- * and the chess page is the second page on the map's origin that has to, for
- * the same walk-from-the-map reason. Two copies of a menu that owns two
- * document listeners is where the third would have diverged; the function was
- * written before it.
+ * and the chess page, there until 2026-11-26, was the second page on the
+ * map's origin that had to, for the same walk-from-the-map reason. Two copies
+ * of a menu that owns two document listeners is where the third would have
+ * diverged; the function was written before it, and the lists and the
+ * Azerbaijani corner draw it now.
  *
  * WHAT IT DOES NOT DO. The rules it is drawn with are in assets/styles.css —
  * #lang-switch, .btn-lang-now, .lang-list — and the surface under the trigger

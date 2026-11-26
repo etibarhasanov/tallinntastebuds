@@ -955,8 +955,7 @@ body.lang-open .controls { z-index: 1250; }
   font-weight: 500;
   white-space: nowrap;
   text-decoration: none;
-  transition: border-color .15s var(--ease), color .15s var(--ease),
-              transform .2s var(--ease);
+  transition: border-color .15s var(--ease), color .15s var(--ease);
 }
 .rail-btn:hover { border-color: var(--accent); color: var(--accent); }
 .rail-btn svg {
@@ -969,46 +968,6 @@ body.lang-open .controls { z-index: 1250; }
 }
 .rail-btn svg .pip { fill: var(--accent); stroke: none; }
 .rail-btn:hover svg { transform: rotate(-20deg); }
-
-#btn-random {
-  position: relative;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-#btn-random.is-holding {
-  transform: scale(1.16);
-  transition: transform var(--hold-ms, 5s) cubic-bezier(.05, .95, .25, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #btn-random.is-holding { transform: scale(1.06); transition: none; }
-}
-
-#btn-random .hold-ring {
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  transform: translate(-50%, -50%) rotate(-90deg);
-  pointer-events: none;
-  overflow: visible;
-  opacity: 0;
-  transition: none;
-}
-#btn-random .hold-ring circle { fill: none; stroke-width: 2.4; }
-#btn-random .hold-track { stroke: var(--hairline); }
-#btn-random .hold-fill {
-  stroke: var(--accent);
-  stroke-linecap: round;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-}
-#btn-random.is-holding .hold-ring { opacity: 1; transition: opacity .15s linear .25s; }
-#btn-random.is-holding .hold-fill {
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset var(--hold-ms, 5s) linear;
-}
 
 .rail-glyph {
   display: grid;
@@ -3947,8 +3906,7 @@ path.walk-line { stroke: var(--accent); stroke-opacity: .85; fill: none; }
     gap: 0;
     transition: border-color .15s var(--ease), color .15s var(--ease),
                 grid-template-columns .34s var(--ease),
-                padding .34s var(--ease), gap .34s var(--ease),
-                transform .2s var(--ease);
+                padding .34s var(--ease), gap .34s var(--ease);
   }
   .rail-btn.hint-open {
     grid-template-columns: auto 1fr;

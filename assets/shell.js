@@ -1,7 +1,7 @@
 /* Tallinn Tastebuds — the map is the shell, and every other page opens on it.
  *
- * A walk from the map to a list, the account, the blog, the flashcards, the
- * chess page or the feedback page used to be a navigation: the map's document
+ * A walk from the map to a list, the account, the blog, the flashcards or
+ * the feedback page used to be a navigation: the map's document
  * torn down, the next one built from nothing, and everything the first one
  * held gone with it — the radio's <audio> most audibly. assets/radio.js
  * carried the station and the switch across in sessionStorage so the next
@@ -17,12 +17,12 @@
  * map, and the map stays underneath it, playing. The frame is the browser's
  * own container for a whole page inside another: the page keeps its own
  * window, its own ids, its own stylesheets, listeners, timers and scroll,
- * and does not know it is anywhere but a tab. Six page scripts and twelve
+ * and does not know it is anywhere but a tab. Five page scripts and twelve
  * thousand lines of this one would have had to learn to mount and unmount
  * into each other to do it the other way, and every one of them would have
  * been a chance to break a page that was not the one being changed. Nothing
- * in assets/lists.js, account.js, blog.js, flashcard.js, chess.js or
- * feedback.js changes for this, and that is the argument for it.
+ * in assets/lists.js, account.js, blog.js, flashcard.js or feedback.js
+ * changes for this, and that is the argument for it.
  *
  * Two things a framed page cannot do for itself, so this does them for it:
  * the radio, because the map's is the one that is playing — assets/radio.js
@@ -102,8 +102,8 @@ window.TTBShell = (function () {
      a browser would show as a page but which are not one. The owner's pages
      under /admin are tools rather than a walk, and admin.html keeps a token
      in its own document; both stay whole-tab. Everything else — the lists,
-     a list, a profile, the account, the blog and a post, the flashcards, the
-     chess page, the feedback page, the pass pages, the privacy page — is a
+     a list, a profile, the account, the blog and a post, the flashcards,
+     the feedback page, the pass pages, the privacy page — is a
      page a visitor walks to, and comes back from. */
   function framed(url) {
     var a = document.createElement('a');

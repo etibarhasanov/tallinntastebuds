@@ -78,9 +78,8 @@ One line a route: what it writes, how it is cached, and the thing about it a
 change is likeliest to break. The rest is in the file's own header, written for
 whoever changes it, and in the README section the line names — read both
 before changing a route, and when a route changes, move its line and its
-header in the same commit. Two routes are documented whole elsewhere: the
-kinds `POST /api/stats` takes are the `/stats` skill's table, and the chess
-route's shape is the `/chess` skill's. A **Writes** cell that says
+header in the same commit. One route is documented whole elsewhere: the
+kinds `POST /api/stats` takes are the `/stats` skill's table. A **Writes** cell that says
 `countUse()` means `visitor_counts` and `usage_people`, every write that went
 through counted by `countUse()` in `_visitors.js` — **Usage, week by week** in
 `docs/handbook.md`.
@@ -133,7 +132,6 @@ through counted by `countUse()` in `_visitors.js` — **Usage, week by week** in
 | `/blog/sitemap` | `blog/sitemap.js` | none | `public, max-age=3600` | every published member's post, `<lastmod>` its last save; empty where the database cannot be read |
 | `/blog` | `blog.js` | none | `private, max-age=0, must-revalidate` with a weak ETag; the colo copy under `blogKey()` for `PAGE_TTL`, for everybody, since it reads no session | `blog.html` with the post's head, JSON-LD and text, in English whatever `?lang=` says — **Found as text** |
 | `GET/POST /api/v1/flashcard` | `api/flashcard.js` | `flashcard_decks`, `flashcard_cards`, `flashcard_known`, `flashcard_progress`, `flashcard_reports`; `countUse()` | `no-store` | **flashcards** — the decks are what `tools/decks.mjs` writes into `data/decks/`, read through `_decks.js`, and the source only for a gathered deck past `FEW_DECKS`; the page's words ride in every GET, in `DECK_LANGS`' three languages, all of them unless `?ui=` names the key prefixes wanted (empty for none), which is how Kohuke asks; a stage that has not opened sends no decks — the `/flashcards` skill |
-| `GET/POST /api/chess` | `api/chess.js` | `chess_games`, `chess_moves`, `chess_notes`, `chess_asks`; `countUse()` | `no-store`: `you` and `legal` are per person | **chess** — the whole page in one GET, and `(game, ply)` the move's lock — the `/chess` skill |
 | `GET /api/v1/say` | `api/say.js` | none | `public, max-age=2592000`; the edge copy keyed on the voice, the pace and the words | **flashcards** — Tartu's Estonian voice for a text `data/decks/spoken.json` lists, which `tools/decks.mjs` writes, and `404 not-a-card` for any other; honours `Range` — **Hearing it** |
 | `POST /api/v1/ask` | `ask.js` | `visitor_counts` (`ask`) through `countAsk()`, after the answer and never for the owner | `no-store` | the one route that asks Workers AI, out of the allowance the live site shares; the model picks ids out of the slice it is given, and an id it invents is dropped — **Ask for somewhere** |
 | `/list/<id>` | `list/[id].js` | none | `no-store` signed in; to anybody else `private, max-age=0, must-revalidate` with a weak ETag and the colo copy under the deployment, the lists mark and Google's two marks — `listsMark(env, true)` — for up to `MARKED_TTL` — KEPT IN THE COLO in `_shell.js` | `lists.html` with the list in its head, its seed and its `<main>`; a rename is a stranger's at the next visit, in every colo |
@@ -275,8 +273,6 @@ same table in `assets/links.js` and `node tools/validate.mjs` holds the two to
 each other — those three fields are the one place here where the cap is *not*
 also a `maxlength`, because they take a pasted profile address as well as a
 handle and a `maxlength` truncates it into a different account's;
-`MAX_NOTE 280` in `chess.js` is restated in `assets/chess.js`, whose
-note field is the only one that writes it;
 `MAX_NOTE 280` in `walk.js` is restated in `assets/walk.js`, whose comment
 field is the only one that writes it;
 `MAX_NAME 60` and `MAX_SIDE 60` in `flashcard.js` are restated in
@@ -515,8 +511,8 @@ no step 1 until the owner has answered it.
    scratch and is ignored. The `AI` binding is the exception and runs
    remotely even there, spending from the shared daily allowance, so drive
    the chat a few questions at a time — and in a cloud session with no
-   Cloudflare token it stops the server starting at all; **The house, and
-   driving without a token** in the `/chess` skill is the way round it. To
+   Cloudflare token it stops the server starting at all; **Driving without
+   a token** below is the way round it. To
    look at rows in a real database without a dev server, the Cloudflare MCP
    tool `d1_database_query` reads either without a prompt, 2,000 rows a
    read at the most — **A read run by hand** under **The rules of a read**
@@ -530,6 +526,21 @@ no step 1 until the owner has answered it.
    the README's **Analytics** table lists — or it draws with no number on
    `/admin/flows`. **Who uses the site, drawn** in `docs/handbook.md`.
 5. The pass in `leave-it-better.md`.
+
+**Driving without a token.** In a cloud session with no
+`CLOUDFLARE_API_TOKEN`, `pages dev` will not start at all, because the `[ai]`
+binding always runs remotely. Copy the tree into the scratchpad, delete the
+two `[ai]` blocks from the copy's `wrangler.toml`, and run it there with
+`--persist-to` pointing at a scratch directory and the schema applied with
+`--local`. The copy is only a way past the one binding, so the chat is the
+one thing it cannot drive: `/api/v1/ask` has no model there. Add `--binding
+SAVE_SALT=dev` for anything that writes to an account, since account writes
+fail closed without a salt, and `--binding ADMINS=<id>` to be the owner —
+`ADMINS` is empty at the top of `wrangler.toml` and stays so, since an
+account made under `pages dev` has an id that exists on one machine and
+nowhere else; **Driving it** in the `/stats` skill is that half. And stop
+the server by its pid, never `pkill -f wrangler`, which matches the shell
+running it.
 
 ## The commit
 

@@ -3,15 +3,15 @@
  * window.TTBDevice.id() answers a v4 UUID kept under ttb.cid, made the first
  * time it is asked and never before: a browser that only ever reads a page is
  * not given an id for something it has not done. It is what the server files a
- * save, a heart or a chess move under when there is no account, and what lets
- * that same device take it back. It is not an account and identifies nobody: it
+ * save or a heart under when there is no account, and what lets that same
+ * device take it back. It is not an account and identifies nobody: it
  * leaves this browser only as one opaque string on the thing it did.
  *
  * WHY A FILE OF ITS OWN. assets/app.js and assets/feedback.js each carried
  * these eleven lines, feedback.js's comment apologising for being the second
  * copy and promising there would be no third — two ES5 files served raw cannot
- * import from each other. The chess page would have been the third, so the
- * lines became a global instead, loaded after track.js on every page that
+ * import from each other. The chess page, there until 2026-11-26, would have
+ * been the third, so the lines became a global instead, loaded after track.js on every page that
  * files something under a device. The key is the same one, so a save pressed
  * on the map and a heart pressed on the feedback page still belong to one
  * device.

@@ -2373,11 +2373,10 @@ body.has-scrim { overflow: hidden; }
    jump, and the radio button — the one thing that is meant to look untouched
    across that walk — jumped furthest.
 
-   The column below keeps its 640, and the chess page's 960 and the editor's
-   1180 keep theirs: the column is the page's and the header is the window's,
-   which is how the map is drawn too. The three wider selectors are named
-   here so that this wins the width over theirs, which stand later in this
-   file and in assets/chess.css.
+   The column below keeps its 640, and the editor's 1180 keeps its own: the
+   column is the page's and the header is the window's, which is how the map
+   is drawn too. The two wider selectors are named here so that this wins
+   the width over theirs, which stand later in this file.
 
    No padding of its own at the sides: .lists-body already keeps every page
    a --gap in from the edge, or the safe area where that is wider, which is
@@ -2392,7 +2391,6 @@ body.has-scrim { overflow: hidden; }
    which is what this row already is, so the phone keeps it. */
 @media (min-width: 861px) {
   .lists-brand,
-  .chess-body .lists-brand,
   .lists-body.is-editor .lists-brand,
   [data-look="b"] .lists-body.is-all .lists-brand {
     max-width: none;
@@ -2418,7 +2416,7 @@ body.has-scrim { overflow: hidden; }
 /* ---------- the language switch, on a page that carries its own ---------- */
 
 /* The surface under the trigger drawn by assets/language.js, on a
-   .lists-brand header row: the flashcards', the chess page's and this
+   .lists-brand header row: the flashcards', the Azerbaijani corner's and this
    page's — every list and every profile. Everything
    the switch is drawn with is already in assets/styles.css — #lang-switch
    holds the menu, .btn-lang-now is the code and the chevron, .lang-list is the
@@ -2429,7 +2427,7 @@ body.has-scrim { overflow: hidden; }
    there is a city moving under it, and under this one there is a page. It is
    the same surface the map falls back to on a browser with no backdrop-filter,
    which is the argument already made in the stylesheet it comes from. It was
-   `.flash-lang` in assets/flashcard.css until the chess page needed it too. */
+   `.flash-lang` in assets/flashcard.css until a second page needed it too. */
 .lang-surface {
   flex: 0 0 auto;
   border-radius: var(--radius-soft);

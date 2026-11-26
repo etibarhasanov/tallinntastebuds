@@ -352,8 +352,8 @@ const SIZES = {
   list_items: 451, list_keeps: 8, added_places: 10, google_venues: 1177, google_calls: 55,
   google_refreshes: 717, google_reranks: 6, google_ranks: 6639, google_scores: 1209,
   feedback: 2, feedback_hearts: 2, meta: 1, flashcard_decks: 1, flashcard_cards: 170,
-  flashcard_known: 3956, flashcard_reports: 4, chess_games: 4, chess_moves: 42,
-  chess_notes: 6, chess_asks: 1, posts: 1, post_texts: 4, walks: 5, walk_checks: 9,
+  flashcard_known: 3956, flashcard_reports: 4, posts: 1, post_texts: 4, walks: 5,
+  walk_checks: 9,
   rides: 15, ride_sections: 1920, usage_people: 37, flashcard_days: 15,
   /* Its ceiling rather than a measure: twelve ordered pairs of the four
      CITIES, MIDDLES (three) each — LONG RIDES in functions/api/route.js. */

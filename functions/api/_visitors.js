@@ -311,11 +311,13 @@
  * twice is one row with the second date on it. So "how much were lists used
  * last week" had no answer, and "how many different people used the
  * flashcards" had none anywhere. countUse() answers both, from the write
- * routes of the four products those tables cannot speak for — saves,
- * lists, flashcards and chess — once a write has succeeded:
+ * routes of the three products those tables cannot speak for — saves,
+ * lists and flashcards — once a write has succeeded. Chess was the fourth
+ * until the owner took it out on 2026-11-26, and its `chess:` rows of the
+ * days before are still in the table:
  *
  *   `use`         `<product>:<action>`, a day's count of each thing done —
- *                 `lists:add`, `flashcards:knew`, `chess:move`, the
+ *                 `lists:add`, `flashcards:knew`, `map:save`, the
  *                 action named as the route names it
  *   usage_people  one row per person per product per week, so a week's
  *                 rows for a product are how many people used it. The row
@@ -510,7 +512,6 @@ export const PAGES = [
   { id: 'list', label: 'visitorsPageList', prefix: '/list/' },
   { id: 'profile', label: 'visitorsPageProfile', prefix: '/u/' },
   { id: 'blog', label: 'blogTitle', paths: ['/blog', '/blog.html'] },
-  { id: 'chess', label: 'chessEyebrow', paths: ['/chess', '/chess.html'] },
   { id: 'flashcard', label: 'flashDoor', paths: ['/flashcard', '/flashcard.html'], host: 'flashcard.' },
   { id: 'account', label: 'accountOpen', paths: ['/account', '/account.html'] },
   { id: 'edit', label: 'visitorsPageEdit', paths: ['/edit', '/edit.html'] },
@@ -648,7 +649,7 @@ const MAX_ABOUT = 20;
 
 /* The products countUse() is called for — WHAT THE PRODUCTS WERE USED FOR,
    AND BY HOW MANY. `map` is the saves, which are made on the map. */
-const PRODUCTS = ['map', 'lists', 'flashcards', 'chess'];
+const PRODUCTS = ['map', 'lists', 'flashcards'];
 
 /* The most one stretch on screen may add — see TIME IS TIME ON SCREEN — and
    the most presses one report may carry, by name and in all. Sixty names,
@@ -1654,8 +1655,8 @@ export async function readFound(env, span, device, origin) {
  * grepped for by its name in every file that reads the table, this one
  * first.
  *
- * It is a row a page in PAGES at the most, nineteen, read beside today's
- * `shown`: 288 runs a colo a day and 5,472 rows at the very worst, against
+ * It is a row a page in PAGES at the most, eighteen, read beside today's
+ * `shown`: 288 runs a colo a day and 5,184 rows at the very worst, against
  * the five million, and about six rows a run on the pages a day really has.
  *
  * Null where the table is not there. */

@@ -7449,98 +7449,6 @@
 
   var lastReelKey = null;
 
-  var CHESS_HOLD_MS = 5000;
-  var CHESS_HOLD_SLOP = 14;
-
-  function holdForChess(btn) {
-    var timer = null;
-    var fired = false;
-    var from = null;
-    var ring = null;
-    var ns = 'http://www.w3.org/2000/svg';
-    btn.style.setProperty('--hold-ms', CHESS_HOLD_MS + 'ms');
-
-    function showRing() {
-      var icon = btn.querySelector('svg');
-      if (!icon) return;
-      var box = btn.getBoundingClientRect();
-      var at = icon.getBoundingClientRect();
-      ring = document.createElementNS(ns, 'svg');
-      ring.setAttribute('class', 'hold-ring');
-      ring.setAttribute('viewBox', '0 0 32 32');
-      ring.setAttribute('aria-hidden', 'true');
-      ring.setAttribute('focusable', 'false');
-      ['hold-track', 'hold-fill'].forEach(function (cls) {
-        var c = document.createElementNS(ns, 'circle');
-        c.setAttribute('class', cls);
-        c.setAttribute('cx', '16');
-        c.setAttribute('cy', '16');
-        c.setAttribute('r', '14');
-        c.setAttribute('pathLength', '100');
-        ring.appendChild(c);
-      });
-      ring.style.left = (at.left - box.left + at.width / 2 - btn.clientLeft) + 'px';
-      ring.style.top = (at.top - box.top + at.height / 2 - btn.clientTop) + 'px';
-      btn.appendChild(ring);
-      void ring.getBoundingClientRect();
-      btn.classList.add('is-holding');
-    }
-
-    function stop() {
-      if (timer) clearTimeout(timer);
-      timer = null;
-      from = null;
-      btn.classList.remove('is-holding');
-      if (ring && ring.parentNode) ring.parentNode.removeChild(ring);
-      ring = null;
-    }
-
-    function start(x, y) {
-      if (timer) return;
-      fired = false;
-      from = { x: x, y: y };
-      showRing();
-      timer = setTimeout(function () {
-        timer = null;
-        fired = true;
-        TTBTrack.event('chess_open_hold');
-        window.location.href = '/chess';
-      }, CHESS_HOLD_MS);
-    }
-
-    btn.addEventListener('pointerdown', function (ev) {
-      if (ev.button) return;
-      start(ev.clientX, ev.clientY);
-    });
-    btn.addEventListener('touchstart', function (ev) {
-      var touch = ev.touches && ev.touches[0];
-      if (touch) start(touch.clientX, touch.clientY);
-    }, { passive: true });
-
-    function drift(x, y) {
-      if (!from) return;
-      if (Math.abs(x - from.x) > CHESS_HOLD_SLOP || Math.abs(y - from.y) > CHESS_HOLD_SLOP) stop();
-    }
-    document.addEventListener('pointermove', function (ev) { drift(ev.clientX, ev.clientY); }, { passive: true });
-    document.addEventListener('touchmove', function (ev) {
-      var touch = ev.touches && ev.touches[0];
-      if (touch) drift(touch.clientX, touch.clientY);
-    }, { passive: true });
-    ['pointerup', 'touchend', 'mouseup'].forEach(function (type) {
-      document.addEventListener(type, function () { if (!fired) stop(); }, true);
-    });
-    document.addEventListener('visibilitychange', stop);
-    window.addEventListener('pageshow', function () { fired = false; stop(); });
-
-    btn.addEventListener('contextmenu', function (ev) { ev.preventDefault(); });
-    document.addEventListener('click', function (ev) {
-      if (!fired || !btn.contains(ev.target)) return;
-      fired = false;
-      ev.preventDefault();
-      ev.stopPropagation();
-    }, true);
-  }
-
   function wireControls() {
     var skip = document.querySelector('.skip-link');
     if (skip) {
@@ -7568,7 +7476,6 @@
       closeHint('random');
       randomPick();
     });
-    holdForChess(dom.btnRandom);
 
     dom.askForm.addEventListener('submit', function (ev) {
       ev.preventDefault();

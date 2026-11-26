@@ -57,13 +57,6 @@ jobs:
       - name: Check the QR encoder
         run: node tools/qrperf.mjs --check
 
-      # The rules of chess the chess page plays by. --check holds the move
-      # generator to published perft counts and the rest of the rules to
-      # positions worked out by hand, and skips the timing for the same reason
-      # the QR check does.
-      - name: Check the rules of chess
-        run: node tools/chessperf.mjs --check
-
       # The door at /mcp, asked what an assistant would ask: the reel in
       # every row, the bakeries before a restaurant that bakes, an empty
       # search an empty list, a Google row at the wrong door not trusted.

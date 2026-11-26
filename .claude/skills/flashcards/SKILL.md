@@ -334,8 +334,8 @@ needs stamping for a content change.
   warnings on what you added. Then open what you added. The page asks its
   route for everything, so `python3 -m http.server` shows an empty page: use
   `npx wrangler pages dev .` and open `/flashcard?d=<id>` — in a cloud session
-  with no Cloudflare token, **The house, and driving without a token** in the
-  `/chess` skill is how it starts — or Playwright with `/api/v1/flashcard` stubbed
+  with no Cloudflare token, **Driving without a token** in the
+  `/api` skill is how it starts — or Playwright with `/api/v1/flashcard` stubbed
   from the file.
 - **Look at**: the deck's tile on the shelf under its heading, a card turned
   over with its forms and its sentence, a lesson's tables, a song's word

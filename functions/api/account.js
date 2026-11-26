@@ -929,10 +929,11 @@ export async function onRequestPost(context) {
    * under anybody, and a site that unwound its own history every time
    * somebody left would be counting nothing. profile_counts was in this list
    * until 2026-11-26 and did not belong in it: its rows are filed under the
-   * account's own id, so they go now. Feedback, hearts and
-   * the chess games stay too — they are things said and played in public, and
-   * every reader of them is a LEFT JOIN against users, so with the row gone
-   * they draw with no name on them, which is what a deleted account is.
+   * account's own id, so they go now. Feedback and hearts
+   * stay too — they are things said in public, and every reader of them is
+   * a LEFT JOIN against users, so with the row gone they draw with no name
+   * on them, which is what a deleted account is. The chess games stayed the
+   * same way until the owner took chess out altogether on 2026-11-26.
    *
    * The name is held for thirty days, exactly as a rename holds the old one:
    * /u/<name> answers nothing rather than a stranger who signed up a minute

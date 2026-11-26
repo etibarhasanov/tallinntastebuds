@@ -97,8 +97,8 @@
  * the browser's own languages), and wordsFor() in ./_lib.js takes the first
  * that list speaks. It is the same rule pickLanguage() applies on every other
  * page, moved to where the list is, and it lives in _lib.js rather than here
- * because /api/chess and the owner's routes under /api/admin/ answer the same
- * way for the same reason. The whole block
+ * because the owner's routes under /api/admin/ answer the same way for the
+ * same reason. The whole block
  * goes rather than the eighty keys, because a list of keys here would be a
  * second copy of what assets/flashcard.js asks for, and the validator could
  * not see them drift. A caller that wants fewer names them itself, with

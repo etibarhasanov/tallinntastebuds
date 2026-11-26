@@ -79,7 +79,7 @@ One write route, five read routes, five pages, nine tables.
 | The owner reads | at | from | written by | into |
 |---|---|---|---|---|
 | which places, chips, pills and lists get opened and which members' posts get read; what the site holds | `admin/stats.html` + `assets/stats.js` | `GET /api/admin/stats` (`functions/api/admin/stats.js`) | `POST /api/stats` (`functions/api/stats.js`), one upsert per press | `press_counts` (kind, id, n) — no day in it; `list_counts` by day and country through `countListOpen()` in `_visits.js`; `save_counts` for the saves column; nine `COUNT(*)`s in `HELD` |
-| who came and what they did | `admin/visitors.html` + `assets/visitors.js` | `GET /api/admin/visitors` (`readVisitors()` in `_visitors.js`) and `GET /api/admin/live` (`readLive()`) | `countArrive()` and `countLeave()` in `_visitors.js`, handed `arrive` and `leave` by `stats.js`; `countAsk()` from `ask.js`; `countSignup()` from `google.js`; `countUse()` from the write routes of saves, lists, flashcards and chess | `visitor_counts` (day, kind, id, n); `visitor_live` (a ring of sixty minutes); `usage_people` (week, product, key) |
+| who came and what they did | `admin/visitors.html` + `assets/visitors.js` | `GET /api/admin/visitors` (`readVisitors()` in `_visitors.js`) and `GET /api/admin/live` (`readLive()`) | `countArrive()` and `countLeave()` in `_visitors.js`, handed `arrive` and `leave` by `stats.js`; `countAsk()` from `ask.js`; `countSignup()` from `google.js`; `countUse()` from the write routes of saves, lists and flashcards | `visitor_counts` (day, kind, id, n); `visitor_live` (a ring of sixty minutes); `usage_people` (week, product, key) |
 | how they found it | `admin/found.html` + `assets/found.js` | `GET /api/admin/found` (`readFound()`) | the same `countArrive()` and `countLeave()`, the kinds `FOUND` lists | `visitor_counts`, the kinds `from`, `found`, `ref`, `tag`, `search`, `nothing` |
 | who uses the site, drawn | `admin/flows.html` + `assets/flows.js` | `GET /api/admin/flows` (`readFlows()` in `_flows.js`) | `countFlows()` in `_flows.js`, called beside `countLeave()` for every `leave` | `flow_counts` (flow, day, who, id, n) |
 | the flag counter on Discover — the one count a visitor sees | the card `drawCounter()` draws in `assets/app.js`, beside the map's card on a desktop | `GET /api/counter` (`functions/api/counter.js`, `readCounter()` in `_visitors.js`) | `countArrive()`, and `countLeave()` for a desktop in the United States | `visitor_counts`, the kind `shown` |
@@ -312,8 +312,8 @@ cost is the whole chain, and all of it lands in one PR:
 Two things are this area's own:
 
 - **To be the owner locally**, `ADMINS` must name an account in the local
-  database, and it is empty at the top of `wrangler.toml` on purpose —
-  **The house, and driving without a token** in the chess skill is the
+  database, and it is empty at the top of `wrangler.toml` on purpose, since
+  an id made under `pages dev` exists on one machine and nowhere else. The
   recipe: sign up an account under `pages dev`, read its id with `wrangler
   d1 execute tallinntastebuds-preview --local --command "SELECT id,
   username FROM users"`, and restart with `--binding ADMINS=<id> --binding
@@ -321,7 +321,8 @@ Two things are this area's own:
   nothing can be looked at. If it is still a 404, the empty `ADMINS = ""`
   at the top of `wrangler.toml` is winning over the flag — it did in
   November 2026, on wrangler 4.158 — so write the id into that line of the
-  scratch copy the `/chess` skill's recipe makes, never the repository's.
+  scratch copy **Driving without a token** in the `/api` skill makes, never
+  the repository's.
 - **To be a visitor**, be signed out, or signed in as anybody but that id,
   in another browser profile. Then open the map, press things, hide the tab
   — a `leave` is sent on `visibilitychange`, so switching tabs is enough —
