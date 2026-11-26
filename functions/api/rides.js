@@ -18,7 +18,8 @@
  *   The rides saved after a moment, oldest first, SINCE_PAGE at a time,
  *   `next` the { at, id } to ask the page after with, or null. The lines
  *   with no name on them, for tools/doors.mjs, which asks only for the rides
- *   it has not looked at — since() below.
+ *   it has not looked at — since() below. The owner's alone, 403 to anybody
+ *   else: it answered anybody until 2026-11-26.
  *
  * GET  /api/v1/rides?totals=1
  *
@@ -312,6 +313,7 @@
  */
 
 import { json, sessionUser, wrongDatabase, nearCity, km, randomHex } from './_lib.js';
+import { adminUser } from './_admin.js';
 import { countUse } from './_visitors.js';
 import { pieces, sectionsOf, tally } from './_sections.js';
 import { arrayOf } from './_rides.js';
@@ -368,7 +370,16 @@ const MAX_ALT = 1000;
 
 export async function onRequestGet(context) {
   const query = new URL(context.request.url).searchParams;
-  if (query.has('since')) return json(...await since(context.env, query.get('since'), query.get('after')));
+  if (query.has('since')) {
+    /* THE OWNER'S ALONE. It answered anybody until 2026-11-26: every kept
+       ride's line and the moment it was saved, with no name on them, to any
+       program that asked. The ends are 200 m short, but rides that start at
+       one door day after day bracket it, and nobody but the tool that looks
+       for doors had a use for the answer. Never kept in a cache, now that
+       it is one person's. */
+    if (!(await adminUser(context.request, context.env))) return json({ error: 'forbidden' }, 403);
+    return json(...await since(context.env, query.get('since'), query.get('after')));
+  }
   if (query.get('totals') === '1') return json(await totals(context), 200);
   /* NO LIST AND NO MAP OF RIDES: whatever else is asked. */
   return json({ ready: false, user: null, rides: [] }, 200);
@@ -410,7 +421,7 @@ async function since(env, rawSince, rawAfter) {
     }));
     const last = page[page.length - 1];
     const next = results.length > SINCE_PAGE ? { at: last.at, id: last.id } : null;
-    return [{ ready: true, rides, next }, 200, 60];
+    return [{ ready: true, rides, next }, 200];
   } catch (e) {
     return [{ ready: false, rides: [], next: null }, 200];
   }

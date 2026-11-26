@@ -156,8 +156,10 @@
  *
  * WHAT IT ASKS, AND HOW OFTEN
  *
- * The rides come from GET /api/v1/rides?since=, the lines as they are
- * kept: their first and last 200 m already off, and nobody's name. Until
+ * The rides come from GET /api/v1/rides?since=, which answers the owner
+ * alone — run it with TTB_SESSION set to the owner's ttb_s cookie — the
+ * lines as they are kept: their first and last 200 m already off, and
+ * nobody's name. Until
  * 2026-11-22 they came from ?bbox=, Tallinn in three by three boxes, and so
  * only the newest forty of a box and none of the other three cities a ride
  * can be saved in; asked by when, it is every ride saved since, wherever it
@@ -254,12 +256,19 @@ function onLines(line, others) {
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 
 /* The rides saved after `from` — { at, id } — oldest first, every page of
-   them. */
+   them. The route answers the owner alone since 2026-11-26, so the run
+   carries the owner's session: TTB_SESSION, the value of the ttb_s cookie
+   out of a browser signed in as the owner, in the environment and never in
+   a file. */
 async function rides(from) {
+  const session = process.env.TTB_SESSION;
+  if (!session) throw new Error('TTB_SESSION is not set: /api/v1/rides?since= answers the owner alone — the ttb_s cookie of a browser signed in as the owner');
   const found = [];
   let at = from;
   for (;;) {
-    const res = await fetch(SITE + '/api/v1/rides?since=' + at.at + (at.id ? '&after=' + at.id : ''));
+    const res = await fetch(SITE + '/api/v1/rides?since=' + at.at + (at.id ? '&after=' + at.id : ''), {
+      headers: { cookie: 'ttb_s=' + session }
+    });
     if (!res.ok) throw new Error('/api/v1/rides?since= answered ' + res.status);
     const body = await res.json();
     if (!body.ready) throw new Error('/api/v1/rides?since= is not ready');
