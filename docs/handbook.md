@@ -19,7 +19,7 @@ which is Google's directory of the city rather than mine, which nothing links
 to. See **On "no scores, stars or rankings"**, **Google, on a place of mine**
 and **The directory**.
 
-Static files, fifty-seven small Functions, no build step and no npm install. Adding a
+Static files, fifty-six small Functions, no build step and no npm install. Adding a
 place means editing one JSON file and pushing.
 
 Two things are not static. The save count — a bookmark keeps a place and says
@@ -6557,14 +6557,18 @@ either all gone or none of it: the account itself, its sessions and its Google
 identity; its saves, recounted so a place's number drops; every list it wrote
 with the places on them, and other people's keeps of those lists; the lists it
 kept; the page of links under its name; the places it added by hand, unless a
-list somebody else wrote still has one on it; its flashcard decks and what it
-knew.
+list somebody else wrote still has one on it; its flashcard decks, what it
+knew and the days it studied on; the lists it walked, its rides and their
+totals; and how often its profile was looked at, and from where.
 
 **What stays is the numbers**, and the things said and played in public.
-`press_counts`, `profile_counts`, `list_counts`, `visitor_counts`,
-`usage_people` and the rest are filed under a place, a list, a day or a hashed
-key rather than under anybody, and a site that unwound its history whenever
-somebody left would be counting nothing. Feedback, hearts and chess games stay
+`press_counts`, `list_counts`, `visitor_counts`, `usage_people` and the rest
+are filed under a place, a list, a day or a hashed key rather than under
+anybody, and a site that unwound its history whenever somebody left would be
+counting nothing. `profile_counts` was in that list until 2026-11-26 and did
+not belong in it — its rows are filed under the account's own id — so it
+goes with the account now, and so does `flashcard_days`, which the delete had
+missed. Feedback, hearts and chess games stay
 too; every reader of them is a `LEFT JOIN` against `users`, so with the row
 gone they draw with no name.
 
@@ -17930,17 +17934,17 @@ the table.
 `/azeri` — *Estoniyada Azərbaycan guşəsi*, an Azerbaijani corner in
 Estonia: a corner of the site for Azerbaijanis living here, open to anybody
 with an account or without one, read in Azerbaijani, English, Russian or
-Estonian. It has seven tabs, straight under the corner's name. **Home**
-says who the corner is for, what is in each of the other six, and answers
+Estonian. It has six tabs, straight under the corner's name. **Home**
+says who the corner is for, what is in each of the other five, and answers
 the questions people ask. **Azerbaijani films** is the country's cinema.
-**Posts**, *Paylaşımlar*, is the corner's people writing to each other: posts, comments
-and upvotes, read by anybody and written by an account. **Estonia**,
-**Studying** and **Estonian** are a guide for somebody arriving in Estonia
-from there, which is who the corner is for: what to sort out and in what
-order, how to get into a university, and where to learn the language.
-**Azerbaijani places** is where to eat it here, on a map. Nothing in the apps
-reads any of it, and nothing on the map, the rail or Discover points at it:
-the address is given to somebody, or found by a search — the home is
+**Estonia**, **Studying** and **Estonian** are a guide for somebody arriving
+in Estonia from there, which is who the corner is for: what to sort out and
+in what order, how to get into a university, and where to learn the
+language. **Azerbaijani places** is where to eat it here, on a map. Nothing
+in it is written by a visitor — it had a seventh tab for five days, **Posts**,
+and **Community, taken out** below says what became of it. Nothing in the
+apps reads any of it, and nothing on the map, the rail or Discover points at
+it: the address is given to somebody, or found by a search — the home is
 written into the page as text and named in `sitemap.xml`.
 
 The heading said *Azərbaycan* until 2026-11-21, a country's name over a page
@@ -17960,11 +17964,11 @@ The tab the bare `/azeri` opens on, first of the six, since 2026-11-21: the
 owner asked for a home page that says what the corner is and what its
 sections are, and answers some questions with links, in no more than fifty
 sentences, to help the corner be found and to serve the community. It has
-thirty-eight — Where to start gained a line for Posts with the tab, and the
-sentence that opened the page went — and the line under it two more. From
-the top:
+thirty-seven — Where to start gained a line for Posts with that tab and lost
+it with it, and the sentence that opened the page went — and the line under
+it two more. From the top:
 
-- **Where to start**, a sentence for each of the other six tabs saying who
+- **Where to start**, a sentence for each of the other five tabs saying who
   it is for — *Just arrived — **Estonia**: what to sort out, in the order it
   comes up* — with the tab's own name in it as the link, pressed as the tab
   is and counted under the tab's own name. It was **In this corner**, the
@@ -18288,127 +18292,42 @@ uses for it.
 
 What the guide deliberately does not do: search, questions and answers,
 events, mentors, or editing from the admin page. The questions and answers
-went to a tab of their own, **Posts** — **Community** below — where the corner's people
-answer each other; the guide stays the part that is only words.
+had a tab of their own for five days, **Posts** — **Community, taken out**
+below — and the guide is the part that is only words.
 
-### Community
+### Community, taken out
 
-The owner asked on 2026-11-21 for Reddit for Azerbaijanis in Estonia: people
-post and comment, it is paged, and when there is something new the tab says
-so. It was drawn as a mockup first — the tab with its dot, the posts, a post
-with its comments, the form and every empty and failed state — with sections
-a post was filed under, and the answer was *no sections, the rest as drawn*.
-So it is one stream, newest first, and nothing is filed anywhere.
+For five days the corner had a seventh tab, **Posts**, at `?tab=community`:
+members writing to each other, posts, comments and upvotes in one stream,
+newest first. The owner asked for it on 2026-11-21 as Reddit for Azerbaijanis
+in Estonia, and took it out altogether on 2026-11-26. It came up while going
+through what a deleted account left behind — its upvotes stayed, as numbers
+with nobody behind them — and the answer was to take the votes out and the
+tab with them.
 
-**The tab says Posts.** It said **Community**, *İcma*, for its first day,
-and the owner renamed it **Posts**, *Paylaşımlar*, on 2026-11-21 — what a
-reader finds under it rather than a word for who writes there. Community is
-still its name everywhere a reader does not look: the tab's id and its
-address, `?tab=community`, the route `/api/azeri/community`, the `azeri_*`
-tables, the `azeriCom*` strings and the presses it reports, so nothing that
-links to it moved. The three sentences that named it say *the posts* now:
-the error, the line over Sign in, and the form's title, *Share something*.
+**What went.** The tab and its line under **Where to start**; the route,
+`functions/api/azeri/community.js`, and `_community.js` beside it; the third
+of `assets/azeri.js` that drew it and the `.azeri-cm-*` rules; fifty-eight
+strings in all eleven languages — the `azeriCom*` ones, `azeriCommunity` and
+`azeriSkipPosts`; the presses it reported; its steps in the visitor's and
+the member's diagrams; and its four tables in `db/schema.sql`. An address
+that still says `?tab=community` opens the home, since `pickTab()` and
+`functions/azeri.js` both take a tab they do not know for it. The corner is
+files again and nothing in it reads the database.
 
-**Read by anybody, written by an account.** The corner opened to anybody the
-same day, with the owner's rule beside it — reading and watching are
-anybody's, and an account is for writing something — so Community follows
-it: signed out, every post and every comment is there to read, and where a
-member would post, comment, reply or upvote there is the way to sign in
-instead — **Sign in to write** over the posts, and under a post a card
-saying who may write, with **Sign in**. Both are the map's own sheet,
-`/?account=in&then=` and the address that was being read, so somebody comes
-back to the very post they meant to answer. The upvote is the number alone
-to somebody signed out, the way one's own is.
+**The four tables are dropped by hand.** `azeri_posts`, `azeri_comments`,
+`azeri_votes` and `azeri_seen` had been applied to production, and nothing a
+session holds drops a table — the gate refuses `DROP` outright. So the rows
+stay, read by nothing, until the owner runs this from a terminal:
 
 ```
-/azeri?tab=community                        the posts, newest first
-/azeri?tab=community&sort=top               this week's, most upvoted first
-/azeri?tab=community&after=<cursor>&page=2  the next page; &before= the one before
-/azeri?tab=community&post=<id>              one post, its comments under it
-/azeri?tab=community&write=1                a new post
-/azeri?tab=community&post=<id>&edit=1       one's own post, changed
+wrangler d1 execute tallinntastebuds --remote --command "DROP TABLE IF EXISTS azeri_votes; DROP TABLE IF EXISTS azeri_comments; DROP TABLE IF EXISTS azeri_posts; DROP TABLE IF EXISTS azeri_seen;"
 ```
 
-**A post** is a title of at most 120 characters and a text of at most five
-thousand, in any language; **a comment** is at most two thousand. Both are
-plain text, and the page draws them as text — a paragraph to each run between
-empty lines, the line breaks kept, and an address made a link that is
-`nofollow ugc`, because the writer chose it and the site did not. No markup is
-stored, so none can reach the page. No pictures, for the reason a member's
-blog post has none. Five posts and fifty comments a day an account,
-`POSTS_A_DAY` and `COMMENTS_A_DAY` in `functions/api/_community.js`; past
-them the form says to try tomorrow.
-
-**The posts** are twenty a page with **Previous** and **Next**, each page read
-on its key after the last one's — the cursor is in the address, so Back from
-a post lands on the page it was opened from, and `&before=` reads the page
-before off the same index the other way. A row is who, how long ago, the
-title, two lines of the text, how many comments and the upvote; the whole row
-opens the post. **New** is newest first. **Top this week** is the week's posts
-— Monday to Sunday in Tallinn — most upvoted first, which on a Monday
-morning is short and is meant to be. A post its author deleted stays among
-the newest for its comments and is left out of Top.
-
-**A post opened** is its text, its author's **Edit** and **Delete**, the
-upvote, and the comments under it oldest first, fifty at a time with **Show
-more** under them, and the box to add one at the foot. **Reply** under a
-comment puts *replying to aysel* over the box, and the comment then carries
-that line with the name a press that brings the answered one into view.
-Comments are flat, one after another: nested threads get narrow on a phone,
-and *replying to* says the same thing at full width.
-
-**Deleting** keeps the conversation readable. A post nobody has answered goes;
-a post with comments under it is emptied — *Deleted by its author* — and stays
-for them. A comment is emptied and kept, so the replies to it still say what
-they answered. The site's owner, a `users.id` in `ADMINS`, sees **Take down**
-on everybody else's: a post goes with its comments and its upvotes, a comment
-is emptied as *taken down*. There is no report button; the owner reads it.
-
-**The upvote** is the feedback page's heart with an arrow in its place — a
-disc while it is a mark, a pill with the number once it has one, filled when
-pressed. Nobody upvotes their own: theirs is the number alone, and the route
-refuses the press as well. There is no downvote, and no number at nought.
-
-**Something new.** What came since the visit before is marked: a dot before a
-post's title, *3 new* beside a post's comments, and a wash on each new
-comment. A visit is a look that comes more than half an hour after the last
-one, `VISIT_MS`, so opening a post and coming back to the list does not take
-the marks away. While another tab of the corner is read, a dot on
-**Posts** and a number before the browser's title — *(3) An Azerbaijani
-corner in Estonia* — say how many posts by others have come since the tab
-was last opened, up to ten, and how many comments on one's own posts. They
-are asked once each time a tab is shown, `GET /api/azeri/community?news=1`
-beside that tab's own ask, and never again while the page sits open: a dot
-is not worth reads all day. Opening the tab puts both out. They are a
-member's: somebody signed out gets no dot, and the ask reads nothing for
-them. Nothing outside the corner says it — not the map, the rail, an email
-or the phone — since the corner is linked from nowhere.
-
-**On the database.** Four tables in `db/schema.sql`: `azeri_posts`,
-`azeri_comments`, `azeri_votes`, and `azeri_seen`, one row a member saying
-when they last looked. The schema comment lists every question asked of them
-and the key that answers it; none walks. A page of posts reads about 65 rows
-— the posts and their authors, the member's upvotes among them, and for each
-post with comments since the last visit its last ten — and 260 at the very
-worst; a post with a full page of comments about 150; the dot about a dozen
-once a tab is shown. A thousand members each reading five pages and opening
-ten posts a day is about two million of the five, and a hundred is two
-hundred thousand. Signed out the answer is the same for anybody, so it is
-kept a minute in each colo, `ANON_TTL`, and handed to the browser `private,
-no-store` — or the browser would hand the signed-out page back to somebody a
-minute after they signed in. However many people read it signed out, an
-address costs a colo at most one read a minute: a page of posts is then
-about 45 rows, the posts and their authors and nothing of anybody's own. A score is counted again from the upvotes by the write that
-changes one, and a post's comment count is its last comment's number, read
-off the key by the write that adds one. Every reader survives the tables'
-absence — `communityReady()` asks once per isolate — so until they are
-applied by hand the tab says it could not load and the others carry no dot.
-Deleting an account empties its posts and comments where others answered
-them and deletes the rest, `forgetMember()`.
-
-**What it does not do yet.** No search, no pictures, no report button, no
-notifications outside the corner, no private messages, no sections, and
-nothing in the apps.
+On the day the tab went they held one post, no comment, no upvote and one
+row of `azeri_seen`. Until they are dropped, an account that is deleted
+leaves whatever it wrote there: `forgetMember()`, which emptied a deleted
+account's posts and comments, went with the route.
 
 ### Azerbaijani places, on a map
 
@@ -18495,10 +18414,6 @@ The places tab asks the route nothing: the frame's `/embed` reads
 asks, and the public API keeps that answer five minutes in each colo. So a
 colo reads the list at most 288 times a day, however many people open the
 tab.
-
-Community is the one tab that reads the database, and it has a route of its
-own, `/api/azeri/community`: **Community** above says what it reads and
-what keeps that bounded.
 
 The shelf is never sent whole. It opens on the feature films that can be
 watched, the most watched first, twenty to a page, with **Previous** and
@@ -22745,28 +22660,17 @@ Azerbaijan, `assets/azeri.js` and the tabs in `azeri.html`:
 | `azeri_shelf` | `shelf` — the chip pressed: `feature`, `animation`, `documentary`, `series` or `all` |
 | `azeri_watchable` | `on` (`1`/`0`) — the Only ones I can watch switch |
 | `azeri_russian` | `on` (`1`/`0`) — the In Russian switch |
-| `azeri_page` | `page` — Previous or Next, the page turned to, of the films or of Community's posts |
+| `azeri_page` | `page` — Previous or Next, the page of the films turned to |
 | `azeri_film` | `film` — a film opened |
 | `azeri_watch` | `film`, `lead` (`1` where it is a link the article only mentions, the Maybe button) — a film played in the page, or a link out where it is not YouTube's |
 | `azeri_youtube` | `film` — Open on YouTube, under the player |
-| `azeri_home`, `azeri_films`, `azeri_community`, `azeri_estonia`, `azeri_study`, `azeri_estonian`, `azeri_food` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters — and a line of the home, under the name of the tab it opens |
-| `azeri_sort` | `sort` — New or Top this week, over Community's posts |
-| `azeri_write` | New post, over Community's posts |
-| `azeri_posted` | `what` — a post sent from the form |
-| `azeri_post` | `post` — a post opened from the list |
-| `azeri_upvote` | `on` (`1`/`0`) — an upvote pressed on a post or a comment, or taken back |
-| `azeri_reply` | Reply, under a comment |
-| `azeri_comment` | `reply` (`1`/`0`) — a comment sent, and whether it answers another |
-| `azeri_edit` | `what` (`post`/`comment`) — one's own changed |
-| `azeri_delete` | `what` (`post`/`comment`) — one's own deleted |
-| `azeri_take_down` | `what` (`post`/`comment`) — the site's owner taking down somebody else's |
-| `azeri_more` | Show more comments, under a post's |
+| `azeri_home`, `azeri_films`, `azeri_estonia`, `azeri_study`, `azeri_estonian`, `azeri_food` | a tab pressed, each under its own name, since the site's count keeps a press's name and never its parameters — and a line of the home, under the name of the tab it opens |
 | `azeri_topic` | `tab`, `topic` — a topic of the guide opened, or a question of the home, `tab` being `home` |
 | `azeri_source` | `topic` — a link out of an opened topic: an office, a university, a site in the list of them, or a row into one of the flashcards' lessons; or the link an answer of the home ends in, into a tab of the corner or the feedback page |
 | `azeri_way` | `way` — **Go to** a place to learn Estonian, the button at the foot of its topic on the Estonian tab |
 | `azeri_flashcards` | Open the flashcards, on the Estonian tab |
 | `azeri_list` | Open the whole list, under the map on the Azerbaijani places tab |
-| `language_select`, `language_open`, `home`, `account_open` | as on the map |
+| `language_select`, `language_open`, `home` | as on the map |
 
 The privacy policy is read rather than pressed, so what is reported is the way
 in: `privacy_open`, from the row on the map's **More** sheet and the word

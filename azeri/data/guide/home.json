@@ -22,10 +22,6 @@
     {
       "tab": "food",
       "line": {"az": "Ev yeməyi üçün — {tab}, xəritədə.", "en": "For a taste of home — {tab}, on a map.", "ru": "Для домашней еды — {tab}, на карте.", "et": "Kodumaise toidu jaoks — {tab}, kaardil."}
-    },
-    {
-      "tab": "community",
-      "line": {"az": "Başqa sualınız varsa — {tab}: bunu sizdən əvvəl keçənlər cavab verir.", "en": "Anything else — ask in {tab}, where the people who did it before you answer.", "ru": "Остались вопросы — {tab}: отвечают те, кто прошёл это до вас.", "et": "Muu küsimus — {tab}: vastavad need, kes on selle enne teid läbi teinud."}
     }
   ],
   "topics": [

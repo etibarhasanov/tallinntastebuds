@@ -377,11 +377,6 @@ const SIZES = {
   /* Not in production: nothing loads db/city-venues.sql there yet. Priced as
      the three cities' export would be when it is, rather than left unpriced. */
   city_venues: 5000,
-  /* Not in production until db/schema.sql is run again: the Azerbaijani
-     Corner's Community, which starts empty. Priced as a year of a busy one
-     would be — a few thousand posts, ten times the comments and upvotes, a
-     row a member — rather than left unpriced, so a walk of one still asks. */
-  azeri_posts: 5000, azeri_comments: 50000, azeri_votes: 50000, azeri_seen: 1000,
   /* The schema's own list of tables and indexes. */
   sqlite_master: 200, sqlite_schema: 200
 };
