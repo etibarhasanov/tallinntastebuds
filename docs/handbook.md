@@ -3994,10 +3994,10 @@ blocks and nothing else — and add about a fifth to what a save reads and
 writes: a ride of two and a half kilometres from Herne up Kentmanni to
 Balti jaam was 14 blocks and ways against 64 squares, under `pages dev` on
 2026-11-27. The rides from before the table were filled in from the
-squares already counted: by hand on the day it was made, for the blocks two
-rides or more had crossed, and by `db/ride-blocks.sql` for the rest, which
-can run at any time and again, and says where a block made of squares
-differs from one made of rides. `tools/ridesections.mjs` counts them again
+squares already counted: by hand on the day it was made, all 1,390 blocks,
+a hundred rows a write, worked out as `db/ride-blocks.sql` works them out —
+the file that would make them again, which can run at any time and says
+where a block made of squares differs from one made of rides. `tools/ridesections.mjs` counts them again
 from the kept rides with the squares. **BLOCKS** in `functions/api/_sections.js`.
 
 **One thing reads it, and nothing answers it.** A bike route weighs its
