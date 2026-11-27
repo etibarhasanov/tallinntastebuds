@@ -15528,6 +15528,14 @@ change to what the app sends changes that file and this section together.
 Microsoft Clarity had a section of its own until it came off the site the
 same day.
 
+**It opens on a list of its sections.** Under the title, **On this page**
+links every section by the id it is written under — `#about`, `#app`,
+`#howlong` — so a reader after one thing goes to it rather than scrolling ten
+cards on a phone, and a link from elsewhere can name one. The list is drawn
+by `words()` in `functions/privacy.js` from the sections themselves, so a
+section added is listed with nothing more; only its heading, `contents`, is
+words of its own. The owner asked for it on 2026-11-27.
+
 **The words are in `data/privacy.json`, not `data/ui.json`.** It is prose,
 like a post, and `ui.json` is fetched by the map one language at a time on
 every visit; three thousand words of policy in it would ride along on every

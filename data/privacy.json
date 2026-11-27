@@ -52,6 +52,19 @@
     "fr": "Ceci est une traduction. C’est la version anglaise qui fait foi.",
     "de": "Dies ist eine Übersetzung. Maßgeblich ist die englische Fassung."
   },
+  "contents": {
+    "en": "On this page",
+    "et": "Sellel lehel",
+    "ru": "На этой странице",
+    "uk": "На цій сторінці",
+    "fi": "Tällä sivulla",
+    "pt": "Nesta página",
+    "es": "En esta página",
+    "tr": "Bu sayfada",
+    "az": "Bu səhifədə",
+    "fr": "Sur cette page",
+    "de": "Auf dieser Seite"
+  },
   "sections": [
     {
       "id": "about",

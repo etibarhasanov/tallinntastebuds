@@ -2011,6 +2011,7 @@ if (existsSync(CLIPS_DIR)) {
     whole(policy.lead, 'lead');
     whole(policy.updatedLabel, 'updatedLabel');
     whole(policy.translated, 'translated', true);
+    whole(policy.contents, 'contents');
     for (const lang of languages) {
       if (typeof (policy.updatedLabel || {})[lang] === 'string' && !policy.updatedLabel[lang].includes('{date}')) {
         fail(where, `updatedLabel in ${lang} has no {date}`);
@@ -2019,7 +2020,7 @@ if (existsSync(CLIPS_DIR)) {
     const ids = new Set();
     for (const section of Array.isArray(policy.sections) ? policy.sections : []) {
       const at = 'section "' + (section && section.id) + '"';
-      if (!section || !/^[a-z][a-z0-9-]*$/.test(section.id || '') || ids.has(section.id)) fail(where, `${at} has a missing, malformed or repeated id`);
+      if (!section || !/^[a-z][a-z0-9-]*$/.test(section.id || '') || section.id === 'contents' || ids.has(section.id)) fail(where, `${at} has a missing, malformed or repeated id`);
       ids.add(section && section.id);
       whole(section && section.title, at + ' title');
       const english = section && section.body && section.body.en;
