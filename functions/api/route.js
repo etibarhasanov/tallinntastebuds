@@ -2269,6 +2269,9 @@ async function transit(from, to) {
  * train and when. It says nothing about which way to turn, so the two rides
  * either side are asked of the same bike router every way here comes from,
  * kept off the same streets, and they are what the turns are spoken from.
+ * Its one point for a station is not always where the train is boarded:
+ * where the platform is written down, the rides go to and from it and the
+ * rail runs along it — PLATFORMS below.
  * One train and no change: two trains with a bike is not a way anybody
  * takes across a city.
  *
@@ -2301,6 +2304,157 @@ const TRAIN_BOARD = 120;
    is a plan for later, and the planner's next departures are not asked
    that far anyway. */
 const TRAIN_WAIT = 3600;
+
+/* -------------------------------------------------------------- platforms
+ * The planner says where a station is with one point, and the rides either
+ * side of a train were asked to and from that point. It is not always
+ * where the train is boarded. On 2026-11-26 the owner rode to the train at
+ * Ülemiste with a way from here on Rattatee's screen, and was told "You're
+ * off the way" again and again on it. The station is being rebuilt, and
+ * the planner's points for it, one each way, are a hundred to a hundred
+ * and fifty metres down the track west of the platform the trains stop at
+ * now; and BRouter, asked to ride to one, went down through the passage
+ * under the tracks and ended on their far side, by Suur-Sõjamäe, where
+ * there is no platform at all. What people do is go east: along Ülemiste
+ * tee to the gate by the bike stands, down the footpath beside the railway
+ * and up, by a lift or by the stairs at the footpath's end. An installed
+ * app measures its rider against the line it was given, and that line was
+ * nowhere they went.
+ *
+ * So a station whose platform is not at the planner's point is written
+ * down here, as a wall is and for a wall's reason: it is something the
+ * owner says, having stood there, and neither router's map has it — asked
+ * to ride to the lift, both end at the gate. `ends` are the two ends of
+ * the platform, and `ups` its ways up, each the way on foot from where a
+ * bike can be ridden to, its first point, to the platform, its last.
+ *
+ * From the gate on, riders find their own way, the owner's words of
+ * 2026-11-27: the lift or the stairs, whichever, and along the platform to
+ * wherever the bikes go on, and nothing said about any of it. So a way up
+ * carries no turn — the ride's turns end at the gate, and the next word is
+ * `arrive` on the platform — and the whole platform is the train's: the
+ * rail begins at the top of a way up, runs to the end of the platform
+ * behind the train and back along all of it, past every way up, and on.
+ * Every build of Rattatee carries a point near the rail as the train's
+ * and judges nothing of it, so wherever on the platform a rider walks,
+ * and up whichever way, nothing is said. The way up the ride goes by is
+ * the one whose top is nearest the end behind, so that run back is short
+ * — stationRide(), behind() and upTo() — and the ride on from a station is
+ * the same backwards. The ends of a train's line are where Rattatee names
+ * its two stations, and the first is where its next build waits for the
+ * train.
+ *
+ * A way up is counted at WHEELED, a bike pushed and a lift waited for, and
+ * is in the leg's metres and seconds, so `leave` allows for it. It costs no
+ * request and no row: the same two rides are asked, to the gate.
+ *
+ * The next one is an entry here and a sentence under Platforms in
+ * docs/handbook.md. This one comes out when the station is finished and
+ * the planner's point is on its platform.
+ */
+const PLATFORMS = [
+  {
+    /* Read off the owner's ride of 2026-11-26, the map's drawing of the
+       platform and the owner's word for where the stairs are. Both ways up
+       begin at the gate by the bike stands on Ülemiste tee, where both
+       routers end, and go down the footpath south-east and then east along
+       the north side of the tracks. The platform is 230 m, the lift 71 m
+       from its west end and the stairs 54 m past the lift. */
+    station: 'Ülemiste',
+    ends: [[59.42355, 24.79639], [59.42355, 24.80045]],
+    ups: [
+      /* The lift, up from the footpath. */
+      [[59.42394, 24.79686], [59.42386, 24.79691], [59.4238, 24.79699], [59.42373, 24.79713],
+        [59.4237, 24.79732], [59.42369, 24.79765], [59.42356, 24.79765]],
+      /* The stairs, at the footpath's east end. */
+      [[59.42394, 24.79686], [59.42386, 24.79691], [59.4238, 24.79699], [59.42373, 24.79713],
+        [59.4237, 24.79732], [59.42369, 24.79765], [59.42369, 24.79861], [59.42356, 24.79861]]
+    ]
+  }
+];
+
+/* How near the planner's point for a station of that name the platform has
+   to be for the station to be this one: a name is not a place. */
+const PLATFORM_NEAR = 1000;
+
+/* A bike wheeled along a way up, in metres a second, the lift's wait or
+   the stairs in it. */
+const WHEELED = 1;
+
+/* How far down the line the way a train leaves a station is read from. */
+const LEAVING = 100;
+
+const top = (up) => up[up.length - 1];
+
+/* The platform written down for one of the planner's stations, or none. */
+function platform(station) {
+  return PLATFORMS.find((p) => p.station === station.name &&
+    metres([station.lat, station.lng], top(p.ups[0])) < PLATFORM_NEAR);
+}
+
+/* The end of `at`'s platform behind a train on `line`, which leaves the
+   station at its first point. Asked of the line backwards, the end it
+   arrives at. */
+function behind(line, at) {
+  const [sx, sy] = flat(line[0]);
+  const [ax, ay] = flat(line.find((p) => metres(line[0], p) >= LEAVING) || line[line.length - 1]);
+  const ahead = (p) => {
+    const [x, y] = flat(p);
+    return (x - sx) * (ax - sx) + (y - sy) * (ay - sy);
+  };
+  return ahead(at.ends[0]) <= ahead(at.ends[1]) ? at.ends[0] : at.ends[1];
+}
+
+/* `at`'s way up whose top is nearest `end`. */
+function upTo(at, end) {
+  return at.ups.reduce((a, b) => (metres(top(a), end) <= metres(top(b), end) ? a : b));
+}
+
+/* The ride by `leg` between a point and a station — to it, or `off` it and
+   on to the point — and, where `up` is a way up of its platform, that way
+   up between the ride and the platform, with no turn in it. */
+async function stationRide(leg, point, station, up, off) {
+  const gate = up ? { lat: up[0][0], lng: up[0][1] } : station;
+  const ride = await (off ? leg(gate, point) : leg(point, gate));
+  if (!ride || !up) return ride;
+  const meters = Math.round(up.reduce((sum, p, i) => sum + (i ? metres(up[i - 1], p) : 0), 0));
+  const line = off ? up.slice().reverse().concat(ride.line) : ride.line.concat(up);
+  const steps = off
+    ? ride.steps.map((s) => Object.assign({}, s, { meters: s.meters + meters }))
+    : ride.steps.filter((s) => s.turn !== 'arrive');
+  if (!off || !steps.length) steps.push({ at: off ? up[0] : top(up), meters: ride.meters + meters, turn: 'arrive', name: '' });
+  return {
+    meters: ride.meters + meters,
+    seconds: ride.seconds + Math.round(meters / WHEELED),
+    /* The gate is where the ride ends and the way up begins: once. */
+    line: line.filter((p, i) => !i || p[0] !== line[i - 1][0] || p[1] !== line[i - 1][1]),
+    steps: steps
+  };
+}
+
+/* `line`, a train's, made to begin at `p`: `p`, and the line from the spot
+   of it nearest `p` on. Where that spot is the line's own first point, the
+   train sets off away from `p` and every point is kept; where the line
+   runs on past `p`, its points before the spot are track the rider is not
+   on yet, and go. The sum is apart()'s, kept here for where along a
+   stretch the spot is. */
+function beginAt(line, p) {
+  const [x, y] = flat(p);
+  let from = 0;
+  let least = Infinity;
+  for (let i = 1; i < line.length; i++) {
+    const [ax, ay] = flat(line[i - 1]);
+    const [bx, by] = flat(line[i]);
+    const dx = bx - ax;
+    const dy = by - ay;
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1)));
+    const off = Math.hypot(x - ax - t * dx, y - ay - t * dy);
+    if (off >= least) continue;
+    least = off;
+    from = t > 0 ? i : i - 1;
+  }
+  return [p].concat(line.slice(from));
+}
 
 /* Each departure the planner offers with one train in it: which train and
    where it is going, the stations, as names and points, when it leaves and
@@ -2347,7 +2501,8 @@ async function departures(from, to) {
 }
 
 /* The departures as ways to choose: a ride to the station and one from it
-   for each pair of stations, by `leg` — ride() or niceRide() — and the
+   for each pair of stations, by `leg` — ride() or niceRide() — by way of
+   the platform where it is written down, and the
    first departure of each pair that can
    be caught within TRAIN_WAIT, kept where it beats `quickest`, the best
    bike way's seconds — and of those, the quickest TRAINS. */
@@ -2362,9 +2517,15 @@ async function byTrain(from, to, found, quickest, leg) {
   const out = [];
   for (const list of Array.from(pairs.values()).slice(0, TRAIN_PAIRS)) {
     const first = list[0];
+    const board = platform(first.from);
+    const alight = platform(first.to);
+    const boardEnd = board && behind(first.line, board);
+    const alightEnd = alight && behind(first.line.slice().reverse(), alight);
+    const onto = board && upTo(board, boardEnd);
+    const off = alight && upTo(alight, alightEnd);
     const [head, tail] = await Promise.all([
-      leg(from, first.from),
-      leg(first.to, to)
+      stationRide(leg, from, first.from, onto, false),
+      stationRide(leg, to, first.to, off, true)
     ]);
     if (!head || !tail) continue;
     const setOff = (d) => d.at - (head.seconds + TRAIN_BOARD) * 1000;
@@ -2373,6 +2534,9 @@ async function byTrain(from, to, found, quickest, leg) {
     if (!go) continue;
     const seconds = head.seconds + TRAIN_BOARD + Math.round((go.until - go.at) / 1000) + tail.seconds;
     if (seconds >= quickest) continue;
+    let rail = go.line;
+    if (onto) rail = [top(onto)].concat(beginAt(rail, boardEnd));
+    if (off) rail = [top(off)].concat(beginAt(rail.slice().reverse(), alightEnd)).reverse();
     const legs = [];
     if (head.meters) legs.push(Object.assign({ kind: 'bike' }, head));
     legs.push({
@@ -2384,7 +2548,7 @@ async function byTrain(from, to, found, quickest, leg) {
       at: CLOCK.format(new Date(go.at)),
       until: CLOCK.format(new Date(go.until)),
       meters: go.meters,
-      line: thin(go.line, MAX_POINTS / 3)
+      line: thin(rail, MAX_POINTS / 3)
     });
     if (tail.meters) legs.push(Object.assign({ kind: 'bike' }, tail));
     out.push({
