@@ -210,10 +210,11 @@
  * `pages dev` on 2026-11-27 a ride of two and a half kilometres from Herne
  * up Kentmanni to Balti jaam was 14 blocks and ways across them against 64
  * squares: the blocks add about a fifth to what a save reads and writes.
- * They were filled once from the squares already counted, by
- * db/ride-blocks.sql, which says how near a block made of squares is to
- * one made of rides, and tools/ridesections.mjs counts them again from the
- * kept rides with the squares.
+ * The rides from before them were filled in from the squares already
+ * counted — db/ride-blocks.sql, which says how near a block made of
+ * squares is to one made of rides, and can run again at any time — and
+ * tools/ridesections.mjs counts them again from the kept rides with the
+ * squares.
  */
 
 /* A square's height and width in degrees: 0.00025 of latitude is 27.8 m

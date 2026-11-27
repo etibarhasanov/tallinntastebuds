@@ -2263,9 +2263,9 @@ CREATE TABLE IF NOT EXISTS ride_sections (
 -- two points without reading every square on the way, and to know how a
 -- part of town rides, against which each of its squares is weighed —
 -- BLOCKS in functions/api/_sections.js. Answered to nobody. Added on
--- 2026-11-27, and filled once that day from the squares already counted
--- by db/ride-blocks.sql, which has to run before the first save counts a
--- block — it holds the rides that were counted and not kept.
+-- 2026-11-27, and filled from the squares already counted, which hold the
+-- rides that were counted and not kept: by hand that day for the blocks
+-- two rides or more had crossed, and by db/ride-blocks.sql for the rest.
 --
 -- The one question it is asked, and the key that answers it:
 --   these blocks, crossed these ways          block IN (…) — the key
