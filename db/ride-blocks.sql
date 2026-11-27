@@ -13,11 +13,13 @@
 -- It can run at any time and more than once. The squares hold every ride
 -- there is, the ones counted since the blocks began too, so a block made
 -- out of them today is whole, and where a block is already there its row
--- is written over with the one made here. On 2026-11-27 the blocks two
--- rides or more had crossed, 381 of 1,390, were put in by hand from a
--- session, a hundred rows a write; this file is what brings the rest. It
--- reads ride_sections twice over, about 12,600 rows that day, and writes a
--- row a block and way.
+-- is written over with the one made here. On 2026-11-27 every block there
+-- was, 1,390 of them, 381 crossed by two rides or more, was put in by hand
+-- from a session: the squares read in four slices under 2,000 rows each,
+-- the blocks worked out as they are here and written a hundred rows a
+-- write. So this file has not run in production, and is for the day the
+-- blocks are to be made again. It reads ride_sections twice over, about
+-- 12,600 rows that day, and writes a row a block and way.
 --
 -- A block made of squares is near what counting its rides would have made,
 -- and not the same. A ride is one in `rides` however many of a block's
