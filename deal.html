@@ -7,12 +7,6 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
-<!-- Analytics: Microsoft Clarity, from one file rather than a snippet
-     pasted into every head. assets/analytics.js holds the id and the
-     consentv2 signal Clarity needs, and its head carries the reasoning of the
-     consent bar that stood in front of it for a day. -->
-<script src="assets/analytics.js?v=7d35c109" defer></script>
-
 <!-- Not part of the public map. These pages only mean anything with a place
      in the query string, and a search result for a bare one would be a dead
      end, so they stay out of the index. robots.txt says the same thing. -->
@@ -40,21 +34,14 @@
     <p class="pass-wordmark">Tallinn Tastebuds</p>
   </a>
 
-  <!-- data-clarity-mask keeps the code and its QR out of a Clarity replay,
-       and is inherited by everything drawn under it. Tidiness rather than a
-       lock: the keys ship in data/deals.json, which is public, and the hourly
-       rebuild is what actually defends the code — see "And it is a door, not
-       a lock" under "It is for members" in docs/handbook.md. But a code has no reason
-       to travel to a third party to heatmap a page whose only button is the
-       way back. -->
-  <section class="card pass-card" id="card" aria-live="polite" data-clarity-mask="true"></section>
+  <section class="card pass-card" id="card" aria-live="polite"></section>
 </main>
 
-<!-- What every press reports, to Clarity and to the site's own count,
+<!-- What every press reports to the site's own count,
      shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
-<script src="assets/track.js?v=34c2e65a" defer></script>
+<script src="assets/track.js?v=235cce24" defer></script>
 <!-- A swipe to the right is Back, from wherever the thumb lands rather than
      from the edge of the glass alone. After track.js, since it reports the
      press; before the page's own script and deferred like it. -->

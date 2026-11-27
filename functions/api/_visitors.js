@@ -423,8 +423,8 @@
  * first MAX_NAMES, along with the sign-ins and accounts made that NEW
  * AGAINST RETURNING counts. Nothing typed is in any of it: the error is one
  * of the words ./account.js answers, and a word not on the list is not
- * counted here. A name also rides on the press kind as every press does,
- * and Clarity hears it as a custom event. Pages, not people,
+ * counted here. A name also rides on the press kind as every press does.
+ * Pages, not people,
  * as everything here is: a funnel of counts, never one person's way through.
  *
  * THE LAST HALF HOUR

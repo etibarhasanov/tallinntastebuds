@@ -2949,7 +2949,7 @@ It signs nobody in and writes nothing, so a frame has nothing to trick
 anybody into pressing; every link opens the site in a new tab.
 
 **No analytics and no count.** Whoever opens it is reading somebody else's
-site, and Clarity recording them would be this site watching another site's
+site, and counting them would be this site watching another site's
 readers. It is `noindex` for the same reason the places it shows are indexed
 at `/`.
 
@@ -15496,10 +15496,14 @@ against specification.website found missing that the law, rather than good
 practice, asks for: the site has accounts, a sign-in cookie, Google
 Analytics, Clarity and Google sign-in, and nowhere said so.
 
-It names **Tallinn Tastebuds**, run by the people behind its Instagram page,
-as who decides what is kept, and that page as where to write; it says what a
-visit leaves on the device and in the counts, what Analytics and Clarity do —
-including that they load without asking first — what an account keeps and
+It opens on **What this project is for**, in the owner's words of
+2026-11-27: a free resource, there to help restaurants, to help people who
+ride a bike — and, the hope is, riders delivering food with Rattatee — and
+to help people learn the Estonian a restaurant uses, started by Etibar
+Ädalät, whose profile it links. Then it names **Tallinn Tastebuds**, run by
+the people behind its Instagram page, as who decides what is kept, and that
+page as where to write; it says what a visit leaves on the device and in
+the counts, what an account keeps and
 who can see it, who else handles anything, why, how long, and the reader's
 rights, with the Estonian regulator. Every sentence is about what the code
 does today, checked against it rather than against what a policy usually
@@ -15508,21 +15512,21 @@ lists, profile, decks and sign-in, holds the username for
 thirty days, and does *not* take posted feedback, and the page
 says exactly that and that Instagram is where to ask for the rest.
 
-**It speaks for the iPhone app as well, in a section of its own.** The app
-(`etibarhasanov/TallinnTasteBudsApp`) opens this page from its last tab and
-gives the App Store this address as its policy, and most of the page was
-already true of it, since an account there is an account here. **In the
-iPhone app** says what is not: that the app loads no analytics, that Apple
-draws its map where CARTO draws this one, that a position is sent here when
-somebody asks for the way to a place and what `/api/v1/route` passes on, that
-going round a list, recording a ride and the chat work there as they do
-here and when the app reads the position more closely for them, that Apple
-is a third way in and what is kept of it, that a save made in the app goes
-to the account while somebody is signed in, what stays on the phone, and
-where the app's own Delete account is. It is held to the code the way
-the rest is, and the list it was checked against is `docs/PRIVACY.md` in
-the app's repository — a change to what the app sends changes that file
-and this section together.
+**It names one site and one app, and no others.** The site is
+tallinntastebuds.ee; the app is Rattatee (`etibarhasanov/rattatee`), the one
+that is public, and **In the Rattatee app** is its section. The map app and
+Kohuke read this backend too, but they are not public, and the owner asked
+on 2026-11-27 for the page to say nothing of them until they are. Since the
+website has no recorder of its own, what is kept of a ride is said there and
+the account section points to it. The section says what the app asks of the
+location and when, what stays on the phone, what a search and a way send
+and on to which routers, what a ride saved with and without an account
+leaves, Apple as a third way in, the app's own Delete account, and that the
+app carries no analytics and Apple draws its map. It is held to the
+app's own `PRIVACY.md` and to **What the app reads** in `CLAUDE.md` — a
+change to what the app sends changes that file and this section together.
+Microsoft Clarity had a section of its own until it came off the site the
+same day.
 
 **The words are in `data/privacy.json`, not `data/ui.json`.** It is prose,
 like a post, and `ui.json` is fetched by the map one language at a time on
@@ -16398,8 +16402,8 @@ it at all", which is a different question and a quieter one. So the die
 pressed four times is four, and the colour swatch flicked back and forth is
 every flick.
 
-It agrees with Clarity here for the same reason the others do: `TTBTrack`
-sends it an event per press of these buttons rather than one per load, so
+It agrees with `TTBTrack` here for the same reason the others do: that
+reports an event per press of these buttons rather than one per load, so
 both count the same gesture the same way. That is the rule —
 agree with the report beside it — and once per load is how it comes out for a
 place, every press for a pill.
@@ -16904,14 +16908,14 @@ that they count presses rather than people, and the owner asked for their
 own presses out. The rows already counted stay as they are: nothing in a
 counts table says who made a row, so there is nothing to take back out.
 
-Clarity records in the browser, before any session is read, so the server cannot drop them; it tells the browser instead. When
+A browser the owner has signed out of is anybody to the server, so the server cannot drop it; it tells the browser instead. When
 `GET /api/v1/account` or a page under `/admin/` sees the owner's session it
 sets `ttb_owner=1`, a cookie kept a year and scoped to the domain the way
-the session is, and in a browser carrying it `assets/analytics.js` does
-not load it and `assets/track.js`, `app.js` and `lists.js` send nothing to
+the session is, and in a browser carrying it `assets/track.js`, `app.js`
+and `lists.js` send nothing to
 `/api/stats` — signed in or not, so signing out does not put the owner's
 own phone back in the count. The first page a browser ever opens signed in
-as the owner is still counted once, because the tags load before the
+as the owner is still counted once, because the page reports before the
 account is read; clearing the site's cookies puts that browser back in
 until the owner next signs in. **THE OWNER'S BROWSER** in
 `functions/api/_admin.js` is the whole of it.
@@ -17355,7 +17359,7 @@ them, one of those visits stays about three seconds, presses nothing, opens
 no place, and usually never says it was put away, which is what a browser
 run by a program does when it is closed rather than hidden; 11 November had
 fifty of them, and 699 seconds between all fifty. Clarity's recordings,
-filtered to the United States on a PC, are where to see one. So the counter
+filtered to the United States on a PC, were where to see one. So the counter
 has a kind of its own, `shown`: everybody is filed under it on their first
 page of the day, except a desktop in the United States, which is filed at
 the end of that page and only if it stayed ten seconds, pressed something or
@@ -17386,8 +17390,7 @@ subdomain, `assets/track.js` sends no report, and the map, the lists and the
 blog post no press of their own — the way the owner's browser is left out,
 through `driven` on `TTBTrack` beside `owner`. `/api/stats` refuses a
 `HeadlessChrome` user agent on those hosts besides, for a page still holding
-the script from before; and `assets/analytics.js` loads Clarity on neither
-those browsers nor any host but the site's. The owner asked for it, with
+the script from before. The owner asked for it, with
 every Claude Code session in mind that opens the site to take a picture of
 it: those run a headless Chromium in a data centre in the United States, and
 they were very likely a good part of the three-second American desktops
@@ -17406,8 +17409,8 @@ needed.
 
 ### What it does not do
 
-No recordings and no heatmaps — that is Clarity, and nothing here replaces
-it. No path through the site for one visitor, and nothing in real time finer
+No recordings and no heatmaps — that was Clarity, which came off the site on
+2026-11-27, and nothing here replaces it. No path through the site for one visitor, and nothing in real time finer
 than **Right now**, which is pages a minute for the last half hour rather
 than people: everything else's finest grain is a day. The funnels are not
 on this page either: how people move from one step to the next is laid on
@@ -18197,7 +18200,7 @@ minutes in the colo per diagram and range and handed to the browser
 mean it. Three shapes — `page:map`, a page opened, by the ids `PAGES` in
 `_visitors.js` already tells apart; `view:map`, what that page counts as a
 view, a place on the map, a post on the blog, a deck on the flashcards;
-`save_place`, a press by the name it already reports to Clarity and to
+`save_place`, a press by the name it already reports to
 `/admin/visitors` — and a name that means something else on another page
 says which page it is on, `account_login@split`. A gateway never carries
 one: it is a question, not a thing that happens. A service step may, when a
@@ -19177,7 +19180,7 @@ differently.
 What is deliberately not here yet: a content policy. A
 `Content-Security-Policy` that names what may load would have to list Google
 Fonts, unpkg, CARTO's tiles, the Instagram, TikTok and YouTube players,
-Turnstile and Clarity, and a wrong line in it breaks a page
+and Turnstile, and a wrong line in it breaks a page
 silently for everybody — so it starts as `Content-Security-Policy-Report-Only`
 with somewhere to send the reports, which is a change of its own. HSTS is not
 preloaded, because a preload is a promise to a list the browsers ship and
@@ -19650,15 +19653,13 @@ assets/pins.js             the forty-five markers, the five kinds of place,
 functions/api/_pins.js     the same ids, on the side that decides whether a
                            list may store them (not a route: leading _)
 assets/basemap.js          the CARTO tiles, said once for every map that draws them
-assets/track.js            what a press reports, to Clarity and the site's count, said once
+assets/track.js            what a press reports to the site's count, said once
                            for every page that has a button
 assets/radio.js            the station, and the on/off that survives a navigation
 assets/shell.js            the map as the shell every other page opens on, so
                            a walk between pages tears nothing down
 assets/back.js             a swipe to the right, from anywhere on the glass,
                            is Back
-assets/analytics.js        the Microsoft Clarity tag, said once for every page
-                           but admin.html
 assets/country.js          a country's name by its two letters, in the page's
                            language, out of the browser's own Intl
 assets/googlewords.js      the six lists Google wrote, put into the reader's
@@ -20953,8 +20954,7 @@ subdomain and are not framed. And a page that was closed and opened again starts
 frame is made on each open and taken down on each close, so nothing from the
 last visit to it can be left standing.
 
-Microsoft Clarity records a framed page as a frame, which it does when both
-the page and the map carry the tag — `assets/track.js` runs in
+`assets/track.js` runs in
 the frame and reports the frame's own address. The site's own count in
 `/admin/visitors` is the same count it was.
 
@@ -21558,9 +21558,7 @@ swatch still picks which resting palette that is and no rule names a colour.
   `a-kept` and `b-kept` for the first it kept. Once each — `ttb.look.new`
   remembers which have gone — and `LOOK_IDS` in `functions/api/stats.js` is
   the closed list the route holds them to.
-- **`look` as a Clarity tag**, once a page wherever a look was dealt, so a
-  recording can be filtered to one. The test is read on
-  `/admin/visitors`.
+- The test is read on `/admin/visitors`.
 
 `/admin/visitors` sets the two side by side in **The lists' two looks**,
 the first card under **Tests**, drawn from the day the test began: how many newcomers each was dealt, and the share that
@@ -21880,7 +21878,6 @@ data; those do not belong in a static site at all.
 | [Rubik](https://fonts.google.com/specimen/Rubik) | — | SIL Open Font License 1.1 | Served by Google Fonts. |
 | [Instagram embed](https://developers.facebook.com/docs/instagram/oembed/) (iframe player) | — | Meta Platforms terms | `/p/<shortcode>/embed/`, whatever kind of post the permalink calls itself. Loaded with the panel of a place that has a reel. No script involved. |
 | [TikTok embed](https://developers.tiktok.com/doc/embed-videos/) (iframe player) | — | TikTok terms | Loaded with the panel of a place that has a video. No script involved. |
-| [Microsoft Clarity](https://clarity.microsoft.com/) | — | Microsoft terms | Project `yay3pxtg4w`. Heatmaps and session replay. Loads on every page but `admin.html`, and sets cookies. Not `MUID` — `ad_Storage` is denied, because there is no advertising here for it to do anything for. |
 | [Sign in with Google](https://developers.google.com/identity/branding-guidelines) (the mark) | — | Google brand guidelines | Four `<path>`s inlined in `assets/app.js`, `assets/flashcard.js` and `assets/feedback.js`, on the Continue with Google button and nowhere else. **No script and no request of Google's runs on any page** — the sign-in is a redirect, and their branding permits the mark on the button that starts it. |
 
 **The attribution control in the bottom-right corner is a licence condition of
@@ -21888,8 +21885,7 @@ both OpenStreetMap and CARTO. Do not remove it.**
 
 No scripts or fonts beyond the table above — the last row is a drawing
 rather than a request, and nothing about it reaches Google until somebody
-presses it. Clarity sets cookies of its own the moment a page opens —
-`_clck` and `_clsk` — and see [No consent banner](#no-consent-banner) for why nothing is asked first.
+presses it. See [No consent banner](#no-consent-banner) for why nothing is asked first.
 Everything else stored on a visitor's device is seven `localStorage` keys and
 one cookie, all of them the
 visitor's own choices played back: `ttb.lang` and `ttb.style`, `ttb.stories.seen` and
@@ -21919,8 +21915,8 @@ in front of somebody at a till.
 
 ### Analytics
 
-`assets/analytics.js` loads Microsoft Clarity (**What Clarity adds**, below),
-and everything counted is the site's own. `assets/track.js`
+Everything counted is the site's own — Microsoft Clarity came off the site
+on 2026-11-27 (**No recordings**, below). `assets/track.js`
 tells `POST /api/stats` when a page opens and how long it was on screen, with
 the names of the presses `TTBTrack.event()` saw meanwhile — and, from the
 pages that show one, which story, post, deck or discount it was, through
@@ -21928,7 +21924,7 @@ pages that show one, which story, post, deck or discount it was, through
 parameters below — and that is what
 `/admin/visitors` and `/admin/found` are drawn from — see **Visitors**,
 **What was opened** and **How they found it**. Every event name below is also a row in that page's
-**What was pressed**, and a Clarity event of the same name.
+**What was pressed**.
 
 A count of page loads records one view per address, and that is where its
 usefulness ends. The map is one address on which everything happens, and
@@ -21936,11 +21932,8 @@ even the pages that do change address are mostly buttons that change nothing
 in the address bar. So every deliberate press on every page is reported as
 an event, through the one global `assets/track.js` sets —
 `TTBTrack.event(name, params)`, and `TTBTrack.click(node, name, params)` for
-a link or button built inline. Clarity gets the colour (**The four styles,
-dealt**) and the directory's look (**The lists' two looks**) as tags, so its
-recordings can be split by them, and the site's own count carries the colour
-on every report. The rail this browser was dealt was a third tag until every
-visitor was given the same one (**The short rail**). Opening a place on the map is reported as a view of its own, through
+a link or button built inline. The site's own count carries the colour
+on every report. Opening a place on the map is reported as a view of its own, through
 `TTBTrack.view()`, which is what **What was opened** ranks. The links written straight into the
 markup — the wordmark, the Instagram link, the mark on a pass — carry the
 event's name as a `data-track` attribute, and `track.js` wires them itself.
@@ -22331,66 +22324,17 @@ The chips are also in the URL now, as `?type=bakery,vegan`. A filtered map is
 a link worth sending, and the landing view the site's count records for it
 carries the filters.
 
-#### What Clarity adds
+#### No recordings
 
 Counting has a floor. The site's own count can say that eleven people
-opened the filters and two pressed a chip. They cannot say that the other nine
-scrolled the row to its end and found nothing they wanted, or that the chip
-they were after was the one cut off at the edge at 390px. A count says a thing
-did not happen and then has nothing further to offer about why.
-
-[Microsoft Clarity](https://clarity.microsoft.com/), project `yay3pxtg4w`,
-records the page rather than counting it: heatmaps of where presses and scrolls
-actually land, and a replay of the DOM as it changed through a visit. On a site
-that is one address with everything happening on it, the replay is the part
-that earns its place — it follows a single visit through the filters, the
-panel and the chat, none of which a count can see as anything but names in a list.
-
-It loads from `assets/analytics.js` — one file rather than a snippet pasted
-into every head. Every page in `PAGES` at the top of `tools/stamp.mjs`
-carries it. `admin.html` deliberately does not: the only visits it could record are the owner's own, and
-it is the page holding a GitHub token.
-
-**Every press is a Clarity event too.** A heatmap says where on the screen
-clicks landed and a replay says what one visit did; neither can say which
-button was pressed across a week, and a button drawn by a script under the
-same class as five others is a smudge on a heatmap. So `event()` in
-`assets/track.js` sends every name it sends to Google to Clarity as well, as
-a custom event — `clarity('event', name)` — with no parameters, because
-Clarity takes none. In the dashboard those are the **Smart events** filter
-under *Custom*: pick `list_keep` and the recordings and heatmaps narrow to
-the visits that pressed it. Nothing to set up on the dashboard side; the
-events appear once the first press arrives.
-
-**What it does not record.** Clarity masks the contents of every input box and
-dropdown in all three of its masking modes, and that one cannot be switched
-off. It is what keeps `admin.html`'s GitHub token out of a replay: the token is
-only ever typed into an `<input type="password">` and held in a variable, and
-nothing on the page renders it as text. The mode itself is a dashboard setting
-rather than a line of code — **Settings → Masking** — and its default,
-Balanced, masks numbers and email addresses on top of the input boxes.
-
-Per-element overrides are attributes, and masking is inherited by everything
-below the element that carries it. The pass card on `deal.html`, `verify.html`
-and `staff.html` carries `data-clarity-mask="true"`, so the hourly code and the
-QR drawn under it stay out. That is tidiness rather than a lock — an hourly
-code is already not a secret, since `data/deals.json` ships the keys in public
-and "And it is a door, not a lock" under [It is for
-members](#it-is-for-members) says so outright — but a code has no business
-travelling to a third party to make a heatmap of a page whose only button is
-the way back.
-
-Data takes up to two hours to appear after the tag first goes out, and the
-dashboard will say the project is uninstalled until it does. The tag is
-written into the pages, but it loads only on tallinntastebuds.ee and its
-subdomains, and never in a browser a program is driving —
-`navigator.webdriver`, which Playwright, Puppeteer and Selenium set and a
-person's browser does not. So a localhost under `pages dev` or
-`http.server`, a `pages.dev` preview, and every Claude Code session that
-opens the live site to look at it record nothing, and the site's own count
-leaves the same driven browsers out (**Not a program** below). Since
-2026-11-19; before, a change driven hard enough showed up in the live
-numbers.
+opened the filters and two pressed a chip; it cannot say that the other nine
+scrolled the row to its end and found nothing they wanted. For a while
+[Microsoft Clarity](https://clarity.microsoft.com/) stood beside it, recording
+heatmaps and replays of every page from `assets/analytics.js`. On 2026-11-27
+the owner took it off the site and out of the privacy page, and the file went
+with it. Nothing replaces it: the count is the whole of analytics, and a third
+party's tag coming back is a change to `data/privacy.json` in eleven languages
+as much as to a `<head>`, and the owner's to ask for.
 
 ### Getting found
 
@@ -22672,61 +22616,26 @@ rather than merely missed. Cloudflare Pages serves `x-robots-tag: noindex` on
 preview deployments, which is correct for previews and fatal if the address
 people share turns out to be one.
 
-To remove tracking entirely, delete the `assets/analytics.js` script tag from
-every page that carries it, or the file. `track.js` checks for
-`window.clarity` and goes quietly without it — which is what already happens
-for a visitor running an ad blocker — so every call site becomes a harmless
-no-op and none of them has to change. The site's own count does not ride on
-it and keeps running.
+To remove tracking entirely, delete the `assets/track.js` script tag from
+every page and the pages' calls to `window.TTBTrack` with it: the site's own
+count is the only thing left that reports.
 
 ### No consent banner
 
-**Clarity loads on sight, and nothing is asked first.** There was a banner
-here for a day — first a bar with one sentence and two buttons, then a dialog
-listing what was used regardless and what agreeing added on top — and it was
-taken out on purpose. The reasoning is kept because the decision is easier to
-re-make than to re-derive.
+**Nothing asks first, because nothing third-party is loaded to ask about.**
+There was a banner here for a day, in front of Microsoft Clarity, and it was
+taken out on purpose; then Clarity was taken out too, on 2026-11-27, and with
+it `_clck`, `_clsk` and the consent signal it was handed. `git log` has every
+version of both.
 
-The rule it was built for has not changed. Estonia applies the EU ones, and
-ePrivacy asks about *writing to somebody's device*, not about whether what you
-write is personal data — which is why "we do not collect anything" was never
-the answer it sounded like. `_clck` and `_clsk` are written with nobody asked, and a session replay is a recording of somebody's visit.
-Putting the question back is a revert rather than a project: `git log` has
-both versions of it.
-
-**Clarity is still handed a consent signal**, with nothing in front of it.
-Since 31 October 2025 Clarity gives a visitor in the EEA, the UK or
-Switzerland full recording only against one, falling back to a limited mode
-where every page load is a fresh session and a returning visitor is nobody it
-has seen before. This is a map of Tallinn; practically all its traffic is the
-EEA, so without the signal the replays arrive as a heap of one-page fragments,
-which is the opposite of the thing Clarity was added for.
-
-**The site's own count writes two things too**: `ttb.seen`, the date of the
+**The site's own count writes two things**: `ttb.seen`, the date of the
 last day this browser opened a page here, and `ttb.since`, the first, which
 is how **Visitors** tells a visitor from a view and a returning one from a
 new one without an id. They are first-party, never sent as themselves and
-read by nothing else, which is a much
-smaller thing than a third-party tag and a session replay — but it is
-still a write to the device for the purpose of counting, and it is in the
-same question as they are. Taking Google and Clarity out leaves them the
-only ones.
-
-It is `clarity('consentv2', …)` rather than the older `clarity('consent')`,
-which is deprecated. The object carries **both spellings** of its two keys —
-`ad_Storage`/`analytics_Storage` as Microsoft documents them, and the
-lowercase pair as Google's consent mode spells the same ideas — because
-getting it wrong fails silently, with empty cookies and a new "user" on every
-page load ([microsoft/clarity#924](https://github.com/microsoft/clarity/issues/924),
-still open). A key Clarity does not read costs nothing; a guess that went the
-wrong way would cost the recordings.
-
-**`ad_Storage` is denied.** It is what lets Clarity set `MUID`, a
-Microsoft-wide identifier shared with their advertising side, and this site
-carries no advertising for it to do anything for. The recordings and the
-heatmaps ride on `analytics_Storage` and arrive either way; what is lost is
-Clarity's surest way of telling a returning visitor from a new one. One word
-changes it.
+read by nothing else — but they are still a write to the device for the
+purpose of counting, and ePrivacy, which Estonia applies, asks about writing
+to somebody's device rather than about whether what is written is personal
+data. A tag that writes more than that brings the question back.
 
 CARTO has already made one move here — tiles now want a key, free but
 required, which is what `KEY` is for. If they ever go further and stop serving

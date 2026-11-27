@@ -4499,10 +4499,7 @@
    * A place and a chip are one question asked once — see above. A pill is a
    * press: the question /admin/stats answers about the rail is which of the nine
    * doors people actually push and how often, and pressing the die four
-   * times is somebody asking for four restaurants. It is also what this page
-   * already tells Clarity, which gets an event per press of these buttons
-   * rather than one per load, so the two agree here the same way they agree
-   * up there — by counting the same gesture the same way.
+   * times is somebody asking for four restaurants.
    *
    * One listener on the rail rather than four on the buttons, because the
    * lists door is a link that leaves the page and is hidden until

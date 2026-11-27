@@ -1,5 +1,6 @@
-/* Tallinn Tastebuds — what gets reported, to Microsoft Clarity and to this
- * site's own count of its visitors, said once.
+/* Tallinn Tastebuds — what gets reported to this site's own count of its
+ * visitors, said once. Nothing here goes to anybody else: Microsoft Clarity
+ * was loaded beside it until 2026-11-27, and the owner took it out.
  *
  * The map is one address on which everything happens, and even the pages
  * that do change address — a list, a profile, the account page — are mostly
@@ -19,7 +20,7 @@
  *
  * AND THE SITE'S OWN COUNT
  *
- * The same file tells this site, not only Clarity, that a page was opened and
+ * The same file tells this site that a page was opened and
  * how long it was on screen: /admin/visitors is drawn from what the bottom
  * of this file sends, and functions/api/_visitors.js is what is counted and
  * why. Two reports a page, and no more — one when it opens, and one each
@@ -85,13 +86,8 @@
  *
  * TO REMOVE TRACKING
  *
- * Delete assets/analytics.js's script tag from every page, or this file's,
- * or both. Everything below checks for Clarity and returns quietly when it
- * is missing, which is also what happens for a visitor running an ad
- * blocker, so every call site becomes a harmless no-op and none of them has
- * to change. The site's own count is the part that does not check for it:
- * removing Clarity leaves it running, and removing this file's script tag
- * stops both.
+ * Remove this file's script tag from every page, and the pages' calls to
+ * window.TTBTrack with it: the count is the only thing it sends.
  */
 window.TTBTrack = (function () {
   'use strict';
@@ -104,21 +100,15 @@ window.TTBTrack = (function () {
     return window.location.pathname + window.location.search;
   }
 
-  /* Every press goes to Clarity by name, as a custom event, which is what
-     lets its dashboard filter recordings and heatmaps by the button that was
-     pressed rather than by where on the page a click landed. Without this a heatmap
-     says a spot on the screen was pressed and a replay says what one visit
-     did, and neither can answer "who pressed Keep" across a week. Clarity's
-     queue takes the call before its script lands. Clarity takes only the
-     name; the parameters are read here — the language switched to, the
-     words searched — for the site's own count. */
+  /* Every press is counted by name, so the owner's pages can answer "who
+     pressed Keep" across a week. The parameters are read here — the
+     language switched to, the words searched — for the site's own count. */
   function event(name, params) {
     params = params || {};
     tallied[name] = (tallied[name] || 0) + 1;
     step(name);
     if (name === 'language_select') switched(params.language);
     if (name === 'search') searchedFor(params);
-    if (typeof window.clarity === 'function') window.clarity('event', name);
   }
 
   /* A refusal from /api/v1/account, reported as a press of its own:
@@ -133,21 +123,6 @@ window.TTBTrack = (function () {
   function refused(out, view) {
     var said = out && typeof out.error === 'string' ? out.error.replace(/-/g, '_') : '';
     event('account_err_' + (/^[a-z_]{1,20}$/.test(said) ? said : 'generic'), { view: view });
-  }
-
-  /* Which of the directory's two looks this browser was dealt — 'a', the page
-     as it was, or 'b', at rest — read off the key pickLook() in
-     assets/lists.js writes, and '' where none was, which is everybody who
-     was not new to the site when they first opened /lists. Set as a
-     Clarity tag where there is one, so a recording can be filtered to a
-     look. The site's own count is where the test is read — "The lists' two
-     looks" in docs/handbook.md. */
-  var LOOK_KEY = 'ttb.look';
-
-  function look() {
-    var id = '';
-    try { id = window.localStorage.getItem(LOOK_KEY); } catch (e) { id = ''; }
-    return id === 'a' || id === 'b' ? id : '';
   }
 
   /* Attaches a report to a link or button that is built inline, and hands
@@ -181,16 +156,6 @@ window.TTBTrack = (function () {
      here, once, for every page. Deferred scripts run before DOMContentLoaded,
      so the whole page is there to walk. */
   document.addEventListener('DOMContentLoaded', function () {
-    /* The test a recording can be filtered by, as a Clarity tag. Deferred
-       scripts have all run by now, so a look dealt on this very page is in
-       storage. Clarity's queue takes the call before its script lands, the
-       same as an event. */
-    if (typeof window.clarity === 'function') {
-      /* The directory's look, where there is one. A stranger's first open
-         of /lists is dealt one before this runs — pickLook() is called as
-         the page's own deferred script boots — so that visit is tagged. */
-      if (look()) window.clarity('set', 'look', look());
-    }
     var marked = document.querySelectorAll('[data-track]');
     for (var i = 0; i < marked.length; i++) {
       click(marked[i], marked[i].getAttribute('data-track'));

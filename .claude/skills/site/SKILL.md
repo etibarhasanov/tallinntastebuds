@@ -211,7 +211,7 @@ visitor to open a place is a third, and it belongs there in the same commit — 
 deliberately *not* counted lives.
 
 **Every button reports.** A press that matters is reported — to the
-site's own count and to Clarity — through the global `assets/track.js` sets,
+site's own count — through the global `assets/track.js` sets,
 on every page:
 `TTBTrack.event(name, params)` in a handler, `TTBTrack.click(node, name,
 params)` around a link or button built inline, and `data-track="name"` on
@@ -244,39 +244,12 @@ says so in CSS the way the chips and the grips do, and needs nothing here.
 The map hears it only on the panel with a place open. **A swipe to the right
 is Back** in `docs/handbook.md`.
 
-**And every page is watched, once somebody agrees to it.** That is the other
-half of analytics and it costs nothing per press: Microsoft Clarity records the
-page itself — heatmaps, and a replay of the DOM as it changed. Nothing calls
-into it, so a new button needs nothing here. Two things do:
-
-- **A new page carries `assets/analytics.js`**, in its head, deferred, before
-  every other script on the page. That one file is the whole of analytics: Clarity's
-  snippet and the consentv2 signal it needs. Copy the tag from the page
-  whose asset spelling yours shares — `lists.html` writes `/assets/...` from
-  the root, `index.html` writes `assets/...` relative, and the head of
-  `tools/stamp.mjs` says why they disagree. A page that ships without it is
-  invisible to Clarity, and fails nothing while nobody notices.
-  `admin.html` is the one page that deliberately does without; the head of
-  `analytics.js` says why, and it is not an oversight to correct.
-- **Anything a replay should not hold gets `data-clarity-mask="true"`.**
-  Clarity masks every input box and dropdown in all three of its masking
-  modes and that one cannot be switched off, so a password or a typed-in
-  name needs nothing from you. Rendered text is the case to think about: the
-  pass card on `deal.html`, `verify.html` and `staff.html` carries the
-  attribute, so the hourly code and its QR stay out of a replay. Masking is
-  inherited, so it goes on the container and never on each child.
-
-The masking **mode** is a dashboard setting rather than a line of code, so it
-is not in this repo and will never be in a diff: **Settings → Masking** at
-clarity.microsoft.com, Balanced by default, which masks numbers and email
-addresses on top of the input boxes. A change that leans on it says so in the
-PR, because nobody reviewing the diff can see it.
-
-**Nothing asks first.** Clarity loads on sight, and the banner that stood in
-front of it for a day was taken out on purpose — **No consent banner** in
-`docs/handbook.md` is the reasoning, and it is not an oversight to correct. Driving
-any page in a browser therefore records into the live Clarity project, including a preview; there is no longer a button to press to
-stay out of the numbers.
+**Nothing else watches the page.** Microsoft Clarity recorded every page
+until 2026-11-27, when the owner took it off the site and out of the privacy
+page. The site's own count is the whole of analytics now: a new page carries
+`track.js` and nothing more, and putting a third party's tag back is a change
+to `data/privacy.json` in eleven languages as much as to a `<head>`, and the
+owner's to ask for.
 
 **A clip on a blog post is a scene, and a scene is a function of time.**
 `clips/scenes/<post-id>.html` is the site's own components arranged into one
@@ -528,14 +501,6 @@ merge** — and this process adds:
 - A string added in one language, with a fallback in the code.
 - A new page that renders light for somebody who chose the dark style,
   because the boot block was not copied.
-- A new page shipped without `assets/analytics.js` in its head, so nothing it
-  does reaches Clarity. It fails nothing and nobody notices for months; that
-  is how `blog.html` arrived carrying a script tag for a file that no longer
-  existed — the validator caught that one, because it checks every `assets/`
-  reference against the repo.
-- A rewritten card that loses its `data-clarity-mask`, putting whatever it
-  draws back into the replays. The comment above the `<section>` on each pass
-  page is there to be read before the line under it is replaced.
 - A `t()` key that the scanner cannot see, so the validator passes and a
   visitor reads the key off the page.
 - **A third-party player that behaves differently on a phone, debugged from

@@ -124,7 +124,7 @@
  * place or a chip is a question about where to eat, asked once however many
  * times the card is reopened while somebody makes their mind up — and it has
  * to agree with the one page view TTBTrack.view() reports beside it. A pill
- * is a press, Clarity is sent an event per press of one, and the question
+ * is a press, and the question
  * this table answers is the plain one:
  * which of the nine doors do people actually push, and how often. Counting
  * that once a load would answer "how many visits pressed it at all", which is
