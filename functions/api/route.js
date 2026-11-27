@@ -76,8 +76,8 @@
  * The doors, the ridden way first, keeping off, the spurs, the settling
  * and the ways either side, as the sections after this one have them, are
  * the bike way the router makes. It is the answer where BRouter has none,
- * where the asker gave a heading, and at the two ends of a ride between
- * cities.
+ * where the asker gave a heading and BRouter's way would turn them round —
+ * AHEAD below — and at the two ends of a ride between cities.
  *
  * A BIKE ROUTE AND THE DOORS
  *
@@ -140,14 +140,16 @@
  * share a cached answer, and a heading that is not a number is no heading
  * rather than a refusal, as is one the router has no street for.
  *
- * With a heading the answer is the router's own ways, kept off the streets
+ * With a heading BRouter's one quietest way is the answer where it goes on
+ * the way the rider is going — AHEAD below, since 2026-11-26. Where it does
+ * not, the answer is the router's own ways, kept off the streets
  * every bike way keeps off, and nothing put together from doors, which are
  * stitched from the spot outward in whichever direction they run: one that
  * started backwards would be the same "turn around" under another name.
  * Nor is any way put first as ridden, which costs a read of the database
- * that a new way every few hundred metres should not. The one time the
- * answer is BRouter's is where every way the router set off by goes
- * through a wall — WALLS below. Nothing else about the answer changes, and
+ * that a new way every few hundred metres should not. And where every way
+ * the router set off by goes through a wall, the ways are BRouter's three
+ * — WALLS below. Nothing else about the answer changes, and
  * a page or an app that sends none is answered exactly as before.
  *
  * MORE THAN ONE WAY
@@ -375,9 +377,20 @@ async function street(context, mode, from, to, heading) {
 
   /* By bike the ways are BRouter's, found by the owner's rules — NICE WAYS
      below. Where it has none the ride is the router's, as below; with a
-     heading it is not asked, and a ride between cities has gone above. */
+     heading it is asked for one way, further down, and a ride between
+     cities has gone above. */
   const nice = mode === 'bike' && heading === null ? await niceWays(context, from, to) : null;
   if (nice) return answered(from, to, nice, asked, (a, b) => niceRide(context, a, b));
+
+  /* And with a heading, a new way mid-ride, BRouter is asked for its one
+     quietest way, which is the answer where it goes on the way the rider
+     is going — AHEAD below. Where it would begin by turning round, or
+     BRouter has none, the ride is the router's, set off by the heading, as
+     it always was. Not for a ride of LONG_FROM or more, which BRouter
+     would not answer in its four seconds. */
+  const on = mode === 'bike' && heading !== null && km(from, to) * 1000 < LONG_FROM
+    ? await niceAhead(context, from, to, heading) : null;
+  if (on) return answered(from, to, [on], asked, (a, b) => niceRide(context, a, b));
 
   /* By bike the ways round either side need nothing but the two ends, so
      they are asked now, beside the router — ONE ROUND AT A TIME in the
@@ -432,14 +445,8 @@ async function street(context, mode, from, to, heading) {
     const open = found.filter((one) => !walled(one));
     const nice = !open.length && heading !== null ? await niceWays(context, from, to) : null;
     if (nice) {
-      /* The way a line would be going ridden back to its start is the way
-         it sets off, turned round: ahead is within a quarter turn of the
-         heading. */
-      const ahead = (one) => {
-        const back = arriving(one.line.slice().reverse());
-        return back !== null && Math.abs((back - heading + 360) % 360 - 180) <= 90;
-      };
-      return answered(from, to, nice.filter(ahead).concat(nice.filter((one) => !ahead(one))), asked,
+      const on = (one) => ahead(one, heading);
+      return answered(from, to, nice.filter(on).concat(nice.filter((one) => !on(one))), asked,
         (a, b) => niceRide(context, a, b));
     }
     if (open.length) found = open;
@@ -1663,6 +1670,42 @@ async function niceWays(context, from, to) {
   const best = await riddenBest(context, offered, Math.min(...offered.map((way) => way.meters)));
   if (best >= 0) offered[best] = Object.assign({}, offered[best], { ridden: true });
   return offered;
+}
+
+/* AHEAD
+ *
+ * A new way mid-ride was the older router's alone until 2026-11-26, since
+ * only it can be told which way to set off, and so the rider who left a
+ * quiet way was sent on by the fastest: a way asked with a heading skipped
+ * every rule above but the streets kept off and the walls. BRouter cannot
+ * be told the heading, but its answer can be read: whether a way sets off
+ * within a quarter turn of where the rider is going is in its first
+ * metres. So it is asked for its one quietest way — one request, where a
+ * ride from standing still asks three, since Rattatee may ask a new way
+ * twice a minute and brouter.de is one person's server — and that way is
+ * the answer where it goes on ahead. Where it would have the rider turn
+ * round, which is the "turn around" a heading was added to stop, it is let
+ * go and the older router answers as before. No door and no ridden way:
+ * a rider mid-ride is given one way, not a choice. */
+
+/* Whether a way sets off within a quarter turn of a heading. The way a
+   line would be going ridden back to its start is the way it sets off,
+   turned round. */
+function ahead(way, heading) {
+  const back = arriving(way.line.slice().reverse());
+  return back !== null && Math.abs((back - heading + 360) % 360 - 180) <= 90;
+}
+
+/* BRouter's quietest way from one point to another where it goes on the
+   way the rider is going, or null. */
+async function niceAhead(context, from, to, heading) {
+  const start = [from.lat, from.lng];
+  const end = [to.lat, to.lng];
+  const found = await brouterWays(context, [start, end], 1, keptOut(start, end));
+  if (!found || !found.length) return null;
+  const { totals, ...way } = found[0];
+  const one = Object.assign(way, { line: thin(way.line, MAX_POINTS), steps: untie(way.steps, way.line) });
+  return ahead(one, heading) && !walled(one) ? one : null;
 }
 
 /* ------------------------------------------------------------- long rides

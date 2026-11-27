@@ -4738,9 +4738,20 @@ and again every hundred and fifty after. The owner's word for what it
 should do: see which way the person wants to go, and if they keep going,
 find the way from that direction.
 
-A way asked for with a heading is the router's, as below. BRouter is not
-asked: its own heading does nothing on brouter.de (**Nice ways by bike**,
-*What is still the router's*).
+**A quiet way first, where it goes on ahead.** Until 2026-11-26 a way
+asked for with a heading was the older router's alone, since BRouter's own
+heading does nothing on brouter.de (**Nice ways by bike**, *What is still
+the router's*) — so a rider who left a quiet way was sent on by the fastest
+one, past every rule but the streets kept off and the walls. BRouter cannot
+be told the heading, but its answer can be read. It is asked for its one
+quietest way, one request where a ride from standing still asks three, and
+that way is the answer where it sets off within a quarter turn of the
+heading — `niceAhead()` and `ahead()` in `functions/api/route.js`. It is
+offered alone: a rider mid-ride is given a way, not a choice. Where it
+would begin by turning round, where BRouter has none or is resting, and
+for a ride of twenty kilometres or more, the answer is the router's, as
+below. The owner looked at the two pinned trips it moved on 2026-11-27 and
+said the ways are fine, not the best.
 
 **`heading` is that direction.** `GET /api/v1/route` takes it beside
 `from` and `to`, in degrees from north, and the router is told
@@ -4750,7 +4761,7 @@ rounded to 15° so riders on one street share a cached answer. A heading
 that is not a number is no heading, and so is one the router has no street
 for: the question is asked again without it, and nobody is refused for it.
 
-**With a heading, only the router's ways.** No way through a door, which
+**From the router, only its own ways.** No way through a door, which
 is stitched outward from the spot in whichever direction it happens to run,
 and no way put first as ridden, which is a read of the database. The streets a bike way keeps off
 are still kept off, the ways round asked for with the same heading. A page
