@@ -139,6 +139,7 @@ const ROWS = [
   { file: 'api/_visitors.js', has: 'SELECT day, fresh, visits, secs FROM counter_days WHERE day >= ?', why: 'the last COUNTER_SECS_DAYS days, a row a day, twenty-eight' },
   { file: 'api/venues.js', has: 'FROM google_venues', why: "roll(): a map id is LIMIT 1 and ?ids= is held to fifty by wantedIds(); the whole roll is /api/admin/venues, the owner's" },
   { file: 'api/_sections.js', has: 'CROSS JOIN ride_sections s ON s.cell = v.column1', why: 'LOOKUP: ASKED squares a statement, fifty, each a seek on ride_sections\' primary key, so a row a square at most' },
+  { file: 'api/_sections.js', has: 'CROSS JOIN ride_blocks s ON s.block = v.column1', why: 'LOOKUP_BLOCKS: ASKED blocks a statement, fifty, each a seek on ride_blocks\' primary key, so a row a block at most' },
   { file: 'api/feedback.js', has: 'MAX(CASE WHEN h.owner = ? THEN 1 ELSE 0 END) AS hearted', why: 'LIMIT PAGE + 1, twenty-one — PAGE is fifty in _lib.js and twenty here, so the tool cannot read the name' },
   { file: 'api/_mostkept.js', has: 'SELECT place_id, name FROM list_items WHERE list_id = ? ORDER BY pos LIMIT', why: 'LIMIT TASTE or DOTS, three or ten, picked by a condition the tool cannot read' },
   { file: 'api/flashcard.js', has: 'SELECT deck_id, known, missed FROM flashcard_progress WHERE user_id = ?', why: 'a row a deck the learner has turned a card of: 53 shipped decks on 21 Nov 2026 and MAX_DECKS twenty of their own, 73; each deck shipped is one more' },
@@ -175,7 +176,8 @@ const ROWS = [
 const UNREAD = [
   { file: 'api/_lib.js', has: 'SET ip_hash = ', why: "forgetFingerprints(): UPDATE ${table} for the three tables in FORGET. Each WHERE is length(ip_hash) = 64 AND <at> < ?, and none of the three has an index on <at>, so each walks its table — feedback, saves, flashcard_reports — after every write to them. To fix: a partial index on <at> WHERE length(ip_hash) = 64 would make it the rows still holding one" },
   { file: 'api/lists.js', has: 'UPDATE lists SET ', why: 'the edit: the columns being set spliced in, WHERE id = ?, one row by the key' },
-  { file: 'api/rides.js', has: 'INSERT INTO rides (', why: 'a save: the column list spliced in, one row a run, no read' }
+  { file: 'api/rides.js', has: 'INSERT INTO rides (', why: 'a save: the column list spliced in, one row a run, no read' },
+  { file: 'api/_sections.js', has: 'FROM json_each(?1) WHERE true', why: "upsert(): a ride counted into ride_sections by cell or ride_blocks by block, the table and its key spliced in; an upsert on the key, a row read for each of the ride's keys not there and two for each that is — some 320 for four kilometres into the squares and a fifth of that into the blocks" }
 ];
 
 function modules(dir) {

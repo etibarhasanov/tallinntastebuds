@@ -721,6 +721,11 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   given: each the router's question, no row read for the way, and the
   session's two rows by key where the rider is signed in — 240 rows a
   ridden hour.
+- A place picked mid-ride, written on 2026-11-27 and in no release yet:
+  asked with `heading` only while the rider is going — a point kept in the
+  last twenty seconds — and standing or paused with none, as before a
+  ride, so its ways are BRouter's and the rides are read. One request a
+  place picked, as before; now the dearer kind, up to six hundred keys.
 - Its new way after a train, written on 2026-11-25 and in no release yet:
   the same question with no `heading`, from where its rider got off. On a
   train or in a car — the phone measuring itself past 40 km/h — it asks
@@ -756,6 +761,13 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   router's as it was — but, from 2026-11-25, where every way the router
   set off by goes through a passage that is not there, a wall, the ways
   with a `heading` are BRouter's too, in the same fields: **Walls** in
+  `docs/handbook.md`.
+- Its way through where people ride, from 2026-11-27, which asks nothing
+  new and adds no field: with no `heading`, one of the three ways may be
+  one BRouter was asked for through a street riders use and no other way
+  takes, offered only where it is the ridden way and marked `ridden: true`
+  as that way always was, in the last place. An installed app shows it as
+  the *Ridden* button it already knows — **Ways people have ridden** in
   `docs/handbook.md`.
 - Its lists, signed in: `GET /api/v1/me/lists`, reading `lists` with `id`, `title`
   and `n`; and `POST /api/v1/me/lists` with `create` (`title`, answered `id` and

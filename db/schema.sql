@@ -2252,6 +2252,38 @@ CREATE TABLE IF NOT EXISTS ride_sections (
   steady     INTEGER NOT NULL DEFAULT 0
 );
 
+-- One row is one block of the city, eight squares by eight — about 225
+-- metres a side — crossed one way, and what the rides that crossed it that
+-- way say about it, in the same columns and with the same meanings as
+-- ride_sections above, a block at a time: a ride counts once in `rides`
+-- however many of the block's squares it crossed, and `steady` is a ride
+-- that held its own pace over all its steps in the block. Filled by the
+-- same save, just after the squares and in a batch of its own; read by a
+-- bike route in functions/api/route.js to find where people ride between
+-- two points without reading every square on the way, and to know how a
+-- part of town rides, against which each of its squares is weighed —
+-- BLOCKS in functions/api/_sections.js. Answered to nobody. Added on
+-- 2026-11-27, and filled once that day from the squares already counted
+-- by db/ride-blocks.sql, which has to run before the first save counts a
+-- block — it holds the rides that were counted and not kept.
+--
+-- The one question it is asked, and the key that answers it:
+--   these blocks, crossed these ways          block IN (…) — the key
+CREATE TABLE IF NOT EXISTS ride_blocks (
+  -- The block, by its row and column — a square's, divided by eight and
+  -- rounded down — and the way across it: `29715:6188:7`.
+  block      TEXT    PRIMARY KEY,
+  rides      INTEGER NOT NULL DEFAULT 0,
+  meters     INTEGER NOT NULL DEFAULT 0,
+  timed      INTEGER NOT NULL DEFAULT 0,
+  paced      INTEGER NOT NULL DEFAULT 0,
+  seconds    INTEGER NOT NULL DEFAULT 0,
+  slow       INTEGER NOT NULL DEFAULT 0,
+  stops      INTEGER NOT NULL DEFAULT 0,
+  updated_at INTEGER NOT NULL,
+  steady     INTEGER NOT NULL DEFAULT 0
+);
+
 -- One row is the long middle of a bike way between two cities: the road
 -- from the first junction after the way leaves one city's box to the last
 -- before it enters the other's, as the router gave it. A bike route between
