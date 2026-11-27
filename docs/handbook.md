@@ -3993,11 +3993,12 @@ that never throws — a missing or failing block table costs a ride its
 blocks and nothing else — and add about a fifth to what a save reads and
 writes: a ride of two and a half kilometres from Herne up Kentmanni to
 Balti jaam was 14 blocks and ways against 64 squares, under `pages dev` on
-2026-11-27. They were filled once, on the day the
-table was made, from the squares already counted, by `db/ride-blocks.sql`,
-which says where a block made of squares differs from one made of rides;
-`tools/ridesections.mjs` counts them again from the kept rides with the
-squares. **BLOCKS** in `functions/api/_sections.js`.
+2026-11-27. The rides from before the table were filled in from the
+squares already counted: by hand on the day it was made, for the blocks two
+rides or more had crossed, and by `db/ride-blocks.sql` for the rest, which
+can run at any time and again, and says where a block made of squares
+differs from one made of rides. `tools/ridesections.mjs` counts them again
+from the kept rides with the squares. **BLOCKS** in `functions/api/_sections.js`.
 
 **One thing reads it, and nothing answers it.** A bike route weighs its
 ways by it, and since 2026-11-27 finds through the blocks where people ride
