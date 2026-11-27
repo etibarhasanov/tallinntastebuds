@@ -743,6 +743,20 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   it likes: the app measures it whole now, where until then it left out
   every step over 250 m and placed the turns after a train kilometres
   early.
+- Its station at the platform, from 2026-11-27, which asks nothing new
+  and changes no field. Where the site has a station's platform written
+  down — `PLATFORMS` in `functions/api/route.js`, Ülemiste while it is
+  rebuilt, with its lift and its stairs — a train's first ride ends in
+  `arrive` at the top of a way up, with no turn after the gate it begins
+  at, and the ride on begins at one; and the train's `line` begins there,
+  runs to the end of the platform behind the train and back along all of
+  it, where each was the planner's one point for the station — at
+  Ülemiste 100 to 150 m from the platform, and the ride to it across the
+  tracks. Every build measures its rider against that line, carries a
+  point near the rail as the train's and judges nothing of it, and names
+  the two stations at the rail's ends, so the builds on phones say
+  nothing on the platform as they are; the promise is the one above, that
+  the `line` begins at the station. **Platforms** in `docs/handbook.md`.
 - Its ways by bike, from 2026-11-23: with no `heading`, and but for a ride
   between cities, the ways are BRouter's, in the same fields and the same
   words of `turn`

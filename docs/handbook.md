@@ -3292,6 +3292,10 @@ train on the first morning it was tried. One train and no change, and no
 fare: the Tallinn card makes the train free for some and not for others, and
 the bar does not guess which.
 
+Since 2026-11-27 the rides either side go to the platform where it is not
+at the planner's point for the station, and the rail begins and ends there
+— Ülemiste, while it is being rebuilt: **Platforms**.
+
 Since 2026-11-25 the train's leg also says where the train itself is going,
 `headsign` — *Narva*, for the RE33 somebody rides two stops to Ülemiste. It
 is the word on the platform's board and on the front of the train, and it is
@@ -4429,6 +4433,87 @@ at the edge after.
 tools/routecheck.mjs` after it: the bars change what BRouter is asked for
 every pinned trip near one, and a pinned way that went through it is one
 the owner has just said is wrong.
+
+## Platforms
+
+A platform is a third thing: not a way the map lacks and not one it has
+wrongly, but a station that is not where the planner says it is.
+
+**The picture.** On 2026-11-26 the owner sent one from Rattatee at
+Ülemiste, on the way to a train: *You're off the way · 70 m from it*,
+standing by the lift up to the platform, having been told so a few times
+on the way there. The way on the screen was the site's. The planner,
+peatus.ee, says where a station is with one point, and while Ülemiste is
+being rebuilt its points there, one each way, are a hundred to a hundred
+and fifty metres down the track west of the platform the trains stop at
+now. Asked to ride to one, BRouter went down through the passage
+under the tracks and ended on their far side, by Suur-Sõjamäe, where there
+is no platform at all; and Rattatee named the station there too, at the
+first point of the train's line. What the owner did, and what the ground
+asks for, is the other way: east along Ülemiste tee to the gate by the
+bike stands, down the footpath beside the railway, and up — in the lift,
+or by the stairs at the footpath's east end, which are in a place of
+their own.
+
+**What is written down.** `PLATFORMS` in `functions/api/route.js` holds
+each as the planner's name for the station, the two `ends` of its
+platform and its `ups`, the ways up: each the way on foot from where a
+bike can be ridden to, its first point, to the platform, its last. For
+Ülemiste the platform is 230 m, and there are two ways up, the lift and
+the stairs, both beginning at the gate, where both routers end when they
+are asked to ride to the lift — read off the owner's picture, the map's
+own drawing of the platform and the owner's word for the stairs, and the
+owner's to correct: nobody has ridden the new way with the app yet. It is
+in the route and not in OpenStreetMap for the reason a door and a wall
+are, and it is matched by the name and by the planner's point being
+within a kilometre, since a name is not a place.
+
+**From the gate, riders find their own way.** The owner's words on
+2026-11-27: the lift or the stairs, it is fine, and nothing to complain
+about. So the ride's turns end at the gate, a way up carries none, and
+the next word is `arrive` on the platform. And the whole platform is the
+train's: the train's `line` begins at the top of a way up, runs to the
+end of the platform behind the train and back along all of it, and on —
+and the other way round for a train arriving. Rattatee, every build of
+it, carries a point near the rail as the train's and judges nothing of
+it, so up whichever way, and along the platform to wherever the bikes go
+on, nobody is told they are off the way or going the wrong way. The way
+up the ride goes by is the one whose top is nearest that end, so the run
+back is short: the stairs for a train setting off west, the lift for one
+setting off east. The map draws that one, as any ride is drawn; nothing
+tells a rider to take it.
+
+**What an answer is then.** The ride to the station is the router's to
+the gate with the way up after it, one leg; the ride on from a station is
+the same backwards. A way up is counted at a metre a second, a bike
+pushed and a lift waited for or the stairs climbed, so it is in the leg's
+metres and seconds and `leave` is that much earlier — a minute or two, at
+Ülemiste. Every field is as it was.
+
+**What an installed app makes of it.** Rattatee measures its rider
+against the line it was given, sixty metres either side, and the build on
+phones that day has no rule for a station at all. The owner's ride, read
+off the picture and put to that rule: against the way the site answered,
+off it before the lift and up to 296 m from it at the far end of the
+platform — and at 150 m that build asks a new way by bike and drops the
+train. Against the way it answers now — west and east, boarding and
+arriving, up and down by the lift and by the stairs, to either end of the
+platform and back, and with a phone's few metres of wander — it says
+nothing at all. The build after waits within 250 m of the top the rail
+begins at, which takes in the gate, both ways up and most of the
+platform; it takes a rider 300 m along the rail for one the train has
+carried off, and the run to the end and back is part of that, so at the
+very far end of the platform its row may show the train's distance a
+little early — nothing said, and nothing asked.
+
+**What it costs.** No request and no row: the same two rides are asked,
+to the gate.
+
+**The next platform** is an entry in `PLATFORMS` and a sentence here.
+Trains are not in the pinned trips — the planner is answered as down
+there — so nothing in CI holds one, and it is tried against the live
+planner before it lands. Ülemiste's comes out when the station is finished
+and the planner's point is on its platform.
 
 ## Ways people have ridden
 
