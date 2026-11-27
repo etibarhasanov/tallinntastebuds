@@ -11,9 +11,11 @@
  * rides say about a street** in docs/handbook.md.
  *
  * One thing reads it: /api/v1/route, which by bike weighs the ways its routers
- * offer by the squares under them and puts the one riders made the most of
- * first — riddenShare() at the foot of this file, RIDDEN in ./route.js.
- * Nothing answers a square to anybody.
+ * offer by the squares under them and marks the one riders made the most of
+ * — riddenShare() below, RIDDEN in ./route.js — and, since 2026-11-27, asks
+ * its router for one more way through where people ride and the ways
+ * offered do not — riddenPlace() at the foot of this file. Nothing answers
+ * a square to anybody.
  *
  * A SQUARE, AND WHY NOT A STREET
  *
@@ -182,6 +184,36 @@
  * answers `not-ready` and the phone sends it again later. A read throws
  * the same way and its caller offers no ridden way. A row from before the
  * directions is keyed by its square alone, which no read asks for.
+ *
+ * BLOCKS
+ *
+ * The squares answer "how does this way ride", for the ways a router has
+ * drawn. They cannot cheaply answer "where do people ride between here and
+ * there": a band two kilometres long and half a kilometre wide is some
+ * fifteen hundred squares, three thousand rows with the two ways a trip
+ * goes, five times what a route may read. So the same rides are counted a
+ * second time into `ride_blocks`, BLOCK squares by BLOCK — about 225 m a
+ * side — each way across, in the same columns and by the same sectionsOf()
+ * with blockAt() for where a step belongs: a ride is one in a block's
+ * `rides` however many of its squares it crossed, and `steady` is the ride
+ * having held its own pace over its steps in the block. The same band is
+ * then a few dozen blocks.
+ *
+ * And a block says how its part of town rides. Everybody is slower in the
+ * Old Town, so a square there held against the rider's whole ride looks
+ * poor next to any square on a main road; held against its block it is
+ * judged against the streets around it.
+ *
+ * A save counts the blocks after the squares, in a batch of their own that
+ * never throws — countRuns() in ./rides.js — so a block table that is
+ * missing or failing costs a ride its blocks and nothing else. Under
+ * `pages dev` on 2026-11-27 a ride of two and a half kilometres from Herne
+ * up Kentmanni to Balti jaam was 14 blocks and ways across them against 64
+ * squares: the blocks add about a fifth to what a save reads and writes.
+ * They were filled once from the squares already counted, by
+ * db/ride-blocks.sql, which says how near a block made of squares is to
+ * one made of rides, and tools/ridesections.mjs counts them again from the
+ * kept rides with the squares.
  */
 
 /* A square's height and width in degrees: 0.00025 of latitude is 27.8 m
@@ -190,6 +222,12 @@
    square, and a phone's five to ten metres of error mostly stays inside. */
 export const CELL_LAT = 0.00025;
 export const CELL_LNG = 0.0005;
+
+/* A block's side, in squares — BLOCKS. Eight is about 225 m: a few city
+   blocks, wide enough that a band across town is a few dozen of them and
+   narrow enough that one is a single part of town. db/ride-blocks.sql
+   restates it. */
+export const BLOCK = 8;
 
 /* Two points further apart than this were not ridden between: the ride was
    paused, or the page was hidden, and it went on somewhere else. The
@@ -255,6 +293,12 @@ export function metresBetween(a, b) {
 /* The square a point is in. */
 export function cellOf(point) {
   return Math.round(point[0] / CELL_LAT) + ':' + Math.round(point[1] / CELL_LNG);
+}
+
+/* The block a point is in — BLOCKS below: its square's row and column,
+   each divided by BLOCK and rounded down. */
+export function blockAt(point) {
+  return Math.floor(Math.round(point[0] / CELL_LAT) / BLOCK) + ':' + Math.floor(Math.round(point[1] / CELL_LNG) / BLOCK);
 }
 
 /* Where a step from `a` to `b` is heading, in compass points from north
@@ -327,8 +371,9 @@ function stretchesOf(steps) {
    pairs and `track` the [t, acc] pairs beside it — or [t, acc, alt], which
    reads the same here — or nothing. A step over GAP is skipped rather than
    counted, so a ride stored before lines were cut at one cannot put its
-   straight line into the table. */
-export function sectionsOf(line, track) {
+   straight line into the table. With blockAt as `place` the same ride is
+   counted into blocks instead, for `ride_blocks` — BLOCKS below. */
+export function sectionsOf(line, track, place = cellOf) {
   const timed = Array.isArray(track) && track.length === line.length;
   const steps = [];
   for (let i = 1; i < line.length; i++) {
@@ -336,7 +381,7 @@ export function sectionsOf(line, track) {
     if (d > GAP) continue;
     const dt = timed ? track[i][0] - track[i - 1][0] : -1;
     steps.push({
-      key: cellOf(line[i]) + ':' + Math.round(headingOf(line[i - 1], line[i])) % DIRS,
+      key: place(line[i]) + ':' + Math.round(headingOf(line[i - 1], line[i])) % DIRS,
       d: d,
       dt: dt,
       kind: stepKind(d, dt)
@@ -398,44 +443,54 @@ export function roomFor(id) {
   return drawn % TENTH === 0 ? MOST : FULL;
 }
 
-/* What is left of a sum when a ride is counted into its square: all of it
-   under FULL (?4), and FADE (?5) of it from there on. */
-const FADED = '(CASE WHEN ride_sections.rides >= ?4 THEN ?5 ELSE 1 END)';
+/* The statement that adds a ride's rows to one of the two tables — NUDGED —
+   for `table`, keyed by `key`. One statement whatever the ride's length:
+   the rows go in as one JSON parameter and json_each() deals them out.
+   `WHERE true` is what SQLite needs to tell an upsert's ON from a join's.
+   A row nobody has ridden goes in whatever the ride; one with no room for
+   this ride — roomFor() — is left as it was, and costs no row written.
+   What is left of a sum when a ride is counted in is all of it under FULL
+   (?4), and FADE (?5) of it from there on. */
+function upsert(table, key) {
+  const faded = '(CASE WHEN ' + table + '.rides >= ?4 THEN ?5 ELSE 1 END)';
+  return 'INSERT INTO ' + table + ' (' + key + ', rides, meters, timed, paced, seconds, steady, slow, stops, updated_at) ' +
+    'SELECT value ->> 0, 1, value ->> 1, value ->> 2, value ->> 3, value ->> 4, value ->> 5, value ->> 6, ' +
+    'value ->> 7, ?2 FROM json_each(?1) WHERE true ' +
+    'ON CONFLICT (' + key + ') DO UPDATE SET ' +
+    'rides = rides * ' + faded + ' + 1, ' +
+    'meters = meters * ' + faded + ' + excluded.meters, ' +
+    'timed = timed * ' + faded + ' + excluded.timed, ' +
+    'paced = paced * ' + faded + ' + excluded.paced, ' +
+    'seconds = seconds * ' + faded + ' + excluded.seconds, ' +
+    'steady = steady * ' + faded + ' + excluded.steady, ' +
+    'slow = slow * ' + faded + ' + excluded.slow, ' +
+    'stops = stops * ' + faded + ' + excluded.stops, ' +
+    'updated_at = excluded.updated_at ' +
+    'WHERE ' + table + '.rides < ?3';
+}
 
-/* The statement that adds the rows of the ride with this id to the table —
-   NUDGED — or null for a ride with none. One statement whatever the ride's
-   length: the rows go in as one JSON parameter and json_each() deals them
-   out. `WHERE true` is what SQLite needs to tell an upsert's ON from a
-   join's. A square nobody has ridden goes in whatever the ride; one with
-   no room for this ride — roomFor() — is left as it was, and costs no row
-   written. It throws, when it is run, where the table is not applied or
-   has no `steady` yet; the caller decides what that costs.
+/* Where a ride is counted: into its squares, and into its blocks. */
+const INTO = {
+  squares: { sql: upsert('ride_sections', 'cell'), place: cellOf },
+  blocks: { sql: upsert('ride_blocks', 'block'), place: blockAt }
+};
 
-   What it reads is two rows for every square that is there and one for
-   every square that is not, whether or not it then writes: 322 for a ride
-   of four kilometres down a street already ridden, under `wrangler dev` on
-   2026-11-20. A hundred rides an hour is 770,000 rows a day of the five
-   million. */
-export function tally(env, rows, id) {
+/* The statement that adds the ride with this id, its `line` and `track`,
+   to the squares or to the blocks — or null for a ride with no row there.
+   It throws, when it is run, where the table is not applied or has no
+   `steady` yet; the caller decides what that costs.
+
+   What it reads is two rows for every row that is there and one for every
+   row that is not, whether or not it then writes: 322 for a ride of four
+   kilometres down a street already ridden, into the squares, under
+   `wrangler dev` on 2026-11-20. A hundred rides an hour is 770,000 rows a
+   day of the five million. The same ride's blocks are about a fifth of
+   that — BLOCKS below. */
+export function tally(env, line, track, id, into = 'squares') {
+  const { sql, place } = INTO[into];
+  const rows = sectionsOf(line, track, place);
   if (!rows.length) return null;
-  return env.DB
-    .prepare(
-      'INSERT INTO ride_sections (cell, rides, meters, timed, paced, seconds, steady, slow, stops, updated_at) ' +
-      'SELECT value ->> 0, 1, value ->> 1, value ->> 2, value ->> 3, value ->> 4, value ->> 5, value ->> 6, ' +
-      'value ->> 7, ?2 FROM json_each(?1) WHERE true ' +
-      'ON CONFLICT (cell) DO UPDATE SET ' +
-      'rides = rides * ' + FADED + ' + 1, ' +
-      'meters = meters * ' + FADED + ' + excluded.meters, ' +
-      'timed = timed * ' + FADED + ' + excluded.timed, ' +
-      'paced = paced * ' + FADED + ' + excluded.paced, ' +
-      'seconds = seconds * ' + FADED + ' + excluded.seconds, ' +
-      'steady = steady * ' + FADED + ' + excluded.steady, ' +
-      'slow = slow * ' + FADED + ' + excluded.slow, ' +
-      'stops = stops * ' + FADED + ' + excluded.stops, ' +
-      'updated_at = excluded.updated_at ' +
-      'WHERE ride_sections.rides < ?3'
-    )
-    .bind(JSON.stringify(rows), Date.now(), roomFor(id), FULL, FADE);
+  return env.DB.prepare(sql).bind(JSON.stringify(rows), Date.now(), roomFor(id), FULL, FADE);
 }
 
 /* ------------------------------------------------------------ a way, weighed
@@ -444,22 +499,39 @@ export function tally(env, rows, id) {
  *
  * A way is walked STRIDE metres at a time and each stride asks its square
  * for the two compass points its heading lies between. A square counts as
- * ridden once MIN_RIDES rides crossed it that way, and that is all the
- * number of rides decides: that everybody goes one way does not make it
- * the better one, only the surer one. `share` is the part of the way's
- * length on ridden squares. `score` is that length again with each square
- * weighed by how many of its timed rides held their own pace there —
- * `steady` over `timed`, or UNTIMED where no ride through it had a clock —
- * so a way half of which is ridden steadily scores a half, and one ridden
- * all the way at a crawl scores nothing.
+ * ridden once MIN_RIDES rides crossed it that way: two, since 2026-11-27,
+ * so one stray ride does not make a street ridden — on that day a street
+ * one rider had used twice was marked Ridden over a parallel one ridden
+ * seven times. `share` is the part of the way's length on ridden squares.
+ *
+ * `score` is that length again, each square weighed by two things. How sure
+ * the riding is: TRUSTED rides or more is full weight, fewer a share of it,
+ * so seven riders through a square count for more than one. And how well it
+ * rode against its part of town — HELD AGAINST ITS BLOCK below. A way half
+ * of which is ridden steadily, by plenty, scores about a half.
+ *
+ * HELD AGAINST ITS BLOCK
+ *
+ * Until 2026-11-27 a square's quality was its own share of timed rides that
+ * held their pace, `steady` over `timed`, and everybody is slower in the Old
+ * Town: every square there looked poorer than any on a main road, so a way
+ * through the Old Town lost to a way round it however good its streets.
+ * Now a square is held against its block — BLOCKS above — the same way:
+ * a half where it rides as the streets around it do, more where riders keep
+ * their pace better there, less where they keep it worse. A square no timed
+ * ride crossed is UNTIMED, a half. Where a trip's blocks are more than
+ * AREA_KEYS — a trip of many kilometres — or the block table is not there,
+ * every square is held against nothing but itself, as it was before: the
+ * ways of one trip are always weighed the same way as each other.
  *
  * WHAT A READ COSTS
  *
  * A lookup on the key for every square and direction asked about, and
  * never more than SCORE_ROWS of them: a longer trip is walked in longer
  * strides until its squares fit, so a way across the city is sampled where
- * a way round the corner is read whole. D1 bills the rows a statement
- * walks, and how the squares are handed to it decides what that is.
+ * a way round the corner is read whole. Then the blocks under the strides
+ * kept, AREA_KEYS of them at most. D1 bills the rows a statement walks, and
+ * how the keys are handed to it decides what that is.
  *
  * Until 2026-11-19 they went in as one JSON parameter, `cell IN (SELECT
  * value FROM json_each(?))`, and this comment said a lookup that finds
@@ -469,41 +541,65 @@ export function tally(env, rows, id) {
  * rows for a ride from Herne to Narva maantee that asked 412 squares and
  * found 36, and 1,800 at the worst where 600 was written.
  *
- * So the squares go in as LOOKUP's VALUES, bound one by one, and the table
- * is joined to them. Rows written out in a statement are not rows read, and
- * a seek that finds nothing is not one either: the same twelve squares, one
+ * So the keys go in as LOOKUP's VALUES, bound one by one, and the table is
+ * joined to them. Rows written out in a statement are not rows read, and a
+ * seek that finds nothing is not one either: the same twelve squares, one
  * of them there, read 25 rows the old way and 1 this way, and that ride
  * reads 36. D1 binds a hundred values a statement at the most, so a
- * statement asks ASKED squares, the last one filled up with NULLs, which
- * match nothing and read nothing, and the statements go as one batch. None
+ * statement asks ASKED keys, the last one filled up with NULLs, which match
+ * nothing and read nothing, and the statements go as one batch. None
  * answers more than ASKED rows.
  *
- * SCORE_ROWS rows is then the worst there is, on the day every square
- * asked about has been ridden that way, and on any other day what has been:
- * 5,000,000 rows a day is 8,300 routes at the very worst. It is asked for
- * every bike route the site works out — ./route.js lets the phone that
- * asked keep the answer an hour, and nobody else.
+ * A route reads the table twice at most — WHERE PEOPLE RIDE below, then
+ * this — and the two together never ask more than 600 keys: BAND_KEYS and
+ * PLACE_KEYS for the first, SCORE_ROWS and AREA_KEYS for this. 600 is the
+ * worst there is, on the day every key asked about has been ridden that
+ * way, and on any other day what has been: 5,000,000 rows a day is 8,300
+ * routes at the very worst. It is asked for every bike route the site works
+ * out with no heading — ./route.js lets the phone that asked keep the answer
+ * an hour, and nobody else.
  */
 const STRIDE = 14;
-const MIN_RIDES = 1;
+const MIN_RIDES = 2;
+const TRUSTED = 5;
 const UNTIMED = 0.5;
-const SCORE_ROWS = 600;
+const SCORE_ROWS = 300;
+const AREA_KEYS = 72;
 
-/* Fifty squares a statement, and how many that is read off the statement
-   itself, so the two cannot disagree. */
-const LOOKUP =
-  'SELECT s.cell, s.rides, s.timed, s.steady FROM (VALUES ' +
+/* Fifty keys a statement, written once for both tables, and how many that
+   is read off the statement itself, so the two cannot disagree. */
+const FIFTY =
   '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?), ' +
   '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?), ' +
   '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?), ' +
   '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?), ' +
-  '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?)' +
+  '(?), (?), (?), (?), (?), (?), (?), (?), (?), (?)';
+const LOOKUP = 'SELECT s.cell AS key, s.rides, s.meters, s.timed, s.steady FROM (VALUES ' + FIFTY +
   ') v CROSS JOIN ride_sections s ON s.cell = v.column1';
-const ASKED = LOOKUP.split('(?)').length - 1;
+const LOOKUP_BLOCKS = 'SELECT s.block AS key, s.rides, s.meters, s.timed, s.steady FROM (VALUES ' + FIFTY +
+  ') v CROSS JOIN ride_blocks s ON s.block = v.column1';
+const ASKED = FIFTY.split('(?)').length - 1;
 
-/* A line as strides: [cell, lower point, metres], the upper point being
-   the next one round. Every `every`th stride is kept and stands for the
-   ones between. */
+/* The rows of these keys, out of the squares or the blocks, as a Map from
+   key to row: one batch of ASKED keys a statement — WHAT A READ COSTS. */
+async function lookUp(env, keys, blocks = false) {
+  const all = [...keys];
+  const asks = [];
+  for (let i = 0; i < all.length; i += ASKED) {
+    const some = all.slice(i, i + ASKED);
+    asks.push(env.DB.prepare(blocks ? LOOKUP_BLOCKS : LOOKUP).bind(...some, ...Array(ASKED - some.length).fill(null)));
+  }
+  const answers = asks.length ? await env.DB.batch(asks) : [];
+  return new Map(answers.flatMap((answer) => answer.results || []).map((row) => [row.key, row]));
+}
+
+/* The share of a row's timed rides that held their pace, or null for a row
+   with none. */
+const steadyOf = (row) => (row && row.timed > 0 ? row.steady / row.timed : null);
+
+/* A line as strides: [cell, block, lower point, metres], the upper point
+   being the next one round. Every `every`th stride is kept and stands for
+   the ones between. */
 function stridesOf(line, every) {
   const out = [];
   let n = 0;
@@ -515,11 +611,8 @@ function stridesOf(line, every) {
     for (let k = 1; k <= parts; k++) {
       if (n++ % every) continue;
       const f = k / parts;
-      out.push([
-        cellOf([line[i - 1][0] + (line[i][0] - line[i - 1][0]) * f, line[i - 1][1] + (line[i][1] - line[i - 1][1]) * f]),
-        lower,
-        d / parts
-      ]);
+      const at = [line[i - 1][0] + (line[i][0] - line[i - 1][0]) * f, line[i - 1][1] + (line[i][1] - line[i - 1][1]) * f];
+      out.push([cellOf(at), blockAt(at), lower, d / parts]);
     }
   }
   return out;
@@ -532,32 +625,166 @@ export async function riddenShare(env, lines) {
     ways = lines.map((line) => stridesOf(line, every));
     keys = new Set();
     for (const strides of ways) {
-      for (const [cell, lower] of strides) keys.add(cell + ':' + lower).add(cell + ':' + (lower + 1) % DIRS);
+      for (const [cell, , lower] of strides) keys.add(cell + ':' + lower).add(cell + ':' + (lower + 1) % DIRS);
     }
     if (keys.size <= SCORE_ROWS) break;
   }
-  /* A lookup on the key, `cell`, for each of at most SCORE_ROWS values,
-     ASKED a statement — WHAT A READ COSTS above. */
-  const all = [...keys];
-  const asks = [];
-  for (let i = 0; i < all.length; i += ASKED) {
-    const some = all.slice(i, i + ASKED);
-    asks.push(env.DB.prepare(LOOKUP).bind(...some, ...Array(ASKED - some.length).fill(null)));
+  const areas = new Set();
+  for (const strides of ways) {
+    for (const [, block, lower] of strides) areas.add(block + ':' + lower).add(block + ':' + (lower + 1) % DIRS);
   }
-  const answers = asks.length ? await env.DB.batch(asks) : [];
-  const rows = new Map(answers.flatMap((answer) => answer.results || []).map((row) => [row.cell, row]));
+  /* The blocks are asked beside the squares and are worth nothing without
+     them, so a block table that is missing costs the comparison and not
+     the weighing — HELD AGAINST ITS BLOCK. */
+  const [rows, blocks] = await Promise.all([
+    lookUp(env, keys),
+    areas.size <= AREA_KEYS ? lookUp(env, areas, true).catch(() => null) : null
+  ]);
   return ways.map((strides) => {
     let all = 0;
     let ridden = 0;
     let score = 0;
-    for (const [cell, lower, d] of strides) {
+    for (const [cell, block, lower, d] of strides) {
       all += d;
-      const found = [rows.get(cell + ':' + lower), rows.get(cell + ':' + (lower + 1) % DIRS)].filter(Boolean);
-      const sum = (name) => found.reduce((n, row) => n + row[name], 0);
-      if (sum('rides') < MIN_RIDES) continue;
+      const pair = (from, key) => [from.get(key + ':' + lower), from.get(key + ':' + (lower + 1) % DIRS)].filter(Boolean);
+      const found = pair(rows, cell);
+      const sum = (of, name) => of.reduce((n, row) => n + row[name], 0);
+      if (sum(found, 'rides') < MIN_RIDES) continue;
       ridden += d;
-      score += d * (sum('timed') ? sum('steady') / sum('timed') : UNTIMED);
+      const own = steadyOf({ timed: sum(found, 'timed'), steady: sum(found, 'steady') });
+      const area = blocks ? pair(blocks, block) : [];
+      const around = steadyOf({ timed: sum(area, 'timed'), steady: sum(area, 'steady') });
+      const quality = own === null ? UNTIMED
+        : !blocks ? own
+          : Math.min(1, Math.max(0, 0.5 + (own - (around === null ? own : around)) / 2));
+      score += d * quality * Math.min(1, sum(found, 'rides') / TRUSTED);
     }
     return all ? { share: ridden / all, score: score / all } : { share: 0, score: 0 };
   });
+}
+
+/* ------------------------------------------------------- where people ride
+ * Where, between two points, people ride a street the ways offered do not:
+ * the middles of a square or two, in the order the trip passes them, for
+ * ./route.js to ask its router for a way through, or none. The squares can weigh a way once a router has drawn it
+ * and cannot draw one, so a street riders use that no router proposes was
+ * never suggested however often it was ridden: on 2026-11-27, from Herne
+ * to Balti jaam, all three ways went some 250 m east of Kentmanni, whose
+ * squares heading north-west held five to seven rides each.
+ *
+ * So the blocks between the two points are read first, in a band BAND
+ * blocks either side of the straight line between them and only in the two
+ * compass points the trip's own heading lies between: a ride the other
+ * way, home, never draws a way out. Of the blocks PLACE_RIDES rides or more
+ * crossed, between the two ends, the ones the offered ways do not
+ * themselves ride along that way for OFFERED metres are ranked by the
+ * metres ridden in them, and the
+ * squares of the first PLACES are read, in the way each was ridden. In
+ * each block the square chosen has PLACE_RIDES rides or more, held its
+ * riders' pace no worse than its block did, is MISSED metres from every
+ * offered way — `near` says which points are not — and FAR metres from
+ * both ends; the most ridden of those, then the one with most metres. One
+ * point was tried first and was not enough: from Herne to Balti jaam
+ * BRouter rode through a square of Kentmanni and left the street either
+ * side of it, a way 48% ridden where the street riders use was 81%.
+ *
+ * What it reads: BAND_KEYS blocks at most, and PLACE_KEYS squares — two
+ * blocks' sixty-four, one way each — billed only where somebody rode. A
+ * trip whose band is past BAND_KEYS even on the line alone, eight
+ * kilometres or so, is not looked at. It throws where a table is not there,
+ * and its caller offers what it would have offered.
+ */
+const BAND = 1;
+const BAND_KEYS = 100;
+const PLACES = 2;
+const PLACE_KEYS = PLACES * BLOCK * BLOCK;
+const PLACE_RIDES = 3;
+const OFFERED = 100;
+const MISSED = 30;
+const FAR = 150;
+
+export async function riddenPlace(env, from, to, lines, near) {
+  const lower = Math.floor(headingOf(from, to)) % DIRS;
+  const ways = [lower, (lower + 1) % DIRS];
+  /* The blocks the straight line crosses, sampled every half a block, and
+     those BAND either side of each — or the line's alone, where the band is
+     past BAND_KEYS. */
+  const length = metresBetween(from, to);
+  const steps = Math.max(1, Math.ceil(length / (BLOCK * 14)));
+  const crossed = [];
+  for (let k = 0; k <= steps; k++) {
+    const at = [from[0] + (to[0] - from[0]) * k / steps, from[1] + (to[1] - from[1]) * k / steps];
+    crossed.push(blockAt(at).split(':').map(Number));
+  }
+  let keys = null;
+  for (const wide of [BAND, 0]) {
+    const blocks = new Set();
+    for (const [row, col] of crossed) {
+      for (let r = -wide; r <= wide; r++) for (let c = -wide; c <= wide; c++) blocks.add((row + r) + ':' + (col + c));
+    }
+    if (blocks.size * ways.length <= BAND_KEYS) {
+      keys = [...blocks].flatMap((block) => ways.map((way) => block + ':' + way));
+      break;
+    }
+  }
+  if (!keys) return [];
+  const found = await lookUp(env, keys, true);
+
+  /* The metres each block is ridden, that way, by the ways offered. */
+  const offered = new Map();
+  for (const line of lines) {
+    for (const [, block, low, d] of stridesOf(line, 1)) {
+      for (const way of [low, (low + 1) % DIRS]) {
+        const key = block + ':' + way;
+        offered.set(key, (offered.get(key) || 0) + d);
+      }
+    }
+  }
+  /* How far along the trip a point is, from nought at `from` to one at
+     `to`, on the straight line between them — a degree of longitude is
+     about half a degree of latitude's metres here, so its share of the dot
+     product is a quarter. A point behind the start or past the end would
+     have the way ride out and back, so neither a block nor a square there
+     is one: on 2026-11-27 a square 150 m behind the start sent the way
+     back down the street it started on, and it lost. */
+  const reach = (to[0] - from[0]) ** 2 + (to[1] - from[1]) ** 2 * 0.26;
+  const along = (p) => ((p[0] - from[0]) * (to[0] - from[0]) + (p[1] - from[1]) * (to[1] - from[1]) * 0.26) / reach;
+  const between = (p) => along(p) > 0 && along(p) < 1;
+  const middle = (key) => {
+    const [row, col] = key.split(':').map(Number);
+    return [(row + 0.5) * BLOCK * CELL_LAT, (col + 0.5) * BLOCK * CELL_LNG];
+  };
+  const ranked = [...found.values()]
+    .filter((row) => row.rides >= PLACE_RIDES && (offered.get(row.key) || 0) < OFFERED && between(middle(row.key)))
+    .sort((a, b) => b.meters - a.meters)
+    .slice(0, PLACES);
+  if (!ranked.length) return [];
+
+  /* Each chosen block's squares, the way it was ridden, and the best of
+     each block's: a point in each of the PLACES blocks, in the order the
+     trip passes them, so the router is held to the street riders use and
+     not only touched to it. Two that are within FAR of each other are one. */
+  const squares = [];
+  for (const block of ranked) {
+    const [row, col, way] = block.key.split(':').map(Number);
+    for (let r = 0; r < BLOCK; r++) {
+      for (let c = 0; c < BLOCK; c++) squares.push({ key: (row * BLOCK + r) + ':' + (col * BLOCK + c) + ':' + way, block });
+    }
+  }
+  const rows = await lookUp(env, squares.map((s) => s.key));
+  const best = new Map();
+  for (const { key, block } of squares) {
+    const row = rows.get(key);
+    if (!row || row.rides < PLACE_RIDES) continue;
+    const own = steadyOf(row);
+    const around = steadyOf(block);
+    if (own !== null && around !== null && own < around) continue;
+    const [r, c] = key.split(':').map(Number);
+    const at = [Number((r * CELL_LAT).toFixed(6)), Number((c * CELL_LNG).toFixed(6))];
+    if (metresBetween(at, from) < FAR || metresBetween(at, to) < FAR || near(at, MISSED)) continue;
+    const was = best.get(block.key);
+    if (!was || row.rides > was.row.rides || (row.rides === was.row.rides && row.meters > was.row.meters)) best.set(block.key, { at, row });
+  }
+  const points = [...best.values()].map((b) => b.at).filter(between).sort((a, b) => along(a) - along(b));
+  return points.filter((p, i) => !i || metresBetween(p, points[i - 1]) >= FAR);
 }

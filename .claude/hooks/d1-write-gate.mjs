@@ -362,6 +362,10 @@ const SIZES = {
      ride a row and an account a row — A RIDE IN NUMBERS in
      functions/api/rides.js. */
   ride_stats: 37, ride_totals: 2,
+  /* Not yet made on 2026-11-27: its size the day db/ride-blocks.sql fills
+     it is a block a tenth or so of ride_sections' 6,291 rows that day,
+     priced high rather than low. */
+  ride_blocks: 1000,
   /* WITHOUT ROWID: the counter's table on the day it stopped the site, and a
      ring that is sixty rows for ever. */
   visitor_counts: 18439, visitor_live: 60,

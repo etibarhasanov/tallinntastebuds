@@ -89,8 +89,10 @@
  * `others`. Same fields, same words; DOORS below.
  *
  * And where people have ridden one of the ways between the two points,
- * that way and held their pace on it, it is the first one, with `ridden:
- * true` beside it — RIDDEN below.
+ * that way and held their pace on it, it says `ridden: true` beside it —
+ * first of the router's ways, where it stands among BRouter's — and where
+ * they ride a street none of the ways takes, a way through it can be one
+ * of them — RIDDEN below.
  *
  * And by bike some streets are not offered at all. A way that rides Tartu
  * maantee, Liivalaia, Pärnu maantee from Vabaduse väljak to Liivalaia, or
@@ -262,7 +264,7 @@
  */
 
 import { json, inEstonia, cityOf, km, dataFile, wrongDatabase } from './_lib.js';
-import { riddenShare } from './_sections.js';
+import { riddenShare, riddenPlace } from './_sections.js';
 import { brouterWays } from './_brouter.js';
 import { VERSION } from '../_public.js';
 import { watchWay } from './_seen.js';
@@ -430,7 +432,7 @@ async function street(context, mode, from, to, heading) {
      router's way would have ended with no way on. */
   if (mode === 'bike' && found.some(walled)) {
     const open = found.filter((one) => !walled(one));
-    const nice = !open.length && heading !== null ? await niceWays(context, from, to) : null;
+    const nice = !open.length && heading !== null ? await niceWays(context, from, to, false) : null;
     if (nice) {
       /* The way a line would be going ridden back to its start is the way
          it sets off, turned round: ahead is within a quarter turn of the
@@ -481,12 +483,16 @@ async function street(context, mode, from, to, heading) {
      through its own streets, which can make two ways one — SETTLING below.
      The first three are settled while the rides are read, and the ridden
      way too where it was further down. */
+  const more = mode === 'bike' && heading === null
+    ? await riddenWay(context, [from.lat, from.lng], [to.lat, to.lng], ways.slice(0, 1 + OTHERS), (points) => oneWay(points))
+    : null;
+  const weighed = more ? ways.concat(more) : ways;
   const [best, settled] = await Promise.all([
-    mode === 'bike' && heading === null ? riddenBest(context, ways, shortest) : -1,
+    mode === 'bike' && heading === null ? riddenBest(context, weighed, shortest) : -1,
     Promise.all(ways.slice(0, 1 + OTHERS).map((one) => settle(one, heading)))
   ]);
   if (best >= 0) {
-    const front = best < settled.length ? settled[best] : await settle(ways[best], heading);
+    const front = best < settled.length ? settled[best] : await settle(weighed[best], heading);
     ways = [Object.assign(front, { ridden: true })].concat(settled.filter((way, i) => i !== best)).slice(0, 1 + OTHERS);
   } else {
     ways = settled;
@@ -757,24 +763,42 @@ function bend(before, after) {
  * they had — a ride home downhill was offered as the way back up — and it
  * read lines where the city's rides had already been counted.
  *
- * So no way is made here now. The ways are the ones the router and the
- * doors offer and the ways round either side, kept off the streets in
+ * So no way is stitched out of rides. The ways are the ones the router and
+ * the doors offer and the ways round either side, kept off the streets in
  * KEEP_OFF and with their spurs off like any other, and each is weighed by
  * the squares under it: riddenShare() in ./_sections.js, which says how
- * much of a way people have ridden in the direction it runs, and how much
- * of that they rode at their own pace. The best of them by that score is
- * the ridden way, where at least RIDDEN_MIN metres and RIDDEN_SHARE of it
- * were ridden and it is no more than RIDDEN_LONGER times the shortest. It
- * goes first, the answer says `ridden: true` beside it, and the bar says
- * somebody rode it; the others follow in the order they had.
+ * much of a way people have ridden in the direction it runs, how surely,
+ * and how well against the part of town it is in. The best of them by
+ * that score is the ridden way, where at least RIDDEN_MIN metres and
+ * RIDDEN_SHARE of it were ridden and it is no more than RIDDEN_LONGER
+ * times the shortest. The answer says `ridden: true` beside it. Of the
+ * router's ways it goes first and the others follow in the order they
+ * had; of BRouter's, it is marked where it stands, since their order is
+ * the owner's, the quietest first — NICE WAYS.
  *
- * What that gives up is the way no router knows: a ride across a yard is
- * offered only once it is a door. What it costs is a lookup in
- * `ride_sections` by its key for each square under the ways, billed only
- * for the squares somebody rode and SCORE_ROWS rows at the most however
- * many rides there are — WHAT A READ COSTS in ./_sections.js. Nothing waits on
- * it: no database, no table, no square ridden — each is the ways exactly
- * as they were.
+ * That only ever weighed what a router drew, so a street no router
+ * proposes was never offered however often it was ridden: on 2026-11-27
+ * the owner asked the way from Herne to Balti jaam and every way went some
+ * 250 m east of Kentmanni, whose squares heading north-west held five to
+ * seven rides each. So since then there is one more candidate. Before the
+ * ways are weighed, riddenWay() asks riddenPlace() in ./_sections.js for
+ * where people ride between the two ends, that way, and the ways offered
+ * do not — a square or two, found through the blocks — and asks the
+ * router for one way through them. It is weighed with the rest under the
+ * same three rules and offered only where it is the ridden way: first of
+ * the router's, and of BRouter's in the last place, or the one before a
+ * way through a door. Anything else, and the answer is what it would have
+ * been. Driven under `pages dev` on 2026-11-27 over five rides up
+ * Kentmanni, the trip offered a way of 2,434 m along it, marked ridden,
+ * where the three of before were 2,498, 2,719 and 2,680 m.
+ *
+ * What it gives up is still the way no router knows: a ride across a yard
+ * is offered only once it is a door. What it costs is a lookup by key in
+ * `ride_blocks` and `ride_sections`, billed only for the keys somebody
+ * rode and 600 keys asked at the most — WHAT A READ COSTS in
+ * ./_sections.js — and one more router request where a place is found,
+ * never with a `heading`. Nothing waits on it: no database, no table, no
+ * key ridden — each is the ways exactly as they were.
  */
 const RIDDEN_MIN = 200;
 const RIDDEN_SHARE = 0.5;
@@ -798,6 +822,28 @@ async function riddenBest(context, ways, shortest) {
     if (best < 0 || score > weighed[best].score) best = i;
   });
   return best;
+}
+
+/* One more way, through where people ride and the ways offered do not —
+   WHERE PEOPLE RIDE in ./_sections.js — asked of the router by `through`,
+   which takes [lat, lng] points to pass in order: or null where there is
+   no such place, no database, or a way through it that is one already
+   offered. It is only ever a candidate: riddenBest() weighs it with the
+   others, and it is offered only where it is the ridden way. */
+async function riddenWay(context, start, end, ways, through) {
+  const env = context.env || {};
+  if (!env.DB || !ways.length) return null;
+  let at;
+  try {
+    if (await wrongDatabase(env)) return null;
+    at = await riddenPlace(env, start, end, ways.map((way) => way.line),
+      (p, within) => ways.some((way) => apart(p, way.line) <= within));
+  } catch (e) {
+    return null;
+  }
+  if (!at.length) return null;
+  const way = await through([start, ...at, end]);
+  return way && !ways.some((one) => alike(way, one)) ? way : null;
 }
 
 /* A way with this share of its points within ALIKE_NEAR metres of another
@@ -1443,7 +1489,9 @@ function afloat(route) {
  *   comes last and is still there to choose: beside traffic next.
  *
  *   The way riders made the most of — RIDDEN above — says `ridden: true`
- *   where it comes in that order and is not moved to the front.
+ *   where it comes in that order and is not moved to the front; a way
+ *   through where people ride, asked of BRouter too, takes the last place
+ *   where it is that way.
  *
  * NOT ASKED with a heading, nor between cities. BRouter's own heading
  * does nothing on brouter.de, and a closed circle behind the rider turned
@@ -1632,8 +1680,11 @@ function borrow(way, other, { i, j, oi, oj }) {
 
 /* The ways by bike from one point to another, quietest first, or null
    where BRouter has none — OFFERED above. The running totals are left
-   behind once the detours are out, since thinning the line unpicks them. */
-async function niceWays(context, from, to) {
+   behind once the detours are out, since thinning the line unpicks them.
+   `look` false asks for no way through where people ride: a rider
+   already going, whose ways these are only where a wall stopped the
+   router's, is not held up by one more request — RIDDEN below. */
+async function niceWays(context, from, to, look = true) {
   const start = [from.lat, from.lng];
   const end = [to.lat, to.lng];
   const found = await brouterWays(context, [start, end], 1 + OTHERS, keptOut(start, end));
@@ -1660,9 +1711,31 @@ async function niceWays(context, from, to) {
   const offered = ways.slice(0, 1 + OTHERS);
   if (through && !offered.includes(through)) offered[OTHERS] = through;
 
-  const best = await riddenBest(context, offered, Math.min(...offered.map((way) => way.meters)));
-  if (best >= 0) offered[best] = Object.assign({}, offered[best], { ridden: true });
+  /* And one more, through where people ride, weighed with them: where it
+     is the ridden way it takes the last place, or the one before a way
+     through a door, and the order of the rest stands — RIDDEN below. */
+  const more = look ? await riddenWay(context, start, end, offered, (points) => niceThrough(context, points)) : null;
+  const weighed = more ? offered.concat(more) : offered;
+  const best = await riddenBest(context, weighed, Math.min(...offered.map((way) => way.meters)));
+  if (best === offered.length) {
+    const last = offered.length <= OTHERS ? offered.length : offered[OTHERS] === through ? OTHERS - 1 : OTHERS;
+    offered[last] = Object.assign({}, more, { ridden: true });
+  } else if (best >= 0) {
+    offered[best] = Object.assign({}, offered[best], { ridden: true });
+  }
   return offered;
+}
+
+/* BRouter's one way through [lat, lng] points in order, kept out of what
+   the two ends keep out of, as niceWays() makes its own: no spur, its line
+   thinned and its turns untied. Or null. */
+async function niceThrough(context, points) {
+  const start = points[0];
+  const end = points[points.length - 1];
+  const found = await brouterWays(context, points, 1, keptOut(start, end));
+  if (!found || !found[0]) return null;
+  const { totals, ...way } = unspur(found[0]);
+  return Object.assign(way, { line: thin(way.line, MAX_POINTS), steps: untie(way.steps, way.line) });
 }
 
 /* ------------------------------------------------------------- long rides

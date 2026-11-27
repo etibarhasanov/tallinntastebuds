@@ -315,7 +315,7 @@
 import { json, sessionUser, wrongDatabase, nearCity, km, randomHex } from './_lib.js';
 import { adminUser } from './_admin.js';
 import { countUse } from './_visitors.js';
-import { pieces, sectionsOf, tally } from './_sections.js';
+import { pieces, tally } from './_sections.js';
 import { arrayOf } from './_rides.js';
 import { rideSeen } from './_seen.js';
 import {
@@ -554,8 +554,9 @@ function riddenOf(body, user) {
 }
 
 /* A ride with no account behind it: counted, and not kept, after its answer
-   has gone — ANSWERED BEFORE IT IS COUNTED. Its runs go in one batch, so the
-   ride is counted whole or not at all, and it throws where the batch does,
+   has gone — ANSWERED BEFORE IT IS COUNTED. Its runs go into the squares in
+   one batch, so the ride is counted whole or not at all, and into the
+   blocks after them — countRuns() below. It throws where the squares do,
    which its caller lets go. Which rides a full square takes is drawn here,
    a ride having no row to read it off.
    Under `wrangler dev` on 2026-11-20 a ride of four kilometres read 161
@@ -563,8 +564,23 @@ function riddenOf(body, user) {
    162 down one ridden a few times, and down one whose squares were full
    read 320 and wrote about ten, nine saves in ten, and 162 the tenth. */
 async function count(env, ride) {
-  const counts = ride.runs.map((run) => tally(env, sectionsOf(run.line, run.track), randomHex(6))).filter(Boolean);
-  if (counts.length) await env.DB.batch(counts);
+  await countRuns(env, ride.runs, ride.runs.map(() => randomHex(6)));
+}
+
+/* A ride's runs counted into the squares, each under its id, in one batch
+   that throws where it fails; then into the blocks, in a batch of their
+   own that never does — BLOCKS in ./_sections.js. A block table that is
+   missing or failing costs the ride its blocks and nothing else, so the
+   squares, which the routes have read since 2026-11-19, never wait on the
+   table that came after them. */
+async function countRuns(env, runs, ids) {
+  const into = (where) => runs.map((run, i) => tally(env, run.line, run.track, ids[i], where)).filter(Boolean);
+  const squares = into('squares');
+  if (squares.length) await env.DB.batch(squares);
+  try {
+    const blocks = into('blocks');
+    if (blocks.length) await env.DB.batch(blocks);
+  } catch (e) { /* No ride_blocks yet. */ }
 }
 
 /* A ride with an account behind it: kept and counted, and its
@@ -623,8 +639,7 @@ async function keep(context, user, body, ride) {
   /* WHAT THE RIDE SAYS ABOUT THE STREETS, each run under its own row's id.
      Not there yet, or failed: the ride is kept, uncounted. */
   try {
-    const counts = runs.map((run, i) => tally(env, sectionsOf(run.line, run.track), rows[i][0])).filter(Boolean);
-    if (counts.length) await env.DB.batch(counts);
+    await countRuns(env, runs, rows.map((row) => row[0]));
   } catch (e) { /* No ride_sections yet, or none with `steady`. */ }
   /* A RIDE IN NUMBERS, under the first run's id, which a drop of that run
      takes off again. Not there yet, or failed: the ride is kept, and the
