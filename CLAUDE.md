@@ -85,11 +85,10 @@ does not have to:
   pot as the live site, since that one binding runs remotely even there.
   Driving the chat for an afternoon puts the live site out of model until
   midnight UTC. Ask it a few questions, not fifty.
-- **Driving a page reaches none of the owner's statistics.** Microsoft
-  Clarity loads only on tallinntastebuds.ee and its subdomains, and never in
-  a browser that sets `navigator.webdriver`, which Playwright does — so a
-  localhost under `pages dev` or `http.server` records nothing. On the live
-  hosts the site's own count leaves the same browsers out, and `/api/stats`
+- **Driving a page reaches none of the owner's statistics.** The site's own
+  count is the only one — Microsoft Clarity came off every page on
+  2026-11-27 — and on the live hosts it leaves out a browser that sets
+  `navigator.webdriver`, which Playwright does, and `/api/stats`
   refuses a `HeadlessChrome` user agent besides; under `pages dev` it counts
   them, into the local copy of the database, so a change to the count can
   still be driven. The owner asked for sessions out of every statistic on

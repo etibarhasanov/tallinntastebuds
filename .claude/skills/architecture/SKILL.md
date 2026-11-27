@@ -174,7 +174,7 @@ and the profile's networks — and the validator holds each pair together.
 
 | Adding | What it touches, beyond its own files |
 |---|---|
-| a page | described first (`CLAUDE.md`); `PAGES` in `tools/stamp.mjs`; `PAGES` in `functions/api/_visitors.js`; `assets/analytics.js`, `track.js` and `back.js` in its markup; the boot block the `/site` skill names; a README section; its flow in `data/flows.json`. It is framed from the map with nothing more. If it carries the radio's button, `radio.js` before its own script and it works framed and whole. |
+| a page | described first (`CLAUDE.md`); `PAGES` in `tools/stamp.mjs`; `PAGES` in `functions/api/_visitors.js`; `track.js` and `back.js` in its markup; the boot block the `/site` skill names; a README section; its flow in `data/flows.json`. It is framed from the map with nothing more. If it carries the radio's button, `radio.js` before its own script and it works framed and whole. |
 | a route under `/api/` | the `/api` skill's table and `_middleware.js`'s terms; never framed, never linked as a page |
 | a shared script | one global, one IIFE, a header block saying what it is and why it is a global, loaded before its first user on every page that uses it; the `/site` skill's list of globals |
 | a host | a fenced block in `_middleware.js` like the two there, a **Why a subdomain** paragraph in the README, and the knowledge that nothing walks to it from the map without leaving the document |

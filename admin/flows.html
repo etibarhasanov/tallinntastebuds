@@ -8,12 +8,6 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f7ddd4">
 
-<!-- Analytics: Google and Microsoft Clarity, both from one file rather than
-     two snippets pasted into every head. assets/analytics.js holds the ids and
-     the consentv2 signal Clarity needs, and its head carries the reasoning of
-     the consent bar that stood in front of both of them for a day. -->
-<script src="/assets/analytics.js?v=7d35c109" defer></script>
-
 <!-- The owner's, like everything under /admin/: functions/_middleware.js
      answers 404 to anybody who is not signed in as an account ADMINS names.
      What gets shared is the diagrams rather than the page — the download link
@@ -101,7 +95,7 @@
 <!-- What every press reports to Google Analytics, shared by every page.
      Before the page's own script and deferred like it, so document order puts
      the global in place first. -->
-<script src="/assets/track.js?v=34c2e65a" defer></script>
+<script src="/assets/track.js?v=235cce24" defer></script>
 <!-- When the numbers were counted, as the line under the chips —
      assets/counted.js. Before the page's own script and deferred like it. -->
 <script src="/assets/counted.js?v=a71c566a" defer></script>

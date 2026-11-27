@@ -952,7 +952,6 @@
       'aria-multiline': 'true',
       'aria-label': t('writeBody'),
       'data-hint': t('writeBody'),
-      'data-clarity-mask': 'true',
       spellcheck: 'true',
       lang: post.tab
     });

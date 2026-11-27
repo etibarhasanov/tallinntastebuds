@@ -396,8 +396,8 @@ async function route(context) {
     const res = await context.next();
     const out = new Response(res.body, res);
     out.headers.set('Cache-Control', 'private, no-store');
-    /* And the browser is told it is the owner's, so the analytics tags this
-       page loads count nothing — THE OWNER'S BROWSER in ./api/_admin.js. */
+    /* And the browser is told it is the owner's, so assets/track.js on this
+       page counts nothing — THE OWNER'S BROWSER in ./api/_admin.js. */
     out.headers.append('Set-Cookie', ownerCookie(context.request));
     return out;
   }
