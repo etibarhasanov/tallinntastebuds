@@ -88,6 +88,18 @@ function words(policy, lang) {
      starts a line of its own. */
   const note = esc(say(policy.updatedLabel, lang).replace('{date}', dated(policy.updated, lang))) +
     (lang === DEFAULT_LANG ? '' : '<br>' + esc(say(policy.translated, lang)));
+  /* Every section, linked by the id it is written under, so a reader who came
+     for one thing — how long, or the app — goes straight to it rather than
+     scrolling ten cards on a phone. The owner asked for it on 2026-11-27. A
+     list in the blog's prose rather than anything of its own, so the page
+     still has no stylesheet of its own. */
+  const contents =
+    '<nav class="card lists-card" aria-labelledby="contents">' +
+      '<h2 class="lists-title" id="contents">' + esc(say(policy.contents, lang)) + '</h2>' +
+      '<div class="blog-body"><ul>' +
+        policy.sections.map((s) => '<li><a href="#' + esc(s.id) + '">' + esc(say(s.title, lang)) + '</a></li>').join('') +
+      '</ul></div>' +
+    '</nav>';
   const sections = policy.sections.map((s) =>
     '<section class="card lists-card" id="' + esc(s.id) + '">' +
       '<h2 class="lists-title">' + esc(say(s.title, lang)) + '</h2>' +
@@ -102,6 +114,7 @@ function words(policy, lang) {
       '<p class="blog-lead">' + esc(say(policy.lead, lang)) + '</p>' +
       '<p class="blog-note">' + note + '</p>' +
     '</header>' +
+    contents +
     sections.join('') +
   '</div>';
 }
