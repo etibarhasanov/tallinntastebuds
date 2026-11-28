@@ -720,7 +720,16 @@ remove one** — and its door is `Rattatee/Core/API.swift`.
   120 of these an hour at the very worst, never riding a way they are
   given: each the router's question, no row read for the way, and the
   session's two rows by key where the rider is signed in — 240 rows a
-  ridden hour.
+  ridden hour. Written on 2026-11-28 and in no release yet: it is asked at
+  once from a rider riding away from the way — two points running further
+  from it with nearly every metre ridden, fifty or sixty metres past a
+  missed turn — after twenty seconds ridden beside it, where that took
+  thirty, and eighty metres ridden backwards along it, where that took
+  150. Never sooner than thirty seconds after the last, so the same 120 an
+  hour at the very worst; what moves is the ordinary ride, which asks once
+  for each time its rider leaves the way, where one back within half a
+  minute asked nothing. A rider on another of the ways already answered
+  is given that one and asks nothing.
 - A place picked mid-ride, written on 2026-11-27 and in no release yet:
   asked with `heading` only while the rider is going — a point kept in the
   last twenty seconds — and standing or paused with none, as before a
